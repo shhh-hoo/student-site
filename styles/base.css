@@ -129,6 +129,96 @@ img {
   line-height: 1.55;
 }
 
+.filter-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.filter-field-wide {
+  grid-column: 1 / -1;
+}
+
+.filter-label {
+  color: var(--accent-strong);
+  font-size: 0.83rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.filter-select {
+  min-height: 2.65rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgba(11, 79, 74, 0.18);
+  border-radius: 14px;
+  background: var(--surface-strong);
+  color: var(--text);
+  font: inherit;
+}
+
+.filter-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.filter-reset {
+  align-self: flex-start;
+  padding: 0.55rem 0.85rem;
+  min-height: 2.2rem;
+  border: 1px solid rgba(11, 79, 74, 0.18);
+  cursor: pointer;
+  font: inherit;
+}
+
+.filter-reset:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+}
+
+.filter-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-tag {
+  padding: 0.4rem 0.72rem;
+  border: 1px solid rgba(11, 79, 74, 0.18);
+  border-radius: 999px;
+  background: var(--surface-strong);
+  color: var(--accent-strong);
+  cursor: pointer;
+  font: inherit;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease,
+    transform 140ms ease;
+}
+
+.filter-tag:hover,
+.filter-tag:focus-visible {
+  border-color: rgba(11, 79, 74, 0.32);
+  transform: translateY(-1px);
+}
+
+.filter-tag[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #f7fffd;
+}
+
 .library-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -359,13 +449,15 @@ img {
   }
 
   .card-footer,
-  .document-actions {
+  .document-actions,
+  .filter-toolbar {
     flex-direction: column;
     align-items: stretch;
   }
 
   .doc-link,
-  .secondary-link {
+  .secondary-link,
+  .filter-select {
     width: 100%;
   }
 }

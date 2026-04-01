@@ -8,6 +8,7 @@
  * meta.json plus one supported content file (content.pdf, content.md, or
  * content.html). Matching files are copied into public/docs and a library
  * index is written to public/data/library.json.
+ * Only documents with meta.json status set to "ready" are published.
  *
  * HTML files are normalised into fragment-style output for the integrated
  * student-site viewer. Shared styling is owned by student-site, not by each
@@ -37,6 +38,14 @@ async function main() {
   for (const folderPath of documentFolders) {
     const metaPath = path.join(folderPath, "meta.json");
     const meta = await readJson(metaPath);
+
+    if (meta.status !== "ready") {
+      console.warn(
+        `Skipping ${path.relative(siteRoot, folderPath)} because status is not "ready".`,
+      );
+      continue;
+    }
+
     const contentFileName = await findSupportedContentFile(folderPath);
 
     if (!contentFileName) {
@@ -57,6 +66,7 @@ async function main() {
 
     library.push({
       title: meta.title ?? "",
+      type: meta.type ?? "",
       subject: meta.subject ?? "",
       topic: meta.topic ?? "",
       tags: Array.isArray(meta.tags) ? meta.tags : [],

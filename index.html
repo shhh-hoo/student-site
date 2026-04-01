@@ -28,6 +28,49 @@
             </div>
           </div>
 
+          <div id="library-filters" class="filter-bar" hidden>
+            <label class="filter-field" for="filter-stage">
+              <span class="filter-label">Stage</span>
+              <select
+                id="filter-stage"
+                class="filter-select"
+                data-default-label="All stages"
+              >
+                <option value="">All stages</option>
+              </select>
+            </label>
+
+            <label class="filter-field" for="filter-part">
+              <span class="filter-label">Part</span>
+              <select
+                id="filter-part"
+                class="filter-select"
+                data-default-label="All parts"
+              >
+                <option value="">All parts</option>
+              </select>
+            </label>
+
+            <div class="filter-field filter-field-wide">
+              <div class="filter-toolbar">
+                <span class="filter-label">Tags</span>
+                <button
+                  id="reset-filters"
+                  class="secondary-link filter-reset"
+                  type="button"
+                >
+                  Reset filters
+                </button>
+              </div>
+              <div
+                id="filter-tags"
+                class="filter-tag-list"
+                role="group"
+                aria-label="Filter by tags"
+              ></div>
+            </div>
+          </div>
+
           <div
             id="library-grid"
             class="library-grid"

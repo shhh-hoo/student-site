@@ -1,5 +1,22 @@
 const libraryGrid = document.getElementById("library-grid");
 const libraryStatus = document.getElementById("library-status");
+const libraryFilters = document.getElementById("library-filters");
+const stageFilter = document.getElementById("filter-stage");
+const partFilter = document.getElementById("filter-part");
+const tagFilterList = document.getElementById("filter-tags");
+const resetFiltersButton = document.getElementById("reset-filters");
+const libraryState = {
+  documents: [],
+  filters: {
+    stage: "",
+    part: "",
+    tags: new Set(),
+  },
+};
+const textCollator = new Intl.Collator(undefined, {
+  numeric: true,
+  sensitivity: "base",
+});
 
 async function loadLibrary() {
   try {
@@ -12,10 +29,14 @@ async function loadLibrary() {
     }
 
     const documents = await response.json();
-    renderLibrary(Array.isArray(documents) ? documents : []);
+    libraryState.documents = Array.isArray(documents) ? documents : [];
+    renderLibrary();
   } catch (error) {
     libraryStatus.textContent = "Could not load library data.";
     libraryGrid.setAttribute("aria-busy", "false");
+    if (libraryFilters) {
+      libraryFilters.hidden = true;
+    }
     libraryGrid.innerHTML = `
       <article class="empty-state">
         <strong>Library unavailable.</strong>
@@ -25,10 +46,15 @@ async function loadLibrary() {
   }
 }
 
-function renderLibrary(documents) {
+function renderLibrary() {
+  const documents = libraryState.documents;
+
   libraryGrid.setAttribute("aria-busy", "false");
 
   if (documents.length === 0) {
+    if (libraryFilters) {
+      libraryFilters.hidden = true;
+    }
     libraryStatus.textContent =
       "No synced document files were found. Run the sync script after adding content.pdf, content.md, or content.html inside a document folder.";
     libraryGrid.innerHTML = `
@@ -40,8 +66,178 @@ function renderLibrary(documents) {
     return;
   }
 
-  libraryStatus.textContent = `${documents.length} document${documents.length === 1 ? "" : "s"} available.`;
-  libraryGrid.innerHTML = documents.map(createCardMarkup).join("");
+  renderFilterControls(documents);
+
+  const filteredDocuments = documents.filter(matchesActiveFilters);
+  const hasActiveFilters = hasFiltersApplied();
+
+  libraryStatus.textContent = hasActiveFilters
+    ? `${filteredDocuments.length} of ${documents.length} document${documents.length === 1 ? "" : "s"} shown.`
+    : `${documents.length} document${documents.length === 1 ? "" : "s"} available.`;
+
+  if (filteredDocuments.length === 0) {
+    libraryGrid.innerHTML = `
+      <article class="empty-state">
+        <strong>No matching documents.</strong>
+        <p>Try adjusting or resetting the stage, part, or tag filters.</p>
+      </article>
+    `;
+    return;
+  }
+
+  libraryGrid.innerHTML = filteredDocuments.map(createCardMarkup).join("");
+}
+
+function renderFilterControls(documents) {
+  if (!libraryFilters || !stageFilter || !partFilter || !tagFilterList || !resetFiltersButton) {
+    return;
+  }
+
+  libraryFilters.hidden = false;
+
+  const stageValues = getUniqueValues(documents, "stage");
+  const partValues = getUniqueValues(documents, "part");
+  const tagValues = getUniqueTagValues(documents);
+
+  populateSelectOptions(stageFilter, stageValues);
+  populateSelectOptions(partFilter, partValues);
+
+  stageFilter.value = stageValues.includes(libraryState.filters.stage)
+    ? libraryState.filters.stage
+    : "";
+  partFilter.value = partValues.includes(libraryState.filters.part)
+    ? libraryState.filters.part
+    : "";
+
+  if (!stageValues.includes(libraryState.filters.stage)) {
+    libraryState.filters.stage = "";
+  }
+
+  if (!partValues.includes(libraryState.filters.part)) {
+    libraryState.filters.part = "";
+  }
+
+  libraryState.filters.tags = new Set(
+    [...libraryState.filters.tags].filter((tag) => tagValues.includes(tag)),
+  );
+
+  tagFilterList.innerHTML =
+    tagValues.length > 0
+      ? tagValues
+          .map((tag) => {
+            const isPressed = libraryState.filters.tags.has(tag);
+
+            return `
+              <button
+                type="button"
+                class="filter-tag"
+                data-tag="${escapeHtml(tag)}"
+                aria-pressed="${isPressed ? "true" : "false"}"
+              >
+                ${escapeHtml(tag)}
+              </button>
+            `;
+          })
+          .join("")
+      : '<span class="tag">No tags available</span>';
+
+  resetFiltersButton.disabled = !hasFiltersApplied();
+}
+
+function populateSelectOptions(selectElement, values) {
+  const defaultLabel =
+    selectElement.dataset.defaultLabel || selectElement.options[0]?.textContent || "All";
+
+  selectElement.innerHTML = [
+    `<option value="">${escapeHtml(defaultLabel)}</option>`,
+    ...values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`),
+  ].join("");
+}
+
+function getUniqueValues(documents, key) {
+  return [...new Set(
+    documents
+      .map((documentItem) => String(documentItem[key] || "").trim())
+      .filter(Boolean),
+  )].sort(sortText);
+}
+
+function getUniqueTagValues(documents) {
+  return [...new Set(
+    documents.flatMap((documentItem) =>
+      Array.isArray(documentItem.tags)
+        ? documentItem.tags.map((tag) => String(tag || "").trim()).filter(Boolean)
+        : [],
+    ),
+  )].sort(sortText);
+}
+
+function matchesActiveFilters(documentItem) {
+  const matchesStage =
+    !libraryState.filters.stage ||
+    String(documentItem.stage || "").trim() === libraryState.filters.stage;
+  const matchesPart =
+    !libraryState.filters.part ||
+    String(documentItem.part || "").trim() === libraryState.filters.part;
+  const documentTags = Array.isArray(documentItem.tags) ? documentItem.tags : [];
+  const matchesTags =
+    libraryState.filters.tags.size === 0 ||
+    documentTags.some((tag) => libraryState.filters.tags.has(String(tag || "").trim()));
+
+  return matchesStage && matchesPart && matchesTags;
+}
+
+function hasFiltersApplied() {
+  return Boolean(
+    libraryState.filters.stage ||
+      libraryState.filters.part ||
+      libraryState.filters.tags.size > 0,
+  );
+}
+
+function sortText(left, right) {
+  return textCollator.compare(left, right);
+}
+
+function resetFilters() {
+  libraryState.filters.stage = "";
+  libraryState.filters.part = "";
+  libraryState.filters.tags = new Set();
+  renderLibrary();
+}
+
+function handleSelectFilters() {
+  libraryState.filters.stage = stageFilter ? stageFilter.value : "";
+  libraryState.filters.part = partFilter ? partFilter.value : "";
+  renderLibrary();
+}
+
+function handleTagFilterClick(event) {
+  const target = event.target;
+
+  if (!(target instanceof HTMLElement)) {
+    return;
+  }
+
+  const tagButton = target.closest("[data-tag]");
+
+  if (!(tagButton instanceof HTMLElement)) {
+    return;
+  }
+
+  const { tag } = tagButton.dataset;
+
+  if (!tag) {
+    return;
+  }
+
+  if (libraryState.filters.tags.has(tag)) {
+    libraryState.filters.tags.delete(tag);
+  } else {
+    libraryState.filters.tags.add(tag);
+  }
+
+  renderLibrary();
 }
 
 function createCardMarkup(documentItem) {
@@ -96,6 +292,22 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+if (stageFilter) {
+  stageFilter.addEventListener("change", handleSelectFilters);
+}
+
+if (partFilter) {
+  partFilter.addEventListener("change", handleSelectFilters);
+}
+
+if (tagFilterList) {
+  tagFilterList.addEventListener("click", handleTagFilterClick);
+}
+
+if (resetFiltersButton) {
+  resetFiltersButton.addEventListener("click", resetFilters);
 }
 
 loadLibrary();
