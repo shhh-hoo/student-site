@@ -242,6 +242,10 @@ function handleTagFilterClick(event) {
 
 function createCardMarkup(documentItem) {
   const tags = Array.isArray(documentItem.tags) ? documentItem.tags : [];
+  const structureChips = [
+    documentItem.stage ? `<span class="structure-chip">${escapeHtml(documentItem.stage)}</span>` : "",
+    documentItem.part ? `<span class="structure-chip">${escapeHtml(documentItem.part)}</span>` : "",
+  ].filter(Boolean);
   const topic = documentItem.topic || "General";
   const description = documentItem.description || "No description provided.";
   const sourceKind = documentItem.source_kind || "unknown";
@@ -255,6 +259,10 @@ function createCardMarkup(documentItem) {
         <h3>${escapeHtml(documentItem.title || "Untitled document")}</h3>
         <span class="status-badge">${escapeHtml(status)}</span>
       </div>
+      ${structureChips.length > 0 ? `
+      <div class="structure-chip-list">
+        ${structureChips.join("")}
+      </div>` : ""}
       <div class="meta-row">
         <span>${escapeHtml(documentItem.subject || "Unknown subject")}</span>
         <span>•</span>
