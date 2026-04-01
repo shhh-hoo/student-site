@@ -7,14 +7,23 @@ const documentFileKind = document.getElementById("document-file-kind");
 const rawFileLink = document.getElementById("raw-file-link");
 const syllabusLinksSection = document.getElementById("syllabus-links-section");
 const documentSyllabusLinks = document.getElementById("document-syllabus-links");
+const libraryHomeLink = document.querySelector(".eyebrow a");
+const libraryFilterQueryKeys = {
+  stage: "stage",
+  part: "part",
+  tags: "tags",
+};
 
 async function initDocumentView() {
   const params = new URLSearchParams(window.location.search);
+  const libraryReturnHref = buildLibraryReturnHref(params);
   const requestedDocumentId = params.get("doc");
   const documentId = normalizeDocumentId(requestedDocumentId);
 
+  updateLibraryReturnLink(libraryReturnHref);
+
   if (!documentId) {
-    renderMissingState("No document id was provided in the page URL.");
+    renderMissingState("No document id was provided in the page URL.", libraryReturnHref);
     return;
   }
 
@@ -23,7 +32,7 @@ async function initDocumentView() {
     const documentItem = library.find((item) => item.document_id === documentId);
 
     if (!documentItem) {
-      renderMissingState(`Document "${documentId}" was not found in library.json.`);
+      renderMissingState(`Document "${documentId}" was not found in library.json.`, libraryReturnHref);
       return;
     }
 
@@ -31,7 +40,7 @@ async function initDocumentView() {
     await renderDocumentContent(documentItem);
     buildTableOfContents();
   } catch (error) {
-    renderMissingState(error.message);
+    renderMissingState(error.message, libraryReturnHref);
   }
 }
 
@@ -68,6 +77,61 @@ function normalizeDocumentId(value) {
   }
 
   return normalizedValue;
+}
+
+function buildLibraryReturnHref(params) {
+  const librarySearch = normalizeLibrarySearchParam(params.get("from"));
+
+  return librarySearch ? `./index.html?${librarySearch}` : "./index.html";
+}
+
+function normalizeLibrarySearchParam(value) {
+  const rawValue = typeof value === "string" ? value.trim().replace(/^\?/, "") : "";
+
+  if (!rawValue) {
+    return "";
+  }
+
+  const sourceParams = new URLSearchParams(rawValue);
+  const normalizedParams = new URLSearchParams();
+  const stage = normalizeFilterParam(sourceParams.get(libraryFilterQueryKeys.stage));
+  const part = normalizeFilterParam(sourceParams.get(libraryFilterQueryKeys.part));
+  const tags = normalizeTagParams(sourceParams.getAll(libraryFilterQueryKeys.tags));
+
+  if (stage) {
+    normalizedParams.set(libraryFilterQueryKeys.stage, stage);
+  }
+
+  if (part) {
+    normalizedParams.set(libraryFilterQueryKeys.part, part);
+  }
+
+  if (tags.length > 0) {
+    normalizedParams.set(libraryFilterQueryKeys.tags, tags.join(","));
+  }
+
+  return normalizedParams.toString();
+}
+
+function normalizeFilterParam(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function normalizeTagParams(values) {
+  const tagValues = Array.isArray(values) ? values : [values];
+
+  return [...new Set(
+    tagValues
+      .flatMap((value) => String(value || "").split(","))
+      .map((tag) => tag.trim())
+      .filter(Boolean),
+  )];
+}
+
+function updateLibraryReturnLink(href) {
+  if (libraryHomeLink) {
+    libraryHomeLink.href = href;
+  }
 }
 
 function renderDocumentHeader(documentItem) {
@@ -204,7 +268,7 @@ function renderUnsupportedDocument(documentItem) {
   `;
 }
 
-function renderMissingState(message) {
+function renderMissingState(message, libraryReturnHref = "./index.html") {
   document.title = "Document Viewer | Student Site";
   documentTitle.textContent = "Document unavailable";
   documentDescription.textContent = "The shared viewer could not load this document.";
@@ -218,7 +282,7 @@ function renderMissingState(message) {
       <strong>Viewer error.</strong>
       <p>${escapeHtml(message)}</p>
       <div class="document-actions">
-        <a class="secondary-link" href="./index.html">Back to library</a>
+        <a class="secondary-link" href="${escapeHtml(libraryReturnHref)}">Back to library</a>
       </div>
     </div>
   `;

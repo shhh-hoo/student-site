@@ -327,6 +327,40 @@ function handleTagFilterClick(event) {
   writeFiltersToUrl();
 }
 
+function buildDocumentLinkHref(linkPath) {
+  const normalizedLinkPath = typeof linkPath === "string" ? linkPath.trim() : "";
+
+  if (!normalizedLinkPath) {
+    return "#";
+  }
+
+  try {
+    const destination = new URL(normalizedLinkPath, window.location.href);
+
+    if (!isDocumentViewerPath(destination.pathname)) {
+      return encodeURI(normalizedLinkPath);
+    }
+
+    const currentLibrarySearch = window.location.search.replace(/^\?/, "");
+
+    if (currentLibrarySearch) {
+      destination.searchParams.set("from", currentLibrarySearch);
+    } else {
+      destination.searchParams.delete("from");
+    }
+
+    return `${destination.pathname}${destination.search}${destination.hash}`;
+  } catch {
+    return encodeURI(normalizedLinkPath);
+  }
+}
+
+function isDocumentViewerPath(pathname) {
+  const normalizedPath = String(pathname || "");
+
+  return normalizedPath.endsWith("/document.html") || normalizedPath.endsWith("document.html");
+}
+
 function createCardMarkup(documentItem) {
   const tags = Array.isArray(documentItem.tags) ? documentItem.tags : [];
   const structureChips = [
@@ -338,6 +372,7 @@ function createCardMarkup(documentItem) {
   const sourceKind = documentItem.source_kind || "unknown";
   const status = documentItem.status || "unknown";
   const linkPath = documentItem.view_path || documentItem.public_file_path;
+  const documentLinkHref = buildDocumentLinkHref(linkPath);
   const contentFormat = getContentFormatLabel(documentItem.content_format);
 
   return `
@@ -361,7 +396,7 @@ function createCardMarkup(documentItem) {
       <p class="description">${escapeHtml(description)}</p>
       <div class="card-footer">
         <span class="source-kind">${escapeHtml(sourceKind)} · ${escapeHtml(contentFormat)}</span>
-        <a class="doc-link" href="${encodeURI(linkPath)}">Open document</a>
+        <a class="doc-link" href="${escapeHtml(documentLinkHref)}">Open document</a>
       </div>
     </article>
   `;
