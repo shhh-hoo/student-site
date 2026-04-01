@@ -380,6 +380,10 @@ img {
   border-top: 1px solid var(--border);
 }
 
+.sidebar-chip-row {
+  margin-top: 0.75rem;
+}
+
 .document-toc {
   margin-top: 0.75rem;
 }

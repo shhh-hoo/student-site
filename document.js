@@ -5,10 +5,13 @@ const documentBody = document.getElementById("document-body");
 const documentToc = document.getElementById("document-toc");
 const documentFileKind = document.getElementById("document-file-kind");
 const rawFileLink = document.getElementById("raw-file-link");
+const syllabusLinksSection = document.getElementById("syllabus-links-section");
+const documentSyllabusLinks = document.getElementById("document-syllabus-links");
 
 async function initDocumentView() {
   const params = new URLSearchParams(window.location.search);
-  const documentId = params.get("doc");
+  const requestedDocumentId = params.get("doc");
+  const documentId = normalizeDocumentId(requestedDocumentId);
 
   if (!documentId) {
     renderMissingState("No document id was provided in the page URL.");
@@ -43,6 +46,30 @@ async function fetchLibrary() {
   return Array.isArray(documents) ? documents : [];
 }
 
+function normalizeDocumentId(value) {
+  let normalizedValue = typeof value === "string" ? value.trim() : "";
+
+  if (!normalizedValue) {
+    return "";
+  }
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const decodedValue = decodeURIComponent(normalizedValue);
+
+      if (decodedValue === normalizedValue) {
+        break;
+      }
+
+      normalizedValue = decodedValue;
+    } catch {
+      break;
+    }
+  }
+
+  return normalizedValue;
+}
+
 function renderDocumentHeader(documentItem) {
   const metaChips = [];
 
@@ -70,9 +97,31 @@ function renderDocumentHeader(documentItem) {
     .concat(Array.isArray(documentItem.tags) ? documentItem.tags : [])
     .map((value) => `<span class="meta-chip">${escapeHtml(value)}</span>`)
     .join("");
+  renderSyllabusLinks(documentItem.syllabus_refs);
 
   documentFileKind.textContent = `Format: ${getContentFormatLabel(documentItem.content_format)}`;
   rawFileLink.href = documentItem.public_file_path;
+}
+
+function renderSyllabusLinks(syllabusRefs) {
+  if (!syllabusLinksSection || !documentSyllabusLinks) {
+    return;
+  }
+
+  const refs = Array.isArray(syllabusRefs)
+    ? syllabusRefs.map((value) => String(value || "").trim()).filter(Boolean)
+    : [];
+
+  if (refs.length === 0) {
+    syllabusLinksSection.hidden = true;
+    documentSyllabusLinks.innerHTML = "";
+    return;
+  }
+
+  syllabusLinksSection.hidden = false;
+  documentSyllabusLinks.innerHTML = refs
+    .map((value) => `<span class="meta-chip">${escapeHtml(value)}</span>`)
+    .join("");
 }
 
 async function renderDocumentContent(documentItem) {
@@ -160,6 +209,7 @@ function renderMissingState(message) {
   documentTitle.textContent = "Document unavailable";
   documentDescription.textContent = "The shared viewer could not load this document.";
   documentMeta.innerHTML = "";
+  renderSyllabusLinks([]);
   documentFileKind.textContent = "Format: unavailable";
   rawFileLink.removeAttribute("href");
   documentBody.setAttribute("aria-busy", "false");
