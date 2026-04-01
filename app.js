@@ -13,6 +13,11 @@ const libraryState = {
     tags: new Set(),
   },
 };
+const filterQueryKeys = {
+  stage: "stage",
+  part: "part",
+  tags: "tags",
+};
 const textCollator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: "base",
@@ -30,7 +35,7 @@ async function loadLibrary() {
 
     const documents = await response.json();
     libraryState.documents = Array.isArray(documents) ? documents : [];
-    renderLibrary();
+    applyFiltersFromUrl({ replaceUrl: true });
   } catch (error) {
     libraryStatus.textContent = "Could not load library data.";
     libraryGrid.setAttribute("aria-busy", "false");
@@ -52,6 +57,10 @@ function renderLibrary() {
   libraryGrid.setAttribute("aria-busy", "false");
 
   if (documents.length === 0) {
+    libraryState.filters.stage = "";
+    libraryState.filters.part = "";
+    libraryState.filters.tags = new Set();
+
     if (libraryFilters) {
       libraryFilters.hidden = true;
     }
@@ -86,6 +95,81 @@ function renderLibrary() {
   }
 
   libraryGrid.innerHTML = filteredDocuments.map(createCardMarkup).join("");
+}
+
+function applyFiltersFromUrl({ replaceUrl = false } = {}) {
+  setFilters(parseFiltersFromUrl());
+  renderLibrary();
+
+  if (replaceUrl) {
+    writeFiltersToUrl({ replace: true });
+  }
+}
+
+function parseFiltersFromUrl() {
+  const searchParams = new URLSearchParams(window.location.search);
+
+  return {
+    stage: normalizeFilterParam(searchParams.get(filterQueryKeys.stage)),
+    part: normalizeFilterParam(searchParams.get(filterQueryKeys.part)),
+    tags: new Set(normalizeTagParams(searchParams.getAll(filterQueryKeys.tags))),
+  };
+}
+
+function writeFiltersToUrl({ replace = false } = {}) {
+  const url = new URL(window.location.href);
+  const searchParams = url.searchParams;
+  const tags = [...libraryState.filters.tags].sort(sortText);
+
+  if (libraryState.filters.stage) {
+    searchParams.set(filterQueryKeys.stage, libraryState.filters.stage);
+  } else {
+    searchParams.delete(filterQueryKeys.stage);
+  }
+
+  if (libraryState.filters.part) {
+    searchParams.set(filterQueryKeys.part, libraryState.filters.part);
+  } else {
+    searchParams.delete(filterQueryKeys.part);
+  }
+
+  if (tags.length > 0) {
+    searchParams.set(filterQueryKeys.tags, tags.join(","));
+  } else {
+    searchParams.delete(filterQueryKeys.tags);
+  }
+
+  const nextSearch = searchParams.toString();
+  const nextUrl = `${url.pathname}${nextSearch ? `?${nextSearch}` : ""}${url.hash}`;
+  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+  if (nextUrl === currentUrl) {
+    return;
+  }
+
+  const historyMethod = replace ? "replaceState" : "pushState";
+  window.history[historyMethod](null, "", nextUrl);
+}
+
+function normalizeFilterParam(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function normalizeTagParams(values) {
+  const tagValues = Array.isArray(values) ? values : [values];
+
+  return [...new Set(
+    tagValues
+      .flatMap((value) => String(value || "").split(","))
+      .map((tag) => tag.trim())
+      .filter(Boolean),
+  )].sort(sortText);
+}
+
+function setFilters(filters) {
+  libraryState.filters.stage = filters.stage;
+  libraryState.filters.part = filters.part;
+  libraryState.filters.tags = new Set(filters.tags);
 }
 
 function renderFilterControls(documents) {
@@ -204,12 +288,14 @@ function resetFilters() {
   libraryState.filters.part = "";
   libraryState.filters.tags = new Set();
   renderLibrary();
+  writeFiltersToUrl();
 }
 
 function handleSelectFilters() {
   libraryState.filters.stage = stageFilter ? stageFilter.value : "";
   libraryState.filters.part = partFilter ? partFilter.value : "";
   renderLibrary();
+  writeFiltersToUrl();
 }
 
 function handleTagFilterClick(event) {
@@ -238,6 +324,7 @@ function handleTagFilterClick(event) {
   }
 
   renderLibrary();
+  writeFiltersToUrl();
 }
 
 function createCardMarkup(documentItem) {
@@ -317,5 +404,9 @@ if (tagFilterList) {
 if (resetFiltersButton) {
   resetFiltersButton.addEventListener("click", resetFilters);
 }
+
+window.addEventListener("popstate", () => {
+  applyFiltersFromUrl({ replaceUrl: true });
+});
 
 loadLibrary();
