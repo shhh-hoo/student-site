@@ -1,0 +1,217 @@
+.document-body {
+  color: var(--text);
+}
+
+.document-body article {
+  max-width: var(--reading-width);
+  margin: 0 auto;
+}
+
+.document-body article > *:first-child,
+.document-body section > *:first-child {
+  margin-top: 0;
+}
+
+.document-body .section {
+  padding: 1rem 0 0.6rem;
+}
+
+.document-body .section + .section {
+  border-top: 1px solid var(--border);
+}
+
+.document-body h2 {
+  margin: 0 0 0.95rem;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.document-body h3 {
+  margin: 1.2rem 0 0.55rem;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.document-body h4 {
+  margin: 0 0 0.45rem;
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-strong);
+}
+
+.document-body p,
+.document-body li,
+.document-body td,
+.document-body th {
+  line-height: 1.72;
+}
+
+.document-body p {
+  margin: 0.55rem 0 0.8rem;
+}
+
+.document-body ul,
+.document-body ol {
+  margin: 0.45rem 0 0.95rem 1.2rem;
+  padding: 0;
+}
+
+.document-body li + li {
+  margin-top: 0.32rem;
+}
+
+.document-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.2rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.document-body th,
+.document-body td {
+  padding: 0.8rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.document-body th {
+  font-size: 0.9rem;
+  color: var(--accent-strong);
+  background: rgba(15, 118, 110, 0.06);
+}
+
+.document-body tr:last-child td {
+  border-bottom: 0;
+}
+
+.document-body blockquote,
+.document-body .note-box,
+.document-body .summary-box,
+.document-body .comparison-box,
+.document-body .formula-card {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-muted);
+  box-shadow: var(--shadow-soft);
+}
+
+.document-body blockquote,
+.document-body .note-box,
+.document-body .summary-box,
+.document-body .comparison-box {
+  margin: 1rem 0 1.05rem;
+  padding: 1rem 1rem 0.95rem;
+}
+
+.document-body blockquote {
+  border-left: 4px solid rgba(15, 118, 110, 0.28);
+}
+
+.document-body .formula-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0 1.1rem;
+}
+
+.document-body .formula-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+}
+
+.document-body .formula-card strong {
+  font-size: 1rem;
+}
+
+.document-body .formula {
+  color: var(--accent-strong);
+  font-size: 1rem;
+}
+
+.document-body .rank-list {
+  margin: 0.85rem 0 1.1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  background: rgba(15, 118, 110, 0.08);
+  border: 1px solid rgba(15, 118, 110, 0.12);
+  overflow-wrap: anywhere;
+}
+
+.document-body .species,
+.document-body .value {
+  font-weight: 600;
+}
+
+.document-body .value {
+  color: var(--accent-strong);
+}
+
+.document-body .divider-label {
+  display: inline-block;
+  margin: 0 0 0.85rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.document-body hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+.document-body pre {
+  overflow-x: auto;
+  margin: 1rem 0 1.2rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #182520;
+  color: #e9f8f1;
+}
+
+.document-body code {
+  padding: 0.12rem 0.3rem;
+  border-radius: 6px;
+  background: rgba(15, 118, 110, 0.08);
+}
+
+.document-body pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.document-body sup,
+.document-body sub {
+  line-height: 0;
+}
+
+@media (max-width: 640px) {
+  .document-body h2 {
+    font-size: 1.35rem;
+  }
+
+  .document-body table,
+  .document-body .formula-grid {
+    display: block;
+  }
+
+  .document-body .formula-grid {
+    gap: 0.7rem;
+  }
+
+  .document-body .formula-card + .formula-card {
+    margin-top: 0.7rem;
+  }
+}

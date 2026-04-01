@@ -1,0 +1,70 @@
+[
+  {
+    "title": "Organic Acidity Comparisons: Study Notes",
+    "subject": "Chemistry",
+    "topic": "organic-acidity-comparisons",
+    "tags": [
+      "acidity",
+      "organic",
+      "electronic-effects",
+      "inductive-effect",
+      "delocalisation",
+      "conjugate-base-stability",
+      "pKa"
+    ],
+    "description": "Study notes comparing the acidity of carboxylic acids, phenols, alcohols, and related compounds using inductive effects and delocalisation.",
+    "source_kind": "ai-generated",
+    "status": "ready",
+    "stage": "A2",
+    "stage_detail": "AS+A2, A2-weighted",
+    "part": "Organic chemistry",
+    "syllabus_refs": [
+      "7.2",
+      "16.1",
+      "18.1",
+      "25.1",
+      "32.2",
+      "33.1"
+    ],
+    "original_relative_source_path": "../content-source/documents/chemistry/organic-acidity-comparisons/content.html",
+    "public_file_path": "public/docs/chemistry/organic-acidity-comparisons/content.html",
+    "document_id": "chemistry/organic-acidity-comparisons",
+    "content_file_name": "content.html",
+    "content_format": "html",
+    "view_path": "document.html?doc=chemistry%2Forganic-acidity-comparisons"
+  },
+  {
+    "title": "Organic Acidity Comparisons: Study Notes",
+    "subject": "Chemistry",
+    "topic": "organic-acidity-comparisons",
+    "tags": [
+      "acidity",
+      "organic",
+      "electronic-effects",
+      "inductive-effect",
+      "delocalisation",
+      "conjugate-base-stability",
+      "pKa"
+    ],
+    "description": "Study notes comparing the acidity of carboxylic acids, phenols, alcohols, and related compounds using inductive effects and delocalisation.",
+    "source_kind": "ai-generated",
+    "status": "ready",
+    "stage": "A2",
+    "stage_detail": "AS+A2, A2-weighted",
+    "part": "Organic chemistry",
+    "syllabus_refs": [
+      "7.2",
+      "16.1",
+      "18.1",
+      "25.1",
+      "32.2",
+      "33.1"
+    ],
+    "original_relative_source_path": "../content-source/documents/chemistry/organic-basicity-comparisons/content.html",
+    "public_file_path": "public/docs/chemistry/organic-basicity-comparisons/content.html",
+    "document_id": "chemistry/organic-basicity-comparisons",
+    "content_file_name": "content.html",
+    "content_format": "html",
+    "view_path": "document.html?doc=chemistry%2Forganic-basicity-comparisons"
+  }
+]

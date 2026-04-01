@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document Viewer</title>
+    <link rel="stylesheet" href="./styles/tokens.css" />
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/chemistry-content.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">
+          <a href="./index.html">Student Site</a>
+          <span> / Document</span>
+        </p>
+        <h1 id="document-title">Loading document...</h1>
+        <p id="document-description" class="hero-copy">
+          Preparing integrated document content.
+        </p>
+        <div id="document-meta" class="meta-chip-row"></div>
+      </header>
+
+      <main class="document-layout">
+        <aside class="sidebar-panel" aria-labelledby="toc-heading">
+          <section class="sidebar-section">
+            <h2 id="toc-heading">On This Page</h2>
+            <nav id="document-toc" class="document-toc" aria-live="polite">
+              <p class="panel-copy">Loading page structure...</p>
+            </nav>
+          </section>
+
+          <section class="sidebar-section">
+            <h2>Document File</h2>
+            <p id="document-file-kind" class="panel-copy">Checking source format...</p>
+            <div class="document-actions">
+              <a id="raw-file-link" class="secondary-link" href="#" target="_blank" rel="noreferrer">
+                Open Raw File
+              </a>
+            </div>
+          </section>
+        </aside>
+
+        <section class="library-panel document-panel" aria-live="polite">
+          <div id="document-body" class="document-body" aria-busy="true">
+            <div class="document-placeholder empty-state">
+              <strong>Loading document...</strong>
+              <p>The student-site viewer is preparing the shared layout and content fragment.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./document.js" defer></script>
+  </body>
+</html>
