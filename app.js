@@ -3,6 +3,9 @@ const libraryStatus = document.getElementById("library-status");
 const libraryFilters = document.getElementById("library-filters");
 const stageFilter = document.getElementById("filter-stage");
 const partFilter = document.getElementById("filter-part");
+const filterHelper = document.getElementById("filter-helper");
+const filterTopicSummary = document.getElementById("filter-topic-summary");
+const filterTopicCount = document.getElementById("filter-topic-count");
 const tagFilterList = document.getElementById("filter-tags");
 const toggleFilterTagsButton = document.getElementById("toggle-filter-tags");
 const resetFiltersButton = document.getElementById("reset-filters");
@@ -23,7 +26,7 @@ const filterQueryKeys = {
   tags: "tags",
 };
 
-const collapsedFilterTagCount = 10;
+const collapsedPrimaryFilterTagCount = 5;
 const cardVisibleTagCount = 4;
 const structuralUiTags = new Set([
   "9701",
@@ -91,6 +94,34 @@ const tagDisplayLabelMap = {
   redox: "Redox",
   "transition-elements": "Transition elements",
   acidity: "Acidity",
+};
+const topicPriorityWeightMap = {
+  "ir-spectroscopy": 140,
+  carbonyls: 132,
+  alcohols: 130,
+  "carboxylic-acids": 128,
+  "qualitative-tests": 126,
+  mechanisms: 124,
+  amines: 122,
+  alkenes: 118,
+  hydrocarbons: 116,
+  halogenoalkanes: 114,
+  "electronic-effects": 112,
+  acidity: 110,
+  basicity: 108,
+  electrochemistry: 104,
+  redox: 102,
+  "transition-elements": 100,
+  practical: 98,
+  "polymer-chemistry": 96,
+  nitriles: 94,
+  amides: 92,
+  arenes: 90,
+  phenol: 88,
+  "acyl-chlorides": 86,
+  "group-2": 84,
+  "group-17": 82,
+  "period-3": 80,
 };
 const sourceKindLabelMap = {
   official: "Official",
@@ -290,7 +321,6 @@ function renderFilterControls(documents) {
 
   const stageValues = getUniqueValues(documents, "stage");
   const partValues = getUniqueValues(documents, "part");
-  const tagValues = getUniqueTagValues(documents);
 
   populateSelectOptions(stageFilter, stageValues);
   populateSelectOptions(partFilter, partValues);
@@ -310,33 +340,38 @@ function renderFilterControls(documents) {
     libraryState.filters.part = "";
   }
 
-  libraryState.filters.tags = new Set(
-    [...libraryState.filters.tags].filter((tag) => tagValues.includes(tag)),
+  const stageAndPartDocuments = getDocumentsMatchingStageAndPart(documents);
+  const tagValues = getUniqueTagValues(stageAndPartDocuments);
+  const localTagCounts = getTagCounts(stageAndPartDocuments);
+  const globalTagCounts = getTagCounts(documents);
+  const stageAndPartParts = getUniqueValues(stageAndPartDocuments, "part");
+  const tagPartMap = getTagPartMap(stageAndPartDocuments);
+
+  pruneInvalidSelectedTags(tagValues);
+
+  const tagGroups = getVisibleFilterTagGroups(
+    tagValues,
+    localTagCounts,
+    globalTagCounts,
+    stageAndPartParts,
+    tagPartMap,
   );
 
-  const visibleTagValues = getVisibleFilterTags(tagValues);
-
   tagFilterList.innerHTML =
-    visibleTagValues.length > 0
-      ? visibleTagValues
-          .map((tag) => {
-            const isPressed = libraryState.filters.tags.has(tag);
-
-            return `
-              <button
-                type="button"
-                class="filter-tag"
-                data-tag="${escapeHtml(tag)}"
-                aria-pressed="${isPressed ? "true" : "false"}"
-              >
-                ${escapeHtml(getTagDisplayLabel(tag))}
-              </button>
-            `;
-          })
+    tagGroups.groups.length > 0
+      ? tagGroups.groups
+          .map(({ title, description, tags, secondary = false }) =>
+            createFilterTagGroupMarkup(title, description, tags, {
+              secondary,
+            }))
           .join("")
-      : '<span class="tag">No topics or skills available</span>';
+      : '<span class="tag">No topics or skills available for this Stage and Part.</span>';
 
-  updateFilterTagToggle(tagValues, visibleTagValues);
+  updateFilterCopy(stageAndPartDocuments, tagValues, tagGroups);
+  updatePrimaryFilterState(stageFilter);
+  updatePrimaryFilterState(partFilter);
+  updateTopicFilterState();
+  updateFilterTagToggle(tagGroups.hiddenCount);
   resetFiltersButton.disabled = !hasFiltersApplied();
 }
 
@@ -364,34 +399,276 @@ function getUniqueTagValues(documents) {
   )].sort(sortTagValues);
 }
 
+function getDocumentsMatchingStageAndPart(documents) {
+  return documents.filter((documentItem) => {
+    const matchesStage =
+      !libraryState.filters.stage ||
+      String(documentItem.stage || "").trim() === libraryState.filters.stage;
+    const matchesPart =
+      !libraryState.filters.part ||
+      String(documentItem.part || "").trim() === libraryState.filters.part;
+
+    return matchesStage && matchesPart;
+  });
+}
+
 function getDocumentUiTags(documentItem) {
   const tags = Array.isArray(documentItem.tags) ? documentItem.tags : [];
 
   return [...new Set(tags.map(normalizeUiTag).filter(Boolean))].sort(sortTagValues);
 }
 
-function getVisibleFilterTags(tagValues) {
-  if (libraryState.showAllFilterTags || tagValues.length <= collapsedFilterTagCount) {
-    return tagValues;
-  }
+function getTagCounts(documents) {
+  return documents.reduce((counts, documentItem) => {
+    getDocumentUiTags(documentItem).forEach((tag) => {
+      counts[tag] = (counts[tag] || 0) + 1;
+    });
 
-  return tagValues.filter((tag, index) =>
-    index < collapsedFilterTagCount || libraryState.filters.tags.has(tag),
-  );
+    return counts;
+  }, {});
 }
 
-function updateFilterTagToggle(tagValues, visibleTagValues) {
+function getTagPartMap(documents) {
+  return documents.reduce((tagPartMap, documentItem) => {
+    const documentPart = String(documentItem.part || "").trim();
+
+    getDocumentUiTags(documentItem).forEach((tag) => {
+      if (!tagPartMap[tag]) {
+        tagPartMap[tag] = new Set();
+      }
+
+      if (documentPart) {
+        tagPartMap[tag].add(documentPart);
+      }
+    });
+
+    return tagPartMap;
+  }, {});
+}
+
+function pruneInvalidSelectedTags(tagValues) {
+  const availableTags = new Set(tagValues);
+  const nextTags = [...libraryState.filters.tags].filter((tag) => availableTags.has(tag));
+
+  libraryState.filters.tags = new Set(nextTags);
+}
+
+function getVisibleFilterTagGroups(
+  tagValues,
+  localTagCounts,
+  globalTagCounts,
+  availableParts,
+  tagPartMap,
+) {
+  const rankedTagValues = [...tagValues].sort((left, right) =>
+    compareFilterTagPriority(left, right, localTagCounts, globalTagCounts),
+  );
+  const priorityTags = getPriorityFilterTags(rankedTagValues, availableParts, tagPartMap);
+  const secondaryTags = rankedTagValues.filter((tag) => !priorityTags.includes(tag));
+  const selectedSecondaryTags = secondaryTags.filter((tag) => libraryState.filters.tags.has(tag));
+  const groups = [];
+
+  if (priorityTags.length > 0) {
+    groups.push({
+      title: "Best first cuts",
+      description: "Start here before opening the long tail.",
+      tags: priorityTags,
+    });
+  }
+
+  if (libraryState.showAllFilterTags && secondaryTags.length > 0) {
+    groups.push({
+      title: "More from this stage and part",
+      description: "Long-tail topics still available in the current subset.",
+      tags: secondaryTags,
+      secondary: true,
+    });
+  } else if (selectedSecondaryTags.length > 0) {
+    groups.push({
+      title: "Selected from more topics",
+      description: "Pinned here because they are active.",
+      tags: selectedSecondaryTags,
+      secondary: true,
+    });
+  }
+
+  return {
+    groups,
+    hiddenCount: Math.max(0, secondaryTags.length - selectedSecondaryTags.length),
+  };
+}
+
+function getPriorityFilterTags(rankedTagValues, availableParts, tagPartMap) {
+  if (libraryState.filters.part || availableParts.length <= 1) {
+    return rankedTagValues.slice(0, collapsedPrimaryFilterTagCount);
+  }
+
+  const priorityTags = [];
+  const coveredParts = new Set();
+  const topOverallTag = rankedTagValues[0];
+
+  if (topOverallTag) {
+    priorityTags.push(topOverallTag);
+
+    (tagPartMap[topOverallTag] || []).forEach((part) => {
+      coveredParts.add(part);
+    });
+  }
+
+  availableParts.forEach((part) => {
+    if (priorityTags.length >= collapsedPrimaryFilterTagCount || coveredParts.has(part)) {
+      return;
+    }
+
+    const partCandidate = rankedTagValues.find((tag) =>
+      !priorityTags.includes(tag) && (tagPartMap[tag] || new Set()).has(part),
+    );
+
+    if (!partCandidate) {
+      return;
+    }
+
+    priorityTags.push(partCandidate);
+
+    (tagPartMap[partCandidate] || []).forEach((tagPart) => {
+      coveredParts.add(tagPart);
+    });
+  });
+
+  rankedTagValues.forEach((tag) => {
+    if (priorityTags.length >= collapsedPrimaryFilterTagCount || priorityTags.includes(tag)) {
+      return;
+    }
+
+    priorityTags.push(tag);
+  });
+
+  return priorityTags;
+}
+
+function compareFilterTagPriority(left, right, localTagCounts, globalTagCounts) {
+  const canonicalDelta = getTopicPriorityWeight(right) - getTopicPriorityWeight(left);
+
+  if (canonicalDelta !== 0) {
+    return canonicalDelta;
+  }
+
+  const localDelta = (localTagCounts[right] || 0) - (localTagCounts[left] || 0);
+
+  if (localDelta !== 0) {
+    return localDelta;
+  }
+
+  const globalDelta = (globalTagCounts[right] || 0) - (globalTagCounts[left] || 0);
+
+  if (globalDelta !== 0) {
+    return globalDelta;
+  }
+
+  return sortTagValues(left, right);
+}
+
+function getTopicPriorityWeight(tag) {
+  return topicPriorityWeightMap[tag] || 0;
+}
+
+function createFilterTagGroupMarkup(title, description, tags, { secondary = false } = {}) {
+  return `
+    <section class="filter-tag-group${secondary ? " filter-tag-group-secondary" : ""}">
+      <div class="filter-tag-group-header">
+        <span class="filter-tag-group-title">${escapeHtml(title)}</span>
+        <span class="filter-tag-group-copy">${escapeHtml(description)}</span>
+      </div>
+      <div class="filter-tag-cluster">
+        ${tags.map((tag) => createFilterTagButtonMarkup(tag, { secondary })).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function createFilterTagButtonMarkup(tag, { secondary = false } = {}) {
+  const isPressed = libraryState.filters.tags.has(tag);
+
+  return `
+    <button
+      type="button"
+      class="filter-tag${secondary ? " filter-tag-secondary" : " filter-tag-priority"}"
+      data-tag="${escapeHtml(tag)}"
+      aria-pressed="${isPressed ? "true" : "false"}"
+    >
+      <span class="filter-tag-label">${escapeHtml(getTagDisplayLabel(tag))}</span>
+    </button>
+  `;
+}
+
+function updateFilterCopy(stageAndPartDocuments, tagValues, tagGroups) {
+  if (filterHelper) {
+    filterHelper.textContent =
+      "Stage and Part set the pool first. Topics & Skills now shows the strongest entry points for that subset.";
+  }
+
+  if (filterTopicSummary) {
+    const selectedCount = libraryState.filters.tags.size;
+    const stageAndPartDocumentLabel = `${stageAndPartDocuments.length} document${stageAndPartDocuments.length === 1 ? "" : "s"}`;
+    const priorityCount =
+      tagGroups.groups.find(({ title }) => title === "Best first cuts")?.tags.length || 0;
+
+    filterTopicSummary.textContent = selectedCount > 0
+      ? `${selectedCount} topic${selectedCount === 1 ? "" : "s"} selected. Results are narrowed inside ${stageAndPartDocumentLabel}.`
+      : tagGroups.hiddenCount > 0
+        ? `Showing ${priorityCount} priority topic${priorityCount === 1 ? "" : "s"} first from ${stageAndPartDocumentLabel}. Expand to reveal ${tagGroups.hiddenCount} more.`
+        : `${tagValues.length} topic${tagValues.length === 1 ? "" : "s"} available in this Stage + Part view.`;
+  }
+
+  if (filterTopicCount) {
+    const selectedCount = libraryState.filters.tags.size;
+
+    filterTopicCount.hidden = selectedCount === 0;
+    filterTopicCount.textContent = selectedCount > 0
+      ? `${selectedCount} selected`
+      : "";
+  }
+}
+
+function updatePrimaryFilterState(selectElement) {
+  const filterField = selectElement?.closest(".filter-field");
+
+  if (selectElement) {
+    selectElement.dataset.active = selectElement.value ? "true" : "false";
+  }
+
+  if (!filterField) {
+    return;
+  }
+
+  filterField.dataset.active = selectElement.value ? "true" : "false";
+}
+
+function updateTopicFilterState() {
+  const filterField = tagFilterList?.closest(".filter-field");
+
+  if (!filterField) {
+    return;
+  }
+
+  filterField.dataset.active = libraryState.filters.tags.size > 0 ? "true" : "false";
+}
+
+function updateFilterTagToggle(hiddenCount) {
   if (!toggleFilterTagsButton) {
     return;
   }
 
-  const canToggle =
-    libraryState.showAllFilterTags || visibleTagValues.length < tagValues.length;
+  const canToggle = libraryState.showAllFilterTags || hiddenCount > 0;
+
+  if (!canToggle) {
+    libraryState.showAllFilterTags = false;
+  }
 
   toggleFilterTagsButton.hidden = !canToggle;
   toggleFilterTagsButton.textContent = libraryState.showAllFilterTags
     ? "Show fewer topics"
-    : "Show more topics";
+    : `Show ${hiddenCount} more topic${hiddenCount === 1 ? "" : "s"}`;
   toggleFilterTagsButton.setAttribute(
     "aria-expanded",
     libraryState.showAllFilterTags ? "true" : "false",
@@ -441,6 +718,7 @@ function resetFilters() {
 function handleSelectFilters() {
   libraryState.filters.stage = stageFilter ? stageFilter.value : "";
   libraryState.filters.part = partFilter ? partFilter.value : "";
+  libraryState.showAllFilterTags = false;
   renderLibrary();
   writeFiltersToUrl();
 }

@@ -51,23 +51,26 @@
           <article class="feature-card">
             <div class="feature-card-copy">
               <div class="feature-kicker-row">
-                <span class="status-badge status-badge-interactive">Interactive</span>
-                <span class="hero-pill">Exam-oriented practice</span>
+                <span class="status-badge status-badge-interactive feature-stamp">Interactive</span>
+                <span class="feature-route-marker">Exam-oriented practice</span>
               </div>
 
-              <h3>IR Past-Paper Trainer</h3>
-              <p class="feature-description">
-                Train faster IR decisions with peak-shape comparison, elimination logic, and
-                past-paper style structure selection built for CAIE 9701.
-              </p>
+              <div class="feature-title-block">
+                <p class="feature-overline">Decisive peaks first</p>
+                <h3>IR Past-Paper Trainer</h3>
+                <p class="feature-description">
+                  Train faster IR decisions with peak-shape comparison, elimination logic,
+                  and past-paper style structure selection built for CAIE 9701.
+                </p>
+              </div>
 
-              <div class="structure-chip-list">
+              <div class="structure-chip-list feature-structure-list">
                 <span class="structure-chip">Chemistry</span>
                 <span class="structure-chip">AS+A2</span>
                 <span class="structure-chip">Analysis</span>
               </div>
 
-              <div class="tag-list">
+              <div class="tag-list feature-tag-list">
                 <span class="tag">IR spectroscopy</span>
                 <span class="tag">Functional groups</span>
                 <span class="tag">Past paper</span>
@@ -75,13 +78,13 @@
             </div>
 
             <div class="feature-card-side feature-meta">
-              <article class="feature-note">
+              <article class="feature-note feature-note-strong">
                 <span>Core skill</span>
                 <strong>Read decisive peaks quickly and rule out near-miss structures.</strong>
               </article>
-              <article class="feature-note">
-                <span>Route model</span>
-                <strong>Standalone interactive route with the same outer site language.</strong>
+              <article class="feature-note feature-note-quiet">
+                <span>Route</span>
+                <strong>Standalone practice block that still belongs to the main student site.</strong>
               </article>
               <a class="doc-link feature-link" href="./interactive/ir-past-paper-trainer/">
                 Open interactive
@@ -100,7 +103,7 @@
           </div>
 
           <div id="library-filters" class="filter-bar" hidden>
-            <label class="filter-field" for="filter-stage">
+            <label class="filter-field filter-field-primary" for="filter-stage">
               <span class="filter-label">Stage</span>
               <select
                 id="filter-stage"
@@ -111,7 +114,7 @@
               </select>
             </label>
 
-            <label class="filter-field" for="filter-part">
+            <label class="filter-field filter-field-primary" for="filter-part">
               <span class="filter-label">Part</span>
               <select
                 id="filter-part"
@@ -122,21 +125,25 @@
               </select>
             </label>
 
-            <div class="filter-field filter-field-wide">
+            <div class="filter-field filter-field-wide filter-field-topics">
               <div class="filter-toolbar">
-                <span class="filter-label">Topics &amp; Skills</span>
+                <div class="filter-heading-block">
+                  <span class="filter-label">Topics &amp; Skills</span>
+                  <span id="filter-topic-count" class="filter-count-chip" hidden></span>
+                </div>
                 <button
                   id="reset-filters"
-                  class="secondary-link filter-reset"
+                  class="filter-reset"
                   type="button"
                 >
                   Reset filters
                 </button>
               </div>
-              <p class="filter-helper">
+              <p id="filter-helper" class="filter-helper">
                 Use Stage and Part for structure. Topics &amp; Skills narrows the concept
                 focus.
               </p>
+              <p id="filter-topic-summary" class="filter-topic-summary"></p>
               <div
                 id="filter-tags"
                 class="filter-tag-list"
@@ -145,7 +152,7 @@
               ></div>
               <button
                 id="toggle-filter-tags"
-                class="secondary-link filter-toggle"
+                class="filter-toggle"
                 type="button"
                 hidden
                 aria-expanded="false"
