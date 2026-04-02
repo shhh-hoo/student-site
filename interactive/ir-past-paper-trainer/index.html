@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IR Past-Paper Trainer v3 | CAIE 9701</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .chart-wrap { position: relative; width: 100%; height: 100%; }
+    .card-glow { box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14); }
+    .btn-tab[data-active="true"] { background: #0f172a; color: white; }
+    .btn-subtab[data-active="true"] { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+    .peak-card.active, .case-card.active { outline: 2px solid #3b82f6; }
+    .choice-btn[data-state="selected"] { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+    .choice-btn[data-state="correct"] { border-color: #059669; background: #ecfdf5; color: #047857; }
+    .choice-btn[data-state="wrong"] { border-color: #dc2626; background: #fef2f2; color: #b91c1c; }
+    .mono { font-variant-ligatures: none; }
+
+    @media (max-width: 768px) {
+      body { overflow-x: hidden; }
+      .card-glow { box-shadow: 0 8px 20px rgba(15, 23, 42, 0.10); }
+      .chart-wrap { min-height: 280px; }
+      #choices { gap: 0.75rem; }
+      #submit-answer, #next-question { flex: 1 1 0%; padding-top: 0.85rem; padding-bottom: 0.85rem; }
+      #feedback-box { scroll-margin-top: 1rem; }
+    }
+    @media (max-width: 520px) {
+      .chart-wrap { min-height: 240px; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-6 md:py-10">
+    <header class="mb-8">
+      <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 card-glow">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div>
+            <p class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-3">CAIE 9701 · Analysis · IR Spectroscopy</p>
+            <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">IR Past-Paper Trainer</h1>
+            <p class="mt-4 text-slate-600 max-w-3xl leading-relaxed">
+              Compare memorable peak shapes, practise elimination, and turn spectral evidence into compact structured answers.
+            </p>
+          
+          <div class="mt-4 text-xs text-slate-500 font-medium">Phone-friendly layout: stacked panels, shorter chart area, and large tap targets.</div>
+          <div class="grid grid-cols-2 gap-3 text-sm shrink-0">
+            <div class="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
+              <div class="text-slate-500 uppercase text-[10px] tracking-[0.2em] font-bold">Core skill</div>
+              <div class="font-bold text-slate-800 mt-1">Functional-group detection</div>
+            </div>
+            <div class="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
+              <div class="text-slate-500 uppercase text-[10px] tracking-[0.2em] font-bold">Question style</div>
+              <div class="font-bold text-slate-800 mt-1">Past-paper logic</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid grid-cols-1 xl:grid-cols-[330px_minmax(0,1fr)] gap-6">
+      <aside class="bg-white rounded-3xl border border-slate-200 p-5 md:p-6 h-fit card-glow">
+        <div class="flex rounded-2xl bg-slate-100 p-1 mb-6">
+          <button id="tab-learn" class="btn-tab flex-1 rounded-xl px-4 py-3 font-bold transition-colors" data-active="true">Learn mode</button>
+          <button id="tab-exam" class="btn-tab flex-1 rounded-xl px-4 py-3 font-bold transition-colors" data-active="false">Exam mode</button>
+        </div>
+
+        <section id="learn-panel" class="space-y-5">
+          <div>
+            <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Quick method</div>
+            <ol class="space-y-3 text-sm leading-relaxed text-slate-700">
+              <li><strong>1.</strong> Check first for a sharp <span class="font-mono">C=O</span> near <span class="font-mono">1700 cm⁻¹</span>.</li>
+              <li><strong>2.</strong> Then compare any broad signal above <span class="font-mono">3000 cm⁻¹</span>: alcohol O-H, acid O-H, or N-H.</li>
+              <li><strong>3.</strong> Use absence as evidence. No broad O-H matters. No carbonyl matters.</li>
+              <li><strong>4.</strong> Use fingerprint cautiously. For 9701, it is usually support, not the main starting point.</li>
+            </ol>
+          </div>
+
+          <div class="flex rounded-2xl bg-slate-100 p-1">
+            <button id="subtab-peaks" class="btn-subtab flex-1 rounded-xl px-3 py-2 font-bold text-sm border border-transparent transition-colors" data-active="true">Peak compare</button>
+            <button id="subtab-cases" class="btn-subtab flex-1 rounded-xl px-3 py-2 font-bold text-sm border border-transparent transition-colors" data-active="false">Elimination panel</button>
+          </div>
+
+          <section id="peak-compare-panel" class="space-y-4">
+            <div>
+              <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Compare memorable shapes</div>
+              <div id="peak-buttons" class="grid grid-cols-1 gap-2"></div>
+            </div>
+            <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+              <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Why this matters in papers</div>
+              <p id="peak-explanation" class="text-sm text-slate-700 leading-relaxed"></p>
+            </div>
+          </section>
+
+          <section id="elimination-panel" class="space-y-4 hidden">
+            <div>
+              <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Compare full spectra</div>
+              <div id="case-buttons" class="grid grid-cols-1 gap-2"></div>
+            </div>
+            <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+              <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Decisive evidence</div>
+              <div id="case-decisive" class="space-y-2 text-sm text-slate-700 leading-relaxed"></div>
+            </div>
+            <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+              <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">How to eliminate others</div>
+              <div id="case-elimination" class="space-y-2 text-sm text-slate-700 leading-relaxed"></div>
+            </div>
+            <div class="rounded-2xl bg-blue-50 border border-blue-200 p-4">
+              <div class="text-xs uppercase tracking-[0.25em] text-blue-700 font-bold mb-2">Useful structured wording</div>
+              <div id="case-wording" class="space-y-2 text-sm text-blue-900 leading-relaxed"></div>
+            </div>
+          </section>
+        </section>
+
+        <section id="exam-panel" class="space-y-5 hidden">
+          <div>
+            <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Exam task</div>
+            <h2 id="question-title" class="text-xl font-black text-slate-900"></h2>
+            <p id="question-prompt" class="mt-2 text-sm text-slate-700 leading-relaxed"></p>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4 space-y-3">
+            <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold">What to notice first</div>
+            <ul id="hint-list" class="list-disc pl-5 text-sm text-slate-700 space-y-1"></ul>
+          </div>
+
+          <div class="flex flex-col gap-2" id="choices"></div>
+
+          <div class="flex flex-col sm:flex-row gap-3 pt-1">
+            <button id="submit-answer" class="px-5 py-3 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors">Check answer</button>
+            <button id="next-question" class="px-5 py-3 rounded-2xl bg-slate-200 text-slate-800 font-bold hover:bg-slate-300 transition-colors">Next item</button>
+          </div>
+
+          <div id="feedback-box" class="hidden rounded-2xl border border-slate-200 bg-white p-4">
+            <div class="flex items-center justify-between gap-4 mb-3">
+              <div>
+                <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold">Examiner feedback</div>
+                <div id="mark-line" class="text-xl font-black text-slate-900 mt-1"></div>
+              </div>
+              <div id="result-pill" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em]"></div>
+            </div>
+            <div id="feedback-points" class="space-y-2 text-sm text-slate-700 leading-relaxed mb-4"></div>
+            <div class="rounded-2xl bg-blue-50 border border-blue-200 p-4">
+              <div class="text-xs uppercase tracking-[0.25em] text-blue-700 font-bold mb-2">Structured answer skeleton</div>
+              <div id="structured-points" class="space-y-2 text-sm text-blue-950 leading-relaxed"></div>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="space-y-6">
+        <div class="bg-white rounded-3xl border border-slate-200 p-4 md:p-6 card-glow">
+          <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-4">
+            <div>
+              <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Interactive spectrum workspace</div>
+              <h2 id="workspace-title" class="text-2xl md:text-3xl font-black text-slate-900">Peak-shape comparison</h2>
+              <p id="workspace-subtitle" class="mt-2 text-slate-600 max-w-3xl"></p>
+            </div>
+            <div class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3">
+              <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-1">9701 habit</div>
+              <div id="workspace-note" class="text-sm font-medium text-slate-800"></div>
+            </div>
+          </div>
+          <div class="bg-slate-50 rounded-2xl border border-slate-200 p-3 md:p-5">
+            <div class="chart-wrap h-[340px] md:h-[420px]">
+              <canvas id="mainChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white rounded-3xl border border-slate-200 p-5 card-glow">
+            <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Exam trap</div>
+            <h3 class="font-black text-slate-900 mb-2">Alcohol vs acid O-H</h3>
+            <p class="text-sm text-slate-700 leading-relaxed">Both are broad, but the acid O-H is wider, rougher, and stretches down into the <span class="font-mono">2500–3000 cm⁻¹</span> region.</p>
+          </div>
+          <div class="bg-white rounded-3xl border border-slate-200 p-5 card-glow">
+            <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Exam trap</div>
+            <h3 class="font-black text-slate-900 mb-2">Do not overuse fingerprint</h3>
+            <p class="text-sm text-slate-700 leading-relaxed">For CAIE-style questions, use strong diagnostic peaks first. Fingerprint evidence is usually support, not the main starting point.</p>
+          </div>
+          <div class="bg-white rounded-3xl border border-slate-200 p-5 card-glow">
+            <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">Exam trap</div>
+            <h3 class="font-black text-slate-900 mb-2">Absence is evidence</h3>
+            <p class="text-sm text-slate-700 leading-relaxed">If a carbonyl should be there and the sharp <span class="font-mono">~1700 cm⁻¹</span> peak is missing, rule that class out decisively.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const peakComparisons = [
+      {
+        id: "co",
+        name: "C=O carbonyl",
+        color: "#ef4444",
+        xMin: 1500,
+        xMax: 2000,
+        explanation: "This is the classic sharp, strong carbonyl absorption. In 9701 questions, this is often the fastest way to decide that an aldehyde, ketone, carboxylic acid, or ester is present.",
+        note: "Use this as an anchor peak. If it is present, your next job is to decide which carbonyl family fits best.",
+        spectrum: (x) => 96 - gaussian(x, 1715, 300, 80)
+      },
+      {
+        id: "oh_alcohol",
+        name: "O-H alcohol",
+        color: "#2563eb",
+        xMin: 2800,
+        xMax: 3800,
+        explanation: "Alcohol O-H appears as a broad, smooth absorption. Students often remember it as a rounded tongue or bowl. It is broad, but not as aggressive as the acid O-H.",
+        note: "Broad but relatively smooth. Usually no carbonyl peak accompanies it.",
+        spectrum: (x) => 96 - gaussian(x, 3350, 28000, 65)
+      },
+      {
+        id: "oh_acid",
+        name: "O-H carboxylic acid",
+        color: "#059669",
+        xMin: 2000,
+        xMax: 3600,
+        explanation: "Carboxylic-acid O-H is broader and uglier than alcohol O-H. It often seems to swallow the region around the normal C-H peaks. In exam logic, it should usually be paired with a carbonyl peak as well.",
+        note: "Very broad and often jagged. If you call carboxylic acid, you should also expect C=O.",
+        spectrum: (x) => 96 - gaussian(x, 3000, 76000, 70) - gaussian(x, 1710, 280, 55)
+      },
+      {
+        id: "nh",
+        name: "N-H amine / amide",
+        color: "#7c3aed",
+        xMin: 3000,
+        xMax: 3800,
+        explanation: "N-H is narrower than O-H and usually less overwhelming. It can look like one or two sharper peaks rather than a single huge broad bowl.",
+        note: "Sharper than O-H. Do not automatically call every signal above 3000 an alcohol.",
+        spectrum: (x) => 96 - gaussian(x, 3400, 7000, 34) - gaussian(x, 3305, 6500, 28)
+      },
+      {
+        id: "ch",
+        name: "C-H alkane region",
+        color: "#d97706",
+        xMin: 2600,
+        xMax: 3300,
+        explanation: "C-H absorptions are common and comparatively unspectacular. They help, but they are not the star witness. Many wrong answers happen when students overinterpret these ordinary peaks.",
+        note: "Treat this as supporting evidence, not the main identification feature.",
+        spectrum: (x) => 96 - gaussian(x, 2960, 700, 38) - gaussian(x, 2870, 850, 45)
+      },
+      {
+        id: "aldch",
+        name: "Aldehyde C-H",
+        color: "#0f766e",
+        xMin: 2500,
+        xMax: 3000,
+        explanation: "Aldehydes often show small extra absorptions around 2720 and 2820 cm⁻¹. They are easy to miss, but very useful when distinguishing aldehydes from ketones.",
+        note: "Small twin signals can matter when carbonyl-containing candidates look very similar.",
+        spectrum: (x) => 96 - gaussian(x, 2820, 320, 18) - gaussian(x, 2720, 320, 15) - gaussian(x, 1725, 260, 70)
+      }
+    ];
+
+    const eliminationCases = [
+      {
+        id: "ethanol",
+        name: "Ethanol",
+        profile: "ethanol_case",
+        note: "Broad alcohol O-H with no carbonyl.",
+        decisive: [
+          "Broad O-H around 3300 cm⁻¹.",
+          "No sharp carbonyl peak near 1700 cm⁻¹."
+        ],
+        eliminate: [
+          "Not an ester: no carbonyl peak.",
+          "Not a carboxylic acid: no acid-type broad O-H plus carbonyl pair."
+        ],
+        wording: [
+          "The broad absorption around 3300 cm⁻¹ indicates an alcohol O-H bond.",
+          "There is no strong absorption near 1700 cm⁻¹, so a carbonyl-containing compound is unlikely."
+        ]
+      },
+      {
+        id: "ethanoic_acid",
+        name: "Ethanoic acid",
+        profile: "acid_case",
+        note: "Acid O-H plus carbonyl together.",
+        decisive: [
+          "Very broad O-H absorption extending into 2500–3000 cm⁻¹.",
+          "Strong sharp C=O absorption near 1710 cm⁻¹."
+        ],
+        eliminate: [
+          "Not an alcohol: the broad absorption is too extensive and a carbonyl is present.",
+          "Not an ester: an ester would not have this acid-type O-H."
+        ],
+        wording: [
+          "The spectrum contains both a strong carbonyl absorption and the very broad O-H absorption characteristic of a carboxylic acid.",
+          "Therefore the compound is best identified as a carboxylic acid."
+        ]
+      },
+      {
+        id: "ethyl_ethanoate",
+        name: "Ethyl ethanoate",
+        profile: "ester_case",
+        note: "Carbonyl present, broad O-H absent.",
+        decisive: [
+          "Strong carbonyl absorption near 1735 cm⁻¹.",
+          "No broad O-H absorption above 3000 cm⁻¹."
+        ],
+        eliminate: [
+          "Not a carboxylic acid: broad acid O-H absent.",
+          "Not an alcohol: carbonyl peak present."
+        ],
+        wording: [
+          "The strong absorption near 1735 cm⁻¹ shows that a carbonyl group is present.",
+          "The absence of a broad O-H absorption rules out alcohols and carboxylic acids, making an ester the best fit."
+        ]
+      },
+      {
+        id: "propanal",
+        name: "Propanal",
+        profile: "aldehyde_case",
+        note: "Carbonyl plus small aldehydic C-H features.",
+        decisive: [
+          "Strong carbonyl absorption near 1725 cm⁻¹.",
+          "Small extra absorptions around 2720 and 2820 cm⁻¹ consistent with aldehydic C-H."
+        ],
+        eliminate: [
+          "Not a ketone: the aldehydic C-H signals support an aldehyde.",
+          "Not an alcohol or acid: there is no broad O-H absorption."
+        ],
+        wording: [
+          "The strong absorption near 1725 cm⁻¹ shows that a carbonyl group is present.",
+          "The additional weak absorptions around 2720 and 2820 cm⁻¹ are consistent with an aldehydic C-H bond, so the compound is an aldehyde."
+        ]
+      },
+      {
+        id: "propanone",
+        name: "Propanone",
+        profile: "ketone_case",
+        note: "Carbonyl present, aldehydic C-H absent.",
+        decisive: [
+          "Strong carbonyl absorption near 1715 cm⁻¹.",
+          "No broad O-H and no aldehydic C-H pair around 2720/2820 cm⁻¹."
+        ],
+        eliminate: [
+          "Not an aldehyde: the aldehydic C-H signals are absent.",
+          "Not an ester or acid: the profile does not match their combined features."
+        ],
+        wording: [
+          "The strong carbonyl absorption indicates a carbonyl-containing compound.",
+          "The absence of aldehydic C-H absorptions suggests that the compound is a ketone rather than an aldehyde."
+        ]
+      },
+      {
+        id: "propylamine",
+        name: "Propylamine",
+        profile: "amine_case",
+        note: "Sharper N-H and no carbonyl.",
+        decisive: [
+          "Medium absorption in the 3300–3500 cm⁻¹ region.",
+          "Signal is sharper than a typical alcohol O-H.",
+          "No carbonyl peak."
+        ],
+        eliminate: [
+          "Not an alcohol: O-H would usually be broader.",
+          "Not an ester or acid: carbonyl absent."
+        ],
+        wording: [
+          "The absorption in the 3300–3500 cm⁻¹ region is consistent with N-H rather than a broad O-H signal.",
+          "There is no carbonyl absorption, so the compound is most likely an amine."
+        ]
+      }
+    ];
+
+    const examQuestions = [{'titleLine': 'Identify the most likely functional group class.', 'prompt': 'An unknown compound shows a very broad absorption from about 2500 to 3300 cm⁻¹ and a strong sharp absorption near 1710 cm⁻¹. Which class of compound is most likely?', 'note': 'Look for the pair: very broad acid O-H plus sharp carbonyl.', 'hints': ['Is there a carbonyl peak?', 'Is the broad peak more like alcohol O-H or acid O-H?', 'Would both peaks be expected together?'], 'correct': 'Carboxylic acid', 'marks': '2 / 2', 'choices': ['Alcohol', 'Aldehyde', 'Carboxylic acid', 'Ester'], 'profile': 'acid_case', 'structuredPoints': ['A strong absorption near 1710 cm⁻¹ shows that a carbonyl group is present.', 'The very broad absorption extending through the 2500–3300 cm⁻¹ region is characteristic of carboxylic-acid O-H.', 'Therefore the compound is best identified as a carboxylic acid.'], 'feedback': {'correct': ['Credit for identifying the sharp carbonyl absorption near 1710 cm⁻¹.', 'Credit for recognising that the extremely broad O-H extending into the 2500–3000 cm⁻¹ region is characteristic of a carboxylic acid, not a normal alcohol.'], 'wrong': {'Alcohol': ['No credit. An alcohol O-H can be broad, but it does not usually extend with this rough carboxylic-acid shape into the lower wavenumber region.', 'The strong carbonyl absorption is inconsistent with a simple alcohol.'], 'Aldehyde': ['Partial idea only for noticing the carbonyl, but no credit overall.', 'An aldehyde would not explain the very broad acid-type O-H absorption.'], 'Ester': ['Partial idea only for noticing the carbonyl.', 'An ester lacks the O-H absorption seen here.']}}}, {'titleLine': 'Use presence and absence together.', 'prompt': 'A spectrum shows a strong sharp absorption near 1735 cm⁻¹, ordinary C-H absorptions around 2900 cm⁻¹, and no broad O-H absorption. Which class is most likely?', 'note': 'Carbonyl present. Broad O-H absent.', 'hints': ['You do have a carbonyl.', 'You do not have alcohol or acid O-H.', 'Which oxygen-containing class fits that pattern?'], 'correct': 'Ester', 'marks': '2 / 2', 'choices': ['Alcohol', 'Carboxylic acid', 'Ester', 'Amine'], 'profile': 'ester_case', 'structuredPoints': ['The strong absorption near 1735 cm⁻¹ shows that a carbonyl group is present.', 'The absence of broad O-H rules out alcohols and carboxylic acids.', 'An ester is the best match.'], 'feedback': {'correct': ['Credit for recognising the carbonyl absorption.', 'Credit for using the absence of broad O-H to rule out alcohol and carboxylic acid, leaving ester as the best fit.'], 'wrong': {'Alcohol': ['No credit. The strong carbonyl absorption is inconsistent with a simple alcohol.', 'There is also no broad alcohol O-H absorption.'], 'Carboxylic acid': ['No credit. A carboxylic acid should show both a carbonyl peak and the very broad acid O-H absorption.', 'That broad O-H feature is missing here.'], 'Amine': ['No credit. Amines do not show this carbonyl absorption.', 'Any N-H absorption would also be sharper and appear in a different pattern.']}}}, {'titleLine': 'Combine formula and IR evidence.', 'prompt': 'A compound with molecular formula C₂H₆O shows a broad absorption around 3300 cm⁻¹ and no absorption near 1700 cm⁻¹. Which structure is most likely?', 'note': 'Use IR to distinguish alcohol from ether.', 'hints': ['Two possible isomers are alcohol and ether.', 'Only one of them has O-H.', 'There is no carbonyl peak.'], 'correct': 'Ethanol', 'marks': '2 / 2', 'choices': ['Ethanol', 'Dimethyl ether', 'Ethanal', 'Ethanoic acid'], 'profile': 'ethanol_case', 'structuredPoints': ['The broad absorption around 3300 cm⁻¹ shows that an O-H bond is present.', 'There is no carbonyl absorption near 1700 cm⁻¹.', 'Therefore the formula C₂H₆O is most consistent with ethanol rather than dimethyl ether.'], 'feedback': {'correct': ['Credit for identifying the broad alcohol O-H absorption.', 'Credit for combining formula evidence with the absence of carbonyl to choose ethanol rather than dimethyl ether.'], 'wrong': {'Dimethyl ether': ['No credit. An ether does not contain O-H and would not show the broad absorption around 3300 cm⁻¹.'], 'Ethanal': ['No credit. Ethanal would require a carbonyl peak near 1700 cm⁻¹, which is absent.'], 'Ethanoic acid': ['No credit. Ethanoic acid would require a carbonyl peak and a broader acid-type O-H pattern.']}}}, {'titleLine': 'Distinguish O-H from N-H.', 'prompt': 'A spectrum shows a medium absorption in the 3300–3500 cm⁻¹ region but it is sharper than a normal alcohol O-H. There is no carbonyl absorption. Which class is the best fit?', 'note': 'Do not call every high-wavenumber peak an alcohol.', 'hints': ['How broad is the absorption?', 'Is there a carbonyl?', 'Which heteroatom bond gives a sharper peak here?'], 'correct': 'Amine', 'marks': '2 / 2', 'choices': ['Alcohol', 'Amine', 'Ester', 'Carboxylic acid'], 'profile': 'amine_case', 'structuredPoints': ['The absorption in the 3300–3500 cm⁻¹ region is sharper than the broad O-H absorption of an alcohol.', 'There is no carbonyl absorption.', 'The compound is most likely an amine.'], 'feedback': {'correct': ['Credit for recognising that the absorption is sharper than the usual O-H profile.', 'Credit for using the absence of carbonyl to rule out carbonyl-containing functional groups.'], 'wrong': {'Alcohol': ['No credit. Alcohol O-H is usually broader and smoother than the pattern described.'], 'Ester': ['No credit. An ester would show a carbonyl absorption near 1700–1750 cm⁻¹.'], 'Carboxylic acid': ['No credit. A carboxylic acid would require both a carbonyl absorption and a much broader acid O-H feature.']}}}, {'titleLine': 'Choose the best carbonyl structure.', 'prompt': 'A compound with molecular formula C₃H₆O shows a strong absorption near 1725 cm⁻¹ and two weak absorptions around 2720 and 2820 cm⁻¹. Which structure is most likely?', 'note': 'Small aldehydic C-H peaks matter here.', 'hints': ['You definitely have a carbonyl.', 'Do you also have aldehydic C-H?', 'Which candidate matches both?'], 'correct': 'Propanal', 'marks': '2 / 2', 'choices': ['Propanal', 'Propanone', 'Propan-1-ol', 'Propanoic acid'], 'profile': 'aldehyde_case', 'structuredPoints': ['The strong absorption near 1725 cm⁻¹ shows that a carbonyl group is present.', 'The weak absorptions around 2720 and 2820 cm⁻¹ are consistent with aldehydic C-H.', 'Therefore the structure is propanal rather than propanone.'], 'feedback': {'correct': ['Credit for identifying the carbonyl group.', 'Credit for using the weak aldehydic C-H absorptions to distinguish aldehyde from ketone.'], 'wrong': {'Propanone': ['No credit. A ketone would show the carbonyl absorption but not the aldehydic C-H pair near 2720 and 2820 cm⁻¹.'], 'Propan-1-ol': ['No credit. An alcohol would not show this carbonyl absorption.'], 'Propanoic acid': ['No credit. A carboxylic acid would also require a broad acid O-H absorption.']}}}, {'titleLine': 'Rule out the aldehyde.', 'prompt': 'A compound with molecular formula C₃H₆O shows a strong carbonyl absorption near 1715 cm⁻¹, but there are no weak absorptions around 2720 and 2820 cm⁻¹. Which structure is most likely?', 'note': 'Carbonyl present, aldehydic C-H absent.', 'hints': ['You have a carbonyl.', 'Do you have the aldehydic C-H signals?', 'Which carbonyl family is left?'], 'correct': 'Propanone', 'marks': '2 / 2', 'choices': ['Propanal', 'Propanone', 'Propan-1-ol', 'Propylamine'], 'profile': 'ketone_case', 'structuredPoints': ['The strong absorption near 1715 cm⁻¹ shows that a carbonyl group is present.', 'The absence of aldehydic C-H absorptions argues against an aldehyde.', 'The structure is most consistent with propanone.'], 'feedback': {'correct': ['Credit for identifying the carbonyl group.', 'Credit for using the absence of aldehydic C-H evidence to support ketone rather than aldehyde.'], 'wrong': {'Propanal': ['No credit. Propanal should show aldehydic C-H absorptions around 2720 and 2820 cm⁻¹.'], 'Propan-1-ol': ['No credit. An alcohol would not show this carbonyl peak.'], 'Propylamine': ['No credit. An amine would not show this carbonyl peak.']}}}, {'titleLine': 'Choose the correct structure, not just the class.', 'prompt': 'An unknown compound has molecular formula C₄H₈O₂. The spectrum shows a strong carbonyl absorption near 1735 cm⁻¹ and no broad O-H absorption. Which structure is the best match?', 'note': 'This is structure selection, not only class selection.', 'hints': ['Carbonyl present.', 'Broad O-H absent.', 'Which candidate is an ester rather than an acid?'], 'correct': 'Ethyl ethanoate', 'marks': '2 / 2', 'choices': ['Butanoic acid', 'Ethyl ethanoate', 'Butan-1-ol', 'Butanal'], 'profile': 'ester_case', 'structuredPoints': ['The strong absorption near 1735 cm⁻¹ shows that a carbonyl group is present.', 'No broad O-H absorption is present, so a carboxylic acid is unlikely.', 'Among the given structures, ethyl ethanoate is the best match.'], 'feedback': {'correct': ['Credit for identifying an ester-like carbonyl profile.', 'Credit for using the absence of broad O-H to reject the acid option.'], 'wrong': {'Butanoic acid': ['No credit. A carboxylic acid should show a broad acid O-H absorption in addition to the carbonyl peak.'], 'Butan-1-ol': ['No credit. An alcohol would not show this carbonyl peak.'], 'Butanal': ['No credit. An aldehyde would usually show aldehydic C-H absorptions and the formula does not fit as well with the stated spectrum and oxygen count.']}}}, {'titleLine': 'Eliminate using absence of carbonyl.', 'prompt': 'A compound with molecular formula C₃H₈O shows a broad absorption around 3300 cm⁻¹ and no strong absorption near 1700 cm⁻¹. Which structure is most likely?', 'note': 'Use formula plus one decisive broad peak.', 'hints': ['O-H is present.', 'Carbonyl is absent.', 'Which candidate is an alcohol?'], 'correct': 'Propan-1-ol', 'marks': '2 / 2', 'choices': ['Propan-1-ol', 'Propanone', 'Propanal', 'Propanoic acid'], 'profile': 'ethanol_case', 'structuredPoints': ['The broad absorption around 3300 cm⁻¹ shows that an O-H bond is present.', 'There is no carbonyl absorption near 1700 cm⁻¹.', 'Therefore an alcohol structure such as propan-1-ol is the best fit.'], 'feedback': {'correct': ['Credit for identifying the O-H absorption.', 'Credit for using the absence of carbonyl to reject aldehyde, ketone, and acid options.'], 'wrong': {'Propanone': ['No credit. A ketone would require a carbonyl absorption near 1700 cm⁻¹.'], 'Propanal': ['No credit. An aldehyde would require a carbonyl absorption near 1700 cm⁻¹ and usually aldehydic C-H evidence.'], 'Propanoic acid': ['No credit. A carboxylic acid would require both a carbonyl and a much broader acid-type O-H profile.']}}}, {'titleLine': 'Recognise the acid from structure options.', 'prompt': 'A compound with molecular formula C₂H₄O₂ shows a very broad absorption from 2500 to 3300 cm⁻¹ together with a strong carbonyl peak. Which structure is most likely?', 'note': 'Acid O-H plus carbonyl again, but now choose the structure.', 'hints': ['Very broad acid O-H present.', 'Carbonyl present.', 'Which structure contains both in the right pattern?'], 'correct': 'Ethanoic acid', 'marks': '2 / 2', 'choices': ['Ethanoic acid', 'Methyl methanoate', 'Ethanol', 'Ethanal'], 'profile': 'acid_case', 'structuredPoints': ['The very broad absorption from 2500 to 3300 cm⁻¹ is characteristic of carboxylic-acid O-H.', 'The strong peak near 1700 cm⁻¹ indicates a carbonyl group.', 'Together these features identify ethanoic acid.'], 'feedback': {'correct': ['Credit for matching both decisive features to a carboxylic acid.', 'Credit for selecting the correct structure rather than only the general class.'], 'wrong': {'Methyl methanoate': ['No credit. An ester would show the carbonyl peak but not the broad acid O-H absorption.'], 'Ethanol': ['No credit. Ethanol would not show the carbonyl peak.'], 'Ethanal': ['No credit. Ethanal would not show the broad acid-type O-H absorption.']}}}, {'titleLine': 'Do not overcall alcohol.', 'prompt': 'A spectrum shows a medium absorption around 3400 cm⁻¹, no carbonyl peak, and no extremely broad acid-type O-H region. Which structure is the best fit?', 'note': 'This is a sharper high-wavenumber absorption, not a classic alcohol bowl.', 'hints': ['Think about N-H versus O-H.', 'There is no carbonyl.', 'Which structure contains N-H?'], 'correct': 'Propylamine', 'marks': '2 / 2', 'choices': ['Propylamine', 'Propan-1-ol', 'Propanone', 'Propanoic acid'], 'profile': 'amine_case', 'structuredPoints': ['The absorption near 3400 cm⁻¹ is consistent with N-H.', 'There is no carbonyl absorption.', 'The best-fitting structure is propylamine.'], 'feedback': {'correct': ['Credit for distinguishing the sharper N-H absorption from a broader alcohol O-H.', 'Credit for using absence of carbonyl correctly.'], 'wrong': {'Propan-1-ol': ['No credit. Alcohol O-H is usually broader than the signal shown here.'], 'Propanone': ['No credit. A ketone would show a carbonyl peak.'], 'Propanoic acid': ['No credit. A carboxylic acid would show both carbonyl and a very broad acid O-H signal.']}}}];
+
+    function gaussian(x, center, width, depth) {
+      return depth * Math.exp(-Math.pow(x - center, 2) / width);
+    }
+
+    function noise(x, scale = 0.55) {
+      const value = Math.sin(x * 0.013) * 0.4 + Math.cos(x * 0.029) * 0.3;
+      return value * scale;
+    }
+
+    function clamp(y) {
+      return Math.max(2, Math.min(99, y));
+    }
+
+    function makeData(xMin, xMax, fn) {
+      const start = Math.min(xMin, xMax);
+      const end = Math.max(xMin, xMax);
+      const data = [];
+      for (let x = start; x <= end; x += 2) {
+        const y = clamp(fn(x) + noise(x));
+        data.push({ x, y });
+      }
+      return data;
+    }
+
+    function buildProfileData(profile) {
+      if (profile === "acid_case") return makeData(500, 4000, (x) => 96 - gaussian(x, 1710, 280, 74) - gaussian(x, 2980, 78000, 68) - gaussian(x, 2900, 2400, 22));
+      if (profile === "ester_case") return makeData(500, 4000, (x) => 96 - gaussian(x, 1735, 260, 78) - gaussian(x, 2980, 650, 22) - gaussian(x, 2880, 800, 18));
+      if (profile === "ethanol_case") return makeData(500, 4000, (x) => 96 - gaussian(x, 3340, 30000, 62) - gaussian(x, 2970, 700, 22) - gaussian(x, 2880, 700, 18));
+      if (profile === "amine_case") return makeData(500, 4000, (x) => 96 - gaussian(x, 3400, 7000, 28) - gaussian(x, 3310, 6500, 24) - gaussian(x, 2970, 700, 18));
+      if (profile === "aldehyde_case") return makeData(500, 4000, (x) => 96 - gaussian(x, 1725, 260, 72) - gaussian(x, 2820, 320, 16) - gaussian(x, 2720, 320, 14) - gaussian(x, 2960, 650, 20));
+      if (profile === "ketone_case") return makeData(500, 4000, (x) => 96 - gaussian(x, 1715, 260, 74) - gaussian(x, 2960, 650, 20) - gaussian(x, 2870, 650, 16));
+      return makeData(500, 4000, (x) => 95);
+    }
+
+    Chart.defaults.color = "#64748b";
+    Chart.defaults.font.family = 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+    let mainChart;
+    let currentPeak = peakComparisons[0];
+    let currentCase = eliminationCases[0];
+    let currentQuestionIndex = 0;
+    let selectedChoice = null;
+    let submitted = false;
+
+    const mainCanvas = document.getElementById("mainChart");
+    const peakButtons = document.getElementById("peak-buttons");
+    const caseButtons = document.getElementById("case-buttons");
+    const peakExplanation = document.getElementById("peak-explanation");
+    const caseDecisive = document.getElementById("case-decisive");
+    const caseElimination = document.getElementById("case-elimination");
+    const caseWording = document.getElementById("case-wording");
+    const workspaceTitle = document.getElementById("workspace-title");
+    const workspaceSubtitle = document.getElementById("workspace-subtitle");
+    const workspaceNote = document.getElementById("workspace-note");
+    const tabLearn = document.getElementById("tab-learn");
+    const tabExam = document.getElementById("tab-exam");
+    const subtabPeaks = document.getElementById("subtab-peaks");
+    const subtabCases = document.getElementById("subtab-cases");
+    const learnPanel = document.getElementById("learn-panel");
+    const examPanel = document.getElementById("exam-panel");
+    const peakComparePanel = document.getElementById("peak-compare-panel");
+    const eliminationPanel = document.getElementById("elimination-panel");
+    const questionTitle = document.getElementById("question-title");
+    const questionPrompt = document.getElementById("question-prompt");
+    const hintList = document.getElementById("hint-list");
+    const choices = document.getElementById("choices");
+    const submitAnswer = document.getElementById("submit-answer");
+    const nextQuestion = document.getElementById("next-question");
+    const feedbackBox = document.getElementById("feedback-box");
+    const feedbackPoints = document.getElementById("feedback-points");
+    const structuredPoints = document.getElementById("structured-points");
+    const markLine = document.getElementById("mark-line");
+    const resultPill = document.getElementById("result-pill");
+
+    function makeChart(data, color, xMin, xMax) {
+      if (mainChart) mainChart.destroy();
+      mainChart = new Chart(mainCanvas.getContext("2d"), {
+        type: "scatter",
+        data: { datasets: [{ data, borderColor: color, borderWidth: 3, pointRadius: 0, showLine: true, tension: 0.25 }] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 350 },
+          scales: {
+            x: { type: "linear", reverse: true, min: xMin, max: xMax, title: { display: true, text: "Wavenumber (cm⁻¹)", color: "#475569", font: { weight: "bold" } }, grid: { color: "#e2e8f0" }, ticks: { color: "#64748b" } },
+            y: { min: 0, max: 100, title: { display: true, text: "Transmittance (%)", color: "#475569", font: { weight: "bold" } }, grid: { color: "#e2e8f0" }, ticks: { color: "#64748b" } }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title(items) { return Math.round(items[0].raw.x) + " cm⁻¹"; },
+                label(item) { return "Transmittance: " + item.raw.y.toFixed(1) + "%"; }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderPeakButtons() {
+      peakButtons.innerHTML = "";
+      peakComparisons.forEach((peak) => {
+        const button = document.createElement("button");
+        button.className = "peak-card w-full text-left rounded-2xl border border-slate-200 bg-white px-4 py-3 hover:border-blue-300 transition-colors";
+        button.innerHTML = '<div class="font-bold text-slate-900">' + peak.name + '</div><div class="text-xs uppercase tracking-[0.2em] text-slate-500 mt-1 mono">' + peak.xMin + '–' + peak.xMax + ' cm⁻¹</div>';
+        if (peak.id === currentPeak.id) button.classList.add("active");
+        button.addEventListener("click", () => { currentPeak = peak; renderPeakCompare(); });
+        peakButtons.appendChild(button);
+      });
+    }
+
+    function renderCaseButtons() {
+      caseButtons.innerHTML = "";
+      eliminationCases.forEach((item) => {
+        const button = document.createElement("button");
+        button.className = "case-card w-full text-left rounded-2xl border border-slate-200 bg-white px-4 py-3 hover:border-blue-300 transition-colors";
+        button.innerHTML = '<div class="font-bold text-slate-900">' + item.name + '</div><div class="text-xs text-slate-500 mt-1">' + item.note + '</div>';
+        if (item.id === currentCase.id) button.classList.add("active");
+        button.addEventListener("click", () => { currentCase = item; renderEliminationPanel(); });
+        caseButtons.appendChild(button);
+      });
+    }
+
+    function renderPeakCompare() {
+      subtabPeaks.dataset.active = "true";
+      subtabCases.dataset.active = "false";
+      peakComparePanel.classList.remove("hidden");
+      eliminationPanel.classList.add("hidden");
+      renderPeakButtons();
+      peakExplanation.textContent = currentPeak.explanation;
+      workspaceTitle.textContent = "Peak-shape comparison";
+      workspaceSubtitle.textContent = "Focus on the visual memory cue for " + currentPeak.name + ". This is where a fast 9701 decision often begins.";
+      workspaceNote.textContent = currentPeak.note;
+      makeChart(makeData(currentPeak.xMin, currentPeak.xMax, currentPeak.spectrum), currentPeak.color, currentPeak.xMin, currentPeak.xMax);
+    }
+
+    function renderEliminationPanel() {
+      subtabPeaks.dataset.active = "false";
+      subtabCases.dataset.active = "true";
+      peakComparePanel.classList.add("hidden");
+      eliminationPanel.classList.remove("hidden");
+      renderCaseButtons();
+      workspaceTitle.textContent = "Exam elimination panel";
+      workspaceSubtitle.textContent = "Use this spectrum the way a short structured question expects: identify decisive evidence, then rule out the near misses.";
+      workspaceNote.textContent = currentCase.note;
+      makeChart(buildProfileData(currentCase.profile), "#0f172a", 500, 4000);
+      caseDecisive.innerHTML = currentCase.decisive.map((point) => '<div class="rounded-xl bg-white border border-slate-200 p-3">' + point + '</div>').join("");
+      caseElimination.innerHTML = currentCase.eliminate.map((point) => '<div class="rounded-xl bg-white border border-slate-200 p-3">' + point + '</div>').join("");
+      caseWording.innerHTML = currentCase.wording.map((point) => '<div class="rounded-xl bg-white border border-blue-200 p-3">' + point + '</div>').join("");
+    }
+
+    function renderLearnMode() {
+      tabLearn.dataset.active = "true";
+      tabExam.dataset.active = "false";
+      learnPanel.classList.remove("hidden");
+      examPanel.classList.add("hidden");
+      renderPeakCompare();
+    }
+
+    function renderExamQuestion() {
+      tabLearn.dataset.active = "false";
+      tabExam.dataset.active = "true";
+      learnPanel.classList.add("hidden");
+      examPanel.classList.remove("hidden");
+      const question = examQuestions[currentQuestionIndex];
+      selectedChoice = null;
+      submitted = false;
+      questionTitle.textContent = question.titleLine;
+      questionPrompt.textContent = question.prompt;
+      hintList.innerHTML = question.hints.map((hint) => '<li>' + hint + '</li>').join("");
+      feedbackBox.classList.add("hidden");
+      workspaceTitle.textContent = "Unknown spectrum";
+      workspaceSubtitle.textContent = "Use the spectrum as you would in a structured question: quote the evidence first, then state the conclusion.";
+      workspaceNote.textContent = question.note;
+      makeChart(buildProfileData(question.profile), "#0f172a", 500, 4000);
+      choices.innerHTML = "";
+      question.choices.forEach((choice) => {
+        const button = document.createElement("button");
+        button.className = "choice-btn w-full text-left rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold transition-colors hover:border-blue-300";
+        button.dataset.state = "idle";
+        button.textContent = choice;
+        button.addEventListener("click", () => {
+          if (submitted) return;
+          selectedChoice = choice;
+          updateChoiceStates();
+        });
+        choices.appendChild(button);
+      });
+    }
+
+    function updateChoiceStates() {
+      [...choices.children].forEach((button) => {
+        const label = button.textContent;
+        if (!submitted) {
+          button.dataset.state = label === selectedChoice ? "selected" : "idle";
+          return;
+        }
+        const question = examQuestions[currentQuestionIndex];
+        if (label === question.correct) button.dataset.state = "correct";
+        else if (label === selectedChoice) button.dataset.state = "wrong";
+        else button.dataset.state = "idle";
+      });
+    }
+
+    function submitCurrentAnswer() {
+      const question = examQuestions[currentQuestionIndex];
+      if (!selectedChoice) {
+        feedbackBox.classList.remove("hidden");
+        markLine.textContent = "No mark awarded";
+        resultPill.textContent = "Select one";
+        resultPill.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] bg-amber-100 text-amber-700";
+        feedbackPoints.innerHTML = '<div class="rounded-xl bg-amber-50 border border-amber-200 p-3">Choose the best answer first, then submit.</div>';
+        structuredPoints.innerHTML = '<div class="rounded-xl bg-white border border-blue-200 p-3">After choosing an answer, this section will show a clean structured-response skeleton.</div>';
+        return;
+      }
+      submitted = true;
+      updateChoiceStates();
+      feedbackBox.classList.remove("hidden");
+      const isCorrect = selectedChoice === question.correct;
+      markLine.textContent = isCorrect ? "MARKS: " + question.marks : "MARKS: 0 / 2";
+      resultPill.textContent = isCorrect ? "Correct" : "Needs review";
+      resultPill.className = isCorrect
+        ? "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] bg-emerald-100 text-emerald-700"
+        : "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] bg-red-100 text-red-700";
+      const bulletPoints = isCorrect ? question.feedback.correct : question.feedback.wrong[selectedChoice];
+      feedbackPoints.innerHTML = bulletPoints.map((point) => '<div class="rounded-xl bg-slate-50 border border-slate-200 p-3">' + point + '</div>').join("");
+      structuredPoints.innerHTML = question.structuredPoints.map((point) => '<div class="rounded-xl bg-white border border-blue-200 p-3">' + point + '</div>').join("");
+    }
+
+    tabLearn.addEventListener("click", renderLearnMode);
+    tabExam.addEventListener("click", renderExamQuestion);
+    subtabPeaks.addEventListener("click", renderPeakCompare);
+    subtabCases.addEventListener("click", renderEliminationPanel);
+    submitAnswer.addEventListener("click", submitCurrentAnswer);
+    nextQuestion.addEventListener("click", () => {
+      currentQuestionIndex = (currentQuestionIndex + 1) % examQuestions.length;
+      renderExamQuestion();
+    });
+
+    renderLearnMode();
+  </script>
+</body>
+</html>

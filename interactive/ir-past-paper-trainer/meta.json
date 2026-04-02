@@ -1,0 +1,27 @@
+{
+    "id": "ir-past-paper-trainer",
+    "title": "IR Past-Paper Trainer",
+    "type": "code",
+    "subject": "Chemistry",
+    "topic": "infrared-spectroscopy",
+    "tags": [
+        "analysis",
+        "infrared",
+        "spectroscopy",
+        "past-paper",
+        "functional-groups",
+        "structure-elimination"
+    ],
+    "description": "Interactive IR spectroscopy trainer for CAIE 9701, with peak comparison, elimination practice, and past-paper style structure selection.",
+    "source_kind": "teacher-made",
+    "status": "ready",
+    "stage": "AS+A2",
+    "stage_detail": "AS+A2, analysis-focused",
+    "part": "Analysis",
+    "syllabus_refs": [
+        "22",
+        "37"
+    ],
+    "content_format": "html",
+    "entry_file": "index.html"
+}
