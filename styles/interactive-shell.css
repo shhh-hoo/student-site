@@ -1,0 +1,294 @@
+body.interactive-shell-page {
+  background:
+    radial-gradient(circle at top left, rgba(15, 139, 141, 0.2), transparent 34%),
+    radial-gradient(circle at 86% 12%, rgba(239, 107, 59, 0.18), transparent 24%),
+    linear-gradient(165deg, var(--bg) 0%, var(--bg-accent) 100%);
+}
+
+.interactive-site-shell {
+  width: min(1200px, calc(100% - 2rem));
+}
+
+.interactive-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.4rem, 4vw, 2.2rem);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: calc(var(--radius) + 6px);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(244, 251, 248, 0.82)),
+    rgba(255, 255, 255, 0.74);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.interactive-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -6% -30% auto;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 107, 59, 0.18), transparent 70%);
+  pointer-events: none;
+}
+
+.interactive-return {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--accent-strong);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.interactive-return::before {
+  content: "←";
+  font-size: 1rem;
+}
+
+.interactive-kicker {
+  margin: 1rem 0 0;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.interactive-hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.8fr);
+  gap: 1.2rem;
+  align-items: end;
+  margin-top: 0.8rem;
+}
+
+.interactive-title-block h1 {
+  margin: 0;
+  max-width: 12ch;
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.interactive-summary {
+  margin: 1rem 0 0;
+  max-width: 42rem;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.interactive-meta-group {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.interactive-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.interactive-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.36rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 139, 141, 0.12);
+  background: rgba(15, 139, 141, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.interactive-meta-card {
+  padding: 1rem 1rem 1.05rem;
+  border: 1px solid rgba(15, 139, 141, 0.12);
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(248, 252, 250, 0.88));
+  box-shadow: var(--shadow-soft);
+}
+
+.interactive-meta-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.interactive-meta-card strong {
+  display: block;
+  margin-top: 0.45rem;
+  line-height: 1.45;
+}
+
+.interactive-app-shell {
+  margin-top: 1.45rem;
+}
+
+.interactive-panel {
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(249, 253, 251, 0.86));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.interactive-subtle-panel {
+  border: 1px solid rgba(15, 139, 141, 0.1);
+  border-radius: 22px;
+  background: rgba(251, 254, 252, 0.9);
+  box-shadow: var(--shadow-soft);
+}
+
+.interactive-accent-panel {
+  border: 1px solid rgba(239, 107, 59, 0.14);
+  border-radius: 22px;
+  background: rgba(255, 244, 239, 0.92);
+  box-shadow: var(--shadow-soft);
+}
+
+.interactive-surface-choice {
+  border: 1px solid rgba(15, 139, 141, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow-soft);
+}
+
+.interactive-surface-choice:hover,
+.interactive-surface-choice:focus-visible {
+  border-color: rgba(15, 139, 141, 0.26);
+  box-shadow: 0 14px 24px rgba(15, 139, 141, 0.08);
+  transform: translateY(-1px);
+}
+
+.interactive-help {
+  margin-top: 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(248, 252, 249, 0.9));
+  box-shadow: var(--shadow-soft);
+}
+
+.interactive-help[open] {
+  box-shadow: var(--shadow);
+}
+
+.interactive-help summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 1rem 1.15rem;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+}
+
+.interactive-help summary::-webkit-details-marker {
+  display: none;
+}
+
+.interactive-help summary::after {
+  content: "▾";
+  color: var(--muted);
+  transition: transform 140ms ease, color 140ms ease;
+}
+
+.interactive-help summary:hover::after,
+.interactive-help summary:focus-visible::after {
+  color: var(--accent-strong);
+}
+
+.interactive-help[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.interactive-help-body {
+  padding: 0 1.15rem 1.15rem;
+}
+
+.interactive-help-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 0.95rem;
+}
+
+.interactive-note-card {
+  padding: 1rem;
+  border: 1px solid rgba(15, 139, 141, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-soft);
+}
+
+.interactive-note-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.interactive-note-card h2,
+.interactive-note-card h3 {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+}
+
+.interactive-note-card p,
+.interactive-note-card li {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.interactive-note-card ol,
+.interactive-note-card ul {
+  margin: 0.8rem 0 0;
+  padding-left: 1.15rem;
+}
+
+.interactive-note-stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+@media (max-width: 920px) {
+  .interactive-hero-grid,
+  .interactive-help-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .interactive-site-shell {
+    width: min(100% - 1rem, 1200px);
+  }
+
+  .interactive-hero,
+  .interactive-help summary,
+  .interactive-help-body,
+  .interactive-note-card {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .interactive-help-body {
+    padding-bottom: 1rem;
+  }
+
+  .interactive-title-block h1 {
+    font-size: clamp(2rem, 13vw, 3rem);
+  }
+}

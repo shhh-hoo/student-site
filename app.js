@@ -6,6 +6,7 @@ const partFilter = document.getElementById("filter-part");
 const tagFilterList = document.getElementById("filter-tags");
 const toggleFilterTagsButton = document.getElementById("toggle-filter-tags");
 const resetFiltersButton = document.getElementById("reset-filters");
+
 const libraryState = {
   documents: [],
   filters: {
@@ -15,12 +16,87 @@ const libraryState = {
   },
   showAllFilterTags: false,
 };
+
 const filterQueryKeys = {
   stage: "stage",
   part: "part",
   tags: "tags",
 };
+
 const collapsedFilterTagCount = 10;
+const cardVisibleTagCount = 4;
+const structuralUiTags = new Set([
+  "9701",
+  "equation-bank",
+  "as",
+  "a2",
+  "organic",
+  "inorganic",
+  "physical",
+  "analysis",
+  "equations",
+  "index",
+  "cross-stage",
+  "cross-part",
+]);
+const uiTagAliasMap = {
+  "ir-spectroscopy": "ir-spectroscopy",
+  infrared: "ir-spectroscopy",
+  spectroscopy: "ir-spectroscopy",
+  "qualitative-tests": "qualitative-tests",
+  tests: "qualitative-tests",
+  "polymer-chemistry": "polymer-chemistry",
+  polymerisation: "polymer-chemistry",
+  polymers: "polymer-chemistry",
+  "electronic-effects": "electronic-effects",
+  "inductive-effect": "electronic-effects",
+  delocalisation: "electronic-effects",
+  "conjugate-base-stability": "electronic-effects",
+  "lone-pair-availability": "electronic-effects",
+};
+const tagDisplayLabelMap = {
+  "acyl-chlorides": "Acyl chlorides",
+  alcohols: "Alcohols",
+  alkenes: "Alkenes",
+  amides: "Amides",
+  amines: "Amines",
+  "amino-acids": "Amino acids",
+  arenes: "Arenes",
+  "azo-coupling": "Azo coupling",
+  basicity: "Basicity",
+  buffers: "Buffers",
+  carbonyls: "Carbonyls",
+  "carboxylic-acids": "Carboxylic acids",
+  electrochemistry: "Electrochemistry",
+  "electronic-effects": "Electronic effects",
+  "functional-groups": "Functional groups",
+  "group-2": "Group 2",
+  "group-17": "Group 17",
+  "halogenoalkanes": "Halogenoalkanes",
+  "halogenoarenes": "Halogenoarenes",
+  "hcn-addition": "HCN addition",
+  hydrocarbons: "Hydrocarbons",
+  "ir-spectroscopy": "IR spectroscopy",
+  mechanisms: "Mechanisms",
+  nitriles: "Nitriles",
+  "nitrogen-sulfur": "Nitrogen and sulfur",
+  "past-paper": "Past paper",
+  phenol: "Phenol",
+  "period-3": "Period 3",
+  pka: "pKa",
+  pkb: "pKb",
+  practical: "Practical",
+  "polymer-chemistry": "Polymer chemistry",
+  "qualitative-tests": "Qualitative tests",
+  redox: "Redox",
+  "transition-elements": "Transition elements",
+  acidity: "Acidity",
+};
+const sourceKindLabelMap = {
+  official: "Official",
+  "teacher-made": "Teacher-made",
+  "ai-generated": "AI-generated",
+};
 const textCollator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: "base",
@@ -42,9 +118,11 @@ async function loadLibrary() {
   } catch (error) {
     libraryStatus.textContent = "Could not load library data.";
     libraryGrid.setAttribute("aria-busy", "false");
+
     if (libraryFilters) {
       libraryFilters.hidden = true;
     }
+
     libraryGrid.innerHTML = `
       <article class="empty-state">
         <strong>Library unavailable.</strong>
@@ -67,6 +145,7 @@ function renderLibrary() {
     if (libraryFilters) {
       libraryFilters.hidden = true;
     }
+
     libraryStatus.textContent =
       "No synced document files were found. Run the sync script after adding content.pdf, content.md, or content.html inside a document folder.";
     libraryGrid.innerHTML = `
@@ -91,7 +170,7 @@ function renderLibrary() {
     libraryGrid.innerHTML = `
       <article class="empty-state">
         <strong>No matching documents.</strong>
-        <p>Try adjusting or resetting the stage, part, or tag filters.</p>
+        <p>Try adjusting or resetting the Stage, Part, or Topics &amp; Skills filters.</p>
       </article>
     `;
     return;
@@ -122,7 +201,7 @@ function parseFiltersFromUrl() {
 function writeFiltersToUrl({ replace = false } = {}) {
   const url = new URL(window.location.href);
   const searchParams = url.searchParams;
-  const tags = [...libraryState.filters.tags].sort(sortText);
+  const tags = [...libraryState.filters.tags].sort(sortTagValues);
 
   if (libraryState.filters.stage) {
     searchParams.set(filterQueryKeys.stage, libraryState.filters.stage);
@@ -164,9 +243,36 @@ function normalizeTagParams(values) {
   return [...new Set(
     tagValues
       .flatMap((value) => String(value || "").split(","))
-      .map((tag) => tag.trim())
+      .map(normalizeUiTag)
       .filter(Boolean),
-  )].sort(sortText);
+  )].sort(sortTagValues);
+}
+
+function normalizeUiTag(value) {
+  const normalizedValue = normalizeTagSlug(value);
+
+  if (!normalizedValue) {
+    return "";
+  }
+
+  const canonicalValue = uiTagAliasMap[normalizedValue] || normalizedValue;
+
+  if (structuralUiTags.has(canonicalValue)) {
+    return "";
+  }
+
+  return canonicalValue;
+}
+
+function normalizeTagSlug(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replaceAll("&", "and")
+    .replace(/[^\w+\s-]/g, "")
+    .replace(/[_\s]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 function setFilters(filters) {
@@ -207,6 +313,7 @@ function renderFilterControls(documents) {
   libraryState.filters.tags = new Set(
     [...libraryState.filters.tags].filter((tag) => tagValues.includes(tag)),
   );
+
   const visibleTagValues = getVisibleFilterTags(tagValues);
 
   tagFilterList.innerHTML =
@@ -222,12 +329,12 @@ function renderFilterControls(documents) {
                 data-tag="${escapeHtml(tag)}"
                 aria-pressed="${isPressed ? "true" : "false"}"
               >
-                ${escapeHtml(tag)}
+                ${escapeHtml(getTagDisplayLabel(tag))}
               </button>
             `;
           })
           .join("")
-      : '<span class="tag">No tags available</span>';
+      : '<span class="tag">No topics or skills available</span>';
 
   updateFilterTagToggle(tagValues, visibleTagValues);
   resetFiltersButton.disabled = !hasFiltersApplied();
@@ -253,12 +360,14 @@ function getUniqueValues(documents, key) {
 
 function getUniqueTagValues(documents) {
   return [...new Set(
-    documents.flatMap((documentItem) =>
-      Array.isArray(documentItem.tags)
-        ? documentItem.tags.map((tag) => String(tag || "").trim()).filter(Boolean)
-        : [],
-    ),
-  )].sort(sortText);
+    documents.flatMap(getDocumentUiTags),
+  )].sort(sortTagValues);
+}
+
+function getDocumentUiTags(documentItem) {
+  const tags = Array.isArray(documentItem.tags) ? documentItem.tags : [];
+
+  return [...new Set(tags.map(normalizeUiTag).filter(Boolean))].sort(sortTagValues);
 }
 
 function getVisibleFilterTags(tagValues) {
@@ -281,8 +390,8 @@ function updateFilterTagToggle(tagValues, visibleTagValues) {
 
   toggleFilterTagsButton.hidden = !canToggle;
   toggleFilterTagsButton.textContent = libraryState.showAllFilterTags
-    ? "Show fewer tags"
-    : "Show more tags";
+    ? "Show fewer topics"
+    : "Show more topics";
   toggleFilterTagsButton.setAttribute(
     "aria-expanded",
     libraryState.showAllFilterTags ? "true" : "false",
@@ -296,10 +405,10 @@ function matchesActiveFilters(documentItem) {
   const matchesPart =
     !libraryState.filters.part ||
     String(documentItem.part || "").trim() === libraryState.filters.part;
-  const documentTags = Array.isArray(documentItem.tags) ? documentItem.tags : [];
+  const documentTags = getDocumentUiTags(documentItem);
   const matchesTags =
     libraryState.filters.tags.size === 0 ||
-    documentTags.some((tag) => libraryState.filters.tags.has(String(tag || "").trim()));
+    documentTags.some((tag) => libraryState.filters.tags.has(tag));
 
   return matchesStage && matchesPart && matchesTags;
 }
@@ -314,6 +423,10 @@ function hasFiltersApplied() {
 
 function sortText(left, right) {
   return textCollator.compare(left, right);
+}
+
+function sortTagValues(left, right) {
+  return sortText(getTagDisplayLabel(left), getTagDisplayLabel(right));
 }
 
 function resetFilters() {
@@ -401,15 +514,16 @@ function isDocumentViewerPath(pathname) {
 }
 
 function createCardMarkup(documentItem) {
-  const tags = Array.isArray(documentItem.tags) ? documentItem.tags : [];
+  const documentTags = getDocumentUiTags(documentItem);
+  const visibleTags = documentTags.slice(0, cardVisibleTagCount);
+  const hiddenTagCount = Math.max(0, documentTags.length - visibleTags.length);
   const structureChips = [
     documentItem.stage ? `<span class="structure-chip">${escapeHtml(documentItem.stage)}</span>` : "",
     documentItem.part ? `<span class="structure-chip">${escapeHtml(documentItem.part)}</span>` : "",
   ].filter(Boolean);
-  const topic = documentItem.topic || "General";
   const description = documentItem.description || "No description provided.";
-  const sourceKind = documentItem.source_kind || "unknown";
-  const status = documentItem.status || "unknown";
+  const sourceKind = getSourceKindLabel(documentItem.source_kind);
+  const status = getReadableLabel(documentItem.status || "ready");
   const linkPath = documentItem.view_path || documentItem.public_file_path;
   const documentLinkHref = buildDocumentLinkHref(linkPath);
   const contentFormat = getContentFormatLabel(documentItem.content_format);
@@ -417,21 +531,21 @@ function createCardMarkup(documentItem) {
   return `
     <article class="card">
       <div class="card-header">
-        <h3>${escapeHtml(documentItem.title || "Untitled document")}</h3>
+        <div>
+          <p class="card-kicker">Synced document</p>
+          <h3>${escapeHtml(documentItem.title || "Untitled document")}</h3>
+        </div>
         <span class="status-badge">${escapeHtml(status)}</span>
       </div>
       ${structureChips.length > 0 ? `
       <div class="structure-chip-list">
         ${structureChips.join("")}
       </div>` : ""}
-      <div class="meta-row">
-        <span>${escapeHtml(documentItem.subject || "Unknown subject")}</span>
-        <span>•</span>
-        <span>${escapeHtml(topic)}</span>
-      </div>
+      ${visibleTags.length > 0 ? `
       <div class="tag-list">
-        ${tags.length > 0 ? tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("") : '<span class="tag">untagged</span>'}
-      </div>
+        ${visibleTags.map((tag) => `<span class="tag">${escapeHtml(getTagDisplayLabel(tag))}</span>`).join("")}
+        ${hiddenTagCount > 0 ? `<span class="tag tag-more">+${hiddenTagCount} more</span>` : ""}
+      </div>` : ""}
       <p class="description">${escapeHtml(description)}</p>
       <div class="card-footer">
         <span class="source-kind">${escapeHtml(sourceKind)} · ${escapeHtml(contentFormat)}</span>
@@ -439,6 +553,52 @@ function createCardMarkup(documentItem) {
       </div>
     </article>
   `;
+}
+
+function getSourceKindLabel(sourceKind) {
+  const normalizedSourceKind = normalizeTagSlug(sourceKind);
+
+  if (sourceKindLabelMap[normalizedSourceKind]) {
+    return sourceKindLabelMap[normalizedSourceKind];
+  }
+
+  return getReadableLabel(sourceKind || "Unknown source");
+}
+
+function getReadableLabel(value) {
+  const normalizedValue = String(value || "").trim();
+
+  if (!normalizedValue) {
+    return "";
+  }
+
+  return normalizedValue
+    .split(/[\s-]+/)
+    .map((word) => {
+      if (word.toLowerCase() === "ai") {
+        return "AI";
+      }
+
+      return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
+    })
+    .join(" ");
+}
+
+function getTagDisplayLabel(tag) {
+  const normalizedTag = normalizeUiTag(tag);
+
+  if (!normalizedTag) {
+    return "";
+  }
+
+  if (tagDisplayLabelMap[normalizedTag]) {
+    return tagDisplayLabelMap[normalizedTag];
+  }
+
+  return normalizedTag
+    .split("-")
+    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .join(" ");
 }
 
 function getContentFormatLabel(contentFormat) {

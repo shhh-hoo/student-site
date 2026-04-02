@@ -10,32 +10,56 @@
   </head>
   <body>
     <div class="page-shell">
-      <header class="hero">
-        <p class="eyebrow">Student Site</p>
-        <h1>Student Resources</h1>
+      <header class="hero hero-home">
+        <div class="hero-kicker-row">
+          <p class="eyebrow">Student Site</p>
+          <span class="hero-pill">Chemistry 9701</span>
+        </div>
+        <h1>Readable notes and focused practice in one calmer chemistry workspace.</h1>
         <p class="hero-copy">
-          Browse synced documents and standalone interactive chemistry resources in one
-          place.
+          Use the synced library for study pages that stay on the stable document route,
+          then open standalone interactives for tighter exam-style practice.
         </p>
+        <div class="hero-support-grid">
+          <article class="hero-support-card">
+            <span>Stable flow</span>
+            <strong>Documents stay on the synced viewer path with filter state preserved.</strong>
+          </article>
+          <article class="hero-support-card">
+            <span>Focused practice</span>
+            <strong>Interactive tools remain isolated, directly openable, and easier to scan.</strong>
+          </article>
+        </div>
       </header>
 
       <main>
-        <section class="library-panel" aria-labelledby="interactive-heading">
-          <div class="panel-header">
+        <section
+          class="library-panel library-panel-accent"
+          aria-labelledby="interactive-heading"
+        >
+          <div class="panel-header panel-header-split">
             <div>
+              <p class="section-kicker">Featured Interactive</p>
               <h2 id="interactive-heading">Interactive Chemistry</h2>
               <p class="panel-copy">
-                Standalone chemistry tools that open outside the document viewer shell.
+                Standalone chemistry tools that share the same site family without being
+                forced into the document viewer shell.
               </p>
             </div>
           </div>
 
-          <div class="library-grid">
-            <article class="card">
-              <div class="card-header">
-                <h3>IR Past-Paper Trainer</h3>
-                <span class="status-badge">Interactive</span>
+          <article class="feature-card">
+            <div class="feature-card-copy">
+              <div class="feature-kicker-row">
+                <span class="status-badge status-badge-interactive">Interactive</span>
+                <span class="hero-pill">Exam-oriented practice</span>
               </div>
+
+              <h3>IR Past-Paper Trainer</h3>
+              <p class="feature-description">
+                Train faster IR decisions with peak-shape comparison, elimination logic, and
+                past-paper style structure selection built for CAIE 9701.
+              </p>
 
               <div class="structure-chip-list">
                 <span class="structure-chip">Chemistry</span>
@@ -44,28 +68,32 @@
               </div>
 
               <div class="tag-list">
-                <span class="tag">infrared</span>
-                <span class="tag">spectroscopy</span>
-                <span class="tag">past-paper</span>
-                <span class="tag">functional-groups</span>
+                <span class="tag">IR spectroscopy</span>
+                <span class="tag">Functional groups</span>
+                <span class="tag">Past paper</span>
               </div>
+            </div>
 
-              <p class="description">
-                Interactive IR spectroscopy trainer for CAIE 9701, with peak comparison,
-                elimination practice, and past-paper style structure selection.
-              </p>
-
-              <div class="card-footer">
-                <span class="source-kind">Standalone HTML interactive</span>
-                <a class="doc-link" href="./interactive/ir-past-paper-trainer/">Open interactive</a>
-              </div>
-            </article>
-          </div>
+            <div class="feature-card-side feature-meta">
+              <article class="feature-note">
+                <span>Core skill</span>
+                <strong>Read decisive peaks quickly and rule out near-miss structures.</strong>
+              </article>
+              <article class="feature-note">
+                <span>Route model</span>
+                <strong>Standalone interactive route with the same outer site language.</strong>
+              </article>
+              <a class="doc-link feature-link" href="./interactive/ir-past-paper-trainer/">
+                Open interactive
+              </a>
+            </div>
+          </article>
         </section>
 
         <section class="library-panel" aria-labelledby="library-heading">
           <div class="panel-header">
             <div>
+              <p class="section-kicker">Synced Library</p>
               <h2 id="library-heading">Available Documents</h2>
               <p id="library-status" class="panel-copy">Loading library data...</p>
             </div>
@@ -96,7 +124,7 @@
 
             <div class="filter-field filter-field-wide">
               <div class="filter-toolbar">
-                <span class="filter-label">Tags</span>
+                <span class="filter-label">Topics &amp; Skills</span>
                 <button
                   id="reset-filters"
                   class="secondary-link filter-reset"
@@ -105,11 +133,15 @@
                   Reset filters
                 </button>
               </div>
+              <p class="filter-helper">
+                Use Stage and Part for structure. Topics &amp; Skills narrows the concept
+                focus.
+              </p>
               <div
                 id="filter-tags"
                 class="filter-tag-list"
                 role="group"
-                aria-label="Filter by tags"
+                aria-label="Filter by topics and skills"
               ></div>
               <button
                 id="toggle-filter-tags"
@@ -118,7 +150,7 @@
                 hidden
                 aria-expanded="false"
               >
-                Show more tags
+                Show more topics
               </button>
             </div>
           </div>
