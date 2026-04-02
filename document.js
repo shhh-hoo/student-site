@@ -13,6 +13,10 @@ const libraryFilterQueryKeys = {
   part: "part",
   tags: "tags",
 };
+const mathJaxScriptId = "student-site-mathjax-script";
+const mathJaxScriptUrl = "https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js";
+const mathJaxConfigFlag = "__studentSiteMathJaxConfigured";
+const mathJaxPromiseKey = "__studentSiteMathJaxPromise";
 
 async function initDocumentView() {
   const params = new URLSearchParams(window.location.search);
@@ -134,6 +138,150 @@ function updateLibraryReturnLink(href) {
   }
 }
 
+function configureMathJax() {
+  if (window[mathJaxConfigFlag]) {
+    return;
+  }
+
+  const existingConfig = window.MathJax || {};
+  const existingTexConfig = existingConfig.tex || {};
+  const existingLoaderConfig = existingConfig.loader || {};
+  const existingMhchemPackages = Array.isArray(existingTexConfig.packages?.["[+]"])
+    ? existingTexConfig.packages["[+]"]
+    : [];
+  const existingLoaderEntries = Array.isArray(existingLoaderConfig.load)
+    ? existingLoaderConfig.load
+    : [];
+
+  window.MathJax = {
+    ...existingConfig,
+    startup: {
+      ...existingConfig.startup,
+      typeset: false,
+    },
+    loader: {
+      ...existingLoaderConfig,
+      load: [...new Set([...existingLoaderEntries, "[tex]/mhchem"])],
+    },
+    tex: {
+      ...existingTexConfig,
+      inlineMath: existingTexConfig.inlineMath || [["\\(", "\\)"]],
+      displayMath: existingTexConfig.displayMath || [["\\[", "\\]"]],
+      packages: {
+        ...existingTexConfig.packages,
+        "[+]": [...new Set([...existingMhchemPackages, "mhchem"])],
+      },
+    },
+  };
+
+  window[mathJaxConfigFlag] = true;
+}
+
+function ensureMathJaxReady() {
+  if (window.MathJax?.typesetPromise) {
+    return Promise.resolve(window.MathJax);
+  }
+
+  if (window[mathJaxPromiseKey]) {
+    return window[mathJaxPromiseKey];
+  }
+
+  configureMathJax();
+
+  const cleanupMathJaxFailure = () => {
+    document.getElementById(mathJaxScriptId)?.remove();
+  };
+
+  window[mathJaxPromiseKey] = new Promise((resolve, reject) => {
+    const rejectWithCleanup = (error) => {
+      cleanupMathJaxFailure();
+      reject(error);
+    };
+    const resolveWhenReady = () => {
+      const startupPromise = window.MathJax?.startup?.promise;
+
+      if (startupPromise && typeof startupPromise.then === "function") {
+        startupPromise.then(() => resolve(window.MathJax)).catch(rejectWithCleanup);
+        return;
+      }
+
+      if (window.MathJax?.typesetPromise) {
+        resolve(window.MathJax);
+        return;
+      }
+
+      rejectWithCleanup(new Error("MathJax did not initialize correctly."));
+    };
+    const rejectWhenUnavailable = () => rejectWithCleanup(new Error("Could not load MathJax."));
+    let scriptElement = document.getElementById(mathJaxScriptId);
+
+    if (scriptElement) {
+      if (window.MathJax?.startup?.promise || window.MathJax?.typesetPromise) {
+        resolveWhenReady();
+        return;
+      }
+
+      scriptElement.addEventListener("load", resolveWhenReady, { once: true });
+      scriptElement.addEventListener("error", rejectWhenUnavailable, { once: true });
+      return;
+    }
+
+    scriptElement = document.createElement("script");
+    scriptElement.id = mathJaxScriptId;
+    scriptElement.src = mathJaxScriptUrl;
+    scriptElement.async = true;
+    scriptElement.addEventListener("load", resolveWhenReady, { once: true });
+    scriptElement.addEventListener("error", rejectWhenUnavailable, { once: true });
+    document.head.appendChild(scriptElement);
+  }).catch((error) => {
+    cleanupMathJaxFailure();
+    console.warn("MathJax is unavailable for this fragment.", error);
+    window[mathJaxPromiseKey] = null;
+    return null;
+  });
+
+  return window[mathJaxPromiseKey];
+}
+
+function clearMathJaxTypeset(container) {
+  if (!container || !window.MathJax?.typesetClear) {
+    return;
+  }
+
+  // Remove previous MathJax bookkeeping before replacing fragment content.
+  window.MathJax.typesetClear([container]);
+}
+
+async function typesetDocumentFragment(container) {
+  if (!container || !fragmentContainsMathSyntax(container)) {
+    return;
+  }
+
+  const mathJax = await ensureMathJaxReady();
+
+  if (!mathJax?.typesetPromise) {
+    return;
+  }
+
+  try {
+    await mathJax.typesetPromise([container]);
+  } catch (error) {
+    console.warn("MathJax could not typeset the current fragment.", error);
+  }
+}
+
+function fragmentContainsMathSyntax(container) {
+  const fragmentText = container.textContent || "";
+
+  return (
+    fragmentText.includes("\\(") ||
+    fragmentText.includes("\\[") ||
+    fragmentText.includes("\\begin{") ||
+    fragmentText.includes("\\ce{") ||
+    fragmentText.includes("$$")
+  );
+}
+
 function renderDocumentHeader(documentItem) {
   const metaChips = [];
 
@@ -190,6 +338,7 @@ function renderSyllabusLinks(syllabusRefs) {
 
 async function renderDocumentContent(documentItem) {
   documentBody.setAttribute("aria-busy", "true");
+  clearMathJaxTypeset(documentBody);
 
   switch (documentItem.content_format) {
     case "html":
@@ -206,6 +355,7 @@ async function renderDocumentContent(documentItem) {
       break;
   }
 
+  await typesetDocumentFragment(documentBody);
   documentBody.setAttribute("aria-busy", "false");
 }
 
@@ -276,6 +426,7 @@ function renderMissingState(message, libraryReturnHref = "./index.html") {
   renderSyllabusLinks([]);
   documentFileKind.textContent = "Format: unavailable";
   rawFileLink.removeAttribute("href");
+  clearMathJaxTypeset(documentBody);
   documentBody.setAttribute("aria-busy", "false");
   documentBody.innerHTML = `
     <div class="document-placeholder empty-state">
