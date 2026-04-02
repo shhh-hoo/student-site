@@ -8,6 +8,7 @@ const rawFileLink = document.getElementById("raw-file-link");
 const syllabusLinksSection = document.getElementById("syllabus-links-section");
 const documentSyllabusLinks = document.getElementById("document-syllabus-links");
 const libraryHomeLink = document.querySelector(".eyebrow a");
+const sidebarDisclosurePanels = [...document.querySelectorAll(".sidebar-disclosure")];
 const libraryFilterQueryKeys = {
   stage: "stage",
   part: "part",
@@ -24,6 +25,7 @@ async function initDocumentView() {
   const requestedDocumentId = params.get("doc");
   const documentId = normalizeDocumentId(requestedDocumentId);
 
+  initializeSidebarDisclosure();
   updateLibraryReturnLink(libraryReturnHref);
 
   if (!documentId) {
@@ -136,6 +138,18 @@ function updateLibraryReturnLink(href) {
   if (libraryHomeLink) {
     libraryHomeLink.href = href;
   }
+}
+
+function initializeSidebarDisclosure() {
+  if (!window.matchMedia("(max-width: 920px)").matches) {
+    return;
+  }
+
+  sidebarDisclosurePanels.forEach((panel) => {
+    if (panel.hasAttribute("data-mobile-collapsed")) {
+      panel.open = false;
+    }
+  });
 }
 
 function configureMathJax() {

@@ -23,28 +23,45 @@
       </header>
 
       <main class="document-layout">
-        <aside class="sidebar-panel" aria-labelledby="toc-heading">
-          <section class="sidebar-section">
-            <h2 id="toc-heading">On This Page</h2>
-            <nav id="document-toc" class="document-toc" aria-live="polite">
+        <aside class="sidebar-panel" aria-label="Document tools">
+          <details class="sidebar-section sidebar-disclosure" data-mobile-collapsed="true" open>
+            <summary class="sidebar-summary">
+              <h2 id="toc-heading">On This Page</h2>
+            </summary>
+            <nav
+              id="document-toc"
+              class="document-toc"
+              aria-labelledby="toc-heading"
+              aria-live="polite"
+            >
               <p class="panel-copy">Loading page structure...</p>
             </nav>
-          </section>
+          </details>
 
-          <section id="syllabus-links-section" class="sidebar-section" hidden>
-            <h2>Syllabus links</h2>
+          <details
+            id="syllabus-links-section"
+            class="sidebar-section sidebar-disclosure"
+            data-mobile-collapsed="true"
+            hidden
+            open
+          >
+            <summary class="sidebar-summary">
+              <h2>Syllabus Links</h2>
+            </summary>
             <div id="document-syllabus-links" class="meta-chip-row sidebar-chip-row"></div>
-          </section>
+          </details>
 
-          <section class="sidebar-section">
-            <h2>Document File</h2>
+          <details class="sidebar-section sidebar-disclosure" open>
+            <summary class="sidebar-summary">
+              <h2>Document File</h2>
+            </summary>
             <p id="document-file-kind" class="panel-copy">Checking source format...</p>
             <div class="document-actions">
               <a id="raw-file-link" class="secondary-link" href="#" target="_blank" rel="noreferrer">
                 Open Raw File
               </a>
             </div>
-          </section>
+          </details>
         </aside>
 
         <section class="library-panel document-panel" aria-live="polite">

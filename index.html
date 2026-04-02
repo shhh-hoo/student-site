@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Library</title>
+    <title>Student Resources</title>
     <link rel="stylesheet" href="./styles/tokens.css" />
     <link rel="stylesheet" href="./styles/base.css" />
     <link rel="stylesheet" href="./styles/chemistry-content.css" />
@@ -12,10 +12,10 @@
     <div class="page-shell">
       <header class="hero">
         <p class="eyebrow">Student Site</p>
-        <h1>Document Library</h1>
+        <h1>Student Resources</h1>
         <p class="hero-copy">
-          Browse document-type learning resources synced from the sibling
-          <code>content-source/documents</code> folder.
+          Browse synced documents and standalone interactive chemistry resources in one
+          place.
         </p>
       </header>
 
@@ -111,6 +111,15 @@
                 role="group"
                 aria-label="Filter by tags"
               ></div>
+              <button
+                id="toggle-filter-tags"
+                class="secondary-link filter-toggle"
+                type="button"
+                hidden
+                aria-expanded="false"
+              >
+                Show more tags
+              </button>
             </div>
           </div>
 

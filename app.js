@@ -4,6 +4,7 @@ const libraryFilters = document.getElementById("library-filters");
 const stageFilter = document.getElementById("filter-stage");
 const partFilter = document.getElementById("filter-part");
 const tagFilterList = document.getElementById("filter-tags");
+const toggleFilterTagsButton = document.getElementById("toggle-filter-tags");
 const resetFiltersButton = document.getElementById("reset-filters");
 const libraryState = {
   documents: [],
@@ -12,12 +13,14 @@ const libraryState = {
     part: "",
     tags: new Set(),
   },
+  showAllFilterTags: false,
 };
 const filterQueryKeys = {
   stage: "stage",
   part: "part",
   tags: "tags",
 };
+const collapsedFilterTagCount = 10;
 const textCollator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: "base",
@@ -204,10 +207,11 @@ function renderFilterControls(documents) {
   libraryState.filters.tags = new Set(
     [...libraryState.filters.tags].filter((tag) => tagValues.includes(tag)),
   );
+  const visibleTagValues = getVisibleFilterTags(tagValues);
 
   tagFilterList.innerHTML =
-    tagValues.length > 0
-      ? tagValues
+    visibleTagValues.length > 0
+      ? visibleTagValues
           .map((tag) => {
             const isPressed = libraryState.filters.tags.has(tag);
 
@@ -225,6 +229,7 @@ function renderFilterControls(documents) {
           .join("")
       : '<span class="tag">No tags available</span>';
 
+  updateFilterTagToggle(tagValues, visibleTagValues);
   resetFiltersButton.disabled = !hasFiltersApplied();
 }
 
@@ -254,6 +259,34 @@ function getUniqueTagValues(documents) {
         : [],
     ),
   )].sort(sortText);
+}
+
+function getVisibleFilterTags(tagValues) {
+  if (libraryState.showAllFilterTags || tagValues.length <= collapsedFilterTagCount) {
+    return tagValues;
+  }
+
+  return tagValues.filter((tag, index) =>
+    index < collapsedFilterTagCount || libraryState.filters.tags.has(tag),
+  );
+}
+
+function updateFilterTagToggle(tagValues, visibleTagValues) {
+  if (!toggleFilterTagsButton) {
+    return;
+  }
+
+  const canToggle =
+    libraryState.showAllFilterTags || visibleTagValues.length < tagValues.length;
+
+  toggleFilterTagsButton.hidden = !canToggle;
+  toggleFilterTagsButton.textContent = libraryState.showAllFilterTags
+    ? "Show fewer tags"
+    : "Show more tags";
+  toggleFilterTagsButton.setAttribute(
+    "aria-expanded",
+    libraryState.showAllFilterTags ? "true" : "false",
+  );
 }
 
 function matchesActiveFilters(documentItem) {
@@ -287,6 +320,7 @@ function resetFilters() {
   libraryState.filters.stage = "";
   libraryState.filters.part = "";
   libraryState.filters.tags = new Set();
+  libraryState.showAllFilterTags = false;
   renderLibrary();
   writeFiltersToUrl();
 }
@@ -325,6 +359,11 @@ function handleTagFilterClick(event) {
 
   renderLibrary();
   writeFiltersToUrl();
+}
+
+function handleFilterTagToggle() {
+  libraryState.showAllFilterTags = !libraryState.showAllFilterTags;
+  renderFilterControls(libraryState.documents);
 }
 
 function buildDocumentLinkHref(linkPath) {
@@ -434,6 +473,10 @@ if (partFilter) {
 
 if (tagFilterList) {
   tagFilterList.addEventListener("click", handleTagFilterClick);
+}
+
+if (toggleFilterTagsButton) {
+  toggleFilterTagsButton.addEventListener("click", handleFilterTagToggle);
 }
 
 if (resetFiltersButton) {
