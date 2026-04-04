@@ -6,6 +6,7 @@
     <title>Student Site | Chemistry Resource Bank</title>
     <link rel="stylesheet" href="./styles/tokens.css" />
     <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/brand.css" />
     <link rel="stylesheet" href="./styles/homepage.css" />
     <link rel="stylesheet" href="./styles/chemistry-content.css" />
   </head>
@@ -23,28 +24,33 @@
         </div>
       </header>
 
-      <main>
-        <section id="homepage-hero-root" class="homepage-slot" aria-label="Homepage hero">
-          <div class="homepage-hero">
-            <div class="homepage-hero__content">
-              <div class="homepage-hero__intro">
-                <p class="homepage-hero__kicker">Branded homepage</p>
-                <span class="homepage-hero__pill">CAIE Chemistry 9701</span>
+      <main class="homepage-main">
+        <div class="homepage-stage">
+          <section id="homepage-hero-root" class="homepage-slot" aria-label="Homepage hero">
+            <div class="homepage-hero">
+              <div class="homepage-hero__poster">
+                <div class="homepage-hero__content">
+                  <div class="homepage-hero__intro">
+                    <p class="homepage-hero__kicker">Branded homepage</p>
+                    <span class="homepage-hero__pill">CAIE Chemistry 9701</span>
+                  </div>
+                  <h1 id="homepage-hero-title">Loading the current homepage view...</h1>
+                  <p class="homepage-hero__copy">
+                    Preparing the student-site homepage while keeping the existing content and viewer flow intact.
+                  </p>
+                </div>
               </div>
-              <h1 id="homepage-hero-title">Loading the current homepage view...</h1>
-              <p class="homepage-hero__copy">
-                Preparing the student-site homepage while keeping the existing content and viewer flow intact.
-              </p>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section
+            id="homepage-featured-root"
+            class="homepage-slot"
+            aria-label="Featured resources"
+          ></section>
+        </div>
 
         <section id="homepage-routes-root" class="homepage-slot" aria-label="Study routes"></section>
-        <section
-          id="homepage-featured-root"
-          class="homepage-slot"
-          aria-label="Featured resources"
-        ></section>
         <section
           id="homepage-interactive-root"
           class="homepage-slot"

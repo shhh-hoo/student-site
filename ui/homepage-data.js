@@ -134,15 +134,15 @@ export function buildHomepageViewModel(documents, interactiveResources, helpers)
     hero: {
       kicker: "Branded homepage",
       pill: "CAIE Chemistry 9701",
-      title: "Study from stable documents, then jump into sharper standalone practice.",
+      title: "Start from the synced library, then jump into sharper chemistry practice.",
       copy:
-        "The homepage is stronger and clearer, but the workflow underneath is still the same: synced documents keep the shared viewer route, while code-based tools stay manually integrated and visibly separate.",
+        "The composition is louder and more branded, but the workflow underneath is still the same: synced documents keep the shared viewer route, while code-based tools stay manually integrated and visibly separate.",
       actions: [
         { href: "#library-panel", label: "Browse synced documents", variant: "primary" },
         {
           href: interactiveResource ? interactiveResource.href : "#study-routes",
           label: interactiveResource ? "Launch interactive" : "See study routes",
-          variant: "secondary",
+          variant: interactiveResource ? "interactive" : "secondary",
         },
       ],
       search: {
@@ -198,28 +198,48 @@ export function buildHomepageViewModel(documents, interactiveResources, helpers)
     },
     routesSection: {
       kicker: "Study routes",
-      title: "Pick a route without leaving the existing content flow",
+      title: "Pick a route without changing the library flow",
       copy:
         "These entry cards are driven by real `library.json` metadata and link back into the current Stage and Part filter system.",
       cards: routeCards,
     },
     featuredSection: {
       kicker: "Featured documents",
-      title: "Start with real synced resources",
+      title: "Top picks from the synced document set",
       copy:
         "The homepage spotlights a few high-value documents from the current transformed metadata, without inventing a parallel content source.",
+      action: {
+        href: "#library-panel",
+        label: "View all documents",
+        variant: "secondary",
+      },
+      footerNote: {
+        label: "Shared viewer path",
+        title: "Featured cards still open the existing document route.",
+        copy:
+          "This section is only a stronger homepage composition layer. The underlying synced metadata, viewer navigation, and return-to-library behavior stay unchanged.",
+      },
       resources: featuredResources,
     },
     interactiveSection: {
       kicker: "Interactive practice",
-      title: "Keep standalone drills visibly separate from synced documents",
+      title: "Give standalone drills a clearly separate entry point",
       copy:
         "Document resources still display directly in the shared viewer. Interactives stay on isolated routes so code-heavy practice tools do not get forced into the document pipeline.",
+      badge: "Manual code route",
       resource: interactiveResource
         ? createInteractiveResourceModel(interactiveResource, helpers, {
             eyebrow: "Isolated interactive route",
             ctaLabel: "Open trainer",
           })
+        : null,
+      noteCard: interactiveResource
+        ? {
+            label: "Why it is distinct",
+            title: "The homepage calls out interactives without pretending they are documents.",
+            copy:
+              "That keeps the brand page louder while preserving the current integration rule: code-heavy practice stays outside the synced document pipeline.",
+          }
         : null,
       supportNotes: interactiveResource
         ? [

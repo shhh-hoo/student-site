@@ -64,9 +64,12 @@ export function createSearchBarMarkup(search) {
 
   return `
     <form id="homepage-search-form" class="search-bar" novalidate>
-      <label class="search-bar__label" for="homepage-search-input">
-        ${escapeHtml(search.label)}
-      </label>
+      <div class="search-bar__header">
+        <label class="search-bar__label" for="homepage-search-input">
+          ${escapeHtml(search.label)}
+        </label>
+        <span class="search-bar__stamp">Search entry</span>
+      </div>
       <div class="search-bar__controls">
         <input
           id="homepage-search-input"
@@ -114,14 +117,16 @@ export function createSiteHeaderMarkup(header) {
       <nav class="site-header__nav" aria-label="Primary">
         ${navMarkup}
       </nav>
-      ${header.quickAction
-        ? createCTAButtonMarkup({
-            href: header.quickAction.href,
-            label: header.quickAction.label,
-            variant: "secondary",
-            compact: true,
-          })
-        : ""}
+      <div class="site-header__action">
+        ${header.quickAction
+          ? createCTAButtonMarkup({
+              href: header.quickAction.href,
+              label: header.quickAction.label,
+              variant: "secondary",
+              compact: true,
+            })
+          : ""}
+      </div>
     </div>
   `;
 }
@@ -151,40 +156,52 @@ export function createHomepageHeroMarkup(hero) {
 
   return `
     <section class="homepage-hero" aria-labelledby="homepage-hero-title">
-      <div class="homepage-hero__content">
-        <div class="homepage-hero__intro">
-          <p class="homepage-hero__kicker">${escapeHtml(hero.kicker)}</p>
-          <span class="homepage-hero__pill">${escapeHtml(hero.pill)}</span>
+      <div class="homepage-hero__poster">
+        <div class="homepage-hero__content">
+          <div class="homepage-hero__intro">
+            <p class="homepage-hero__kicker">${escapeHtml(hero.kicker)}</p>
+            <span class="homepage-hero__pill">${escapeHtml(hero.pill)}</span>
+          </div>
+          <h1 id="homepage-hero-title">${escapeHtml(hero.title)}</h1>
+          <p class="homepage-hero__copy">${escapeHtml(hero.copy)}</p>
+          <div class="homepage-hero__actions">
+            ${hero.actions
+              .map((action) =>
+                createCTAButtonMarkup({
+                  href: action.href,
+                  label: action.label,
+                  variant: action.variant,
+                }),
+              )
+              .join("")}
+          </div>
         </div>
-        <h1 id="homepage-hero-title">${escapeHtml(hero.title)}</h1>
-        <p class="homepage-hero__copy">${escapeHtml(hero.copy)}</p>
-        <div class="homepage-hero__actions">
-          ${hero.actions
-            .map((action) =>
-              createCTAButtonMarkup({
-                href: action.href,
-                label: action.label,
-                variant: action.variant,
-              }),
-            )
-            .join("")}
-        </div>
-        ${createSearchBarMarkup(hero.search)}
       </div>
-      <aside class="homepage-hero__aside" aria-label="Study workflow overview">
-        <div class="homepage-hero__panel">
-          <p class="homepage-hero__panel-kicker">${escapeHtml(hero.panelKicker)}</p>
-          <div class="homepage-hero__stats">${statsMarkup}</div>
+      <div class="homepage-hero__support">
+        <div class="homepage-hero__panel homepage-hero__panel--search">
+          ${createSearchBarMarkup(hero.search)}
         </div>
-        <div class="homepage-hero__workflow">${workflowMarkup}</div>
-      </aside>
+        <div class="homepage-hero__stack" aria-label="Study workflow overview">
+          <div class="homepage-hero__panel homepage-hero__panel--stats">
+            <p class="homepage-hero__panel-kicker">${escapeHtml(hero.panelKicker)}</p>
+            <div class="homepage-hero__stats">${statsMarkup}</div>
+          </div>
+          <div class="homepage-hero__workflow">${workflowMarkup}</div>
+        </div>
+      </div>
     </section>
   `;
 }
 
-export function createFeatureCardMarkup(card) {
+export function createFeatureCardMarkup(card, { layout = "standard" } = {}) {
   return `
-    <article class="${joinClasses("feature-card", `feature-card--${card.tone || "teal"}`)}">
+    <article
+      class="${joinClasses(
+        "feature-card",
+        `feature-card--${card.tone || "teal"}`,
+        `feature-card--${layout}`,
+      )}"
+    >
       <div class="feature-card__topline">
         <span class="feature-card__eyebrow">${escapeHtml(card.eyebrow)}</span>
         <span class="feature-card__count">${escapeHtml(card.countLabel)}</span>
@@ -263,8 +280,21 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
 }
 
 export function createRoutesSectionMarkup(section) {
+  const cardsMarkup = (section.cards || [])
+    .map((card, index, cards) => {
+      const layout =
+        index === 0 ? "lead" : index === cards.length - 1 && cards.length > 3 ? "wide" : "standard";
+
+      return createFeatureCardMarkup(card, { layout });
+    })
+    .join("");
+
   return `
-    <section class="homepage-section" id="study-routes" aria-labelledby="study-routes-heading">
+    <section
+      class="homepage-section homepage-section--routes"
+      id="study-routes"
+      aria-labelledby="study-routes-heading"
+    >
       ${createSectionTitleMarkup({
         kicker: section.kicker,
         title: section.title,
@@ -272,29 +302,55 @@ export function createRoutesSectionMarkup(section) {
         id: "study-routes-heading",
       })}
       <div class="feature-grid">
-        ${(section.cards || []).map((card) => createFeatureCardMarkup(card)).join("")}
+        ${cardsMarkup}
       </div>
     </section>
   `;
 }
 
 export function createFeaturedResourcesMarkup(section) {
+  const resources = Array.isArray(section.resources) ? section.resources : [];
+  const leadResource = resources[0] || null;
+  const secondaryResources = resources.slice(1);
+
   return `
     <section
       class="homepage-section homepage-section--featured"
       id="featured-resources"
       aria-labelledby="featured-resources-heading"
     >
-      ${createSectionTitleMarkup({
-        kicker: section.kicker,
-        title: section.title,
-        copy: section.copy,
-        id: "featured-resources-heading",
-      })}
-      <div class="resource-grid resource-grid--featured">
-        ${(section.resources || [])
-          .map((resource) => createResourceCardMarkup(resource, { layout: "featured" }))
-          .join("")}
+      <div class="homepage-section__header homepage-section__header--split">
+        ${createSectionTitleMarkup({
+          kicker: section.kicker,
+          title: section.title,
+          copy: section.copy,
+          id: "featured-resources-heading",
+        })}
+        ${section.action
+          ? createCTAButtonMarkup({
+              href: section.action.href,
+              label: section.action.label,
+              variant: section.action.variant || "secondary",
+              compact: true,
+            })
+          : ""}
+      </div>
+      <div class="featured-showcase">
+        ${leadResource ? createResourceCardMarkup(leadResource, { layout: "featured-lead" }) : ""}
+        <div class="featured-showcase__stack">
+          ${secondaryResources
+            .map((resource) => createResourceCardMarkup(resource, { layout: "featured-stack" }))
+            .join("")}
+          ${section.footerNote
+            ? `
+              <article class="featured-note">
+                <span>${escapeHtml(section.footerNote.label)}</span>
+                <strong>${escapeHtml(section.footerNote.title)}</strong>
+                <p>${escapeHtml(section.footerNote.copy)}</p>
+              </article>
+            `
+            : ""}
+        </div>
       </div>
     </section>
   `;
@@ -332,15 +388,33 @@ export function createInteractiveSectionMarkup(section) {
       id="interactive-lab"
       aria-labelledby="interactive-heading"
     >
-      ${createSectionTitleMarkup({
-        kicker: section.kicker,
-        title: section.title,
-        copy: section.copy,
-        id: "interactive-heading",
-      })}
+      <div class="homepage-section__header homepage-section__header--split">
+        ${createSectionTitleMarkup({
+          kicker: section.kicker,
+          title: section.title,
+          copy: section.copy,
+          id: "interactive-heading",
+        })}
+        ${section.badge
+          ? `<span class="homepage-section__badge">${escapeHtml(section.badge)}</span>`
+          : ""}
+      </div>
       <div class="interactive-shell">
-        <div class="interactive-shell__notes">${supportNotesMarkup}</div>
-        ${createResourceCardMarkup(section.resource, { layout: "spotlight" })}
+        <div class="interactive-shell__spotlight">
+          ${createResourceCardMarkup(section.resource, { layout: "spotlight" })}
+        </div>
+        <div class="interactive-shell__notes">
+          ${supportNotesMarkup}
+          ${section.noteCard
+            ? `
+              <article class="interactive-note interactive-note--emphasis">
+                <span>${escapeHtml(section.noteCard.label)}</span>
+                <strong>${escapeHtml(section.noteCard.title)}</strong>
+                <p>${escapeHtml(section.noteCard.copy)}</p>
+              </article>
+            `
+            : ""}
+        </div>
       </div>
     </section>
   `;
