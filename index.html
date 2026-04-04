@@ -3,6 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (() => {
+        const params = new URLSearchParams(window.location.search);
+        const explicitTheme = params.get("theme");
+        const resolvedTheme =
+          explicitTheme === "dark" || explicitTheme === "light"
+            ? explicitTheme
+            : window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+
+        document.documentElement.dataset.theme = resolvedTheme;
+      })();
+    </script>
     <title>Student Site | Chemistry Resource Bank</title>
     <link rel="stylesheet" href="./styles/tokens.css" />
     <link rel="stylesheet" href="./styles/base.css" />
@@ -63,13 +78,18 @@
           aria-labelledby="library-heading"
         >
           <div class="panel-header homepage-library-header section-title">
-            <div>
+            <div class="homepage-library-header__lead">
               <p class="section-kicker section-title__kicker">Synced library</p>
               <h2 id="library-heading">Browse the full document set</h2>
               <p id="library-status" class="panel-copy section-title__copy homepage-library-status">
                 Loading library data...
               </p>
             </div>
+            <article class="homepage-library-intro">
+              <span>Library handoff</span>
+              <strong>Routes and featured picks still resolve into this same synced set.</strong>
+              <p>Use Stage, Part, or Topics only when you want the full browsing layer.</p>
+            </article>
           </div>
 
           <div id="library-filters" class="filter-bar homepage-library-filters" hidden>

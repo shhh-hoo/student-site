@@ -200,6 +200,7 @@ export function createFeatureCardMarkup(card, { layout = "standard" } = {}) {
         "feature-card",
         `feature-card--${card.tone || "teal"}`,
         `feature-card--${layout}`,
+        card.kind && `feature-card--route-${card.kind}`,
       )}"
     >
       <div class="feature-card__topline">
@@ -280,6 +281,7 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
 }
 
 export function createRoutesSectionMarkup(section) {
+  const cardCount = Array.isArray(section.cards) ? section.cards.length : 0;
   const cardsMarkup = (section.cards || [])
     .map((card, index, cards) => {
       const layout =
@@ -301,7 +303,7 @@ export function createRoutesSectionMarkup(section) {
         copy: section.copy,
         id: "study-routes-heading",
       })}
-      <div class="feature-grid">
+      <div class="${joinClasses("feature-grid", "feature-grid--routes", `feature-grid--count-${cardCount}`)}">
         ${cardsMarkup}
       </div>
     </section>
@@ -337,21 +339,28 @@ export function createFeaturedResourcesMarkup(section) {
       </div>
       <div class="featured-showcase">
         ${leadResource ? createResourceCardMarkup(leadResource, { layout: "featured-lead" }) : ""}
-        <div class="featured-showcase__stack">
-          ${secondaryResources
-            .map((resource) => createResourceCardMarkup(resource, { layout: "featured-stack" }))
-            .join("")}
-          ${section.footerNote
-            ? `
-              <article class="featured-note">
-                <span>${escapeHtml(section.footerNote.label)}</span>
-                <strong>${escapeHtml(section.footerNote.title)}</strong>
-                <p>${escapeHtml(section.footerNote.copy)}</p>
-              </article>
-            `
-            : ""}
-        </div>
+        ${secondaryResources.length > 0
+          ? `
+            <div class="featured-showcase__stack-wrap">
+              <p class="featured-showcase__stack-label">Also in the set</p>
+              <div class="featured-showcase__stack">
+                ${secondaryResources
+                  .map((resource) => createResourceCardMarkup(resource, { layout: "featured-stack" }))
+                  .join("")}
+              </div>
+            </div>
+          `
+          : ""}
       </div>
+      ${section.footerNote
+        ? `
+          <article class="featured-note">
+            <span>${escapeHtml(section.footerNote.label)}</span>
+            <strong>${escapeHtml(section.footerNote.title)}</strong>
+            <p>${escapeHtml(section.footerNote.copy)}</p>
+          </article>
+        `
+        : ""}
     </section>
   `;
 }
@@ -373,7 +382,7 @@ export function createInteractiveSectionMarkup(section) {
   const supportNotesMarkup = (section.supportNotes || [])
     .map(
       (note) => `
-        <article class="interactive-note">
+        <article class="interactive-note interactive-note--support">
           <span>${escapeHtml(note.label)}</span>
           <strong>${escapeHtml(note.title)}</strong>
           <p>${escapeHtml(note.copy)}</p>
@@ -404,7 +413,6 @@ export function createInteractiveSectionMarkup(section) {
           ${createResourceCardMarkup(section.resource, { layout: "spotlight" })}
         </div>
         <div class="interactive-shell__notes">
-          ${supportNotesMarkup}
           ${section.noteCard
             ? `
               <article class="interactive-note interactive-note--emphasis">
@@ -414,6 +422,7 @@ export function createInteractiveSectionMarkup(section) {
               </article>
             `
             : ""}
+          ${supportNotesMarkup}
         </div>
       </div>
     </section>

@@ -5,7 +5,7 @@ const manualInteractiveEntries = [
   },
 ];
 
-const featuredDocumentLimit = 4;
+const featuredDocumentLimit = 3;
 const routeToneSequence = ["teal", "gold", "ink"];
 const textCollator = new Intl.Collator(undefined, {
   numeric: true,
@@ -42,51 +42,57 @@ export function createDocumentResourceModel(documentItem, helpers, overrides = {
   const uiTags = helpers.getDocumentUiTags(documentItem);
   const tagLimit = overrides.tagLimit ?? 4;
   const linkPath = documentItem.view_path || documentItem.public_file_path;
+  const defaultChips = [
+    documentItem.stage,
+    documentItem.part,
+    helpers.getContentFormatLabel(documentItem.content_format),
+  ].filter(Boolean);
+  const defaultTags = uiTags.slice(0, tagLimit).map((tag) => helpers.getTagDisplayLabel(tag));
+  const defaultMetaLine = [
+    helpers.getSourceKindLabel(documentItem.source_kind),
+    helpers.getContentFormatLabel(documentItem.content_format),
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return {
     kind: "document",
     eyebrow: overrides.eyebrow || "Synced document",
     title: documentItem.title || "Untitled document",
-    description: documentItem.description || "No description provided.",
+    description: overrides.description || documentItem.description || "No description provided.",
     href: helpers.buildDocumentLinkHref(linkPath),
     ctaLabel: overrides.ctaLabel || "Open document",
     status: overrides.status || helpers.getReadableLabel(documentItem.status || "ready"),
-    chips: [
-      documentItem.stage,
-      documentItem.part,
-      helpers.getContentFormatLabel(documentItem.content_format),
-    ].filter(Boolean),
-    tags: uiTags.slice(0, tagLimit).map((tag) => helpers.getTagDisplayLabel(tag)),
+    chips: Array.isArray(overrides.chips) ? overrides.chips.filter(Boolean) : defaultChips,
+    tags: Array.isArray(overrides.tags) ? overrides.tags.filter(Boolean) : defaultTags,
     note: overrides.note || "",
-    metaLine: [
-      helpers.getSourceKindLabel(documentItem.source_kind),
-      helpers.getContentFormatLabel(documentItem.content_format),
-    ]
-      .filter(Boolean)
-      .join(" · "),
+    metaLine: overrides.metaLine ?? defaultMetaLine,
   };
 }
 
 export function createInteractiveResourceModel(resource, helpers, overrides = {}) {
   const tags = Array.isArray(resource.tags) ? resource.tags : [];
+  const defaultChips = [resource.stage, resource.part, "Manual code entry"].filter(Boolean);
+  const defaultTags = tags.slice(0, overrides.tagLimit ?? 4).map((tag) => helpers.getTagDisplayLabel(tag));
+  const defaultMetaLine = [
+    helpers.getSourceKindLabel(resource.source_kind),
+    resource.content_format ? helpers.getContentFormatLabel(resource.content_format) : "Interactive",
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return {
     kind: "interactive",
     eyebrow: overrides.eyebrow || "Standalone interactive",
     title: resource.title || "Interactive practice",
-    description: resource.description || "A manually integrated interactive resource.",
+    description: overrides.description || resource.description || "A manually integrated interactive resource.",
     href: resource.href,
     ctaLabel: overrides.ctaLabel || "Open interactive",
     status: overrides.status || helpers.getReadableLabel(resource.status || "ready"),
-    chips: [resource.stage, resource.part, "Manual code entry"].filter(Boolean),
-    tags: tags.slice(0, overrides.tagLimit ?? 4).map((tag) => helpers.getTagDisplayLabel(tag)),
+    chips: Array.isArray(overrides.chips) ? overrides.chips.filter(Boolean) : defaultChips,
+    tags: Array.isArray(overrides.tags) ? overrides.tags.filter(Boolean) : defaultTags,
     note: overrides.note || "Separate route by design: code-based tools stay outside the document sync flow.",
-    metaLine: [
-      helpers.getSourceKindLabel(resource.source_kind),
-      resource.content_format ? helpers.getContentFormatLabel(resource.content_format) : "Interactive",
-    ]
-      .filter(Boolean)
-      .join(" · "),
+    metaLine: overrides.metaLine ?? defaultMetaLine,
   };
 }
 
@@ -97,10 +103,10 @@ export function buildHomepageViewModel(documents, interactiveResources, helpers)
   const distinctStages = getDistinctValues(documentItems, "stage");
   const distinctParts = getDistinctValues(documentItems, "part");
   const indexDocument = findIndexDocument(documentItems);
-  const quickTags = getPopularTags(documentItems, helpers).slice(0, 5);
+  const quickTags = getPopularTags(documentItems, helpers).slice(0, 4);
   const featuredResources = getFeaturedDocuments(documentItems, helpers);
   const interactiveResource = interactiveResources[0] || null;
-  const routeCards = getRouteCards(documentItems, interactiveResource, helpers);
+  const routeCards = getRouteCards(documentItems, helpers);
   const searchIndex = buildSearchIndex({
     distinctParts,
     distinctStages,
@@ -136,7 +142,7 @@ export function buildHomepageViewModel(documents, interactiveResources, helpers)
       pill: "CAIE Chemistry 9701",
       title: "Start from the synced library, then jump into sharper chemistry practice.",
       copy:
-        "The composition is louder and more branded, but the workflow underneath is still the same: synced documents keep the shared viewer route, while code-based tools stay manually integrated and visibly separate.",
+        "The homepage is louder and more editorial, but the workflow underneath is still the same: synced documents keep the shared viewer route, while code-based tools stay visibly separate.",
       actions: [
         { href: "#library-panel", label: "Browse synced documents", variant: "primary" },
         {
@@ -152,7 +158,7 @@ export function buildHomepageViewModel(documents, interactiveResources, helpers)
         browseHref: "#library-panel",
         browseLabel: "Browse library",
         helper:
-          "Use a stage, part, topic, interactive title, or a specific document title. The library filters still remain the stable system underneath.",
+          "Search by stage, topic, interactive title, or a specific document title.",
         quickLinks: quickTags.map((tag) => ({
           href: helpers.buildLibraryHref({ tags: [tag.slug] }, "library-panel"),
           label: tag.label,
@@ -184,15 +190,9 @@ export function buildHomepageViewModel(documents, interactiveResources, helpers)
           copy: "Featured cards and library links still point to the existing document viewer route.",
         },
         {
-          label: "Filtering",
-          title: "Stage, Part, and Topics remain the source of truth",
-          copy: "Homepage cards use the same URL-based filters that already drive the library section.",
-        },
-        {
           label: "Interactive",
           title: "Code assets remain isolated on purpose",
-          copy:
-            "Interactive entries are manually linked from `student-site` instead of being pulled through the document sync flow.",
+          copy: "Interactive entries are manually linked from `student-site` instead of being pulled through the document sync flow.",
         },
       ],
     },
@@ -200,59 +200,60 @@ export function buildHomepageViewModel(documents, interactiveResources, helpers)
       kicker: "Study routes",
       title: "Pick a route without changing the library flow",
       copy:
-        "These entry cards are driven by real `library.json` metadata and link back into the current Stage and Part filter system.",
+        "A quieter set of entry cards that still resolves into the current Stage and Part filters.",
       cards: routeCards,
     },
     featuredSection: {
       kicker: "Featured documents",
       title: "Top picks from the synced document set",
-      copy:
-        "The homepage spotlights a few high-value documents from the current transformed metadata, without inventing a parallel content source.",
+      copy: "A tighter editorial cut from the current synced metadata.",
       action: {
         href: "#library-panel",
-        label: "View all documents",
+        label: "Browse all",
         variant: "secondary",
       },
       footerNote: {
         label: "Shared viewer path",
-        title: "Featured cards still open the existing document route.",
-        copy:
-          "This section is only a stronger homepage composition layer. The underlying synced metadata, viewer navigation, and return-to-library behavior stay unchanged.",
+        title: "Same viewer route underneath.",
+        copy: "Featured entries still open through the current viewer and return-to-library flow.",
       },
       resources: featuredResources,
     },
     interactiveSection: {
       kicker: "Interactive practice",
-      title: "Give standalone drills a clearly separate entry point",
+      title: "Give standalone drills a separate branded entry",
       copy:
-        "Document resources still display directly in the shared viewer. Interactives stay on isolated routes so code-heavy practice tools do not get forced into the document pipeline.",
-      badge: "Manual code route",
+        "Documents still open through the shared viewer. Interactives keep isolated routes so code-heavy practice stays out of the sync pipeline.",
+      badge: "Separate code route",
       resource: interactiveResource
         ? createInteractiveResourceModel(interactiveResource, helpers, {
             eyebrow: "Isolated interactive route",
             ctaLabel: "Open trainer",
+            description: truncateText(
+              resourceOrDefault(
+                interactiveResource.description,
+                "A focused standalone practice route that stays outside the synced document flow.",
+              ),
+              92,
+            ),
+            chips: [interactiveResource.stage, "Manual route"].filter(Boolean),
+            tagLimit: 2,
+            metaLine: "Manual code route",
           })
         : null,
       noteCard: interactiveResource
         ? {
             label: "Why it is distinct",
-            title: "The homepage calls out interactives without pretending they are documents.",
-            copy:
-              "That keeps the brand page louder while preserving the current integration rule: code-heavy practice stays outside the synced document pipeline.",
+            title: "The homepage can spotlight interactivity without pretending it is a document.",
+            copy: "The trainer stays prominent without blurring the document sync rules.",
           }
         : null,
       supportNotes: interactiveResource
         ? [
             {
-              label: "Format",
-              title: "Manual integration stays explicit",
-              copy: "This card is sourced from the interactive's own metadata and linked directly from `student-site`.",
-            },
-            {
-              label: "Why separate",
-              title: "No document-flow overload",
-              copy:
-                "Code-based resources can stay more focused, visual, and route-specific without changing the document sync rules.",
+              label: "Route rule",
+              title: "Code stays out of sync",
+              copy: "The trainer remains manually linked from `student-site`, not pulled through the document sync flow.",
             },
           ]
         : [],
@@ -261,18 +262,19 @@ export function buildHomepageViewModel(documents, interactiveResources, helpers)
   };
 }
 
-function getRouteCards(documents, interactiveResource, helpers) {
+function getRouteCards(documents, helpers) {
   const groups = groupDocumentsByStageAndPart(documents).sort(compareRouteGroups);
-  const routeCards = groups.slice(0, 3).map((group, index) => {
+  return groups.slice(0, 3).map((group, index) => {
     const topTags = getPopularTags(group.documents, helpers)
       .slice(0, 3)
       .map((tag) => tag.label);
 
     return {
+      kind: "document",
       tone: routeToneSequence[index % routeToneSequence.length],
       eyebrow: "Document route",
       title: formatRouteTitle(group.stage, group.part),
-      countLabel: `${group.documents.length} synced doc${group.documents.length === 1 ? "" : "s"}`,
+      countLabel: `${group.documents.length} doc${group.documents.length === 1 ? "" : "s"}`,
       description: createRouteDescription(group.documents, helpers),
       href: helpers.buildLibraryHref(
         {
@@ -281,31 +283,11 @@ function getRouteCards(documents, interactiveResource, helpers) {
         },
         "library-panel",
       ),
-      ctaLabel: "Open route",
-      chips: [group.stage, group.part].filter(Boolean),
-      supportingTags: topTags,
+      ctaLabel: "Browse route",
+      chips: [group.stage].filter(Boolean),
+      supportingTags: topTags.slice(0, 2),
     };
   });
-
-  if (interactiveResource) {
-    routeCards.push({
-      tone: "rust",
-      eyebrow: "Interactive route",
-      title: interactiveResource.title || "Interactive practice",
-      countLabel: "Separate drill",
-      description:
-        "A manually integrated practice route that keeps the homepage connected while staying outside the document sync path.",
-      href: interactiveResource.href,
-      ctaLabel: "Launch interactive",
-      ctaVariant: "interactive",
-      chips: [interactiveResource.stage, interactiveResource.part].filter(Boolean),
-      supportingTags: (interactiveResource.tags || [])
-        .slice(0, 3)
-        .map((tag) => helpers.getTagDisplayLabel(tag)),
-    });
-  }
-
-  return routeCards;
 }
 
 function getFeaturedDocuments(documents, helpers) {
@@ -337,10 +319,16 @@ function getFeaturedDocuments(documents, helpers) {
       }
     });
 
-  return selectedDocuments.slice(0, featuredDocumentLimit).map((documentItem) =>
+  return selectedDocuments.slice(0, featuredDocumentLimit).map((documentItem, index) =>
     createDocumentResourceModel(documentItem, helpers, {
-      eyebrow: "Featured document",
-      note: getFeaturedDocumentNote(documentItem),
+      eyebrow: index === 0 ? "Lead document" : "Featured document",
+      description: createFeaturedDocumentDescription(documentItem, index),
+      ctaLabel: index === 0 ? "Open document" : "Open",
+      status: index === 0 ? helpers.getReadableLabel(documentItem.status || "ready") : "",
+      chips: [documentItem.stage, documentItem.part].filter(Boolean).slice(0, index === 0 ? 2 : 1),
+      tagLimit: index === 0 ? 2 : 0,
+      metaLine: index === 0 ? helpers.getContentFormatLabel(documentItem.content_format) : "",
+      note: index === 0 ? getFeaturedDocumentNote(documentItem, index) : "",
     }),
   );
 }
@@ -490,17 +478,27 @@ function scoreDocument(documentItem, helpers) {
 
 function createRouteDescription(documents, helpers) {
   const tagLabels = getPopularTags(documents, helpers)
-    .slice(0, 3)
+    .slice(0, 2)
     .map((tag) => tag.label);
 
   if (tagLabels.length === 0) {
     return `${documents.length} synced document${documents.length === 1 ? "" : "s"} on the current viewer route.`;
   }
 
-  return `${documents.length} synced document${documents.length === 1 ? "" : "s"} covering ${joinLabels(tagLabels)}.`;
+  return `Focus on ${joinLabels(tagLabels)}.`;
 }
 
-function getFeaturedDocumentNote(documentItem) {
+function createFeaturedDocumentDescription(documentItem, index) {
+  const fallbackDescription = resourceOrDefault(documentItem.description, "No description provided.");
+
+  return truncateText(fallbackDescription, index === 0 ? 112 : 60);
+}
+
+function getFeaturedDocumentNote(documentItem, index = 0) {
+  if (index > 0) {
+    return "";
+  }
+
   if (isIndexDocument(documentItem)) {
     return "Best first stop for the wider equation-bank set.";
   }
@@ -518,6 +516,22 @@ function getFeaturedDocumentNote(documentItem) {
   }
 
   return "Pulled from the existing student-site data layer.";
+}
+
+function resourceOrDefault(value, fallback) {
+  const normalizedValue = String(value || "").trim();
+
+  return normalizedValue || fallback;
+}
+
+function truncateText(value, maxLength) {
+  const normalizedValue = String(value || "").trim();
+
+  if (!normalizedValue || normalizedValue.length <= maxLength) {
+    return normalizedValue;
+  }
+
+  return `${normalizedValue.slice(0, maxLength).trimEnd().replace(/[.,;:!?-]+$/, "")}…`;
 }
 
 function getPopularTags(documents, helpers) {
