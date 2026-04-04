@@ -321,7 +321,10 @@ function renderDocumentHeader(documentItem) {
     documentItem.description || "No description is available for this document.";
   documentMeta.innerHTML = metaChips
     .concat(Array.isArray(documentItem.tags) ? documentItem.tags : [])
-    .map((value) => `<span class="meta-chip">${escapeHtml(value)}</span>`)
+    .map(
+      (value) =>
+        `<span class="meta-chip brand-tag brand-tag--outline viewer-meta-chip">${escapeHtml(value)}</span>`,
+    )
     .join("");
   renderSyllabusLinks(documentItem.syllabus_refs);
 
@@ -346,7 +349,10 @@ function renderSyllabusLinks(syllabusRefs) {
 
   syllabusLinksSection.hidden = false;
   documentSyllabusLinks.innerHTML = refs
-    .map((value) => `<span class="meta-chip">${escapeHtml(value)}</span>`)
+    .map(
+      (value) =>
+        `<span class="meta-chip brand-tag brand-tag--soft viewer-meta-chip viewer-meta-chip--syllabus">${escapeHtml(value)}</span>`,
+    )
     .join("");
 }
 
@@ -402,7 +408,7 @@ async function renderMarkdownDocument(documentItem) {
 
 function renderPdfDocument(documentItem) {
   documentBody.innerHTML = `
-    <div class="document-placeholder empty-state">
+    <div class="document-placeholder empty-state empty-state--viewer">
       <strong>PDF documents open as files.</strong>
       <p>
         This viewer keeps the student-site shell consistent, but PDF content is still opened as a separate file.
@@ -418,7 +424,7 @@ function renderPdfDocument(documentItem) {
 
 function renderUnsupportedDocument(documentItem) {
   documentBody.innerHTML = `
-    <div class="document-placeholder empty-state">
+    <div class="document-placeholder empty-state empty-state--viewer">
       <strong>Unsupported format.</strong>
       <p>
         The file format for ${escapeHtml(documentItem.title || "this document")} is not supported by the integrated viewer.
@@ -443,7 +449,7 @@ function renderMissingState(message, libraryReturnHref = "./index.html") {
   clearMathJaxTypeset(documentBody);
   documentBody.setAttribute("aria-busy", "false");
   documentBody.innerHTML = `
-    <div class="document-placeholder empty-state">
+    <div class="document-placeholder empty-state empty-state--viewer empty-state--error">
       <strong>Viewer error.</strong>
       <p>${escapeHtml(message)}</p>
       <div class="document-actions">

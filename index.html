@@ -3,106 +3,70 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Resources</title>
+    <title>Student Site | Chemistry Resource Bank</title>
     <link rel="stylesheet" href="./styles/tokens.css" />
     <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/homepage.css" />
     <link rel="stylesheet" href="./styles/chemistry-content.css" />
   </head>
-  <body>
+  <body class="page-home">
     <div class="page-shell">
-      <header class="hero hero-home">
-        <div class="hero-kicker-row">
-          <p class="eyebrow">Student Site</p>
-          <span class="hero-pill">Chemistry 9701</span>
-        </div>
-        <h1>Readable notes and focused practice in one calmer chemistry workspace.</h1>
-        <p class="hero-copy">
-          Use the synced library for study pages that stay on the stable document route,
-          then open standalone interactives for tighter exam-style practice.
-        </p>
-        <div class="hero-support-grid">
-          <article class="hero-support-card">
-            <span>Stable flow</span>
-            <strong>Documents stay on the synced viewer path with filter state preserved.</strong>
-          </article>
-          <article class="hero-support-card">
-            <span>Focused practice</span>
-            <strong>Interactive tools remain isolated, directly openable, and easier to scan.</strong>
-          </article>
+      <header id="site-header-root" class="homepage-slot" aria-label="Site header">
+        <div class="site-header">
+          <div class="site-header__brand">
+            <span class="site-header__mark" aria-hidden="true">J2</span>
+            <div>
+              <p class="site-header__eyebrow">Student Site</p>
+              <a class="site-header__title" href="./index.html">Chemistry Resource Bank</a>
+            </div>
+          </div>
         </div>
       </header>
 
       <main>
+        <section id="homepage-hero-root" class="homepage-slot" aria-label="Homepage hero">
+          <div class="homepage-hero">
+            <div class="homepage-hero__content">
+              <div class="homepage-hero__intro">
+                <p class="homepage-hero__kicker">Branded homepage</p>
+                <span class="homepage-hero__pill">CAIE Chemistry 9701</span>
+              </div>
+              <h1 id="homepage-hero-title">Loading the current homepage view...</h1>
+              <p class="homepage-hero__copy">
+                Preparing the student-site homepage while keeping the existing content and viewer flow intact.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="homepage-routes-root" class="homepage-slot" aria-label="Study routes"></section>
         <section
-          class="library-panel library-panel-accent"
-          aria-labelledby="interactive-heading"
+          id="homepage-featured-root"
+          class="homepage-slot"
+          aria-label="Featured resources"
+        ></section>
+        <section
+          id="homepage-interactive-root"
+          class="homepage-slot"
+          aria-label="Interactive practice"
+        ></section>
+
+        <section
+          id="library-panel"
+          class="library-panel homepage-library-panel"
+          aria-labelledby="library-heading"
         >
-          <div class="panel-header panel-header-split">
+          <div class="panel-header homepage-library-header section-title">
             <div>
-              <p class="section-kicker">Featured Interactive</p>
-              <h2 id="interactive-heading">Interactive Chemistry</h2>
-              <p class="panel-copy">
-                Standalone chemistry tools that share the same site family without being
-                forced into the document viewer shell.
+              <p class="section-kicker section-title__kicker">Synced library</p>
+              <h2 id="library-heading">Browse the full document set</h2>
+              <p id="library-status" class="panel-copy section-title__copy homepage-library-status">
+                Loading library data...
               </p>
             </div>
           </div>
 
-          <article class="feature-card">
-            <div class="feature-card-copy">
-              <div class="feature-kicker-row">
-                <span class="status-badge status-badge-interactive feature-stamp">Interactive</span>
-                <span class="feature-route-marker">Exam-oriented practice</span>
-              </div>
-
-              <div class="feature-title-block">
-                <p class="feature-overline">Decisive peaks first</p>
-                <h3>IR Past-Paper Trainer</h3>
-                <p class="feature-description">
-                  Train faster IR decisions with peak-shape comparison, elimination logic,
-                  and past-paper style structure selection built for CAIE 9701.
-                </p>
-              </div>
-
-              <div class="structure-chip-list feature-structure-list">
-                <span class="structure-chip">Chemistry</span>
-                <span class="structure-chip">AS+A2</span>
-                <span class="structure-chip">Analysis</span>
-              </div>
-
-              <div class="tag-list feature-tag-list">
-                <span class="tag">IR spectroscopy</span>
-                <span class="tag">Functional groups</span>
-                <span class="tag">Past paper</span>
-              </div>
-            </div>
-
-            <div class="feature-card-side feature-meta">
-              <article class="feature-note feature-note-strong">
-                <span>Core skill</span>
-                <strong>Read decisive peaks quickly and rule out near-miss structures.</strong>
-              </article>
-              <article class="feature-note feature-note-quiet">
-                <span>Route</span>
-                <strong>Standalone practice block that still belongs to the main student site.</strong>
-              </article>
-              <a class="doc-link feature-link" href="./interactive/ir-past-paper-trainer/">
-                Open interactive
-              </a>
-            </div>
-          </article>
-        </section>
-
-        <section class="library-panel" aria-labelledby="library-heading">
-          <div class="panel-header">
-            <div>
-              <p class="section-kicker">Synced Library</p>
-              <h2 id="library-heading">Available Documents</h2>
-              <p id="library-status" class="panel-copy">Loading library data...</p>
-            </div>
-          </div>
-
-          <div id="library-filters" class="filter-bar" hidden>
+          <div id="library-filters" class="filter-bar homepage-library-filters" hidden>
             <label class="filter-field filter-field-primary" for="filter-stage">
               <span class="filter-label">Stage</span>
               <select
@@ -164,7 +128,7 @@
 
           <div
             id="library-grid"
-            class="library-grid"
+            class="library-grid homepage-library-grid"
             aria-live="polite"
             aria-busy="true"
           ></div>
@@ -172,6 +136,6 @@
       </main>
     </div>
 
-    <script src="./app.js" defer></script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

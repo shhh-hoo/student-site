@@ -1,3 +1,25 @@
+import {
+  buildHomepageViewModel,
+  createDocumentResourceModel,
+  loadInteractiveResources,
+} from "./ui/homepage-data.js";
+import {
+  createFeaturedResourcesMarkup,
+  createHomepageHeroMarkup,
+  createInteractiveSectionMarkup,
+  createResourceCardMarkup,
+  createRoutesSectionMarkup,
+  createSiteHeaderMarkup,
+} from "./ui/homepage-components.js";
+
+const siteHeaderRoot = document.getElementById("site-header-root");
+const homepageHeroRoot = document.getElementById("homepage-hero-root");
+const homepageRoutesRoot = document.getElementById("homepage-routes-root");
+const homepageFeaturedRoot = document.getElementById("homepage-featured-root");
+const homepageInteractiveRoot = document.getElementById("homepage-interactive-root");
+const homepageSearchFeedback = () => document.getElementById("homepage-search-feedback");
+const homepageSearchInput = () => document.getElementById("homepage-search-input");
+const libraryPanel = document.getElementById("library-panel");
 const libraryGrid = document.getElementById("library-grid");
 const libraryStatus = document.getElementById("library-status");
 const libraryFilters = document.getElementById("library-filters");
@@ -18,6 +40,10 @@ const libraryState = {
     tags: new Set(),
   },
   showAllFilterTags: false,
+};
+const homepageState = {
+  interactiveResources: [],
+  searchIndex: [],
 };
 
 const filterQueryKeys = {
@@ -134,19 +160,16 @@ const textCollator = new Intl.Collator(undefined, {
 });
 
 async function loadLibrary() {
+  const interactiveResourcesPromise = loadInteractiveResources();
+
   try {
-    const response = await fetch("./public/data/library.json", {
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      throw new Error(`Library request failed with status ${response.status}.`);
-    }
-
-    const documents = await response.json();
-    libraryState.documents = Array.isArray(documents) ? documents : [];
+    libraryState.documents = await fetchLibraryDocuments();
+    homepageState.interactiveResources = await interactiveResourcesPromise;
+    renderHomepage();
     applyFiltersFromUrl({ replaceUrl: true });
   } catch (error) {
+    homepageState.interactiveResources = await interactiveResourcesPromise.catch(() => []);
+    renderHomepage();
     libraryStatus.textContent = "Could not load library data.";
     libraryGrid.setAttribute("aria-busy", "false");
 
@@ -155,12 +178,71 @@ async function loadLibrary() {
     }
 
     libraryGrid.innerHTML = `
-      <article class="empty-state">
+      <article class="empty-state empty-state--library empty-state--error">
         <strong>Library unavailable.</strong>
         <p>${escapeHtml(error.message)}</p>
       </article>
     `;
   }
+}
+
+async function fetchLibraryDocuments() {
+  const response = await fetch("./public/data/library.json", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Library request failed with status ${response.status}.`);
+  }
+
+  const documents = await response.json();
+
+  return Array.isArray(documents) ? documents : [];
+}
+
+function renderHomepage() {
+  const helpers = {
+    buildDocumentLinkHref,
+    buildLibraryHref,
+    getContentFormatLabel,
+    getDocumentUiTags,
+    getReadableLabel,
+    getSourceKindLabel,
+    getTagDisplayLabel,
+  };
+  const homepageViewModel = buildHomepageViewModel(
+    libraryState.documents,
+    homepageState.interactiveResources,
+    helpers,
+  );
+
+  homepageState.searchIndex = Array.isArray(homepageViewModel.searchIndex)
+    ? homepageViewModel.searchIndex
+    : [];
+
+  if (siteHeaderRoot) {
+    siteHeaderRoot.innerHTML = createSiteHeaderMarkup(homepageViewModel.header);
+  }
+
+  if (homepageHeroRoot) {
+    homepageHeroRoot.innerHTML = createHomepageHeroMarkup(homepageViewModel.hero);
+  }
+
+  if (homepageRoutesRoot) {
+    homepageRoutesRoot.innerHTML = createRoutesSectionMarkup(homepageViewModel.routesSection);
+  }
+
+  if (homepageFeaturedRoot) {
+    homepageFeaturedRoot.innerHTML = createFeaturedResourcesMarkup(homepageViewModel.featuredSection);
+  }
+
+  if (homepageInteractiveRoot) {
+    homepageInteractiveRoot.innerHTML = createInteractiveSectionMarkup(
+      homepageViewModel.interactiveSection,
+    );
+  }
+
+  initializeHomepageSearch();
 }
 
 function renderLibrary() {
@@ -180,7 +262,7 @@ function renderLibrary() {
     libraryStatus.textContent =
       "No synced document files were found. Run the sync script after adding content.pdf, content.md, or content.html inside a document folder.";
     libraryGrid.innerHTML = `
-      <article class="empty-state">
+      <article class="empty-state empty-state--library">
         <strong>No documents yet.</strong>
         <p>Add a supported content file inside a folder under <code>content-source/documents</code>, then rerun the sync script.</p>
       </article>
@@ -199,7 +281,7 @@ function renderLibrary() {
 
   if (filteredDocuments.length === 0) {
     libraryGrid.innerHTML = `
-      <article class="empty-state">
+      <article class="empty-state empty-state--library">
         <strong>No matching documents.</strong>
         <p>Try adjusting or resetting the Stage, Part, or Topics &amp; Skills filters.</p>
       </article>
@@ -588,11 +670,12 @@ function createFilterTagGroupMarkup(title, description, tags, { secondary = fals
 
 function createFilterTagButtonMarkup(tag, { secondary = false } = {}) {
   const isPressed = libraryState.filters.tags.has(tag);
+  const toneClass = secondary ? "brand-tag--soft" : "brand-tag--outline";
 
   return `
     <button
       type="button"
-      class="filter-tag${secondary ? " filter-tag-secondary" : " filter-tag-priority"}"
+      class="brand-tag ${toneClass} filter-tag${secondary ? " filter-tag-secondary" : " filter-tag-priority"}"
       data-tag="${escapeHtml(tag)}"
       aria-pressed="${isPressed ? "true" : "false"}"
     >
@@ -785,6 +868,30 @@ function buildDocumentLinkHref(linkPath) {
   }
 }
 
+function buildLibraryHref({ stage = "", part = "", tags = [] } = {}, hashId = "library-panel") {
+  const searchParams = new URLSearchParams();
+  const normalizedTags = [...new Set(
+    (Array.isArray(tags) ? tags : [tags])
+      .map(normalizeUiTag)
+      .filter(Boolean),
+  )].sort(sortTagValues);
+
+  if (stage) {
+    searchParams.set(filterQueryKeys.stage, stage);
+  }
+
+  if (part) {
+    searchParams.set(filterQueryKeys.part, part);
+  }
+
+  if (normalizedTags.length > 0) {
+    searchParams.set(filterQueryKeys.tags, normalizedTags.join(","));
+  }
+
+  const search = searchParams.toString();
+  return `./index.html${search ? `?${search}` : ""}${hashId ? `#${hashId}` : ""}`;
+}
+
 function isDocumentViewerPath(pathname) {
   const normalizedPath = String(pathname || "");
 
@@ -792,45 +899,23 @@ function isDocumentViewerPath(pathname) {
 }
 
 function createCardMarkup(documentItem) {
-  const documentTags = getDocumentUiTags(documentItem);
-  const visibleTags = documentTags.slice(0, cardVisibleTagCount);
-  const hiddenTagCount = Math.max(0, documentTags.length - visibleTags.length);
-  const structureChips = [
-    documentItem.stage ? `<span class="structure-chip">${escapeHtml(documentItem.stage)}</span>` : "",
-    documentItem.part ? `<span class="structure-chip">${escapeHtml(documentItem.part)}</span>` : "",
-  ].filter(Boolean);
-  const description = documentItem.description || "No description provided.";
-  const sourceKind = getSourceKindLabel(documentItem.source_kind);
-  const status = getReadableLabel(documentItem.status || "ready");
-  const linkPath = documentItem.view_path || documentItem.public_file_path;
-  const documentLinkHref = buildDocumentLinkHref(linkPath);
-  const contentFormat = getContentFormatLabel(documentItem.content_format);
+  const resourceCard = createDocumentResourceModel(
+    documentItem,
+    {
+      buildDocumentLinkHref,
+      getContentFormatLabel,
+      getDocumentUiTags,
+      getReadableLabel,
+      getSourceKindLabel,
+      getTagDisplayLabel,
+    },
+    {
+      eyebrow: "Synced document",
+      tagLimit: cardVisibleTagCount,
+    },
+  );
 
-  return `
-    <article class="card">
-      <div class="card-header">
-        <div>
-          <p class="card-kicker">Synced document</p>
-          <h3>${escapeHtml(documentItem.title || "Untitled document")}</h3>
-        </div>
-        <span class="status-badge">${escapeHtml(status)}</span>
-      </div>
-      ${structureChips.length > 0 ? `
-      <div class="structure-chip-list">
-        ${structureChips.join("")}
-      </div>` : ""}
-      ${visibleTags.length > 0 ? `
-      <div class="tag-list">
-        ${visibleTags.map((tag) => `<span class="tag">${escapeHtml(getTagDisplayLabel(tag))}</span>`).join("")}
-        ${hiddenTagCount > 0 ? `<span class="tag tag-more">+${hiddenTagCount} more</span>` : ""}
-      </div>` : ""}
-      <p class="description">${escapeHtml(description)}</p>
-      <div class="card-footer">
-        <span class="source-kind">${escapeHtml(sourceKind)} · ${escapeHtml(contentFormat)}</span>
-        <a class="doc-link" href="${escapeHtml(documentLinkHref)}">Open document</a>
-      </div>
-    </article>
-  `;
+  return createResourceCardMarkup(resourceCard, { layout: "library" });
 }
 
 function getSourceKindLabel(sourceKind) {
@@ -899,6 +984,89 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function initializeHomepageSearch() {
+  const searchForm = document.getElementById("homepage-search-form");
+  const searchInputElement = homepageSearchInput();
+
+  if (!searchForm || !searchInputElement) {
+    return;
+  }
+
+  searchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const query = searchInputElement.value.trim();
+    const searchMatch = findHomepageSearchMatch(query);
+
+    if (searchMatch?.href) {
+      window.location.assign(searchMatch.href);
+      return;
+    }
+
+    updateHomepageSearchFeedback(
+      query
+        ? "No direct match found. Jumping to the library instead."
+        : "Jumping to the full library.",
+    );
+    focusLibraryPanel();
+  });
+}
+
+function findHomepageSearchMatch(query) {
+  const normalizedQuery = normalizeSearchText(query);
+
+  if (!normalizedQuery) {
+    return {
+      href: "#library-panel",
+    };
+  }
+
+  const exactMatch = homepageState.searchIndex.find((entry) =>
+    entry.tokens.some((token) => token === normalizedQuery),
+  );
+
+  if (exactMatch) {
+    updateHomepageSearchFeedback(`Opening ${exactMatch.value}.`);
+    return exactMatch;
+  }
+
+  const partialMatches = homepageState.searchIndex.filter((entry) =>
+    entry.tokens.some((token) => token.includes(normalizedQuery)),
+  );
+
+  if (partialMatches.length === 1) {
+    updateHomepageSearchFeedback(`Opening ${partialMatches[0].value}.`);
+    return partialMatches[0];
+  }
+
+  return null;
+}
+
+function normalizeSearchText(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^\w+\s-]/g, " ")
+    .replace(/\s+/g, " ");
+}
+
+function updateHomepageSearchFeedback(message) {
+  const feedbackElement = homepageSearchFeedback();
+
+  if (feedbackElement) {
+    feedbackElement.textContent = message;
+  }
+}
+
+function focusLibraryPanel() {
+  if (!libraryPanel) {
+    return;
+  }
+
+  libraryPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  window.history.replaceState(null, "", "#library-panel");
 }
 
 if (stageFilter) {

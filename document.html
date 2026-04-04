@@ -6,12 +6,13 @@
     <title>Document Viewer</title>
     <link rel="stylesheet" href="./styles/tokens.css" />
     <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/homepage.css" />
     <link rel="stylesheet" href="./styles/chemistry-content.css" />
   </head>
-  <body>
-    <div class="page-shell">
-      <header class="hero">
-        <p class="eyebrow">
+  <body class="page-document">
+    <div class="page-shell document-page-shell">
+      <header class="hero document-hero">
+        <p class="eyebrow document-breadcrumb">
           <a href="./index.html">Student Site</a>
           <span> / Document</span>
         </p>
@@ -19,11 +20,11 @@
         <p id="document-description" class="hero-copy">
           Preparing integrated document content.
         </p>
-        <div id="document-meta" class="meta-chip-row"></div>
+        <div id="document-meta" class="meta-chip-row viewer-meta-row"></div>
       </header>
 
-      <main class="document-layout">
-        <aside class="sidebar-panel" aria-label="Document tools">
+      <main class="document-layout viewer-layout">
+        <aside class="sidebar-panel viewer-sidebar" aria-label="Document tools">
           <details class="sidebar-section sidebar-disclosure" data-mobile-collapsed="true" open>
             <summary class="sidebar-summary">
               <h2 id="toc-heading">On This Page</h2>
@@ -48,7 +49,10 @@
             <summary class="sidebar-summary">
               <h2>Syllabus Links</h2>
             </summary>
-            <div id="document-syllabus-links" class="meta-chip-row sidebar-chip-row"></div>
+            <div
+              id="document-syllabus-links"
+              class="meta-chip-row sidebar-chip-row viewer-meta-row viewer-meta-row-syllabus"
+            ></div>
           </details>
 
           <details class="sidebar-section sidebar-disclosure" open>
@@ -57,16 +61,22 @@
             </summary>
             <p id="document-file-kind" class="panel-copy">Checking source format...</p>
             <div class="document-actions">
-              <a id="raw-file-link" class="secondary-link" href="#" target="_blank" rel="noreferrer">
+              <a
+                id="raw-file-link"
+                class="secondary-link viewer-action-link"
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Open Raw File
               </a>
             </div>
           </details>
         </aside>
 
-        <section class="library-panel document-panel" aria-live="polite">
+        <section class="library-panel document-panel viewer-panel" aria-live="polite">
           <div id="document-body" class="document-body" aria-busy="true">
-            <div class="document-placeholder empty-state">
+            <div class="document-placeholder empty-state empty-state--viewer">
               <strong>Loading document...</strong>
               <p>The student-site viewer is preparing the shared layout and content fragment.</p>
             </div>
