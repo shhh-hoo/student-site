@@ -1,6 +1,7 @@
 import {
   buildHomepageViewModel,
   createDocumentResourceModel,
+  loadCurationBundle,
   loadInteractiveResources,
 } from "./ui/homepage-data.js";
 import {
@@ -42,6 +43,7 @@ const libraryState = {
   showAllFilterTags: false,
 };
 const homepageState = {
+  curationBundle: {},
   interactiveResources: [],
   searchIndex: [],
 };
@@ -161,14 +163,17 @@ const textCollator = new Intl.Collator(undefined, {
 
 async function loadLibrary() {
   const interactiveResourcesPromise = loadInteractiveResources();
+  const curationBundlePromise = loadCurationBundle();
 
   try {
     libraryState.documents = await fetchLibraryDocuments();
-    homepageState.interactiveResources = await interactiveResourcesPromise;
+    homepageState.interactiveResources = await interactiveResourcesPromise.catch(() => []);
+    homepageState.curationBundle = await curationBundlePromise.catch(() => ({}));
     renderHomepage();
     applyFiltersFromUrl({ replaceUrl: true });
   } catch (error) {
     homepageState.interactiveResources = await interactiveResourcesPromise.catch(() => []);
+    homepageState.curationBundle = await curationBundlePromise.catch(() => ({}));
     renderHomepage();
     libraryStatus.textContent = "Could not load library data.";
     libraryGrid.setAttribute("aria-busy", "false");
@@ -204,7 +209,9 @@ function renderHomepage() {
   const helpers = {
     buildDocumentLinkHref,
     buildLibraryHref,
+    buildSiteHref,
     getContentFormatLabel,
+    getDocumentDisplayTitle,
     getDocumentUiTags,
     getReadableLabel,
     getSourceKindLabel,
@@ -213,6 +220,7 @@ function renderHomepage() {
   const homepageViewModel = buildHomepageViewModel(
     libraryState.documents,
     homepageState.interactiveResources,
+    homepageState.curationBundle,
     helpers,
   );
 
@@ -904,18 +912,34 @@ function createCardMarkup(documentItem) {
     {
       buildDocumentLinkHref,
       getContentFormatLabel,
+      getDocumentDisplayTitle,
       getDocumentUiTags,
       getReadableLabel,
       getSourceKindLabel,
       getTagDisplayLabel,
     },
     {
-      eyebrow: "Synced document",
+      eyebrow: "Document",
       tagLimit: cardVisibleTagCount,
     },
   );
 
   return createResourceCardMarkup(resourceCard, { layout: "library" });
+}
+
+function buildSiteHref(relativePath) {
+  const normalizedPath = String(relativePath || "").trim();
+
+  if (!normalizedPath) {
+    return "#";
+  }
+
+  try {
+    const destination = new URL(normalizedPath, window.location.href);
+    return `${destination.pathname}${destination.search}${destination.hash}`;
+  } catch {
+    return encodeURI(normalizedPath);
+  }
 }
 
 function getSourceKindLabel(sourceKind) {
@@ -926,6 +950,18 @@ function getSourceKindLabel(sourceKind) {
   }
 
   return getReadableLabel(sourceKind || "Unknown source");
+}
+
+function getDocumentDisplayTitle(documentItem, { short = false } = {}) {
+  if (short && documentItem?.short_title) {
+    return String(documentItem.short_title).trim();
+  }
+
+  if (documentItem?.display_title) {
+    return String(documentItem.display_title).trim();
+  }
+
+  return String(documentItem?.title || "Untitled document").trim() || "Untitled document";
 }
 
 function getReadableLabel(value) {

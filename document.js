@@ -298,6 +298,7 @@ function fragmentContainsMathSyntax(container) {
 
 function renderDocumentHeader(documentItem) {
   const metaChips = [];
+  const visibleTitle = getDocumentDisplayTitle(documentItem);
 
   if (documentItem.subject) {
     metaChips.push(documentItem.subject);
@@ -315,8 +316,8 @@ function renderDocumentHeader(documentItem) {
     metaChips.push(documentItem.stage_detail);
   }
 
-  document.title = `${documentItem.title || "Document"} | Student Site`;
-  documentTitle.textContent = documentItem.title || "Untitled document";
+  document.title = `${visibleTitle || "Document"} | Student Site`;
+  documentTitle.textContent = visibleTitle || "Untitled document";
   documentDescription.textContent =
     documentItem.description || "No description is available for this document.";
   documentMeta.innerHTML = metaChips
@@ -330,6 +331,14 @@ function renderDocumentHeader(documentItem) {
 
   documentFileKind.textContent = `Format: ${getContentFormatLabel(documentItem.content_format)}`;
   rawFileLink.href = documentItem.public_file_path;
+}
+
+function getDocumentDisplayTitle(documentItem) {
+  if (documentItem?.display_title) {
+    return String(documentItem.display_title).trim();
+  }
+
+  return String(documentItem?.title || "Untitled document").trim() || "Untitled document";
 }
 
 function renderSyllabusLinks(syllabusRefs) {

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (() => {
+        const params = new URLSearchParams(window.location.search);
+        const explicitTheme = params.get("theme");
+        const resolvedTheme =
+          explicitTheme === "dark" || explicitTheme === "light"
+            ? explicitTheme
+            : window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+
+        document.documentElement.dataset.theme = resolvedTheme;
+      })();
+    </script>
+    <title>A2 Chemistry | Student Site</title>
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/brand.css" />
+    <link rel="stylesheet" href="../styles/homepage.css" />
+    <link rel="stylesheet" href="../styles/stage-pages.css" />
+    <link rel="stylesheet" href="../styles/chemistry-content.css" />
+  </head>
+  <body class="page-stage" data-site-prefix="../" data-stage="A2">
+    <div class="page-shell">
+      <header id="site-header-root" class="stage-slot" aria-label="Site header">
+        <div class="site-header">
+          <div class="site-header__brand">
+            <span class="site-header__mark" aria-hidden="true">J2</span>
+            <div>
+              <p class="site-header__eyebrow">Start with A2</p>
+              <a class="site-header__title" href="../index.html">Chemistry Resource Bank</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="stage-main">
+        <section id="stage-hero-root" class="stage-slot" aria-label="A2 page hero"></section>
+        <section id="stage-featured-root" class="stage-slot" aria-label="A2 featured documents"></section>
+        <section id="stage-routes-root" class="stage-slot" aria-label="A2 routes"></section>
+        <section id="stage-first-cuts-root" class="stage-slot" aria-label="A2 topic picks"></section>
+        <section id="stage-launch-root" class="stage-slot" aria-label="A2 document set"></section>
+        <section id="stage-handoff-root" class="stage-slot" aria-label="A2 library handoff"></section>
+      </main>
+    </div>
+
+    <script type="module" src="../stage.js"></script>
+  </body>
+</html>

@@ -65,7 +65,11 @@ async function main() {
     await writeDocumentOutput(sourceFilePath, outputFilePath, contentFormat);
 
     library.push({
+      id: meta.id ?? "",
       title: meta.title ?? "",
+      display_title: meta.display_title ?? "",
+      short_title: meta.short_title ?? "",
+      kicker: meta.kicker ?? "",
       type: meta.type ?? "",
       subject: meta.subject ?? "",
       topic: meta.topic ?? "",
@@ -90,7 +94,9 @@ async function main() {
     });
   }
 
-  library.sort((left, right) => left.title.localeCompare(right.title));
+  library.sort((left, right) =>
+    (left.display_title || left.title).localeCompare(right.display_title || right.title),
+  );
 
   const libraryJsonPath = path.join(dataOutputRoot, "library.json");
   await writeFile(libraryJsonPath, `${JSON.stringify(library, null, 2)}\n`, "utf8");

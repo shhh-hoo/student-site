@@ -1,0 +1,71 @@
+{
+  "stage": "AS",
+  "title": "AS Chemistry",
+  "intro": "Start with foundations, inorganic chemistry, and the first organic routes.",
+  "featured_documents": [
+    "chemistry/9701-equation-bank-as-foundations-inorganic",
+    "chemistry/9701-equation-bank-as-hydrocarbons-halogenoalkanes",
+    "chemistry/9701-equation-bank-as-alcohols-carbonyls"
+  ],
+  "routes": [
+    {
+      "id": "as-foundations-inorganic",
+      "title": "Foundations & Inorganic",
+      "description": "Start here for Period 3, Group 2, Group 17, and the core written equations that support the rest of AS chemistry.",
+      "part": "Inorganic chemistry",
+      "tags": [
+        "group-2",
+        "group-17",
+        "period-3"
+      ]
+    },
+    {
+      "id": "as-organic-core",
+      "title": "Core Organic",
+      "description": "Start here for hydrocarbons, halogenoalkanes, alcohols, and carbonyls.",
+      "part": "Organic chemistry",
+      "tags": [
+        "hydrocarbons",
+        "halogenoalkanes",
+        "alcohols",
+        "carbonyls"
+      ]
+    },
+    {
+      "id": "as-acids-nitrogen-practical",
+      "title": "Acids, Nitrogen & Practical",
+      "description": "Use this next for carboxylic acids, nitriles, amines, polymers, and common ionic forms.",
+      "part": "Organic chemistry",
+      "tags": [
+        "carboxylic-acids",
+        "amines",
+        "nitriles",
+        "practical"
+      ]
+    }
+  ],
+  "best_first_cuts": {
+    "topics": [
+      "alcohols",
+      "carbonyls",
+      "group-2",
+      "halogenoalkanes",
+      "practical"
+    ],
+    "documents": [
+      "chemistry/9701-equation-bank-as-alcohols-carbonyls",
+      "chemistry/9701-equation-bank-as-foundations-inorganic",
+      "chemistry/9701-equation-bank-as-hydrocarbons-halogenoalkanes"
+    ]
+  },
+  "launch_documents": [
+    "chemistry/9701-equation-bank-as-foundations-inorganic",
+    "chemistry/9701-equation-bank-as-hydrocarbons-halogenoalkanes",
+    "chemistry/9701-equation-bank-as-alcohols-carbonyls",
+    "chemistry/9701-equation-bank-as-acids-nitrogen-practical"
+  ],
+  "library_handoff": {
+    "label": "Need more AS documents?",
+    "copy": "Open the full AS library when you want to browse beyond the featured picks and routes."
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "hero": {
+    "title": "Choose AS or A2, then move through one chemistry library.",
+    "subtitle": "Start with the stage you need, then use interactive practice when you want quick drills.",
+    "primary_cta": {
+      "label": "Explore AS",
+      "href": "as/"
+    },
+    "secondary_cta": {
+      "label": "Explore A2",
+      "href": "a2/"
+    }
+  },
+  "entry_cards": [
+    {
+      "id": "as-entry",
+      "kind": "stage",
+      "title": "AS Chemistry",
+      "kicker": "AS stage",
+      "description": "Start with foundations, inorganic chemistry, and the first organic routes.",
+      "href": "as/",
+      "cta_label": "Start with AS",
+      "count_label": "4 documents",
+      "chips": [
+        "AS"
+      ],
+      "supporting_tags": [
+        "Alcohols",
+        "Group 2"
+      ]
+    },
+    {
+      "id": "a2-entry",
+      "kind": "stage",
+      "title": "A2 Chemistry",
+      "kicker": "A2 stage",
+      "description": "Start with physical chemistry, transition elements, and the core A2 organic set.",
+      "href": "a2/",
+      "cta_label": "Start with A2",
+      "count_label": "5 documents",
+      "chips": [
+        "A2"
+      ],
+      "supporting_tags": [
+        "Arenes",
+        "Electrochemistry"
+      ]
+    },
+    {
+      "id": "interactive-entry",
+      "kind": "interactive",
+      "title": "Interactive Practice",
+      "kicker": "Interactive practice",
+      "description": "Use quick drills and tools when you want short practice between longer revision sessions.",
+      "href": "interactive/ir-past-paper-trainer/",
+      "cta_label": "Open interactive",
+      "count_label": "1 tool",
+      "chips": [
+        "AS+A2"
+      ],
+      "supporting_tags": [
+        "IR spectroscopy",
+        "Past paper"
+      ]
+    }
+  ],
+  "featured_documents": [
+    "chemistry/9701-equation-bank-index",
+    "chemistry/9701-equation-bank-as-foundations-inorganic",
+    "chemistry/9701-equation-bank-a2-acyl-nitrogen-polymers"
+  ],
+  "spotlight_documents": [
+    "chemistry/9701-equation-bank-as-alcohols-carbonyls",
+    "chemistry/9701-equation-bank-a2-physical-transition-elements"
+  ],
+  "quick_search_topics": [
+    "alcohols",
+    "arenes",
+    "electrochemistry",
+    "amines"
+  ],
+  "notes": {
+    "editorial_rule": "Keep homepage focused on route choice and top-level featured documents instead of turning it into a mixed library page."
+  }
+}

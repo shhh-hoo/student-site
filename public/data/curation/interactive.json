@@ -1,0 +1,13 @@
+{
+  "spotlight": {
+    "asset_id": "ir-past-paper-trainer",
+    "title": "IR Past-Paper Trainer",
+    "kicker": "Interactive practice",
+    "summary": "Practise IR questions by comparing peaks, ruling out structures, and checking likely answers.",
+    "why_distinct": "Use the trainer for quick practice, then return to notes when you want the fuller explanation.",
+    "cta": {
+      "label": "Open trainer",
+      "href": "interactive/ir-past-paper-trainer/"
+    }
+  }
+}

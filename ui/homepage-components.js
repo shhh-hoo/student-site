@@ -111,7 +111,7 @@ export function createSiteHeaderMarkup(header) {
         <span class="site-header__mark" aria-hidden="true">J2</span>
         <div>
           <p class="site-header__eyebrow">${escapeHtml(header.eyebrow)}</p>
-          <a class="site-header__title" href="./index.html">${escapeHtml(header.title)}</a>
+          <a class="site-header__title" href="${escapeHtml(header.homeHref || "./index.html")}">${escapeHtml(header.title)}</a>
         </div>
       </div>
       <nav class="site-header__nav" aria-label="Primary">
@@ -181,7 +181,7 @@ export function createHomepageHeroMarkup(hero) {
         <div class="homepage-hero__panel homepage-hero__panel--search">
           ${createSearchBarMarkup(hero.search)}
         </div>
-        <div class="homepage-hero__stack" aria-label="Study workflow overview">
+        <div class="homepage-hero__stack" aria-label="Study options overview">
           <div class="homepage-hero__panel homepage-hero__panel--stats">
             <p class="homepage-hero__panel-kicker">${escapeHtml(hero.panelKicker)}</p>
             <div class="homepage-hero__stats">${statsMarkup}</div>
@@ -234,6 +234,8 @@ export function createFeatureCardMarkup(card, { layout = "standard" } = {}) {
 }
 
 export function createResourceCardMarkup(resource, { layout = "standard" } = {}) {
+  const metaMarkup = createResourceMetaMarkup(resource, layout);
+
   return `
     <article
       class="${joinClasses(
@@ -268,7 +270,7 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
         : ""}
       ${resource.note ? `<p class="resource-card__note">${escapeHtml(resource.note)}</p>` : ""}
       <div class="resource-card__footer">
-        ${resource.metaLine ? `<span class="resource-card__meta">${escapeHtml(resource.metaLine)}</span>` : ""}
+        ${metaMarkup}
         ${createCTAButtonMarkup({
           href: resource.href,
           label: resource.ctaLabel,
@@ -278,6 +280,49 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
       </div>
     </article>
   `;
+}
+
+function createResourceMetaMarkup(resource, layout) {
+  const metaItems = getResourceMetaItems(resource, layout);
+
+  if (metaItems.length === 0) {
+    return "";
+  }
+
+  if (metaItems.length === 1) {
+    return `<span class="resource-card__meta">${escapeHtml(metaItems[0])}</span>`;
+  }
+
+  return `
+    <div class="resource-card__meta-list">
+      ${metaItems
+        .map((metaItem) => `<span class="resource-card__meta">${escapeHtml(metaItem)}</span>`)
+        .join("")}
+    </div>
+  `;
+}
+
+function getResourceMetaItems(resource, layout) {
+  if (Array.isArray(resource.metaItems)) {
+    return resource.metaItems.filter(Boolean);
+  }
+
+  const metaLine = typeof resource.metaLine === "string" ? resource.metaLine.trim() : "";
+
+  if (!metaLine) {
+    return [];
+  }
+
+  if (
+    layout.startsWith("stage-") &&
+    typeof window !== "undefined" &&
+    window.matchMedia("(max-width: 760px)").matches &&
+    metaLine.includes(" · ")
+  ) {
+    return metaLine.split(/\s+·\s+/).map((item) => item.trim()).filter(Boolean);
+  }
+
+  return [metaLine];
 }
 
 export function createRoutesSectionMarkup(section) {
