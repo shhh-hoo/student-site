@@ -4,6 +4,17 @@ export const filterQueryKeys = {
   tags: "tags",
 };
 
+export const overviewTypeOptions = [
+  "Equation",
+  "Explanation",
+  "Experiment",
+  "Mechanism",
+  "Comparison",
+  "Practice",
+];
+
+export const overviewTopicOptions = ["Organic", "Physical", "Inorganic", "Analytical", "Practical"];
+
 const structuralUiTags = new Set([
   "9701",
   "equation-bank",
@@ -54,8 +65,8 @@ const tagDisplayLabelMap = {
   "functional-groups": "Functional groups",
   "group-2": "Group 2",
   "group-17": "Group 17",
-  "halogenoalkanes": "Halogenoalkanes",
-  "halogenoarenes": "Halogenoarenes",
+  halogenoalkanes: "Halogenoalkanes",
+  halogenoarenes: "Halogenoarenes",
   "hcn-addition": "HCN addition",
   hydrocarbons: "Hydrocarbons",
   "ir-spectroscopy": "IR spectroscopy",
@@ -79,6 +90,17 @@ const sourceKindLabelMap = {
   "teacher-made": "Teacher-made",
   "ai-generated": "AI-generated",
 };
+
+const analyticalOverviewTags = new Set(["ir-spectroscopy", "past-paper", "qualitative-tests"]);
+const inorganicOverviewTags = new Set([
+  "group-2",
+  "group-17",
+  "period-3",
+  "nitrogen-sulfur",
+  "transition-elements",
+]);
+const physicalOverviewTags = new Set(["buffers", "electrochemistry", "redox"]);
+const practicalOverviewTags = new Set(["practical", "qualitative-tests"]);
 
 const textCollator = new Intl.Collator(undefined, {
   numeric: true,
@@ -131,11 +153,9 @@ export function buildLibraryHref(
   { sitePrefix = "./", hashId = "library-panel" } = {},
 ) {
   const destination = new URL("index.html", getResolvedBaseUrl(sitePrefix));
-  const normalizedTags = [...new Set(
-    (Array.isArray(tags) ? tags : [tags])
-      .map(normalizeUiTag)
-      .filter(Boolean),
-  )].sort(sortTagValues);
+  const normalizedTags = [
+    ...new Set((Array.isArray(tags) ? tags : [tags]).map(normalizeUiTag).filter(Boolean)),
+  ].sort(sortTagValues);
 
   if (stage) {
     destination.searchParams.set(filterQueryKeys.stage, stage);
@@ -189,6 +209,14 @@ export function normalizeUiTag(value) {
   }
 
   return canonicalValue;
+}
+
+function getNormalizedResourceTags(resource) {
+  return [
+    ...new Set(
+      (Array.isArray(resource?.tags) ? resource.tags : []).map(normalizeTagSlug).filter(Boolean),
+    ),
+  ];
 }
 
 export function normalizeSearchText(value) {
@@ -275,12 +303,184 @@ export function getDocumentDisplayTitle(documentItem, { short = false } = {}) {
   return String(documentItem?.title || "Untitled document").trim() || "Untitled document";
 }
 
+export function getOverviewTypeLabel(resource) {
+  const normalizedTags = new Set(getNormalizedResourceTags(resource));
+  const overviewText = [
+    resource?.title,
+    resource?.display_title,
+    resource?.kicker,
+    resource?.description,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (overviewText.includes("equation bank") || resource?.topic === "equation-bank") {
+    return "Equation";
+  }
+
+  if (normalizedTags.has("mechanisms") || overviewText.includes("mechanism")) {
+    return "Mechanism";
+  }
+
+  if (
+    resource?.kind === "interactive" ||
+    normalizedTags.has("past-paper") ||
+    overviewText.includes("practice") ||
+    overviewText.includes("trainer")
+  ) {
+    return "Practice";
+  }
+
+  if (overviewText.includes("comparison")) {
+    return "Comparison";
+  }
+
+  if (
+    normalizedTags.has("practical") ||
+    normalizedTags.has("qualitative-tests") ||
+    overviewText.includes("experiment")
+  ) {
+    return "Experiment";
+  }
+
+  return "Explanation";
+}
+
+export function getOverviewTopicLabel(resource) {
+  const normalizedTags = new Set(getNormalizedResourceTags(resource));
+  const overviewText = [resource?.title, resource?.display_title, resource?.description]
+    .join(" ")
+    .toLowerCase();
+  const partText = String(resource?.part || "").toLowerCase();
+
+  if (
+    [...practicalOverviewTags].some((tag) => normalizedTags.has(tag)) ||
+    overviewText.includes("practical")
+  ) {
+    return "Practical";
+  }
+
+  if (
+    resource?.kind === "interactive" ||
+    [...analyticalOverviewTags].some((tag) => normalizedTags.has(tag)) ||
+    overviewText.includes("spectroscopy")
+  ) {
+    return "Analytical";
+  }
+
+  if (
+    partText.includes("physical") ||
+    [...physicalOverviewTags].some((tag) => normalizedTags.has(tag))
+  ) {
+    return "Physical";
+  }
+
+  if (
+    partText.includes("inorganic") ||
+    [...inorganicOverviewTags].some((tag) => normalizedTags.has(tag))
+  ) {
+    return "Inorganic";
+  }
+
+  return "Organic";
+}
+
+export function getOverviewStageValue(stage) {
+  const normalizedStage = String(stage || "")
+    .trim()
+    .toUpperCase();
+
+  if (normalizedStage === "AS" || normalizedStage === "A2") {
+    return normalizedStage;
+  }
+
+  return "All";
+}
+
+export function matchesOverviewFilters(item, filters = {}) {
+  const matchesType = !filters.type || item.typeLabel === filters.type;
+  const matchesTopic = !filters.topic || item.topicLabel === filters.topic;
+  const matchesStage =
+    !filters.stage || item.stageValue === filters.stage || item.stageValue === "All";
+
+  return matchesType && matchesTopic && matchesStage;
+}
+
+export function filterOverviewItems(items, filters = {}) {
+  return (Array.isArray(items) ? items : []).filter((item) =>
+    matchesOverviewFilters(item, filters),
+  );
+}
+
+function countOverviewItems(items, filters, key, value) {
+  const nextFilters = {
+    type: filters.type || "",
+    topic: filters.topic || "",
+    stage: filters.stage || "",
+  };
+
+  nextFilters[key] = value;
+
+  if (!value) {
+    nextFilters[key] = "";
+  }
+
+  return filterOverviewItems(items, nextFilters).length;
+}
+
+function createOverviewFilterOption(items, filters, key, label) {
+  const value = label === "All" ? "" : label;
+  const active = value ? filters[key] === value : !filters[key];
+  const count = countOverviewItems(items, filters, key, value);
+
+  return {
+    value,
+    label,
+    count,
+    active,
+    disabled: count === 0 && !active,
+  };
+}
+
+export function buildOverviewFilterGroups(items, filters = {}, { includeStage = false } = {}) {
+  const groups = [
+    {
+      key: "type",
+      label: "Filter by type",
+      options: ["All", ...overviewTypeOptions].map((label) =>
+        createOverviewFilterOption(items, filters, "type", label),
+      ),
+    },
+    {
+      key: "topic",
+      label: "Filter by topic",
+      options: ["All", ...overviewTopicOptions].map((label) =>
+        createOverviewFilterOption(items, filters, "topic", label),
+      ),
+    },
+  ];
+
+  if (includeStage) {
+    groups.push({
+      key: "stage",
+      label: "Filter by stage",
+      options: ["All", "AS", "A2"].map((label) =>
+        createOverviewFilterOption(items, filters, "stage", label),
+      ),
+    });
+  }
+
+  return groups;
+}
+
 export function getDistinctValues(items, key) {
-  return [...new Set(
-    (Array.isArray(items) ? items : [])
-      .map((item) => String(item?.[key] || "").trim())
-      .filter(Boolean),
-  )].sort(sortText);
+  return [
+    ...new Set(
+      (Array.isArray(items) ? items : [])
+        .map((item) => String(item?.[key] || "").trim())
+        .filter(Boolean),
+    ),
+  ].sort(sortText);
 }
 
 export function sortText(left, right) {
@@ -303,5 +503,8 @@ export function truncateText(value, maxLength) {
     return normalizedValue;
   }
 
-  return `${normalizedValue.slice(0, maxLength).trimEnd().replace(/[.,;:!?-]+$/, "")}…`;
+  return `${normalizedValue
+    .slice(0, maxLength)
+    .trimEnd()
+    .replace(/[.,;:!?-]+$/, "")}…`;
 }

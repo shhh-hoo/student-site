@@ -1,20 +1,17 @@
+import { createSiteHeaderMarkup } from "./ui/homepage-components.js";
 import {
-  createSiteHeaderMarkup,
-} from "./ui/homepage-components.js";
-import {
-  createStageFeaturedResourcesMarkup,
-  createStageFirstCutsMarkup,
-  createStageHandoffMarkup,
+  createStageDocumentsMarkup,
   createStageHeroMarkup,
-  createStageLaunchMarkup,
-  createStageRoutesMarkup,
+  createStageOverviewMarkup,
 } from "./ui/stage-components.js";
 import { buildStagePageViewModel } from "./ui/stage-data.js";
 import { fetchLibraryDocuments, loadCurationBundle } from "./ui/site-data.js";
 import {
   buildDocumentLinkHref,
   buildLibraryHref,
+  buildOverviewFilterGroups,
   buildSiteHref,
+  filterOverviewItems,
   getContentFormatLabel,
   getDocumentDisplayTitle,
   getDocumentUiTags,
@@ -25,14 +22,21 @@ import {
 
 const siteHeaderRoot = document.getElementById("site-header-root");
 const stageHeroRoot = document.getElementById("stage-hero-root");
-const stageFeaturedRoot = document.getElementById("stage-featured-root");
-const stageRoutesRoot = document.getElementById("stage-routes-root");
-const stageFirstCutsRoot = document.getElementById("stage-first-cuts-root");
-const stageLaunchRoot = document.getElementById("stage-launch-root");
-const stageHandoffRoot = document.getElementById("stage-handoff-root");
+const stageOverviewRoot = document.getElementById("stage-overview-root");
+const stageDocumentsRoot = document.getElementById("stage-documents-root");
 
-const stageKey = String(document.body.dataset.stage || "").trim().toUpperCase();
+const stageKey = String(document.body.dataset.stage || "")
+  .trim()
+  .toUpperCase();
 const sitePrefix = document.body.dataset.sitePrefix || "./";
+const stagePageState = {
+  filters: {
+    type: "",
+    topic: "",
+    stage: "",
+  },
+  viewModel: null,
+};
 
 function getStageReturnSearch() {
   const searchParams = new URLSearchParams();
@@ -93,6 +97,97 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+function renderStageOverview() {
+  if (!stageOverviewRoot || !stagePageState.viewModel) {
+    return;
+  }
+
+  const overviewSection = stagePageState.viewModel.overviewSection;
+  const allItems = overviewSection.items || [];
+  const filteredItems = filterOverviewItems(allItems, stagePageState.filters);
+
+  stageOverviewRoot.innerHTML = createStageOverviewMarkup({
+    ...overviewSection,
+    filterGroups: buildOverviewFilterGroups(allItems, stagePageState.filters),
+    summary: {
+      label: "Directory",
+      copy:
+        filteredItems.length === allItems.length
+          ? `Showing the full ${stageKey} bank. Use type and topic filters to narrow the page.`
+          : `Showing ${filteredItems.length} of ${allItems.length} ${allItems.length === 1 ? "document" : "documents"} in the ${stageKey} bank.`,
+      countLabel: `${filteredItems.length} match${filteredItems.length === 1 ? "" : "es"}`,
+    },
+  });
+}
+
+function renderStageDocuments() {
+  if (!stageDocumentsRoot || !stagePageState.viewModel) {
+    return;
+  }
+
+  const documentsSection = stagePageState.viewModel.documentsSection;
+  const allItems = documentsSection.items || [];
+  const filteredItems = filterOverviewItems(allItems, stagePageState.filters);
+
+  stageDocumentsRoot.innerHTML = createStageDocumentsMarkup({
+    ...documentsSection,
+    results: filteredItems,
+    summary: {
+      label: "Current results",
+      copy:
+        filteredItems.length === allItems.length
+          ? `Open any ${stageKey} document directly from this page.`
+          : `Filtered to ${filteredItems.length} of ${allItems.length} ${allItems.length === 1 ? "document" : "documents"}.`,
+      countLabel: `${filteredItems.length} document${filteredItems.length === 1 ? "" : "s"}`,
+    },
+  });
+}
+
+function renderStagePage() {
+  if (!stagePageState.viewModel) {
+    return;
+  }
+
+  document.title = `${stagePageState.viewModel.hero.title} | Student Site`;
+
+  if (siteHeaderRoot) {
+    siteHeaderRoot.innerHTML = createSiteHeaderMarkup(stagePageState.viewModel.header);
+  }
+
+  if (stageHeroRoot) {
+    stageHeroRoot.innerHTML = createStageHeroMarkup(stagePageState.viewModel.hero);
+  }
+
+  renderStageOverview();
+  renderStageDocuments();
+}
+
+function initializeStageOverviewFilters() {
+  if (!stageOverviewRoot || stageOverviewRoot.dataset.initialized === "true") {
+    return;
+  }
+
+  stageOverviewRoot.addEventListener("click", (event) => {
+    const filterButton = event.target.closest("[data-filter-key]");
+
+    if (!filterButton) {
+      return;
+    }
+
+    const filterKey = filterButton.dataset.filterKey;
+
+    if (!filterKey || !(filterKey in stagePageState.filters)) {
+      return;
+    }
+
+    stagePageState.filters[filterKey] = filterButton.dataset.filterValue || "";
+    renderStageOverview();
+    renderStageDocuments();
+  });
+
+  stageOverviewRoot.dataset.initialized = "true";
+}
+
 async function initStagePage() {
   if (!stageKey) {
     renderErrorState("No stage was provided for this page.");
@@ -105,42 +200,16 @@ async function initStagePage() {
       loadCurationBundle(sitePrefix),
     ]);
     const helpers = createStageHelpers();
-    const viewModel = buildStagePageViewModel({
+
+    stagePageState.viewModel = buildStagePageViewModel({
       stage: stageKey,
       documents,
       curationBundle,
       helpers,
     });
 
-    document.title = `${viewModel.hero.title} | Student Site`;
-
-    if (siteHeaderRoot) {
-      siteHeaderRoot.innerHTML = createSiteHeaderMarkup(viewModel.header);
-    }
-
-    if (stageHeroRoot) {
-      stageHeroRoot.innerHTML = createStageHeroMarkup(viewModel.hero);
-    }
-
-    if (stageFeaturedRoot) {
-      stageFeaturedRoot.innerHTML = createStageFeaturedResourcesMarkup(viewModel.featuredSection);
-    }
-
-    if (stageRoutesRoot) {
-      stageRoutesRoot.innerHTML = createStageRoutesMarkup(viewModel.routesSection);
-    }
-
-    if (stageFirstCutsRoot) {
-      stageFirstCutsRoot.innerHTML = createStageFirstCutsMarkup(viewModel.firstCutsSection);
-    }
-
-    if (stageLaunchRoot) {
-      stageLaunchRoot.innerHTML = createStageLaunchMarkup(viewModel.launchSection);
-    }
-
-    if (stageHandoffRoot) {
-      stageHandoffRoot.innerHTML = createStageHandoffMarkup(viewModel.handoffSection);
-    }
+    renderStagePage();
+    initializeStageOverviewFilters();
   } catch (error) {
     renderErrorState(error.message);
   }
