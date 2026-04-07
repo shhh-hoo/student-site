@@ -5,18 +5,19 @@ import {
   loadInteractiveResources,
 } from "./ui/homepage-data.js";
 import {
-  createFeaturedResourcesMarkup,
+  createEntrySectionMarkup,
   createHomepageHeroMarkup,
+  createHomepageOverviewMarkup,
   createInteractiveSectionMarkup,
   createResourceCardMarkup,
-  createRoutesSectionMarkup,
   createSiteHeaderMarkup,
 } from "./ui/homepage-components.js";
+import { buildOverviewFilterGroups, filterOverviewItems } from "./ui/site-helpers.js";
 
 const siteHeaderRoot = document.getElementById("site-header-root");
 const homepageHeroRoot = document.getElementById("homepage-hero-root");
-const homepageRoutesRoot = document.getElementById("homepage-routes-root");
-const homepageFeaturedRoot = document.getElementById("homepage-featured-root");
+const homepageEntryRoot = document.getElementById("homepage-entry-root");
+const homepageOverviewRoot = document.getElementById("homepage-overview-root");
 const homepageInteractiveRoot = document.getElementById("homepage-interactive-root");
 const homepageSearchFeedback = () => document.getElementById("homepage-search-feedback");
 const homepageSearchInput = () => document.getElementById("homepage-search-input");
@@ -46,6 +47,12 @@ const homepageState = {
   curationBundle: {},
   interactiveResources: [],
   searchIndex: [],
+  overviewFilters: {
+    type: "",
+    topic: "",
+    stage: "",
+  },
+  viewModel: null,
 };
 
 const filterQueryKeys = {
@@ -103,8 +110,8 @@ const tagDisplayLabelMap = {
   "functional-groups": "Functional groups",
   "group-2": "Group 2",
   "group-17": "Group 17",
-  "halogenoalkanes": "Halogenoalkanes",
-  "halogenoarenes": "Halogenoarenes",
+  halogenoalkanes: "Halogenoalkanes",
+  halogenoarenes: "Halogenoarenes",
   "hcn-addition": "HCN addition",
   hydrocarbons: "Hydrocarbons",
   "ir-spectroscopy": "IR spectroscopy",
@@ -223,6 +230,7 @@ function renderHomepage() {
     homepageState.curationBundle,
     helpers,
   );
+  homepageState.viewModel = homepageViewModel;
 
   homepageState.searchIndex = Array.isArray(homepageViewModel.searchIndex)
     ? homepageViewModel.searchIndex
@@ -236,13 +244,11 @@ function renderHomepage() {
     homepageHeroRoot.innerHTML = createHomepageHeroMarkup(homepageViewModel.hero);
   }
 
-  if (homepageRoutesRoot) {
-    homepageRoutesRoot.innerHTML = createRoutesSectionMarkup(homepageViewModel.routesSection);
+  if (homepageEntryRoot) {
+    homepageEntryRoot.innerHTML = createEntrySectionMarkup(homepageViewModel.entrySection);
   }
 
-  if (homepageFeaturedRoot) {
-    homepageFeaturedRoot.innerHTML = createFeaturedResourcesMarkup(homepageViewModel.featuredSection);
-  }
+  renderHomepageOverview();
 
   if (homepageInteractiveRoot) {
     homepageInteractiveRoot.innerHTML = createInteractiveSectionMarkup(
@@ -251,6 +257,60 @@ function renderHomepage() {
   }
 
   initializeHomepageSearch();
+  initializeHomepageOverviewFilters();
+}
+
+function renderHomepageOverview() {
+  if (!homepageOverviewRoot || !homepageState.viewModel) {
+    return;
+  }
+
+  const overviewSection = homepageState.viewModel.overviewSection;
+  const allItems = overviewSection.items || [];
+  const filteredItems = filterOverviewItems(allItems, homepageState.overviewFilters);
+  const previewLimit = overviewSection.previewLimit || filteredItems.length;
+  const visibleResults = filteredItems.slice(0, previewLimit);
+
+  homepageOverviewRoot.innerHTML = createHomepageOverviewMarkup({
+    ...overviewSection,
+    filterGroups: buildOverviewFilterGroups(allItems, homepageState.overviewFilters, {
+      includeStage: true,
+    }),
+    results: visibleResults,
+    summary: {
+      label: "Directory",
+      copy:
+        filteredItems.length > visibleResults.length
+          ? `Showing ${visibleResults.length} of ${filteredItems.length} matching resources on the homepage. Open the library for the full browse.`
+          : `Showing ${filteredItems.length} resource${filteredItems.length === 1 ? "" : "s"} on the homepage.`,
+      countLabel: `${filteredItems.length} match${filteredItems.length === 1 ? "" : "es"}`,
+    },
+  });
+}
+
+function initializeHomepageOverviewFilters() {
+  if (!homepageOverviewRoot || homepageOverviewRoot.dataset.initialized === "true") {
+    return;
+  }
+
+  homepageOverviewRoot.addEventListener("click", (event) => {
+    const filterButton = event.target.closest("[data-filter-key]");
+
+    if (!filterButton) {
+      return;
+    }
+
+    const filterKey = filterButton.dataset.filterKey;
+
+    if (!filterKey || !(filterKey in homepageState.overviewFilters)) {
+      return;
+    }
+
+    homepageState.overviewFilters[filterKey] = filterButton.dataset.filterValue || "";
+    renderHomepageOverview();
+  });
+
+  homepageOverviewRoot.dataset.initialized = "true";
 }
 
 function renderLibrary() {
@@ -361,12 +421,14 @@ function normalizeFilterParam(value) {
 function normalizeTagParams(values) {
   const tagValues = Array.isArray(values) ? values : [values];
 
-  return [...new Set(
-    tagValues
-      .flatMap((value) => String(value || "").split(","))
-      .map(normalizeUiTag)
-      .filter(Boolean),
-  )].sort(sortTagValues);
+  return [
+    ...new Set(
+      tagValues
+        .flatMap((value) => String(value || "").split(","))
+        .map(normalizeUiTag)
+        .filter(Boolean),
+    ),
+  ].sort(sortTagValues);
 }
 
 function normalizeUiTag(value) {
@@ -453,7 +515,8 @@ function renderFilterControls(documents) {
           .map(({ title, description, tags, secondary = false }) =>
             createFilterTagGroupMarkup(title, description, tags, {
               secondary,
-            }))
+            }),
+          )
           .join("")
       : '<span class="tag">No topics or skills available for this Stage and Part.</span>';
 
@@ -476,17 +539,15 @@ function populateSelectOptions(selectElement, values) {
 }
 
 function getUniqueValues(documents, key) {
-  return [...new Set(
-    documents
-      .map((documentItem) => String(documentItem[key] || "").trim())
-      .filter(Boolean),
-  )].sort(sortText);
+  return [
+    ...new Set(
+      documents.map((documentItem) => String(documentItem[key] || "").trim()).filter(Boolean),
+    ),
+  ].sort(sortText);
 }
 
 function getUniqueTagValues(documents) {
-  return [...new Set(
-    documents.flatMap(getDocumentUiTags),
-  )].sort(sortTagValues);
+  return [...new Set(documents.flatMap(getDocumentUiTags))].sort(sortTagValues);
 }
 
 function getDocumentsMatchingStageAndPart(documents) {
@@ -560,8 +621,8 @@ function getVisibleFilterTagGroups(
 
   if (priorityTags.length > 0) {
     groups.push({
-      title: "Best first cuts",
-      description: "Start here before opening the long tail.",
+      title: "Priority topics",
+      description: "Most useful topic filters for this Stage and Part view.",
       tags: priorityTags,
     });
   }
@@ -569,14 +630,14 @@ function getVisibleFilterTagGroups(
   if (libraryState.showAllFilterTags && secondaryTags.length > 0) {
     groups.push({
       title: "More from this stage and part",
-      description: "Long-tail topics still available in the current subset.",
+      description: "Additional topic filters still available in the current subset.",
       tags: secondaryTags,
       secondary: true,
     });
   } else if (selectedSecondaryTags.length > 0) {
     groups.push({
       title: "Selected from more topics",
-      description: "Pinned here because they are active.",
+      description: "Pinned here because they are active in the current subset.",
       tags: selectedSecondaryTags,
       secondary: true,
     });
@@ -610,8 +671,8 @@ function getPriorityFilterTags(rankedTagValues, availableParts, tagPartMap) {
       return;
     }
 
-    const partCandidate = rankedTagValues.find((tag) =>
-      !priorityTags.includes(tag) && (tagPartMap[tag] || new Set()).has(part),
+    const partCandidate = rankedTagValues.find(
+      (tag) => !priorityTags.includes(tag) && (tagPartMap[tag] || new Set()).has(part),
     );
 
     if (!partCandidate) {
@@ -695,29 +756,28 @@ function createFilterTagButtonMarkup(tag, { secondary = false } = {}) {
 function updateFilterCopy(stageAndPartDocuments, tagValues, tagGroups) {
   if (filterHelper) {
     filterHelper.textContent =
-      "Stage and Part set the pool first. Topics & Skills now shows the strongest entry points for that subset.";
+      "Stage and Part set the pool first. Topics & Skills then narrows that subset.";
   }
 
   if (filterTopicSummary) {
     const selectedCount = libraryState.filters.tags.size;
     const stageAndPartDocumentLabel = `${stageAndPartDocuments.length} document${stageAndPartDocuments.length === 1 ? "" : "s"}`;
     const priorityCount =
-      tagGroups.groups.find(({ title }) => title === "Best first cuts")?.tags.length || 0;
+      tagGroups.groups.find(({ title }) => title === "Priority topics")?.tags.length || 0;
 
-    filterTopicSummary.textContent = selectedCount > 0
-      ? `${selectedCount} topic${selectedCount === 1 ? "" : "s"} selected. Results are narrowed inside ${stageAndPartDocumentLabel}.`
-      : tagGroups.hiddenCount > 0
-        ? `Showing ${priorityCount} priority topic${priorityCount === 1 ? "" : "s"} first from ${stageAndPartDocumentLabel}. Expand to reveal ${tagGroups.hiddenCount} more.`
-        : `${tagValues.length} topic${tagValues.length === 1 ? "" : "s"} available in this Stage + Part view.`;
+    filterTopicSummary.textContent =
+      selectedCount > 0
+        ? `${selectedCount} topic${selectedCount === 1 ? "" : "s"} selected. Results are narrowed inside ${stageAndPartDocumentLabel}.`
+        : tagGroups.hiddenCount > 0
+          ? `Showing ${priorityCount} priority topic${priorityCount === 1 ? "" : "s"} first from ${stageAndPartDocumentLabel}. Expand to reveal ${tagGroups.hiddenCount} more.`
+          : `${tagValues.length} topic${tagValues.length === 1 ? "" : "s"} available in this Stage + Part view.`;
   }
 
   if (filterTopicCount) {
     const selectedCount = libraryState.filters.tags.size;
 
     filterTopicCount.hidden = selectedCount === 0;
-    filterTopicCount.textContent = selectedCount > 0
-      ? `${selectedCount} selected`
-      : "";
+    filterTopicCount.textContent = selectedCount > 0 ? `${selectedCount} selected` : "";
   }
 }
 
@@ -783,9 +843,7 @@ function matchesActiveFilters(documentItem) {
 
 function hasFiltersApplied() {
   return Boolean(
-    libraryState.filters.stage ||
-      libraryState.filters.part ||
-      libraryState.filters.tags.size > 0,
+    libraryState.filters.stage || libraryState.filters.part || libraryState.filters.tags.size > 0,
   );
 }
 
@@ -878,11 +936,9 @@ function buildDocumentLinkHref(linkPath) {
 
 function buildLibraryHref({ stage = "", part = "", tags = [] } = {}, hashId = "library-panel") {
   const searchParams = new URLSearchParams();
-  const normalizedTags = [...new Set(
-    (Array.isArray(tags) ? tags : [tags])
-      .map(normalizeUiTag)
-      .filter(Boolean),
-  )].sort(sortTagValues);
+  const normalizedTags = [
+    ...new Set((Array.isArray(tags) ? tags : [tags]).map(normalizeUiTag).filter(Boolean)),
+  ].sort(sortTagValues);
 
   if (stage) {
     searchParams.set(filterQueryKeys.stage, stage);

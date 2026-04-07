@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -40,32 +40,30 @@
       </header>
 
       <main class="homepage-main">
-        <div class="homepage-stage">
-          <section id="homepage-hero-root" class="homepage-slot" aria-label="Homepage hero">
-            <div class="homepage-hero">
-              <div class="homepage-hero__poster">
-                <div class="homepage-hero__content">
-                  <div class="homepage-hero__intro">
-                    <p class="homepage-hero__kicker">Start here</p>
-                    <span class="homepage-hero__pill">CAIE Chemistry 9701</span>
-                  </div>
-                  <h1 id="homepage-hero-title">Loading the stage-first homepage...</h1>
-                  <p class="homepage-hero__copy">
-                    Preparing the homepage and stage pages.
-                  </p>
+        <section id="homepage-hero-root" class="homepage-slot" aria-label="Homepage hero">
+          <div class="homepage-hero">
+            <div class="homepage-hero__poster">
+              <div class="homepage-hero__content">
+                <div class="homepage-hero__intro">
+                  <p class="homepage-hero__kicker">Home</p>
+                  <span class="homepage-hero__pill">CAIE Chemistry 9701</span>
                 </div>
+                <h1 id="homepage-hero-title">Loading the homepage...</h1>
+                <p class="homepage-hero__copy">Preparing the homepage and directory view.</p>
               </div>
             </div>
-          </section>
-
-          <section
-            id="homepage-featured-root"
-            class="homepage-slot"
-            aria-label="Featured resources"
-          ></section>
-        </div>
-
-        <section id="homepage-routes-root" class="homepage-slot" aria-label="Study routes"></section>
+          </div>
+        </section>
+        <section
+          id="homepage-entry-root"
+          class="homepage-slot"
+          aria-label="Page directory"
+        ></section>
+        <section
+          id="homepage-overview-root"
+          class="homepage-slot"
+          aria-label="Overview browse"
+        ></section>
         <section
           id="homepage-interactive-root"
           class="homepage-slot"
@@ -79,38 +77,30 @@
         >
           <div class="panel-header homepage-library-header section-title">
             <div class="homepage-library-header__lead">
-              <p class="section-kicker section-title__kicker">Full library</p>
+              <p class="section-kicker section-title__kicker">Library</p>
               <h2 id="library-heading">Browse the full document set</h2>
               <p id="library-status" class="panel-copy section-title__copy homepage-library-status">
                 Loading library data...
               </p>
             </div>
             <article class="homepage-library-intro">
-              <span>Library handoff</span>
-              <strong>Use AS and A2 for guided starting points, then open the full library when you want the wider set.</strong>
-              <p>Browse by Stage, Part, or Topic once you know what you need.</p>
+              <span>Full browse</span>
+              <strong>Use the library when you want the full document set in one place.</strong>
+              <p>Filter by Stage, Part, or Topics &amp; Skills without leaving the site.</p>
             </article>
           </div>
 
           <div id="library-filters" class="filter-bar homepage-library-filters" hidden>
             <label class="filter-field filter-field-primary" for="filter-stage">
               <span class="filter-label">Stage</span>
-              <select
-                id="filter-stage"
-                class="filter-select"
-                data-default-label="All stages"
-              >
+              <select id="filter-stage" class="filter-select" data-default-label="All stages">
                 <option value="">All stages</option>
               </select>
             </label>
 
             <label class="filter-field filter-field-primary" for="filter-part">
               <span class="filter-label">Part</span>
-              <select
-                id="filter-part"
-                class="filter-select"
-                data-default-label="All parts"
-              >
+              <select id="filter-part" class="filter-select" data-default-label="All parts">
                 <option value="">All parts</option>
               </select>
             </label>
@@ -121,17 +111,10 @@
                   <span class="filter-label">Topics &amp; Skills</span>
                   <span id="filter-topic-count" class="filter-count-chip" hidden></span>
                 </div>
-                <button
-                  id="reset-filters"
-                  class="filter-reset"
-                  type="button"
-                >
-                  Reset filters
-                </button>
+                <button id="reset-filters" class="filter-reset" type="button">Reset filters</button>
               </div>
               <p id="filter-helper" class="filter-helper">
-                Use Stage and Part for structure. Topics &amp; Skills narrows the concept
-                focus.
+                Use Stage and Part for structure. Topics &amp; Skills narrows the concept focus.
               </p>
               <p id="filter-topic-summary" class="filter-topic-summary"></p>
               <div
