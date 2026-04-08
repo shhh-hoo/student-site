@@ -1,0 +1,1545 @@
+[
+  {
+    "id": "as-exp-001",
+    "stage": "AS",
+    "topic": "periodicity",
+    "subtopic": "electronegativity comparison",
+    "mode": "explanation_cloze",
+    "question": "O and S are in Group 16. Explain why O is more electronegative than S.",
+    "full_answer": "O is more electronegative than S because O has fewer occupied shells. This means less shielding and a smaller atomic radius. So the bonding pair of electrons is attracted more strongly to the nucleus.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "O is more electronegative than S because O has fewer occupied _____. This means less _____ and a smaller atomic radius. So the bonding pair of electrons is attracted more _____ to the nucleus.",
+        "answers": [
+          "shells",
+          "shielding",
+          "strongly"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "O is more electronegative than S because O has fewer occupied shells. This means less _____ and a smaller atomic _____. So the bonding pair of electrons is attracted more strongly to the _____.",
+        "answers": [
+          "shielding",
+          "radius",
+          "nucleus"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "O is more electronegative than S because O has fewer occupied shells. This means less shielding and a smaller atomic radius. So the _____ pair of electrons is attracted more strongly to the nucleus.",
+        "answers": [
+          "bonding"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-002",
+    "stage": "AS",
+    "topic": "metallic bonding",
+    "subtopic": "conductivity",
+    "mode": "explanation_cloze",
+    "question": "Explain why Mg has a higher electrical conductivity than Na.",
+    "full_answer": "Magnesium has a higher electrical conductivity than sodium because each magnesium atom contributes two delocalised electrons whereas each sodium atom contributes only one. Magnesium therefore has more mobile charge carriers.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Magnesium has a higher electrical conductivity than sodium because each magnesium atom contributes _____ delocalised electrons whereas each sodium atom contributes only _____. Magnesium therefore has more mobile charge carriers.",
+        "answers": [
+          "two",
+          "one"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Magnesium has a higher electrical conductivity than sodium because each magnesium atom contributes two _____ electrons whereas each sodium atom contributes only one. Magnesium therefore has more mobile _____ carriers.",
+        "answers": [
+          "delocalised",
+          "charge"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Magnesium has a higher electrical conductivity than sodium because each magnesium atom contributes two delocalised electrons whereas each sodium atom contributes only one. Magnesium therefore has more _____ charge carriers.",
+        "answers": [
+          "mobile"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-003",
+    "stage": "AS",
+    "topic": "group 2",
+    "subtopic": "thermal stability of carbonates",
+    "mode": "explanation_cloze",
+    "question": "Explain the trend in thermal stability of Group 2 carbonates.",
+    "full_answer": "Down the group the M2+ ion has lower charge density. So it polarises the carbonate ion less. The carbonate ion is less distorted and is less likely to decompose.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Down the group the M2+ ion has lower _____ _____. So it polarises the carbonate ion _____. The carbonate ion is less distorted and is less likely to decompose.",
+        "answers": [
+          "charge",
+          "density",
+          "less"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Down the group the M2+ ion has lower charge density. So it _____ the carbonate ion less. The carbonate ion is less distorted and is less likely to _____.",
+        "answers": [
+          "polarises",
+          "decompose"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Down the group the M2+ ion has lower charge density. So it polarises the carbonate ion less. The carbonate ion is less _____ and is less likely to decompose.",
+        "answers": [
+          "distorted"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-004",
+    "stage": "AS",
+    "topic": "group 2",
+    "subtopic": "solubility of sulfates",
+    "mode": "explanation_cloze",
+    "question": "Explain the trend in solubility of the Group 2 sulfates.",
+    "full_answer": "The solubility of the Group 2 sulfates decreases down the group because both lattice enthalpy and hydration enthalpy become less exothermic. The hydration enthalpy decreases by a greater amount, so dissolution becomes less favourable.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The solubility of the Group 2 sulfates _____ down the group because both lattice enthalpy and hydration enthalpy become less exothermic. The hydration enthalpy decreases by a greater amount, so dissolution becomes less favourable.",
+        "answers": [
+          "decreases"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The solubility of the Group 2 sulfates decreases down the group because both lattice enthalpy and _____ enthalpy become less exothermic. The _____ enthalpy decreases by a greater amount, so dissolution becomes less favourable.",
+        "answers": [
+          "hydration",
+          "hydration"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The solubility of the Group 2 sulfates decreases down the group because both lattice enthalpy and hydration enthalpy become less exothermic. The hydration enthalpy decreases by a greater amount, so _____ becomes less favourable.",
+        "answers": [
+          "dissolution"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-005",
+    "stage": "AS",
+    "topic": "equilibria",
+    "subtopic": "pressure and yield",
+    "mode": "explanation_cloze",
+    "question": "Explain why the yield of a gaseous product increases when the total pressure is increased.",
+    "full_answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side if that side has fewer gaseous molecules, so the yield increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the equilibrium moves to the product side if that side has fewer gaseous molecules, so the yield increases.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium _____ to the product side if that side has fewer gaseous molecules, so the yield increases.",
+        "answers": [
+          "moves"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the _____ side if that side has fewer gaseous molecules, so the yield increases.",
+        "answers": [
+          "product"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-006",
+    "stage": "AS",
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "mode": "explanation_cloze",
+    "question": "Explain why increasing temperature increases the rate of reaction.",
+    "full_answer": "At a higher temperature the particles have greater average kinetic energy. A greater proportion of particles has energy greater than or equal to the activation energy. Therefore the number of successful collisions per unit time increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "At a higher temperature the particles have greater average _____ energy. A greater proportion of particles has energy greater than or equal to the activation energy. Therefore the number of successful collisions per unit time increases.",
+        "answers": [
+          "kinetic"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "At a higher temperature the particles have greater average kinetic energy. A greater _____ of particles has energy greater than or equal to the activation energy. Therefore the number of successful collisions per unit time increases.",
+        "answers": [
+          "proportion"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "At a higher temperature the particles have greater average kinetic energy. A greater proportion of particles has energy greater than or equal to the _____ energy. Therefore the number of successful collisions per unit time increases.",
+        "answers": [
+          "activation"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-007",
+    "stage": "AS",
+    "topic": "kinetics",
+    "subtopic": "catalyst",
+    "mode": "explanation_cloze",
+    "question": "State and explain the effect of a catalyst on a reaction.",
+    "full_answer": "A catalyst increases the rate of reaction by providing an alternative pathway with a lower activation energy. A greater proportion of collisions is therefore successful.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "A catalyst increases the _____ of reaction by providing an alternative pathway with a lower activation energy. A greater proportion of collisions is therefore successful.",
+        "answers": [
+          "rate"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "A catalyst increases the rate of reaction by providing an _____ pathway with a lower activation energy. A greater proportion of collisions is therefore successful.",
+        "answers": [
+          "alternative"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "A catalyst increases the rate of reaction by providing an alternative pathway with a lower _____ energy. A greater proportion of collisions is therefore successful.",
+        "answers": [
+          "activation"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-008",
+    "stage": "AS",
+    "topic": "organic chemistry",
+    "subtopic": "major product from propene hydration",
+    "mode": "explanation_cloze",
+    "question": "Explain why propan-2-ol is the major product when propene reacts by electrophilic addition.",
+    "full_answer": "The secondary carbocation is more stable than the primary carbocation. This is because two alkyl groups have a greater positive inductive effect than one alkyl group. Therefore the pathway through the secondary carbocation is favoured.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The secondary carbocation is more stable than the primary carbocation. This is because two alkyl groups have a greater positive inductive effect than _____ alkyl group. Therefore the pathway through the secondary carbocation is favoured.",
+        "answers": [
+          "one"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The secondary carbocation is more stable than the primary carbocation. This is because two alkyl groups have a greater positive _____ effect than one alkyl group. Therefore the pathway through the secondary carbocation is favoured.",
+        "answers": [
+          "inductive"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The secondary carbocation is more stable than the primary carbocation. This is because two alkyl groups have a greater positive inductive effect than one alkyl group. Therefore the pathway through the secondary carbocation is _____.",
+        "answers": [
+          "favoured"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-009",
+    "stage": "AS",
+    "topic": "group 17",
+    "subtopic": "iodide and sulfuric acid",
+    "mode": "explanation_cloze",
+    "question": "Explain why the yield of hydrogen iodide is low when NaI reacts with concentrated sulfuric acid.",
+    "full_answer": "Iodide ions are strong reducing agents. The hydrogen iodide formed is oxidised by concentrated sulfuric acid to iodine. So some hydrogen iodide is used up and the yield is low.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Iodide ions are strong _____ agents. The hydrogen iodide formed is oxidised by concentrated sulfuric acid to iodine. So some hydrogen iodide is used up and the yield is low.",
+        "answers": [
+          "reducing"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Iodide ions are strong reducing agents. The hydrogen iodide formed is _____ by concentrated sulfuric acid to iodine. So some hydrogen iodide is used up and the yield is low.",
+        "answers": [
+          "oxidised"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Iodide ions are strong reducing agents. The hydrogen iodide formed is oxidised by concentrated sulfuric acid to _____. So some hydrogen iodide is used up and the yield is low.",
+        "answers": [
+          "iodine"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-010",
+    "stage": "AS",
+    "topic": "spectroscopy",
+    "subtopic": "IR functional group identification",
+    "mode": "explanation_cloze",
+    "question": "Explain how an absorption at about 1700 cm-1 helps to identify a compound.",
+    "full_answer": "An absorption at about 1700 cm-1 indicates a carbon oxygen double bond. This means the compound contains a carbonyl group.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "An absorption at about 1700 cm-1 indicates a carbon oxygen _____ bond. This means the compound contains a carbonyl group.",
+        "answers": [
+          "double"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "An absorption at about 1700 cm-1 indicates a carbon oxygen double bond. This means the compound contains a _____ group.",
+        "answers": [
+          "carbonyl"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "An absorption at about 1700 cm-1 indicates a carbon oxygen double bond. This means the compound _____ a carbonyl group.",
+        "answers": [
+          "contains"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-011",
+    "stage": "AS",
+    "topic": "mass spectrometry",
+    "subtopic": "M and M+2 peaks",
+    "mode": "explanation_cloze",
+    "question": "Explain why a chloro compound shows both an M peak and an M+2 peak.",
+    "full_answer": "Chlorine has two common isotopes 35Cl and 37Cl. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl. So both an M peak and an M+2 peak are seen.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Chlorine has two common isotopes 35Cl and _____. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl. So both an M peak and an M+2 peak are seen.",
+        "answers": [
+          "37Cl"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Chlorine has two common isotopes 35Cl and 37Cl. Molecules containing 37Cl have a mass two units _____ than molecules containing 35Cl. So both an M peak and an M+2 peak are seen.",
+        "answers": [
+          "greater"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Chlorine has two common isotopes 35Cl and 37Cl. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl. So both an M peak and an M+2 peak are _____.",
+        "answers": [
+          "seen"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "id": "as-exp-012",
+    "stage": "AS",
+    "topic": "group 14 hydrides",
+    "subtopic": "boiling point trend",
+    "mode": "explanation_cloze",
+    "question": "Explain why the boiling points of Group 14 hydrides increase down the group.",
+    "full_answer": "Down the group the molecules become larger and contain more electrons. The electron clouds are more polarisable, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular forces.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Down the group the molecules become larger and contain more _____. The electron clouds are more polarisable, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular forces.",
+        "answers": [
+          "electrons"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Down the group the molecules become larger and contain more electrons. The electron clouds are more _____, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular forces.",
+        "answers": [
+          "polarisable"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Down the group the molecules become larger and contain more electrons. The electron clouds are more polarisable, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular _____",
+        "answers": [
+          "forces"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns"
+  },
+  {
+    "stage": "AS",
+    "topic": "periodicity",
+    "subtopic": "first ionisation energy of hydrogen second IE",
+    "mode": "explanation_cloze",
+    "question": "Explain why there is no second ionisation energy for hydrogen.",
+    "full_answer": "Hydrogen has only one electron. After the first ionisation, there is no electron left to remove.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Hydrogen has only one _____. After the first ionisation, there is no electron left to remove.",
+        "answers": [
+          "electron"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Hydrogen has only one electron. After the first _____, there is no electron left to remove.",
+        "answers": [
+          "ionisation"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Hydrogen has only one electron. After the first ionisation, there is no electron left to _____.",
+        "answers": [
+          "remove"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-013"
+  },
+  {
+    "stage": "AS",
+    "topic": "intermolecular forces",
+    "subtopic": "CO compared with N2",
+    "mode": "explanation_cloze",
+    "question": "Explain why CO has a higher boiling point than N2.",
+    "full_answer": "CO is a polar molecule and N2 is non-polar. CO has permanent dipole-dipole attractions in addition to instantaneous dipole-induced dipole attractions. Therefore the intermolecular forces in CO are stronger, so its boiling point is higher.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "CO is a _____ molecule and N2 is non-polar. CO has permanent dipole-dipole attractions in addition to instantaneous dipole-induced dipole attractions. Therefore the intermolecular forces in CO are stronger, so its boiling point is higher.",
+        "answers": [
+          "polar"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "CO is a polar molecule and N2 is non-polar. CO has permanent dipole-dipole attractions in addition to instantaneous dipole-induced dipole attractions. Therefore the intermolecular _____ in CO are stronger, so its boiling point is higher.",
+        "answers": [
+          "forces"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "CO is a polar molecule and N2 is non-polar. CO has permanent dipole-dipole attractions in addition to instantaneous dipole-induced dipole attractions. Therefore the intermolecular forces in CO are stronger, so its boiling point is _____.",
+        "answers": [
+          "higher"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-014"
+  },
+  {
+    "stage": "AS",
+    "topic": "periodicity",
+    "subtopic": "al3+ size",
+    "mode": "explanation_cloze",
+    "question": "Explain why Al3+ is smaller than Mg2+.",
+    "full_answer": "Al3+ and Mg2+ are isoelectronic. Al3+ has more protons, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller radius.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Al3+ and Mg2+ are _____. Al3+ has more protons, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller radius.",
+        "answers": [
+          "isoelectronic"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Al3+ and Mg2+ are isoelectronic. Al3+ has more _____, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller radius.",
+        "answers": [
+          "protons"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Al3+ and Mg2+ are isoelectronic. Al3+ has more protons, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller _____.",
+        "answers": [
+          "radius"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-015"
+  },
+  {
+    "stage": "AS",
+    "topic": "group 17",
+    "subtopic": "iodide reducing agent",
+    "mode": "explanation_cloze",
+    "question": "Explain why HI gives a lower yield than HCl when sodium halides react with concentrated sulfuric acid.",
+    "full_answer": "Iodide ions are stronger reducing agents than chloride ions. HI is oxidised by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a redox reaction, so the yield of hydrogen halide is lower.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Iodide ions are stronger _____ agents than chloride ions. HI is oxidised by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a redox reaction, so the yield of hydrogen halide is lower.",
+        "answers": [
+          "reducing"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Iodide ions are stronger reducing agents than chloride ions. HI is _____ by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a redox reaction, so the yield of hydrogen halide is lower.",
+        "answers": [
+          "oxidised"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Iodide ions are stronger reducing agents than chloride ions. HI is oxidised by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a _____ reaction, so the yield of hydrogen halide is lower.",
+        "answers": [
+          "redox"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-016"
+  },
+  {
+    "stage": "AS",
+    "topic": "equilibria",
+    "subtopic": "pressure and yield",
+    "mode": "explanation_cloze",
+    "question": "Explain why increasing the overall pressure increases the yield of propanal in C2H4 + CO + H2 -> CH3CH2CHO.",
+    "full_answer": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the yield increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the equilibrium moves to the product side and the yield increases.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the _____ to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the yield increases.",
+        "answers": [
+          "equilibrium"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the _____ increases.",
+        "answers": [
+          "yield"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-017"
+  },
+  {
+    "stage": "AS",
+    "topic": "kinetics",
+    "subtopic": "catalyst and equilibrium",
+    "mode": "explanation_cloze",
+    "question": "State and explain the effect of using a catalyst on this reaction.",
+    "full_answer": "A catalyst increases the rate of reaction by providing an alternative reaction pathway with a lower activation energy. It does not change the position of equilibrium.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "A catalyst increases the rate of reaction by providing an alternative reaction pathway with a lower _____ energy. It does not change the position of equilibrium.",
+        "answers": [
+          "activation"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "A catalyst increases the _____ of reaction by providing an alternative reaction pathway with a lower activation energy. It does not change the position of equilibrium.",
+        "answers": [
+          "rate"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "A catalyst increases the rate of reaction by providing an alternative reaction pathway with a lower activation energy. It does not change the position of _____.",
+        "answers": [
+          "equilibrium"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-018"
+  },
+  {
+    "stage": "AS",
+    "topic": "intermolecular forces",
+    "subtopic": "van der Waals forces in propanal",
+    "mode": "explanation_cloze",
+    "question": "Identify all types of van der Waals' forces present between molecules of CH3CH2CHO.",
+    "full_answer": "Molecules of CH3CH2CHO have permanent dipole-dipole attractions and instantaneous dipole-induced dipole attractions.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Molecules of CH3CH2CHO have permanent _____-dipole attractions and instantaneous dipole-induced dipole attractions.",
+        "answers": [
+          "dipole"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Molecules of CH3CH2CHO have permanent dipole-dipole attractions and instantaneous dipole-induced dipole _____.",
+        "answers": [
+          "attractions"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Molecules of CH3CH2CHO have permanent dipole-dipole attractions and _____ dipole-induced dipole attractions.",
+        "answers": [
+          "instantaneous"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-019"
+  },
+  {
+    "stage": "AS",
+    "topic": "structure and bonding",
+    "subtopic": "SiO2 versus SiCl4 melting point",
+    "mode": "explanation_cloze",
+    "question": "Explain the difference in the melting points of SiO2 and SiCl4 with reference to structure and bonding.",
+    "full_answer": "SiO2 has a giant covalent structure with many strong covalent bonds that must be broken. SiCl4 is simple molecular and only weak intermolecular forces are overcome on melting. Therefore SiO2 has the much higher melting point.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "SiO2 has a giant _____ structure with many strong covalent bonds that must be broken. SiCl4 is simple molecular and only weak intermolecular forces are overcome on melting. Therefore SiO2 has the much higher melting point.",
+        "answers": [
+          "covalent"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "SiO2 has a giant covalent structure with many strong covalent bonds that must be broken. SiCl4 is simple molecular and only weak _____ forces are overcome on melting. Therefore SiO2 has the much higher melting point.",
+        "answers": [
+          "intermolecular"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "SiO2 has a giant covalent structure with many strong covalent bonds that must be broken. SiCl4 is simple molecular and only weak intermolecular forces are overcome on melting. Therefore SiO2 has the much _____ melting point.",
+        "answers": [
+          "higher"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-020"
+  },
+  {
+    "stage": "AS",
+    "topic": "equilibria",
+    "subtopic": "ammonium ion acid-base",
+    "mode": "explanation_cloze",
+    "question": "Explain why ammonium carbonate undergoes an acid-base reaction with NaOH(aq).",
+    "full_answer": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a _____ to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton.",
+        "answers": [
+          "proton"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it _____ a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton.",
+        "answers": [
+          "donates"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry _____ because it accepts a proton.",
+        "answers": [
+          "base"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-021"
+  },
+  {
+    "stage": "AS",
+    "topic": "analytical techniques",
+    "subtopic": "IR identification logic",
+    "mode": "explanation_cloze",
+    "question": "Explain why absorptions at 2850–2950 cm-1 are not useful for deciding between compounds A, B and C.",
+    "full_answer": "These absorptions are due to C-H bonds. All of the possible compounds contain C-H bonds, so this region does not distinguish between them.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "These absorptions are due to _____-H bonds. All of the possible compounds contain C-H bonds, so this region does not distinguish between them.",
+        "answers": [
+          "C"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "These absorptions are due to C-H bonds. All of the possible compounds contain C-H bonds, so this region does not _____ between them.",
+        "answers": [
+          "distinguish"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "These absorptions are due to C-H bonds. All of the possible compounds contain C-H bonds, so this _____ does not distinguish between them.",
+        "answers": [
+          "region"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-022"
+  },
+  {
+    "stage": "AS",
+    "topic": "group 17",
+    "subtopic": "iodide reducing agent",
+    "mode": "explanation_cloze",
+    "question": "Explain why iodide ions are stronger reducing agents than chloride ions.",
+    "full_answer": "Iodide ions lose electrons more readily than chloride ions. Iodide ions are larger, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily oxidised and are stronger reducing agents.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Iodide ions lose electrons more _____ than chloride ions. Iodide ions are larger, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily oxidised and are stronger reducing agents.",
+        "answers": [
+          "readily"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Iodide ions lose electrons more readily than chloride ions. Iodide ions are _____, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily oxidised and are stronger reducing agents.",
+        "answers": [
+          "larger"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Iodide ions lose electrons more readily than chloride ions. Iodide ions are larger, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily _____ and are stronger reducing agents.",
+        "answers": [
+          "oxidised"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-023"
+  },
+  {
+    "stage": "AS",
+    "topic": "states of matter",
+    "subtopic": "real gas deviation",
+    "mode": "explanation_cloze",
+    "question": "Explain why a gas deviates more from ideal behaviour at high pressure.",
+    "full_answer": "At high pressure the gas particles are much closer together. Their own volume is no longer negligible, and intermolecular forces become more significant. Therefore the gas deviates more from ideal behaviour.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "At high pressure the gas particles are much _____ together. Their own volume is no longer negligible, and intermolecular forces become more significant. Therefore the gas deviates more from ideal behaviour.",
+        "answers": [
+          "closer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "At high pressure the gas particles are much closer together. Their own _____ is no longer negligible, and intermolecular forces become more significant. Therefore the gas deviates more from ideal behaviour.",
+        "answers": [
+          "volume"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "At high pressure the gas particles are much closer together. Their own volume is no longer negligible, and intermolecular _____ become more significant. Therefore the gas deviates more from ideal behaviour.",
+        "answers": [
+          "forces"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-024"
+  },
+  {
+    "stage": "AS",
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "mode": "explanation_cloze",
+    "question": "Explain why increasing pressure increases the yield when the product side has fewer moles of gas.",
+    "full_answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This _____ the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases.",
+        "answers": [
+          "reduces"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the _____ and the yield increases.",
+        "answers": [
+          "products"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-025"
+  },
+  {
+    "stage": "AS",
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "mode": "explanation_cloze",
+    "question": "Explain why increasing temperature increases rate.",
+    "full_answer": "At a higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore has energy greater than or equal to the activation energy. So the number of successful collisions per unit time increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "At a higher temperature, particles have greater _____ energy. A greater proportion of particles therefore has energy greater than or equal to the activation energy. So the number of successful collisions per unit time increases.",
+        "answers": [
+          "kinetic"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "At a higher temperature, particles have greater kinetic energy. A greater _____ of particles therefore has energy greater than or equal to the activation energy. So the number of successful collisions per unit time increases.",
+        "answers": [
+          "proportion"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "At a higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore has energy greater than or equal to the activation energy. So the number of successful _____ per unit time increases.",
+        "answers": [
+          "collisions"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-026"
+  },
+  {
+    "stage": "AS",
+    "topic": "kinetics",
+    "subtopic": "catalyst",
+    "mode": "explanation_cloze",
+    "question": "Explain the effect of a catalyst on rate.",
+    "full_answer": "A catalyst provides an alternative pathway with a lower activation energy. Therefore a greater proportion of collisions is successful. The rate increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "A catalyst provides an alternative pathway with a lower activation _____. Therefore a greater proportion of collisions is successful. The rate increases.",
+        "answers": [
+          "energy"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "A catalyst provides an alternative _____ with a lower activation energy. Therefore a greater proportion of collisions is successful. The rate increases.",
+        "answers": [
+          "pathway"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "A catalyst provides an alternative pathway with a lower activation energy. Therefore a greater proportion of collisions is _____. The rate increases.",
+        "answers": [
+          "successful"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-027"
+  },
+  {
+    "stage": "AS",
+    "topic": "chemical bonding",
+    "subtopic": "CO vs N2 boiling point",
+    "mode": "explanation_cloze",
+    "question": "Explain why CO has a higher boiling point than N2.",
+    "full_answer": "CO is a polar molecule, so there are permanent dipole–dipole attractions between its molecules. N2 is non-polar and only has instantaneous dipole–induced dipole forces. The intermolecular forces in CO are stronger, so CO has the higher boiling point.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "CO is a _____ molecule, so there are permanent dipole–dipole attractions between its molecules. N2 is non-polar and only has instantaneous dipole–induced dipole forces. The intermolecular forces in CO are stronger, so CO has the higher boiling point.",
+        "answers": [
+          "polar"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "CO is a polar molecule, so there are permanent dipole–dipole attractions between its molecules. N2 is _____ and only has instantaneous dipole–induced dipole forces. The intermolecular forces in CO are stronger, so CO has the higher boiling point.",
+        "answers": [
+          "non-polar"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "CO is a polar molecule, so there are permanent dipole–dipole attractions between its molecules. N2 is non-polar and only has instantaneous dipole–induced dipole forces. The intermolecular forces in CO are _____, so CO has the higher boiling point.",
+        "answers": [
+          "stronger"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-028"
+  },
+  {
+    "stage": "AS",
+    "topic": "chemical tests",
+    "subtopic": "Mg3N2 with water",
+    "mode": "explanation_cloze",
+    "question": "Explain why the solution formed when magnesium nitride reacts with water is alkaline.",
+    "full_answer": "Magnesium nitride reacts with water to produce ammonia. Ammonia reacts with water to form hydroxide ions. Therefore the solution is alkaline.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Magnesium nitride reacts with water to produce _____. Ammonia reacts with water to form hydroxide ions. Therefore the solution is alkaline.",
+        "answers": [
+          "ammonia"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Magnesium nitride reacts with water to produce ammonia. Ammonia reacts with water to form _____ ions. Therefore the solution is alkaline.",
+        "answers": [
+          "hydroxide"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Magnesium nitride reacts with water to produce ammonia. Ammonia reacts with water to form hydroxide ions. Therefore the solution is _____.",
+        "answers": [
+          "alkaline"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-029"
+  },
+  {
+    "stage": "AS",
+    "topic": "analytical techniques",
+    "subtopic": "mass spectrum M+2",
+    "mode": "explanation_cloze",
+    "question": "Explain why a compound containing chlorine shows an M and an M+2 peak.",
+    "full_answer": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both an M peak and an M+2 peak are seen.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Chlorine has two common _____, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both an M peak and an M+2 peak are seen.",
+        "answers": [
+          "isotopes"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass _____ units higher than molecules containing 35Cl. Therefore both an M peak and an M+2 peak are seen.",
+        "answers": [
+          "two"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both an M peak and an _____ peak are seen.",
+        "answers": [
+          "M+2"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-030"
+  },
+  {
+    "stage": "AS",
+    "topic": "analytical techniques",
+    "subtopic": "IR C=O identification",
+    "mode": "explanation_cloze",
+    "question": "Explain how an absorption around 1700 cm-1 helps identify a compound.",
+    "full_answer": "An absorption around 1700 cm-1 indicates a carbon oxygen double bond. This suggests that the compound contains a carbonyl group.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "An absorption around 1700 cm-1 indicates a carbon oxygen _____ bond. This suggests that the compound contains a carbonyl group.",
+        "answers": [
+          "double"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "An absorption around 1700 cm-1 indicates a carbon oxygen double bond. This suggests that the compound contains a _____ group.",
+        "answers": [
+          "carbonyl"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "An absorption around 1700 cm-1 _____ a carbon oxygen double bond. This suggests that the compound contains a carbonyl group.",
+        "answers": [
+          "indicates"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-031"
+  },
+  {
+    "stage": "AS",
+    "topic": "bonding",
+    "subtopic": "hydrogen bonding in water",
+    "mode": "explanation_cloze",
+    "question": "Explain why water has an unusually high boiling point.",
+    "full_answer": "There are hydrogen bonds between water molecules. Hydrogen bonds are stronger than ordinary permanent dipole–dipole attractions. More energy is needed to overcome these intermolecular forces, so water has a high boiling point.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "There are _____ bonds between water molecules. Hydrogen bonds are stronger than ordinary permanent dipole–dipole attractions. More energy is needed to overcome these intermolecular forces, so water has a high boiling point.",
+        "answers": [
+          "hydrogen"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "There are hydrogen bonds between water molecules. Hydrogen bonds are _____ than ordinary permanent dipole–dipole attractions. More energy is needed to overcome these intermolecular forces, so water has a high boiling point.",
+        "answers": [
+          "stronger"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "There are hydrogen bonds between water molecules. Hydrogen bonds are stronger than ordinary permanent dipole–dipole attractions. More energy is needed to _____ these intermolecular forces, so water has a high boiling point.",
+        "answers": [
+          "overcome"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + past paper recall patterns",
+    "id": "as-exp-032"
+  },
+  {
+    "stage": "AS",
+    "topic": "metallic bonding",
+    "subtopic": "conductivity comparison",
+    "mode": "explanation_cloze",
+    "question": "Explain why Mg has a higher electrical conductivity than Na.",
+    "full_answer": "Mg has a higher electrical conductivity than Na because each Mg atom contributes two delocalised electrons whereas each Na atom contributes one. So Mg has more mobile charge carriers.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Mg has a higher electrical conductivity than Na because each Mg atom contributes two _____ electrons whereas each Na atom contributes one. So Mg has more mobile charge _____.",
+        "answers": [
+          "delocalised",
+          "carriers"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Mg has a higher electrical conductivity than Na because each Mg atom contributes _____ delocalised electrons whereas each Na atom contributes one. So Mg has more mobile charge carriers.",
+        "answers": [
+          "two"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Mg has a higher electrical conductivity than Na because each Mg atom contributes two delocalised electrons whereas each Na atom contributes one. So Mg has more _____ _____.",
+        "answers": [
+          "mobile",
+          "charge carriers"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-033"
+  },
+  {
+    "stage": "AS",
+    "topic": "atomic structure",
+    "subtopic": "second ionisation energy of hydrogen",
+    "mode": "explanation_cloze",
+    "question": "Explain why there is no second ionisation energy for hydrogen.",
+    "full_answer": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one electron. After the first electron has been removed, no electron remains to be removed.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one _____. After the first electron has been removed, no electron remains to be removed.",
+        "answers": [
+          "electron"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one electron. After the first electron has been _____, no electron remains to be removed.",
+        "answers": [
+          "removed"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one electron. After the first electron has been removed, no electron _____ to be removed.",
+        "answers": [
+          "remains"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-034"
+  },
+  {
+    "stage": "AS",
+    "topic": "intermolecular forces",
+    "subtopic": "CO and N2 boiling point",
+    "mode": "explanation_cloze",
+    "question": "Explain why CO has a higher boiling point than N2.",
+    "full_answer": "CO is a polar molecule and has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces. The intermolecular forces in CO are therefore stronger.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "CO is a _____ molecule and has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces. The intermolecular forces in CO are therefore stronger.",
+        "answers": [
+          "polar"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "CO is a polar molecule and has permanent _____ attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces. The intermolecular forces in CO are therefore stronger.",
+        "answers": [
+          "dipole-dipole"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "CO is a polar molecule and has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces. The intermolecular forces in CO are therefore _____.",
+        "answers": [
+          "stronger"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-035"
+  },
+  {
+    "stage": "AS",
+    "topic": "group 17",
+    "subtopic": "volatility trend",
+    "mode": "explanation_cloze",
+    "question": "Explain why the volatility of the halogens decreases from chlorine to bromine to iodine.",
+    "full_answer": "From chlorine to bromine to iodine, the molecules contain more electrons and are more polarisable. The instantaneous dipole-induced dipole forces become stronger. So more energy is needed to separate the molecules and the volatility decreases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "From chlorine to bromine to iodine, the molecules contain more electrons and are more _____. The instantaneous dipole-induced dipole forces become stronger. So more energy is needed to separate the molecules and the volatility decreases.",
+        "answers": [
+          "polarisable"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "From chlorine to bromine to iodine, the molecules contain more electrons and are more polarisable. The instantaneous dipole-induced dipole forces become _____. So more energy is needed to separate the molecules and the volatility decreases.",
+        "answers": [
+          "stronger"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "From chlorine to bromine to iodine, the molecules contain more electrons and are more polarisable. The instantaneous dipole-induced dipole forces become stronger. So more energy is needed to _____ the molecules and the volatility decreases.",
+        "answers": [
+          "separate"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-036"
+  },
+  {
+    "stage": "AS",
+    "topic": "group 17",
+    "subtopic": "HI reducing agent",
+    "mode": "explanation_cloze",
+    "question": "Explain why HI is a stronger reducing agent than HCl.",
+    "full_answer": "Iodide ions are more easily oxidised than chloride ions. So HI acts as a stronger reducing agent than HCl.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Iodide ions are more easily _____ than chloride ions. So HI acts as a stronger reducing agent than HCl.",
+        "answers": [
+          "oxidised"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Iodide ions are more easily oxidised than chloride ions. So HI acts as a stronger _____ agent than HCl.",
+        "answers": [
+          "reducing"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Iodide ions are more easily oxidised than chloride ions. So HI acts as a stronger reducing agent than _____.",
+        "answers": [
+          "HCl"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-037"
+  },
+  {
+    "stage": "AS",
+    "topic": "equilibria",
+    "subtopic": "pressure and yield",
+    "mode": "explanation_cloze",
+    "question": "Explain why the yield of a gaseous product increases when pressure is increased.",
+    "full_answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of _____. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
+        "answers": [
+          "gas"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the _____ of the gaseous product increases if the product side has fewer moles of gas.",
+        "answers": [
+          "yield"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-038"
+  },
+  {
+    "stage": "AS",
+    "topic": "equilibria",
+    "subtopic": "catalyst effect",
+    "mode": "explanation_cloze",
+    "question": "State and explain the effect of a catalyst on a reversible reaction.",
+    "full_answer": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "A catalyst provides an alternative pathway with lower activation _____. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged.",
+        "answers": [
+          "energy"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the _____ reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged.",
+        "answers": [
+          "reverse"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached _____ but the position of equilibrium is unchanged.",
+        "answers": [
+          "faster"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-039"
+  },
+  {
+    "stage": "AS",
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "mode": "explanation_cloze",
+    "question": "Explain why increasing temperature increases the rate of reaction.",
+    "full_answer": "At higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "At higher temperature, particles have greater _____ energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases.",
+        "answers": [
+          "kinetic"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "At higher temperature, particles have greater kinetic energy. A greater _____ of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases.",
+        "answers": [
+          "proportion"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "At higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of _____ collisions increases.",
+        "answers": [
+          "successful"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-040"
+  },
+  {
+    "stage": "AS",
+    "topic": "structure and bonding",
+    "subtopic": "Si melting point",
+    "mode": "explanation_cloze",
+    "question": "Explain why silicon has a high melting point.",
+    "full_answer": "Silicon has a giant covalent structure. Many strong covalent bonds must be broken during melting, so a large amount of energy is needed.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Silicon has a giant _____ structure. Many strong covalent bonds must be broken during melting, so a large amount of energy is needed.",
+        "answers": [
+          "covalent"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Silicon has a giant covalent structure. Many strong covalent bonds must be _____ during melting, so a large amount of energy is needed.",
+        "answers": [
+          "broken"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Silicon has a giant covalent structure. Many strong covalent bonds must be broken during melting, so a large amount of _____ is needed.",
+        "answers": [
+          "energy"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-041"
+  },
+  {
+    "stage": "AS",
+    "topic": "group 2",
+    "subtopic": "alkaline solution from magnesium nitride",
+    "mode": "explanation_cloze",
+    "question": "Explain why the solution formed when magnesium nitride reacts with water has pH greater than 7.",
+    "full_answer": "Magnesium nitride reacts with water to form ammonia and magnesium hydroxide. Ammonia reacts with water to produce hydroxide ions, so the solution is alkaline.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Magnesium nitride reacts with water to form ammonia and magnesium _____. Ammonia reacts with water to produce hydroxide ions, so the solution is alkaline.",
+        "answers": [
+          "hydroxide"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Magnesium nitride reacts with water to form ammonia and magnesium hydroxide. Ammonia reacts with water to produce _____ ions, so the solution is alkaline.",
+        "answers": [
+          "hydroxide"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Magnesium nitride reacts with water to form ammonia and magnesium hydroxide. Ammonia reacts with water to produce hydroxide ions, so the solution is _____.",
+        "answers": [
+          "alkaline"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-042"
+  },
+  {
+    "stage": "AS",
+    "topic": "organic chemistry",
+    "subtopic": "major alcohol product",
+    "mode": "explanation_cloze",
+    "question": "Explain why propan-2-ol is formed in a greater yield than propan-1-ol when propene is hydrated.",
+    "full_answer": "Propan-2-ol is formed via the more stable secondary carbocation. The secondary carbocation is stabilised by the positive inductive effect of the two alkyl groups, so that pathway is favoured.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Propan-2-ol is formed via the more stable _____ carbocation. The secondary carbocation is stabilised by the positive inductive effect of the two alkyl groups, so that pathway is favoured.",
+        "answers": [
+          "secondary"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Propan-2-ol is formed via the more stable secondary carbocation. The secondary carbocation is stabilised by the positive _____ effect of the two alkyl groups, so that pathway is favoured.",
+        "answers": [
+          "inductive"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Propan-2-ol is formed via the more stable secondary carbocation. The secondary carbocation is stabilised by the positive inductive effect of the two alkyl groups, so that pathway is _____.",
+        "answers": [
+          "favoured"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-043"
+  },
+  {
+    "stage": "AS",
+    "topic": "analytical techniques",
+    "subtopic": "IR ketone identification",
+    "mode": "explanation_cloze",
+    "question": "Explain why a compound is identified as a ketone from its infrared spectrum.",
+    "full_answer": "The spectrum has a strong absorption around 1700 cm-1 showing a C=O bond. There is no broad absorption due to O-H. So the compound can be identified as a ketone.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The spectrum has a strong absorption around 1700 cm-1 showing a _____ bond. There is no broad absorption due to O-H. So the compound can be identified as a ketone.",
+        "answers": [
+          "C=O"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The spectrum has a strong absorption around 1700 cm-1 showing a C=O bond. There is no broad absorption due to _____. So the compound can be identified as a ketone.",
+        "answers": [
+          "O-H"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The spectrum has a strong absorption around 1700 cm-1 showing a C=O bond. There is no broad absorption due to O-H. So the compound can be identified as a _____.",
+        "answers": [
+          "ketone"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-044"
+  },
+  {
+    "stage": "AS",
+    "topic": "mass spectrometry",
+    "subtopic": "chlorine isotope pattern",
+    "mode": "explanation_cloze",
+    "question": "Explain why a molecule containing one chlorine atom has an M peak and an M+2 peak in the mass spectrum.",
+    "full_answer": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl, so an M+2 peak is observed as well as the M peak.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Chlorine has two common isotopes, _____ and _____. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl, so an M+2 peak is observed as well as the M peak.",
+        "answers": [
+          "35Cl",
+          "37Cl"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass _____ units greater than molecules containing 35Cl, so an M+2 peak is observed as well as the M peak.",
+        "answers": [
+          "two"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl, so an _____ peak is observed as well as the M peak.",
+        "answers": [
+          "M+2"
+        ]
+      }
+    ],
+    "notes": "",
+    "source_bucket": "9701 syllabus + 2023-2025 paper/mark scheme patterns",
+    "id": "as-exp-045"
+  }
+]

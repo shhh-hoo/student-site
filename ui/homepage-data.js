@@ -20,12 +20,14 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
   const documentItems = Array.isArray(documents)
     ? documents.filter((item) => item.type === "document")
     : [];
-  const interactiveResource = interactiveResources[0] || null;
+  const interactiveCount = interactiveResources.length;
   const asCount = documentItems.filter((item) => String(item.stage || "").trim() === "AS").length;
   const a2Count = documentItems.filter((item) => String(item.stage || "").trim() === "A2").length;
   const overviewItems = [
     ...documentItems.map((documentItem) => createHomepageOverviewItem(documentItem, helpers)),
-    interactiveResource ? createHomepageInteractiveOverviewItem(interactiveResource) : null,
+    ...interactiveResources.map((interactiveResource) =>
+      createHomepageInteractiveOverviewItem(interactiveResource),
+    ),
   ].filter(Boolean);
 
   return {
@@ -36,7 +38,7 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
       navLinks: [
         { href: helpers.buildSiteHref("as/"), label: "AS" },
         { href: helpers.buildSiteHref("a2/"), label: "A2" },
-        { href: helpers.buildSiteHref("interactive/ir-past-paper-trainer/"), label: "Interactive" },
+        { href: helpers.buildSiteHref("interactive/"), label: "Interactive" },
         { href: "#library-panel", label: "Library" },
       ],
       quickAction: {
@@ -71,8 +73,8 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
           label: "stage pages",
         },
         {
-          value: interactiveResource ? "1" : "0",
-          label: `interactive tool${interactiveResource ? "" : "s"}`,
+          value: `${interactiveCount}`,
+          label: `interactive tool${interactiveCount === 1 ? "" : "s"}`,
         },
       ],
       notes: [
@@ -114,11 +116,9 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
         {
           eyebrow: "Interactive",
           title: "Interactive",
-          countLabel: interactiveResource ? "1 tool" : "0 tools",
-          description: "Keep short practice and trainers on their own page.",
-          href:
-            interactiveResource?.href ||
-            helpers.buildSiteHref("interactive/ir-past-paper-trainer/"),
+          countLabel: `${interactiveCount} tool${interactiveCount === 1 ? "" : "s"}`,
+          description: "Keep short practice and trainers together on the interactive hub.",
+          href: helpers.buildSiteHref("interactive/"),
           ctaLabel: "Open interactive",
           chips: ["Practice"],
         },
@@ -147,44 +147,42 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
         variant: "secondary",
       },
     },
-    interactiveSection: buildInteractiveSection(interactiveResource, helpers),
+    interactiveSection: buildInteractiveSection(interactiveResources, helpers),
     searchIndex: [],
   };
 }
 
-function buildInteractiveSection(interactiveResource, helpers) {
+function buildInteractiveSection(interactiveResources, helpers) {
+  const resources = interactiveResources.map((interactiveResource) =>
+    createInteractiveResourceModel(interactiveResource, helpers, {
+      eyebrow: "Practice tool",
+      title: resourceOrDefault(
+        interactiveResource.display_title,
+        interactiveResource.title || "Interactive practice",
+      ),
+      ctaLabel: "Open tool",
+      description: truncateText(
+        resourceOrDefault(
+          interactiveResource.description,
+          "Open quick drills and return to the document bank when you need fuller notes.",
+        ),
+        120,
+      ),
+      tagLimit: 4,
+      note: "Use this for short drills rather than as the main navigation path.",
+    }),
+  );
+
   return {
     kicker: "Interactive",
-    title: "Keep quick practice separate",
+    title: "Choose a drill from the interactive hub",
     copy: "Interactive tools stay on their own page so the document bank can stay calm and browseable.",
-    resource: interactiveResource
-      ? createInteractiveResourceModel(interactiveResource, helpers, {
-          eyebrow: "Practice tool",
-          title: resourceOrDefault(
-            interactiveResource.display_title,
-            interactiveResource.title || "Interactive practice",
-          ),
-          ctaLabel: "Open interactive",
-          description: truncateText(
-            resourceOrDefault(
-              interactiveResource.description,
-              "Open quick drills and return to the document bank when you need fuller notes.",
-            ),
-            120,
-          ),
-          chips: ["Practice", "Analytical"],
-          tagLimit: 0,
-          metaLine: "Interactive tool",
-          note: "Use this for short drills rather than as the main navigation path.",
-        })
-      : null,
-    noteCard: interactiveResource
-      ? {
-          label: "Use it for",
-          title: "Short analytical practice",
-          copy: "The interactive page stays lightweight and separate from the AS, A2, and library browse flows.",
-        }
-      : null,
+    resources,
+    action: {
+      href: helpers.buildSiteHref("interactive/"),
+      label: "Open hub",
+      variant: "secondary",
+    },
   };
 }
 

@@ -13,7 +13,14 @@ export const overviewTypeOptions = [
   "Practice",
 ];
 
-export const overviewTopicOptions = ["Organic", "Physical", "Inorganic", "Analytical", "Practical"];
+export const overviewTopicOptions = [
+  "Organic",
+  "Physical",
+  "Inorganic",
+  "Analytical",
+  "Practical",
+  "Revision",
+];
 
 const structuralUiTags = new Set([
   "9701",
@@ -354,6 +361,14 @@ export function getOverviewTopicLabel(resource) {
   const partText = String(resource?.part || "").toLowerCase();
 
   if (
+    normalizedTags.has("memorisation") ||
+    normalizedTags.has("revision") ||
+    overviewText.includes("memorisation")
+  ) {
+    return "Revision";
+  }
+
+  if (
     [...practicalOverviewTags].some((tag) => normalizedTags.has(tag)) ||
     overviewText.includes("practical")
   ) {
@@ -361,8 +376,8 @@ export function getOverviewTopicLabel(resource) {
   }
 
   if (
-    resource?.kind === "interactive" ||
     [...analyticalOverviewTags].some((tag) => normalizedTags.has(tag)) ||
+    partText.includes("analysis") ||
     overviewText.includes("spectroscopy")
   ) {
     return "Analytical";

@@ -1,0 +1,33 @@
+{
+  "id": "as-memorisation-bank",
+  "stage": "AS",
+  "modes": [
+    {
+      "mode": "definition",
+      "file": "definitions.json",
+      "count": 70
+    },
+    {
+      "mode": "reagent_condition",
+      "file": "reagents_conditions.json",
+      "count": 57
+    },
+    {
+      "mode": "reaction_path",
+      "file": "reaction_paths.json",
+      "count": 45
+    },
+    {
+      "mode": "equation",
+      "file": "equations.json",
+      "count": 74
+    },
+    {
+      "mode": "explanation_cloze",
+      "file": "explanation_cloze.json",
+      "count": 45
+    }
+  ],
+  "checking_profile": "exact-match-lite",
+  "build_label": "full-batch"
+}
