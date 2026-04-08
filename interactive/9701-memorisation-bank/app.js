@@ -80,6 +80,9 @@ const britishAmericanVariantMap = new Map([
   ["polymerises", "polymerizes"],
   ["polymerising", "polymerizing"],
 ]);
+const bracketCharacters = new Set(["(", ")", "[", "]", "{", "}"]);
+const punctuationSeparatorCharacters = new Set([",", ".", ";", ":", "!", "?"]);
+const quoteCharacters = new Set(["'", '"']);
 const hyphenLikePattern = /[‐‑‒–—−]/g;
 const singleQuotePattern = /[‘’‚‛`´]/g;
 const doubleQuotePattern = /[“”„‟]/g;
@@ -307,110 +310,412 @@ function evaluateMatchResult(userValue, canonicalValue, matcherConfig) {
   };
 }
 
-function createMatchGuideSegments(canonicalText, userText, state) {
-  if (!canonicalText) {
+function getTextCharacterRanges(value) {
+  const text = String(value ?? "");
+  let offset = 0;
+
+  return Array.from(text).map((char) => {
+    const start = offset;
+    offset += char.length;
     return {
-      matchedText: "",
-      mismatchText: "",
-      remainingText: "",
-      extraText: "",
+      char,
+      start,
+      end: offset,
     };
+  });
+}
+
+function normalizeFeedbackCharacter(char) {
+  if ("‐‑‒–—−".includes(char)) {
+    return "-";
   }
 
-  if (!userText) {
-    return {
-      matchedText: "",
-      mismatchText: "",
-      remainingText: canonicalText,
-      extraText: "",
-    };
+  if ("‘’‚‛`´".includes(char)) {
+    return "'";
   }
 
-  if (exactSuccessStates.has(state)) {
-    return {
-      matchedText: canonicalText,
-      mismatchText: "",
-      remainingText: "",
-      extraText: "",
-    };
+  if ('“”„‟'.includes(char)) {
+    return '"';
   }
 
-  const canonicalCharacters = Array.from(canonicalText);
-  const userCharacters = Array.from(userText);
+  if (char === "\u00a0") {
+    return " ";
+  }
+
+  return char;
+}
+
+function projectComparableTokenCharacters(tokenNodes, comparableToken) {
+  const comparableCharacters = Array.from(comparableToken);
+
+  if (!tokenNodes.length || !comparableCharacters.length) {
+    return [];
+  }
+
+  if (
+    comparableCharacters.length === tokenNodes.length &&
+    comparableCharacters.every((char, index) => char === tokenNodes[index].char)
+  ) {
+    return tokenNodes.map((node) => ({
+      char: node.char,
+      rawEnd: node.end,
+    }));
+  }
+
+  return comparableCharacters.map((char, index) => {
+    const sourceIndex = Math.min(
+      tokenNodes.length - 1,
+      Math.floor((((index + 1) * tokenNodes.length) - 1) / comparableCharacters.length),
+    );
+
+    return {
+      char,
+      rawEnd: tokenNodes[sourceIndex].end,
+    };
+  });
+}
+
+function buildControlledTextComparableWithMap(value) {
+  const sourceCharacters = getTextCharacterRanges(value).map((segment) => ({
+    ...segment,
+    char: normalizeFeedbackCharacter(segment.char),
+  }));
+  const surfaceCharacters = [];
+  let pendingSpaceStart = -1;
+  let pendingSpaceEnd = -1;
+
+  function queuePendingSpace(start, end) {
+    if (!surfaceCharacters.length) {
+      return;
+    }
+
+    if (pendingSpaceStart < 0) {
+      pendingSpaceStart = start;
+    }
+
+    pendingSpaceEnd = end;
+  }
+
+  function flushPendingSpace() {
+    if (pendingSpaceStart < 0 || !surfaceCharacters.length) {
+      return;
+    }
+
+    const lastCharacter = surfaceCharacters[surfaceCharacters.length - 1];
+
+    if (lastCharacter.char !== " " && !bracketCharacters.has(lastCharacter.char)) {
+      surfaceCharacters.push({
+        char: " ",
+        start: pendingSpaceStart,
+        end: pendingSpaceEnd,
+      });
+    }
+
+    pendingSpaceStart = -1;
+    pendingSpaceEnd = -1;
+  }
+
+  sourceCharacters.forEach((segment) => {
+    const character = segment.char;
+
+    if (quoteCharacters.has(character)) {
+      return;
+    }
+
+    if (/\s/u.test(character) || punctuationSeparatorCharacters.has(character)) {
+      queuePendingSpace(segment.start, segment.end);
+      return;
+    }
+
+    if (bracketCharacters.has(character)) {
+      if (surfaceCharacters[surfaceCharacters.length - 1]?.char === " ") {
+        surfaceCharacters.pop();
+      }
+
+      pendingSpaceStart = -1;
+      pendingSpaceEnd = -1;
+      surfaceCharacters.push({
+        char: character,
+        start: segment.start,
+        end: segment.end,
+      });
+      return;
+    }
+
+    flushPendingSpace();
+    surfaceCharacters.push({
+      char: character.toLowerCase(),
+      start: segment.start,
+      end: segment.end,
+    });
+  });
+
+  if (surfaceCharacters[surfaceCharacters.length - 1]?.char === " ") {
+    surfaceCharacters.pop();
+  }
+
+  const tokenNodes = [];
+  let currentTokenNodes = [];
+
+  surfaceCharacters.forEach((character) => {
+    if (character.char === " ") {
+      if (currentTokenNodes.length) {
+        tokenNodes.push(currentTokenNodes);
+        currentTokenNodes = [];
+      }
+      return;
+    }
+
+    currentTokenNodes.push(character);
+  });
+
+  if (currentTokenNodes.length) {
+    tokenNodes.push(currentTokenNodes);
+  }
+
+  const comparableCharacters = [];
+  let hasVisibleToken = false;
+
+  tokenNodes.forEach((token) => {
+    const comparableToken = normaliseVariantToken(token.map((node) => node.char).join(""));
+
+    if (!comparableToken || articleTokens.has(comparableToken)) {
+      return;
+    }
+
+    if (hasVisibleToken) {
+      comparableCharacters.push({
+        char: " ",
+        rawEnd: token[0].start,
+      });
+    }
+
+    projectComparableTokenCharacters(token, comparableToken).forEach((character) => {
+      comparableCharacters.push(character);
+    });
+    hasVisibleToken = true;
+  });
+
+  return {
+    text: comparableCharacters.map((character) => character.char).join(""),
+    characters: comparableCharacters,
+  };
+}
+
+function buildEquationComparableWithMap(value, matcherConfig) {
+  const sourceCharacters = getTextCharacterRanges(value).map((segment) => ({
+    ...segment,
+    char: normalizeFeedbackCharacter(segment.char),
+  }));
+  const comparableCharacters = [];
+  let index = 0;
+
+  while (index < sourceCharacters.length) {
+    const remainingText = sourceCharacters.slice(index).map((segment) => segment.char).join("");
+
+    if (matcherConfig.ignoreStateSymbols) {
+      const stateSymbolMatch = remainingText.match(/^\(\s*(aq|s|l|g)\s*\)/i);
+
+      if (stateSymbolMatch) {
+        index += Array.from(stateSymbolMatch[0]).length;
+        continue;
+      }
+    }
+
+    const reversibleArrow = ["<=>", "⇌", "↔", "⟷"].find((token) =>
+      remainingText.startsWith(token),
+    );
+
+    if (reversibleArrow) {
+      const matchLength = Array.from(reversibleArrow).length;
+      const rawEnd = sourceCharacters[index + matchLength - 1].end;
+      comparableCharacters.push(
+        { char: "<", rawEnd },
+        { char: "-", rawEnd },
+        { char: ">", rawEnd },
+      );
+      index += matchLength;
+      continue;
+    }
+
+    const forwardArrow = ["=>", "⟶", "⟹", "→"].find((token) => remainingText.startsWith(token));
+
+    if (forwardArrow) {
+      const matchLength = Array.from(forwardArrow).length;
+      const rawEnd = sourceCharacters[index + matchLength - 1].end;
+      comparableCharacters.push({ char: "-", rawEnd }, { char: ">", rawEnd });
+      index += matchLength;
+      continue;
+    }
+
+    const currentCharacter = sourceCharacters[index];
+
+    if (/\s/u.test(currentCharacter.char)) {
+      index += 1;
+      continue;
+    }
+
+    comparableCharacters.push({
+      char: currentCharacter.char.toLowerCase(),
+      rawEnd: currentCharacter.end,
+    });
+    index += 1;
+  }
+
+  return {
+    text: comparableCharacters.map((character) => character.char).join(""),
+    characters: comparableCharacters,
+  };
+}
+
+function buildComparableWithMap(value, matcherConfig) {
+  if (matcherConfig.type === "equation") {
+    return buildEquationComparableWithMap(value, matcherConfig);
+  }
+
+  return buildControlledTextComparableWithMap(value);
+}
+
+function getMatchedPrefixLength(leftText, rightText) {
+  const leftCharacters = Array.from(leftText);
+  const rightCharacters = Array.from(rightText);
   let matchedLength = 0;
 
   while (
-    matchedLength < canonicalCharacters.length &&
-    matchedLength < userCharacters.length &&
-    canonicalCharacters[matchedLength] === userCharacters[matchedLength]
+    matchedLength < leftCharacters.length &&
+    matchedLength < rightCharacters.length &&
+    leftCharacters[matchedLength] === rightCharacters[matchedLength]
   ) {
     matchedLength += 1;
   }
 
+  return matchedLength;
+}
+
+function appendHighlightSegment(segments, text, tone) {
+  if (!text) {
+    return;
+  }
+
+  const previousSegment = segments[segments.length - 1];
+
+  if (previousSegment?.tone === tone) {
+    previousSegment.text += text;
+    return;
+  }
+
+  segments.push({ text, tone });
+}
+
+function buildUserHighlightModel(userValue, canonicalValue, matcherConfig, checked) {
+  const rawText = String(userValue ?? "");
+  const result = evaluateMatchResult(rawText, canonicalValue, matcherConfig);
+
+  if (!rawText) {
+    return {
+      checked,
+      state: checked ? result.state : "untouched",
+      issueType: "empty",
+      segments: [],
+    };
+  }
+
+  if (!checked) {
+    return {
+      checked,
+      state: "untouched",
+      issueType: "draft",
+      segments: [{ text: rawText, tone: "neutral" }],
+    };
+  }
+
+  if (result.state === "untouched") {
+    return {
+      checked,
+      state: result.state,
+      issueType: "empty",
+      segments: [{ text: rawText, tone: "neutral" }],
+    };
+  }
+
+  if (isSuccessfulMatchState(result.state)) {
+    return {
+      checked,
+      state: result.state,
+      issueType: "success",
+      segments: [{ text: rawText, tone: "matched" }],
+    };
+  }
+
+  const userComparable = buildComparableWithMap(rawText, matcherConfig);
+  const canonicalText = buildComparablePair(rawText, canonicalValue, matcherConfig).canonicalText;
+
+  if (!userComparable.text) {
+    return {
+      checked,
+      state: result.state,
+      issueType: "first_divergence",
+      segments: [{ text: rawText, tone: "mismatch" }],
+    };
+  }
+
+  const matchedPrefixLength = getMatchedPrefixLength(userComparable.text, canonicalText);
+  const matchedRawEnd =
+    matchedPrefixLength > 0 ? userComparable.characters[matchedPrefixLength - 1].rawEnd : 0;
+  const segments = [];
+
+  if (matchedRawEnd > 0) {
+    appendHighlightSegment(segments, rawText.slice(0, matchedRawEnd), "matched");
+  }
+
+  if (matchedPrefixLength >= userComparable.text.length && userComparable.text.length < canonicalText.length) {
+    appendHighlightSegment(segments, rawText.slice(matchedRawEnd), "neutral");
+    return {
+      checked,
+      state: result.state,
+      issueType: "missing_suffix",
+      segments,
+    };
+  }
+
+  if (matchedPrefixLength >= canonicalText.length) {
+    appendHighlightSegment(segments, rawText.slice(matchedRawEnd), "extra");
+    return {
+      checked,
+      state: result.state,
+      issueType: "extra_suffix",
+      segments,
+    };
+  }
+
+  const mismatchRawEnd = userComparable.characters[matchedPrefixLength]?.rawEnd ?? rawText.length;
+  const mismatchStart = Math.min(matchedRawEnd, rawText.length);
+  const mismatchEnd = Math.max(mismatchStart, mismatchRawEnd);
+
+  appendHighlightSegment(segments, rawText.slice(mismatchStart, mismatchEnd), "mismatch");
+  appendHighlightSegment(segments, rawText.slice(mismatchEnd), "neutral");
+
+  if (!segments.length) {
+    appendHighlightSegment(segments, rawText, "mismatch");
+  }
+
   return {
-    matchedText: canonicalCharacters.slice(0, matchedLength).join(""),
-    mismatchText:
-      matchedLength < canonicalCharacters.length ? canonicalCharacters[matchedLength] : "",
-    remainingText:
-      matchedLength < canonicalCharacters.length
-        ? canonicalCharacters.slice(matchedLength + 1).join("")
-        : "",
-    extraText:
-      matchedLength >= canonicalCharacters.length &&
-      userCharacters.length > canonicalCharacters.length
-        ? " +"
-        : "",
+    checked,
+    state: result.state,
+    issueType: "first_divergence",
+    segments,
   };
 }
 
-function renderMatchGuide(guideElement, result, label = "Match guide") {
-  guideElement.replaceChildren();
-  guideElement.dataset.state = result.state;
+function renderUserHighlightModel(mirrorContent, model) {
+  mirrorContent.replaceChildren();
 
-  const labelElement = document.createElement("span");
-  labelElement.className = "memorisation-match-guide__label";
-  labelElement.textContent = label;
-
-  const copyElement = document.createElement("span");
-  copyElement.className = "memorisation-match-guide__copy";
-
-  const segments = createMatchGuideSegments(
-    result.canonicalText || "",
-    result.userText || "",
-    result.state,
-  );
-
-  const segmentDescriptors = [
-    {
-      className: "memorisation-match-guide__matched",
-      text: segments.matchedText,
-    },
-    {
-      className: "memorisation-match-guide__mismatch",
-      text: segments.mismatchText,
-    },
-    {
-      className: "memorisation-match-guide__remaining",
-      text: segments.remainingText,
-    },
-    {
-      className: "memorisation-match-guide__extra",
-      text: segments.extraText,
-    },
-  ];
-
-  segmentDescriptors.forEach((segment) => {
-    if (!segment.text) {
-      return;
-    }
-
+  model.segments.forEach((segment) => {
     const segmentElement = document.createElement("span");
-    segmentElement.className = segment.className;
-    segmentElement.textContent = segment.text;
-    copyElement.append(segmentElement);
+    segmentElement.className = `memorisation-mirror-field__segment memorisation-mirror-field__segment--${segment.tone}`;
+    segmentElement.append(document.createTextNode(segment.text));
+    mirrorContent.append(segmentElement);
   });
-
-  guideElement.append(labelElement, copyElement);
 }
 
 function isSuccessfulMatchState(state) {
@@ -425,7 +730,7 @@ function getUntouchedMessage(matcherConfig, interactionLabel) {
   return `${interactionLabel} Formatting, spelling, quote, punctuation, and article variants are normalized. Prepositions stay strict.`;
 }
 
-function getMatchMessage(state, matcherConfig) {
+function getMatchMessage(state, matcherConfig, highlightModel) {
   if (state === "exact") {
     return {
       text: "Exact match.",
@@ -445,57 +750,221 @@ function getMatchMessage(state, matcherConfig) {
 
   if (state === "near_miss_preposition") {
     return {
-      text: "Almost there. The remaining difference is a preposition.",
+      text: "Almost there. The remaining issue looks like a preposition.",
       tone: "warning",
+    };
+  }
+
+  if (highlightModel?.issueType === "extra_suffix") {
+    return {
+      text: "Extra text appears at the end.",
+      tone: "incorrect",
+    };
+  }
+
+  if (highlightModel?.issueType === "missing_suffix") {
+    return {
+      text: "Your answer stops too early.",
+      tone: "incorrect",
     };
   }
 
   return {
     text:
-      matcherConfig.type === "equation"
-        ? "Equation structure or chemistry does not match the stored answer."
-        : "Does not match the canonical answer.",
+      matcherConfig.type === "equation" ? "Your equation diverges here." : "Your answer diverges here.",
     tone: "incorrect",
   };
 }
 
-function applyMatchResultToField(
-  field,
-  feedbackElement,
-  guideElement,
-  result,
-  matcherConfig,
-  label,
-) {
-  applyFieldState(field, result.state);
-  renderMatchGuide(guideElement, result, label);
-
-  const message = getMatchMessage(result.state, matcherConfig);
-  setFeedbackMessage(feedbackElement, message.text, message.tone);
+function syncMirroredFieldScroll(field, mirrorElement) {
+  mirrorElement.scrollTop = field.scrollTop;
+  mirrorElement.scrollLeft = field.scrollLeft;
 }
 
-function resetFieldToUntouched(
+function isFieldCompositionActive(event, isComposing) {
+  return Boolean(isComposing || event?.isComposing || event?.keyCode === 229);
+}
+
+function createMirroredFieldController({
   field,
-  feedbackElement,
-  guideElement,
   canonicalValue,
   matcherConfig,
+  feedbackElement,
   interactionLabel,
-  guideLabel,
-) {
-  const result = evaluateMatchResult("", canonicalValue, matcherConfig);
+  inline = false,
+  shouldCheckOnKeydown = null,
+  onCommit = null,
+  onStateChange = null,
+}) {
+  const shell = document.createElement(inline ? "span" : "div");
+  shell.className = [
+    "memorisation-mirror-field",
+    inline ? "memorisation-mirror-field--inline" : "",
+    field.tagName === "TEXTAREA"
+      ? "memorisation-mirror-field--textarea"
+      : "memorisation-mirror-field--single-line",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  shell.dataset.focused = "false";
 
-  applyFieldState(field, "untouched");
-  renderMatchGuide(guideElement, result, guideLabel);
-  setFeedbackMessage(feedbackElement, getUntouchedMessage(matcherConfig, interactionLabel));
-}
+  const mirror = document.createElement("div");
+  mirror.className = "memorisation-mirror-field__mirror";
+  mirror.setAttribute("aria-hidden", "true");
 
-function updateDraftGuide(guideElement, userValue, canonicalValue, matcherConfig, guideLabel) {
-  renderMatchGuide(
-    guideElement,
-    evaluateMatchResult(userValue, canonicalValue, matcherConfig),
-    guideLabel,
-  );
+  const mirrorContent = document.createElement("div");
+  mirrorContent.className = "memorisation-mirror-field__content";
+  mirror.append(mirrorContent);
+
+  field.classList.add("memorisation-mirror-field__control");
+  shell.append(mirror, field);
+
+  let checked = false;
+  let isComposing = false;
+  let pendingCheckAfterComposition = false;
+  let readyForStateCallbacks = false;
+  let syncFrameId = 0;
+
+  function queueMirrorSync() {
+    if (syncFrameId) {
+      cancelAnimationFrame(syncFrameId);
+    }
+
+    syncFrameId = requestAnimationFrame(() => {
+      syncFrameId = 0;
+      syncMirroredFieldScroll(field, mirror);
+    });
+  }
+
+  function updateSelectionState() {
+    shell.dataset.empty = field.value ? "false" : "true";
+  }
+
+  function updatePresentation() {
+    const result = checked
+      ? evaluateMatchResult(field.value, canonicalValue, matcherConfig)
+      : { state: "untouched" };
+    const highlightModel = buildUserHighlightModel(
+      field.value,
+      canonicalValue,
+      matcherConfig,
+      checked,
+    );
+
+    applyFieldState(field, checked ? result.state : "untouched");
+    renderUserHighlightModel(mirrorContent, highlightModel);
+    updateSelectionState();
+    queueMirrorSync();
+
+    if (!checked || result.state === "untouched") {
+      setFeedbackMessage(feedbackElement, getUntouchedMessage(matcherConfig, interactionLabel));
+    } else {
+      const message = getMatchMessage(result.state, matcherConfig, highlightModel);
+      setFeedbackMessage(feedbackElement, message.text, message.tone);
+    }
+
+    if (readyForStateCallbacks && typeof onStateChange === "function") {
+      onStateChange({
+        checked,
+        field,
+        highlightModel,
+        result: checked ? result : { state: "untouched" },
+      });
+    }
+  }
+
+  function checkField() {
+    pendingCheckAfterComposition = false;
+    checked = true;
+    updatePresentation();
+  }
+
+  function handleSelectionChange() {
+    updateSelectionState();
+    queueMirrorSync();
+  }
+
+  field.addEventListener("input", () => {
+    updatePresentation();
+  });
+
+  field.addEventListener("scroll", () => {
+    queueMirrorSync();
+  });
+
+  field.addEventListener("focus", () => {
+    shell.dataset.focused = "true";
+    handleSelectionChange();
+  });
+
+  field.addEventListener("keyup", () => {
+    handleSelectionChange();
+  });
+
+  field.addEventListener("mouseup", () => {
+    handleSelectionChange();
+  });
+
+  field.addEventListener("select", () => {
+    handleSelectionChange();
+  });
+
+  field.addEventListener("compositionstart", () => {
+    isComposing = true;
+  });
+
+  field.addEventListener("compositionend", () => {
+    isComposing = false;
+    updatePresentation();
+
+    if (pendingCheckAfterComposition) {
+      checkField();
+    }
+  });
+
+  field.addEventListener("blur", (event) => {
+    shell.dataset.focused = "false";
+    updateSelectionState();
+
+    if (isFieldCompositionActive(event, isComposing)) {
+      pendingCheckAfterComposition = true;
+      return;
+    }
+
+    checkField();
+  });
+
+  if (typeof shouldCheckOnKeydown === "function") {
+    field.addEventListener("keydown", (event) => {
+      if (isFieldCompositionActive(event, isComposing)) {
+        return;
+      }
+
+      if (!shouldCheckOnKeydown(event)) {
+        return;
+      }
+
+      event.preventDefault();
+      checkField();
+
+      if (typeof onCommit === "function") {
+        onCommit(event);
+      }
+    });
+  }
+
+  updatePresentation();
+  readyForStateCallbacks = true;
+
+  return {
+    shell,
+    field,
+    check: checkField,
+    update: updatePresentation,
+    isChecked() {
+      return checked;
+    },
+  };
 }
 
 function normalizeTopicKeyWithMap(topicValue, topicNormalizationMap = appState.topicNormalizationMap) {
@@ -531,6 +1000,12 @@ function setFeedbackMessage(element, message, tone = "neutral") {
 
 function applyFieldState(field, state) {
   field.dataset.state = state;
+
+  const shell = field.closest(".memorisation-mirror-field");
+
+  if (shell) {
+    shell.dataset.state = state;
+  }
 }
 
 function getStageEntries() {
@@ -1315,60 +1790,24 @@ function renderSinglePrompt(unit) {
   field.spellcheck = false;
   field.autocomplete = "off";
   field.autocapitalize = "off";
-  field.placeholder = "Type the canonical answer.";
-  applyFieldState(field, "untouched");
+  field.placeholder = "Type your answer.";
 
   const feedback = document.createElement("p");
   feedback.className = "memorisation-feedback";
   feedback.setAttribute("aria-live", "polite");
 
-  const guide = document.createElement("p");
-  guide.className = "memorisation-match-guide";
-
-  resetFieldToUntouched(
+  const controller = createMirroredFieldController({
     field,
-    feedback,
-    guide,
-    unit.answer,
+    canonicalValue: unit.answer,
     matcherConfig,
-    "Check on blur or Enter.",
-    "Match guide",
-  );
-
-  field.addEventListener("input", () => {
-    applyFieldState(field, "untouched");
-    setFeedbackMessage(feedback, getUntouchedMessage(matcherConfig, "Check on blur or Enter."));
-    updateDraftGuide(guide, field.value, unit.answer, matcherConfig, "Match guide");
+    feedbackElement: feedback,
+    interactionLabel: "Check on blur or Enter.",
+    shouldCheckOnKeydown(event) {
+      return event.key === "Enter";
+    },
   });
 
-  field.addEventListener("blur", () => {
-    applyMatchResultToField(
-      field,
-      feedback,
-      guide,
-      evaluateMatchResult(field.value, unit.answer, matcherConfig),
-      matcherConfig,
-      "Match guide",
-    );
-  });
-
-  field.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter") {
-      return;
-    }
-
-    event.preventDefault();
-    applyMatchResultToField(
-      field,
-      feedback,
-      guide,
-      evaluateMatchResult(field.value, unit.answer, matcherConfig),
-      matcherConfig,
-      "Match guide",
-    );
-  });
-
-  fieldWrapper.append(fieldLabel, field, feedback, guide);
+  fieldWrapper.append(fieldLabel, controller.shell, feedback);
   promptCard.replaceChildren(fieldWrapper);
 }
 
@@ -1387,63 +1826,24 @@ function renderReconstructionPrompt(unit) {
   field.spellcheck = false;
   field.autocomplete = "off";
   field.autocapitalize = "off";
-  field.placeholder = "Type the full canonical answer.";
-  applyFieldState(field, "untouched");
+  field.placeholder = "Type your full answer.";
 
   const feedback = document.createElement("p");
   feedback.className = "memorisation-feedback";
   feedback.setAttribute("aria-live", "polite");
 
-  const guide = document.createElement("p");
-  guide.className = "memorisation-match-guide";
-
-  resetFieldToUntouched(
+  const controller = createMirroredFieldController({
     field,
-    feedback,
-    guide,
-    unit.answer,
+    canonicalValue: unit.answer,
     matcherConfig,
-    "Check on blur or Ctrl/Cmd+Enter.",
-    "Match guide",
-  );
-
-  field.addEventListener("input", () => {
-    applyFieldState(field, "untouched");
-    setFeedbackMessage(
-      feedback,
-      getUntouchedMessage(matcherConfig, "Check on blur or Ctrl/Cmd+Enter."),
-    );
-    updateDraftGuide(guide, field.value, unit.answer, matcherConfig, "Match guide");
+    feedbackElement: feedback,
+    interactionLabel: "Check on blur or Ctrl/Cmd+Enter.",
+    shouldCheckOnKeydown(event) {
+      return event.key === "Enter" && (event.ctrlKey || event.metaKey);
+    },
   });
 
-  field.addEventListener("blur", () => {
-    applyMatchResultToField(
-      field,
-      feedback,
-      guide,
-      evaluateMatchResult(field.value, unit.answer, matcherConfig),
-      matcherConfig,
-      "Match guide",
-    );
-  });
-
-  field.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" || (!event.ctrlKey && !event.metaKey)) {
-      return;
-    }
-
-    event.preventDefault();
-    applyMatchResultToField(
-      field,
-      feedback,
-      guide,
-      evaluateMatchResult(field.value, unit.answer, matcherConfig),
-      matcherConfig,
-      "Match guide",
-    );
-  });
-
-  fieldWrapper.append(fieldLabel, field, feedback, guide);
+  fieldWrapper.append(fieldLabel, controller.shell, feedback);
   promptCard.replaceChildren(fieldWrapper);
 }
 
@@ -1474,27 +1874,6 @@ function updateClozeSummary(summaryElement, inputs) {
     )} incorrect · ${pluralise(untouchedCount, "blank")} untouched`,
     incorrectCount > 0 ? "incorrect" : nearMissCount > 0 ? "warning" : "correct",
   );
-}
-
-function applyClozeBlankResult(
-  field,
-  answer,
-  feedbackElement,
-  guideElement,
-  matcherConfig,
-  summaryElement,
-  inputs,
-  blankLabel,
-) {
-  applyMatchResultToField(
-    field,
-    feedbackElement,
-    guideElement,
-    evaluateMatchResult(field.value, answer, matcherConfig),
-    matcherConfig,
-    `${blankLabel} guide`,
-  );
-  updateClozeSummary(summaryElement, inputs);
 }
 
 function renderClozePrompt(unit) {
@@ -1543,7 +1922,6 @@ function renderClozePrompt(unit) {
     input.spellcheck = false;
     input.autocomplete = "off";
     input.autocapitalize = "off";
-    applyFieldState(input, "untouched");
 
     const detail = document.createElement("div");
     detail.className = "cloze-detail";
@@ -1554,74 +1932,38 @@ function renderClozePrompt(unit) {
 
     const detailFeedback = document.createElement("p");
     detailFeedback.className = "memorisation-feedback";
+    detailFeedback.setAttribute("aria-live", "polite");
 
-    const detailGuide = document.createElement("p");
-    detailGuide.className = "memorisation-match-guide";
-
-    resetFieldToUntouched(
-      input,
-      detailFeedback,
-      detailGuide,
-      answer,
+    const controller = createMirroredFieldController({
+      field: input,
+      canonicalValue: answer,
       matcherConfig,
-      "Check on blur or Enter.",
-      `${blankLabel} guide`,
-    );
+      feedbackElement: detailFeedback,
+      interactionLabel: "Check on blur or Enter.",
+      inline: true,
+      shouldCheckOnKeydown(event) {
+        return event.key === "Enter";
+      },
+      onCommit() {
+        const nextInput = inputs[index + 1];
 
-    input.addEventListener("input", () => {
-      applyFieldState(input, "untouched");
-      setFeedbackMessage(
-        detailFeedback,
-        getUntouchedMessage(matcherConfig, "Check on blur or Enter."),
-      );
-      updateDraftGuide(detailGuide, input.value, answer, matcherConfig, `${blankLabel} guide`);
-      updateClozeSummary(summary, inputs);
+        if (nextInput) {
+          nextInput.focus();
+        }
+      },
+      onStateChange() {
+        updateClozeSummary(summary, inputs);
+      },
     });
 
-    input.addEventListener("blur", () => {
-      applyClozeBlankResult(
-        input,
-        answer,
-        detailFeedback,
-        detailGuide,
-        matcherConfig,
-        summary,
-        inputs,
-        blankLabel,
-      );
-    });
-
-    input.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter") {
-        return;
-      }
-
-      event.preventDefault();
-      applyClozeBlankResult(
-        input,
-        answer,
-        detailFeedback,
-        detailGuide,
-        matcherConfig,
-        summary,
-        inputs,
-        blankLabel,
-      );
-
-      const nextInput = inputs[index + 1];
-
-      if (nextInput) {
-        nextInput.focus();
-      }
-    });
-
-    promptLine.append(input);
-    detail.append(detailLabel, detailFeedback, detailGuide);
+    promptLine.append(controller.shell);
+    detail.append(detailLabel, detailFeedback);
     detailList.append(detail);
     return input;
   });
 
   promptLine.append(document.createTextNode(promptParts[promptParts.length - 1]));
+  updateClozeSummary(summary, inputs);
   shell.append(intro, promptLine, summary, detailList);
   promptCard.replaceChildren(shell);
 }

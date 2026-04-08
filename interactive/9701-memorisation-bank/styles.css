@@ -103,8 +103,6 @@
 }
 
 .memorisation-select:focus-visible,
-.memorisation-input:focus-visible,
-.cloze-input:focus-visible,
 .memorisation-toggle:focus-visible {
   outline: 2px solid rgba(15, 139, 141, 0.24);
   outline-offset: 2px;
@@ -194,22 +192,147 @@
 
 .memorisation-input,
 .cloze-input {
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+}
+
+.memorisation-mirror-field {
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  overflow: hidden;
   border: 1px solid rgba(15, 139, 141, 0.14);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.9);
   color: inherit;
-  font: inherit;
   transition:
     border-color 140ms ease,
     background 140ms ease,
     box-shadow 140ms ease;
 }
 
+.memorisation-mirror-field[data-focused="true"] {
+  outline: 2px solid rgba(15, 139, 141, 0.24);
+  outline-offset: 2px;
+}
+
+.memorisation-mirror-field--single-line,
+.memorisation-mirror-field--textarea {
+  --mirror-padding-block: 0.95rem;
+  --mirror-padding-inline: 1rem;
+  --mirror-line-height: 1.55;
+  width: 100%;
+}
+
+.memorisation-mirror-field--inline {
+  --mirror-padding-block: 0.45rem;
+  --mirror-padding-inline: 0.7rem;
+  --mirror-line-height: 1.4;
+  display: inline-grid;
+  min-width: min(12rem, 100%);
+  margin: 0 0.2rem;
+  vertical-align: baseline;
+}
+
+.memorisation-mirror-field__mirror,
+.memorisation-mirror-field__control {
+  box-sizing: border-box;
+  grid-area: 1 / 1;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: var(--mirror-line-height);
+  text-rendering: inherit;
+}
+
+.memorisation-mirror-field__mirror {
+  overflow: auto;
+  pointer-events: none;
+  border-radius: inherit;
+  scrollbar-width: none;
+}
+
+.memorisation-mirror-field[data-empty="true"] .memorisation-mirror-field__mirror {
+  visibility: hidden;
+}
+
+.memorisation-mirror-field__mirror::-webkit-scrollbar {
+  display: none;
+}
+
+.memorisation-mirror-field__content {
+  box-sizing: border-box;
+  min-height: calc(var(--mirror-line-height) * 1em);
+  padding: var(--mirror-padding-block) var(--mirror-padding-inline);
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  tab-size: inherit;
+}
+
+.memorisation-mirror-field--single-line .memorisation-mirror-field__content,
+.memorisation-mirror-field--inline .memorisation-mirror-field__content {
+  white-space: pre;
+  word-break: normal;
+}
+
+.memorisation-mirror-field__control {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--mirror-padding-block) var(--mirror-padding-inline);
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: none;
+  color: transparent;
+  caret-color: rgba(15, 23, 42, 0.88);
+  font: inherit;
+  letter-spacing: inherit;
+  text-rendering: inherit;
+  -webkit-text-fill-color: transparent;
+}
+
+.memorisation-mirror-field__control:focus-visible {
+  outline: none;
+}
+
+.memorisation-mirror-field__control::placeholder {
+  color: var(--muted);
+  -webkit-text-fill-color: var(--muted);
+}
+
+.memorisation-mirror-field__control::selection {
+  color: transparent;
+  background: rgba(15, 139, 141, 0.18);
+  -webkit-text-fill-color: transparent;
+}
+
+.memorisation-mirror-field__control::-moz-selection {
+  color: transparent;
+  background: rgba(15, 139, 141, 0.18);
+}
+
+.memorisation-mirror-field__segment--neutral {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.memorisation-mirror-field__segment--matched {
+  color: #047857;
+}
+
+.memorisation-mirror-field__segment--mismatch,
+.memorisation-mirror-field__segment--extra {
+  color: #b42318;
+}
+
 .memorisation-input--single,
 .memorisation-input--reconstruction {
-  width: 100%;
-  padding: 0.95rem 1rem;
-  line-height: 1.55;
+  line-height: var(--mirror-line-height);
 }
 
 .memorisation-input--single {
@@ -238,43 +361,36 @@
 }
 
 .cloze-input {
-  display: inline-block;
-  min-width: min(12rem, 100%);
-  margin: 0 0.2rem;
-  padding: 0.45rem 0.7rem;
+  display: block;
+  line-height: var(--mirror-line-height);
   vertical-align: baseline;
 }
 
-.memorisation-input[data-state="exact"],
-.cloze-input[data-state="exact"] {
+.memorisation-mirror-field[data-state="exact"] {
   border-color: #059669;
   background: #ecfdf5;
   box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.08);
 }
 
-.memorisation-input[data-state="normalized_match"],
-.cloze-input[data-state="normalized_match"] {
+.memorisation-mirror-field[data-state="normalized_match"] {
   border-color: #16a34a;
   background: #f0fdf4;
   box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.08);
 }
 
-.memorisation-input[data-state="near_miss_preposition"],
-.cloze-input[data-state="near_miss_preposition"] {
+.memorisation-mirror-field[data-state="near_miss_preposition"] {
   border-color: #d97706;
   background: #fffbeb;
   box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.08);
 }
 
-.memorisation-input[data-state="incorrect"],
-.cloze-input[data-state="incorrect"] {
+.memorisation-mirror-field[data-state="incorrect"] {
   border-color: #dc2626;
   background: #fff1f1;
   box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.06);
 }
 
-.memorisation-input[data-state="untouched"],
-.cloze-input[data-state="untouched"] {
+.memorisation-mirror-field[data-state="untouched"] {
   border-color: rgba(15, 139, 141, 0.14);
   background: rgba(255, 255, 255, 0.9);
 }
@@ -296,39 +412,6 @@
 
 .memorisation-feedback[data-tone="incorrect"] {
   color: #b42318;
-}
-
-.memorisation-match-guide {
-  display: grid;
-  gap: 0.25rem;
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.memorisation-match-guide__label {
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.memorisation-match-guide__copy {
-  word-break: break-word;
-}
-
-.memorisation-match-guide__matched {
-  color: #047857;
-}
-
-.memorisation-match-guide__mismatch,
-.memorisation-match-guide__extra {
-  color: #b42318;
-}
-
-.memorisation-match-guide__remaining {
-  color: #98a2b3;
 }
 
 .cloze-detail-list {
@@ -403,7 +486,7 @@
     min-height: 7rem;
   }
 
-  .cloze-input {
+  .memorisation-mirror-field--inline {
     width: 100%;
     min-width: 0;
     margin: 0.35rem 0;
