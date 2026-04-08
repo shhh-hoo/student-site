@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-rc-021",
+    "stage": "A2",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "amine test",
+    "type": "reagent_condition",
+    "prompt": "Test for phenylamine using bromine water : reagent and conditions",
+    "answer": "Br2(aq), room temperature"
+  }
+]

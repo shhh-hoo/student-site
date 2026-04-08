@@ -1,0 +1,12 @@
+[
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "periodicity",
+    "subtopic": "electronegativity",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: across a period, the bonding pair of electrons is attracted more ____ to the nucleus.",
+    "answer": "strongly"
+  }
+]

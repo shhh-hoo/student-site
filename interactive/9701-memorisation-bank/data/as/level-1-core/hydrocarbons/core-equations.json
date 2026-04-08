@@ -1,0 +1,32 @@
+[
+  {
+    "id": "as-eq-032",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "cracking example",
+    "type": "equation",
+    "prompt": "Write one equation for the cracking of decane to produce an alkane and an alkene.",
+    "answer": "C10H22 -> C8H18 + C2H4"
+  },
+  {
+    "id": "as-eq-063",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "ethene with bromine",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethene with bromine.",
+    "answer": "CH2=CH2 + Br2 -> CH2BrCH2Br"
+  },
+  {
+    "id": "as-eq-064",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "ethene hydration",
+    "type": "equation",
+    "prompt": "Write the equation for the hydration of ethene.",
+    "answer": "CH2=CH2 + H2O -> CH3CH2OH"
+  }
+]

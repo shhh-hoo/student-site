@@ -1,0 +1,182 @@
+[
+  {
+    "id": "a2-rc-001",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "nitration of benzene",
+    "type": "reagent_condition",
+    "prompt": "benzene -> nitrobenzene : reagent and conditions",
+    "answer": "concentrated HNO3 and concentrated H2SO4, 55C"
+  },
+  {
+    "id": "a2-rc-002",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "halogenation of benzene",
+    "type": "reagent_condition",
+    "prompt": "benzene -> bromobenzene : reagent and conditions",
+    "answer": "Br2, AlBr3"
+  },
+  {
+    "id": "a2-rc-003",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "Friedel-Crafts alkylation",
+    "type": "reagent_condition",
+    "prompt": "benzene -> methylbenzene : reagent and conditions",
+    "answer": "CH3Cl, AlCl3"
+  },
+  {
+    "id": "a2-rc-004",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "Friedel-Crafts acylation",
+    "type": "reagent_condition",
+    "prompt": "benzene -> phenyl ketone : reagent and conditions",
+    "answer": "acyl chloride, AlCl3"
+  },
+  {
+    "id": "a2-rc-023",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "nitration",
+    "type": "reagent_condition",
+    "prompt": "benzene -> nitrobenzene : reagent and conditions",
+    "answer": "concentrated HNO3 and concentrated H2SO4, 50 °C"
+  },
+  {
+    "id": "a2-rc-024",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "halogenation",
+    "type": "reagent_condition",
+    "prompt": "benzene -> bromobenzene : reagent and conditions",
+    "answer": "Br2, AlBr3 catalyst"
+  },
+  {
+    "id": "a2-rc-027",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "side-chain oxidation",
+    "type": "reagent_condition",
+    "prompt": "methylbenzene -> benzoic acid : reagent and conditions",
+    "answer": "hot alkaline KMnO4, then acidify"
+  },
+  {
+    "id": "a2-rc-040",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "methylbenzene to benzyl bromide",
+    "type": "reagent_condition",
+    "prompt": "methylbenzene -> benzyl bromide : reagent and conditions",
+    "answer": "Br2, UV light"
+  },
+  {
+    "id": "a2-rc-041",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "benzyl bromide to benzyl alcohol",
+    "type": "reagent_condition",
+    "prompt": "benzyl bromide -> benzyl alcohol : reagent and conditions",
+    "answer": "aqueous NaOH, heat"
+  },
+  {
+    "id": "a2-rc-045",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "phenol to phenyl ethanoate",
+    "type": "reagent_condition",
+    "prompt": "phenol -> phenyl ethanoate : reagent and conditions",
+    "answer": "CH3COCl, room temperature"
+  },
+  {
+    "id": "a2-rc-049",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "phenylamine to benzene diazonium salt",
+    "type": "reagent_condition",
+    "prompt": "phenylamine -> benzene diazonium salt : reagent and conditions",
+    "answer": "NaNO2, HCl, 0-10C"
+  },
+  {
+    "id": "a2-rc-053",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "methylbenzene side-chain oxidation",
+    "type": "reagent_condition",
+    "prompt": "alkylbenzene -> benzoic acid : reagent and conditions",
+    "answer": "hot alkaline KMnO4, then acidify"
+  },
+  {
+    "id": "a2-rc-055",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "bromination of benzene",
+    "type": "reagent_condition",
+    "prompt": "benzene -> bromobenzene : reagent and conditions",
+    "answer": "Br2, FeBr3 catalyst"
+  },
+  {
+    "id": "a2-rc-056",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "alkylation of benzene",
+    "type": "reagent_condition",
+    "prompt": "benzene -> methylbenzene : reagent and conditions",
+    "answer": "CH3Cl, AlCl3 catalyst"
+  },
+  {
+    "id": "a2-rc-057",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "acylation of benzene",
+    "type": "reagent_condition",
+    "prompt": "benzene -> phenylethanone : reagent and conditions",
+    "answer": "CH3COCl, AlCl3 catalyst"
+  },
+  {
+    "id": "a2-rc-058",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "diazotisation",
+    "type": "reagent_condition",
+    "prompt": "phenylamine -> benzenediazonium chloride : reagent and conditions",
+    "answer": "NaNO2 and HCl, below 10C"
+  },
+  {
+    "id": "a2-rc-059",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "diazonium hydrolysis",
+    "type": "reagent_condition",
+    "prompt": "benzenediazonium chloride -> phenol : conditions",
+    "answer": "warm water"
+  },
+  {
+    "id": "a2-rc-060",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "azo coupling with phenol",
+    "type": "reagent_condition",
+    "prompt": "benzenediazonium chloride + phenol : conditions",
+    "answer": "cold alkaline solution"
+  }
+]

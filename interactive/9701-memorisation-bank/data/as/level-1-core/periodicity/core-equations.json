@@ -1,0 +1,72 @@
+[
+  {
+    "id": "as-eq-005",
+    "stage": "AS",
+    "level": 1,
+    "topic": "periodicity",
+    "subtopic": "carbon dioxide with magnesium hydroxide",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of CO2 with Mg(OH)2.",
+    "answer": "CO2 + Mg(OH)2 -> MgCO3 + H2O"
+  },
+  {
+    "id": "as-eq-038",
+    "stage": "AS",
+    "level": 1,
+    "topic": "periodicity",
+    "subtopic": "aluminium chloride hydrolysis",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of AlCl3 with water.",
+    "answer": "AlCl3 + 3H2O -> Al(OH)3 + 3HCl"
+  },
+  {
+    "id": "as-eq-041",
+    "stage": "AS",
+    "level": 1,
+    "topic": "periodicity",
+    "subtopic": "sodium oxide with water",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of sodium oxide with water.",
+    "answer": "Na2O + H2O -> 2NaOH"
+  },
+  {
+    "id": "as-eq-042",
+    "stage": "AS",
+    "level": 1,
+    "topic": "periodicity",
+    "subtopic": "phosphorus(V) oxide with water",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of phosphorus(V) oxide with water.",
+    "answer": "P4O10 + 6H2O -> 4H3PO4"
+  },
+  {
+    "id": "as-eq-060",
+    "stage": "AS",
+    "level": 1,
+    "topic": "periodicity",
+    "subtopic": "sulfur dioxide with water",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of sulfur dioxide with water.",
+    "answer": "SO2 + H2O -> H2SO3"
+  },
+  {
+    "id": "as-eq-061",
+    "stage": "AS",
+    "level": 1,
+    "topic": "periodicity",
+    "subtopic": "sulfur dioxide with sodium hydroxide",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of sulfur dioxide with sodium hydroxide.",
+    "answer": "SO2 + 2NaOH -> Na2SO3 + H2O"
+  },
+  {
+    "id": "as-eq-062",
+    "stage": "AS",
+    "level": 1,
+    "topic": "periodicity",
+    "subtopic": "carbon dioxide with magnesium hydroxide",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of carbon dioxide with magnesium hydroxide.",
+    "answer": "CO2 + Mg(OH)2 -> MgCO3 + H2O"
+  }
+]

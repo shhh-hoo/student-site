@@ -1,0 +1,62 @@
+[
+  {
+    "id": "as-exp-006",
+    "stage": "AS",
+    "level": 4,
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "type": "full_reconstruction",
+    "question": "Explain why increasing temperature increases the rate of reaction.",
+    "answer": "At a higher temperature the particles have greater average kinetic energy. A greater proportion of particles has energy greater than or equal to the activation energy. Therefore the number of successful collisions per unit time increases."
+  },
+  {
+    "id": "as-exp-007",
+    "stage": "AS",
+    "level": 4,
+    "topic": "kinetics",
+    "subtopic": "catalyst",
+    "type": "full_reconstruction",
+    "question": "State and explain the effect of a catalyst on a reaction.",
+    "answer": "A catalyst increases the rate of reaction by providing an alternative pathway with a lower activation energy. A greater proportion of collisions is therefore successful."
+  },
+  {
+    "id": "as-exp-018",
+    "stage": "AS",
+    "level": 4,
+    "topic": "kinetics",
+    "subtopic": "catalyst and equilibrium",
+    "type": "full_reconstruction",
+    "question": "State and explain the effect of using a catalyst on this reaction.",
+    "answer": "A catalyst increases the rate of reaction by providing an alternative reaction pathway with a lower activation energy. It does not change the position of equilibrium."
+  },
+  {
+    "id": "as-exp-026",
+    "stage": "AS",
+    "level": 4,
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "type": "full_reconstruction",
+    "question": "Explain why increasing temperature increases rate.",
+    "answer": "At a higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore has energy greater than or equal to the activation energy. So the number of successful collisions per unit time increases."
+  },
+  {
+    "id": "as-exp-027",
+    "stage": "AS",
+    "level": 4,
+    "topic": "kinetics",
+    "subtopic": "catalyst",
+    "type": "full_reconstruction",
+    "question": "Explain the effect of a catalyst on rate.",
+    "answer": "A catalyst provides an alternative pathway with a lower activation energy. Therefore a greater proportion of collisions is successful. The rate increases."
+  },
+  {
+    "id": "as-exp-040",
+    "stage": "AS",
+    "level": 4,
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "type": "full_reconstruction",
+    "question": "Explain why increasing temperature increases the rate of reaction.",
+    "answer": "At higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases."
+  }
+]

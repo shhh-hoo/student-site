@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-eq-014",
+    "stage": "A2",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "oxidation of propan-2-ol",
+    "type": "equation",
+    "prompt": "Write the equation for the oxidation of propan-2-ol using [O].",
+    "answer": "CH3CHOHCH3 + [O] -> CH3COCH3 + H2O"
+  }
+]

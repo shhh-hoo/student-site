@@ -1,0 +1,112 @@
+[
+  {
+    "id": "as-rc-001",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkene to alkane",
+    "type": "reagent_condition",
+    "prompt": "ethene -> ethane : reagent and conditions",
+    "answer": "H2, Ni, heat"
+  },
+  {
+    "id": "as-rc-006",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkene to dibromoalkane",
+    "type": "reagent_condition",
+    "prompt": "ethene -> 1,2-dibromoethane : reagent and conditions",
+    "answer": "Br2"
+  },
+  {
+    "id": "as-rc-007",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkene to alcohol",
+    "type": "reagent_condition",
+    "prompt": "ethene -> ethanol : reagent and conditions",
+    "answer": "steam, H3PO4 catalyst, high temperature and pressure"
+  },
+  {
+    "id": "as-rc-016",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkene test",
+    "type": "reagent_condition",
+    "prompt": "Test for an alkene : reagent and conditions",
+    "answer": "bromine water"
+  },
+  {
+    "id": "as-rc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkene oxidation",
+    "type": "reagent_condition",
+    "prompt": "alkene -> diol : reagent and conditions",
+    "answer": "cold dilute acidified KMnO4"
+  },
+  {
+    "id": "as-rc-033",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkane bromination",
+    "type": "reagent_condition",
+    "prompt": "alkane -> bromoalkane : reagent and condition",
+    "answer": "Br2, UV light"
+  },
+  {
+    "id": "as-rc-035",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkane to halogenoalkane",
+    "type": "reagent_condition",
+    "prompt": "methane -> chloromethane : reagent and conditions",
+    "answer": "Cl2, UV light"
+  },
+  {
+    "id": "as-rc-041",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkene to dibromo compound",
+    "type": "reagent_condition",
+    "prompt": "ethene -> 1,2-dibromoethane : reagent and conditions",
+    "answer": "Br2, room temperature"
+  },
+  {
+    "id": "as-rc-042",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkene to alcohol",
+    "type": "reagent_condition",
+    "prompt": "ethene -> ethanol : reagent and conditions",
+    "answer": "steam, H3PO4 catalyst, 300C, 60 atm"
+  },
+  {
+    "id": "as-rc-045",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "alkene oxidation",
+    "type": "reagent_condition",
+    "prompt": "ethene -> ethane-1,2-diol : reagent and conditions",
+    "answer": "cold dilute acidified KMnO4"
+  },
+  {
+    "id": "as-rc-046",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "addition polymerisation",
+    "type": "reagent_condition",
+    "prompt": "ethene -> poly(ethene) : conditions",
+    "answer": "high pressure, high temperature, catalyst"
+  }
+]

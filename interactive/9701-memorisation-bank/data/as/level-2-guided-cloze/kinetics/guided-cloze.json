@@ -1,0 +1,86 @@
+[
+  {
+    "id": "as-exp-006",
+    "stage": "AS",
+    "level": 2,
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "type": "guided_cloze",
+    "question": "Explain why increasing temperature increases the rate of reaction.",
+    "prompt": "At a higher temperature the particles have greater average _____ energy. A greater proportion of particles has energy greater than or equal to the activation energy. Therefore the number of successful collisions per unit time increases.",
+    "answers": [
+      "kinetic"
+    ],
+    "full_answer": "At a higher temperature the particles have greater average kinetic energy. A greater proportion of particles has energy greater than or equal to the activation energy. Therefore the number of successful collisions per unit time increases."
+  },
+  {
+    "id": "as-exp-007",
+    "stage": "AS",
+    "level": 2,
+    "topic": "kinetics",
+    "subtopic": "catalyst",
+    "type": "guided_cloze",
+    "question": "State and explain the effect of a catalyst on a reaction.",
+    "prompt": "A catalyst increases the _____ of reaction by providing an alternative pathway with a lower activation energy. A greater proportion of collisions is therefore successful.",
+    "answers": [
+      "rate"
+    ],
+    "full_answer": "A catalyst increases the rate of reaction by providing an alternative pathway with a lower activation energy. A greater proportion of collisions is therefore successful."
+  },
+  {
+    "id": "as-exp-018",
+    "stage": "AS",
+    "level": 2,
+    "topic": "kinetics",
+    "subtopic": "catalyst and equilibrium",
+    "type": "guided_cloze",
+    "question": "State and explain the effect of using a catalyst on this reaction.",
+    "prompt": "A catalyst increases the rate of reaction by providing an alternative reaction pathway with a lower _____ energy. It does not change the position of equilibrium.",
+    "answers": [
+      "activation"
+    ],
+    "full_answer": "A catalyst increases the rate of reaction by providing an alternative reaction pathway with a lower activation energy. It does not change the position of equilibrium."
+  },
+  {
+    "id": "as-exp-026",
+    "stage": "AS",
+    "level": 2,
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "type": "guided_cloze",
+    "question": "Explain why increasing temperature increases rate.",
+    "prompt": "At a higher temperature, particles have greater _____ energy. A greater proportion of particles therefore has energy greater than or equal to the activation energy. So the number of successful collisions per unit time increases.",
+    "answers": [
+      "kinetic"
+    ],
+    "full_answer": "At a higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore has energy greater than or equal to the activation energy. So the number of successful collisions per unit time increases."
+  },
+  {
+    "id": "as-exp-027",
+    "stage": "AS",
+    "level": 2,
+    "topic": "kinetics",
+    "subtopic": "catalyst",
+    "type": "guided_cloze",
+    "question": "Explain the effect of a catalyst on rate.",
+    "prompt": "A catalyst provides an alternative pathway with a lower activation _____. Therefore a greater proportion of collisions is successful. The rate increases.",
+    "answers": [
+      "energy"
+    ],
+    "full_answer": "A catalyst provides an alternative pathway with a lower activation energy. Therefore a greater proportion of collisions is successful. The rate increases."
+  },
+  {
+    "id": "as-exp-040",
+    "stage": "AS",
+    "level": 2,
+    "topic": "kinetics",
+    "subtopic": "temperature and rate",
+    "type": "guided_cloze",
+    "question": "Explain why increasing temperature increases the rate of reaction.",
+    "prompt": "At higher temperature, particles have greater _____ energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases.",
+    "answers": [
+      "kinetic"
+    ],
+    "full_answer": "At higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases."
+  }
+]

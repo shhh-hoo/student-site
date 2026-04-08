@@ -1,0 +1,62 @@
+[
+  {
+    "id": "as-obs-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "silver halides",
+    "type": "standard_observation",
+    "prompt": "State the observation when chloride ions react with aqueous silver nitrate.",
+    "answer": "white precipitate"
+  },
+  {
+    "id": "as-obs-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "silver halides",
+    "type": "standard_observation",
+    "prompt": "State the observation when bromide ions react with aqueous silver nitrate.",
+    "answer": "cream precipitate"
+  },
+  {
+    "id": "as-obs-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "silver halides",
+    "type": "standard_observation",
+    "prompt": "State the observation when iodide ions react with aqueous silver nitrate.",
+    "answer": "yellow precipitate"
+  },
+  {
+    "id": "as-obs-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "ammonia solubility",
+    "type": "test_outcome",
+    "prompt": "State the outcome when the silver chloride precipitate is treated with aqueous ammonia.",
+    "answer": "soluble in aqueous ammonia"
+  },
+  {
+    "id": "as-obs-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "ammonia solubility",
+    "type": "test_outcome",
+    "prompt": "State the outcome when the silver bromide precipitate is treated with aqueous ammonia.",
+    "answer": "partially soluble in aqueous ammonia"
+  },
+  {
+    "id": "as-obs-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "ammonia solubility",
+    "type": "test_outcome",
+    "prompt": "State the outcome when the silver iodide precipitate is treated with aqueous ammonia.",
+    "answer": "insoluble in aqueous ammonia"
+  }
+]

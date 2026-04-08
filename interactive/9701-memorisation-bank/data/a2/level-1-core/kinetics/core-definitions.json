@@ -1,0 +1,79 @@
+[
+  {
+    "id": "a2-def-008",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "order of reaction",
+    "type": "definition",
+    "prompt": "Define order of reaction with respect to a reactant.",
+    "answer": "the power to which the concentration of that reactant is raised in the rate equation",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-009",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "rate-determining step",
+    "type": "definition",
+    "prompt": "Define rate-determining step.",
+    "answer": "the slowest step in a multi-step reaction mechanism",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-019",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "homogeneous catalyst",
+    "type": "definition",
+    "prompt": "Define homogeneous catalyst.",
+    "answer": "a catalyst in the same phase as the reactants",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-020",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "heterogeneous catalyst",
+    "type": "definition",
+    "prompt": "Define heterogeneous catalyst.",
+    "answer": "a catalyst in a different phase from the reactants",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-026",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "rate equation",
+    "type": "definition",
+    "prompt": "Define rate equation.",
+    "answer": "an equation that shows how the rate of reaction depends on the concentrations of the reactants",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-027",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "rate constant",
+    "type": "definition",
+    "prompt": "Define rate constant.",
+    "answer": "the proportionality constant in the rate equation",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-028",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "half-life",
+    "type": "definition",
+    "prompt": "Define half-life.",
+    "answer": "the time taken for the concentration of a reactant to decrease to half its original value",
+    "source_scope": "syllabus_only"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "as-exp-005",
+    "stage": "AS",
+    "level": 4,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "full_reconstruction",
+    "question": "Explain why the yield of a gaseous product increases when the total pressure is increased.",
+    "answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side if that side has fewer gaseous molecules, so the yield increases."
+  },
+  {
+    "id": "as-exp-017",
+    "stage": "AS",
+    "level": 4,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "full_reconstruction",
+    "question": "Explain why increasing the overall pressure increases the yield of propanal in C2H4 + CO + H2 -> CH3CH2CHO.",
+    "answer": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the yield increases."
+  },
+  {
+    "id": "as-exp-021",
+    "stage": "AS",
+    "level": 4,
+    "topic": "equilibrium",
+    "subtopic": "ammonium ion acid-base",
+    "type": "full_reconstruction",
+    "question": "Explain why ammonium carbonate undergoes an acid-base reaction with NaOH(aq).",
+    "answer": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton."
+  },
+  {
+    "id": "as-exp-025",
+    "stage": "AS",
+    "level": 4,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "full_reconstruction",
+    "question": "Explain why increasing pressure increases the yield when the product side has fewer moles of gas.",
+    "answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases."
+  },
+  {
+    "id": "as-exp-038",
+    "stage": "AS",
+    "level": 4,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "full_reconstruction",
+    "question": "Explain why the yield of a gaseous product increases when pressure is increased.",
+    "answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas."
+  },
+  {
+    "id": "as-exp-039",
+    "stage": "AS",
+    "level": 4,
+    "topic": "equilibrium",
+    "subtopic": "catalyst effect",
+    "type": "full_reconstruction",
+    "question": "State and explain the effect of a catalyst on a reversible reaction.",
+    "answer": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged."
+  }
+]

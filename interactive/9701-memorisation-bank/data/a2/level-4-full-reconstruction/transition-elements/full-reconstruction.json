@@ -1,0 +1,102 @@
+[
+  {
+    "id": "a2-exp-001",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "variable oxidation states",
+    "type": "full_reconstruction",
+    "question": "Explain why transition elements have variable oxidation states.",
+    "answer": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy. Therefore different numbers of electrons can be used in bonding or removed."
+  },
+  {
+    "id": "a2-exp-002",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "bidentate ligand",
+    "type": "full_reconstruction",
+    "question": "Explain what is meant by a bidentate ligand.",
+    "answer": "A bidentate ligand has two atoms with lone pairs available for donation. It forms two dative covalent bonds to the same metal ion."
+  },
+  {
+    "id": "a2-exp-005",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "why barium chromate is coloured",
+    "type": "full_reconstruction",
+    "question": "Explain why BaCrO4 is coloured.",
+    "answer": "The chromium species contains partially filled d orbitals. These are split into different energy levels, and electrons absorb visible light to move between them. The complementary colour is seen."
+  },
+  {
+    "id": "a2-exp-023",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "why complex is polar",
+    "type": "full_reconstruction",
+    "question": "Identify one isomer that is polar and explain your answer.",
+    "answer": "The cis isomer is polar because the bond dipoles do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment."
+  },
+  {
+    "id": "a2-exp-024",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "variable oxidation states",
+    "type": "full_reconstruction",
+    "question": "Explain why transition elements have variable oxidation states.",
+    "answer": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy. Therefore different numbers of electrons can be used in bonding or removed."
+  },
+  {
+    "id": "a2-exp-025",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "bidentate ligand",
+    "type": "full_reconstruction",
+    "question": "Explain what is meant by a bidentate ligand.",
+    "answer": "A bidentate ligand has two atoms with lone pairs that can bond to the same central metal ion. So one ligand forms two coordinate bonds."
+  },
+  {
+    "id": "a2-exp-027",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "BaCrO4 colour",
+    "type": "full_reconstruction",
+    "question": "Explain why BaCrO4 is coloured.",
+    "answer": "Chromate ions contain partially filled d orbitals on the transition metal. Electrons absorb energy from visible light and are promoted between different energy levels. Therefore some wavelengths are absorbed and the compound appears coloured."
+  },
+  {
+    "id": "a2-exp-033",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "polar stereoisomer",
+    "type": "full_reconstruction",
+    "question": "Explain why one stereoisomer is polar while another is non-polar.",
+    "answer": "The individual bonds are polar, but in one isomer the bond dipoles do not cancel because of the three-dimensional arrangement. Therefore that isomer has an overall dipole moment and is polar."
+  },
+  {
+    "id": "a2-exp-035",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "bidentate ligand explanation",
+    "type": "full_reconstruction",
+    "question": "Explain what is meant by a bidentate ligand.",
+    "answer": "A bidentate ligand has two donor atoms with lone pairs. It forms two coordinate bonds to the same central metal ion."
+  },
+  {
+    "id": "a2-exp-036",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "colour of complex",
+    "type": "full_reconstruction",
+    "question": "Explain why a transition-metal complex is coloured.",
+    "answer": "The ligands cause the d orbitals to split into two energy levels. An electron absorbs visible light and is promoted to the higher energy level. The complementary colour is therefore seen."
+  }
+]

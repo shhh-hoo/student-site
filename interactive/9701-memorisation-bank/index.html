@@ -35,25 +35,27 @@
             <div class="interactive-meta-row">
               <span class="interactive-meta-chip">CAIE 9701</span>
               <span class="interactive-meta-chip">AS + A2</span>
-              <span class="interactive-meta-chip">Strict recall</span>
+              <span class="interactive-meta-chip">Levelled pack</span>
             </div>
             <h1>9701 Memorisation Bank</h1>
             <p class="interactive-summary">
-              Drill one memorisation prompt at a time with exact-match-lite checking, quick reveal,
-              and stage-first switching across definitions, reagents and conditions, reaction paths,
-              equations, and explanation cloze rounds.
+              Move through the regenerated knowledge structure in study order: stage, level, topic,
+              then training file. Level 1 stays exact and dictation-first, Levels 2 and 3 keep cloze
+              structure explicit, and Level 4 uses full canonical reconstruction.
             </p>
           </div>
           <div class="interactive-meta-group">
             <article class="interactive-meta-card">
-              <span>Checking model</span>
-              <strong>Trim, repeated-space collapse, and case-insensitive comparison only.</strong>
+              <span>Navigation model</span>
+              <strong
+                >Stage → Level → Topic → Training file, with round control where needed.</strong
+              >
             </article>
             <article class="interactive-meta-card">
-              <span>Focus</span>
+              <span>Checking model</span>
               <strong
-                >Strict recall practice first, not scoring, persistence, or mastery
-                tracking.</strong
+                >Whitespace-lite exact matching only, with canonical answer reveal for
+                review.</strong
               >
             </article>
           </div>
@@ -68,8 +70,8 @@
           </section>
 
           <section class="memorisation-control">
-            <p class="memorisation-control__label">Mode</p>
-            <div id="mode-tabs" class="memorisation-modes"></div>
+            <p class="memorisation-control__label">Level</p>
+            <div id="level-switcher" class="memorisation-levels"></div>
           </section>
 
           <label class="memorisation-control" for="topic-filter">
@@ -79,10 +81,25 @@
             </select>
           </label>
 
+          <section class="memorisation-control">
+            <p class="memorisation-control__label">Training File</p>
+            <div id="file-switcher" class="memorisation-files"></div>
+          </section>
+
+          <section id="definition-filter-section" class="memorisation-control" hidden>
+            <p class="memorisation-control__label">Definition Source</p>
+            <div id="definition-filter-grid" class="memorisation-filter-grid"></div>
+          </section>
+
+          <section id="round-switcher-section" class="memorisation-control" hidden>
+            <p class="memorisation-control__label">Round</p>
+            <div id="round-switcher" class="memorisation-filter-grid"></div>
+          </section>
+
           <div class="interactive-subtle-panel memorisation-stats">
             <div class="memorisation-stat">
-              <span>Mode file</span>
-              <strong id="mode-manifest-count">0 source items</strong>
+              <span>Training file</span>
+              <strong id="file-manifest-count">0 source items</strong>
             </div>
             <div class="memorisation-stat">
               <span>Active pool</span>
@@ -104,19 +121,20 @@
             <div class="interactive-help-body">
               <div class="interactive-help-grid">
                 <article class="interactive-note-card">
-                  <span>Single-answer modes</span>
-                  <strong>Checked on blur or Enter</strong>
+                  <span>Level 1</span>
+                  <strong>Exact dictation only</strong>
                   <p>
-                    Definitions, reagents and conditions, reaction paths, and equations all use one
-                    answer box with strict stored-answer comparison.
+                    Definitions, reagents and conditions, reaction paths, equations, observations,
+                    and fixed conclusions all use canonical stored answers with no relaxed chemistry
+                    matching.
                   </p>
                 </article>
                 <article class="interactive-note-card">
-                  <span>Cloze mode</span>
-                  <strong>One input per blank</strong>
+                  <span>Levels 2 to 4</span>
+                  <strong>Guided, multi-round, then full reconstruction</strong>
                   <p>
-                    Each round is flattened into its own runtime unit and each blank is checked
-                    independently before reveal.
+                    Guided cloze stays fixed, multi-round keeps round structure visible, and Level 4
+                    checks the full canonical answer before reveal.
                   </p>
                 </article>
               </div>
@@ -128,8 +146,10 @@
           <div class="memorisation-workspace__header">
             <div class="memorisation-badges">
               <span id="stage-badge" class="memorisation-badge">Stage</span>
-              <span id="mode-badge" class="memorisation-badge">Mode</span>
+              <span id="level-badge" class="memorisation-badge">Level</span>
               <span id="topic-badge" class="memorisation-badge">Topic</span>
+              <span id="file-badge" class="memorisation-badge">Training file</span>
+              <span id="source-badge" class="memorisation-badge" hidden>Definition source</span>
               <span id="round-badge" class="memorisation-badge" hidden>Round</span>
             </div>
             <span id="counter-chip" class="memorisation-counter-chip">0 / 0</span>

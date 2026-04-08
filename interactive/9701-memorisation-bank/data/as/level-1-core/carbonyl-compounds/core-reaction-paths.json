@@ -1,0 +1,52 @@
+[
+  {
+    "id": "as-path-010",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "aldehyde network",
+    "type": "reaction_path",
+    "prompt": "ethanal -> ethanoic acid",
+    "answer": "K2Cr2O7/H+, reflux"
+  },
+  {
+    "id": "as-path-011",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "aldehyde network",
+    "type": "reaction_path",
+    "prompt": "ethanal -> hydroxynitrile",
+    "answer": "HCN and KCN"
+  },
+  {
+    "id": "as-path-023",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "ethanal network",
+    "type": "reaction_path",
+    "prompt": "ethanal -> ethanol",
+    "answer": "NaBH4"
+  },
+  {
+    "id": "as-path-032",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "oxidation",
+    "type": "reaction_path",
+    "prompt": "ethanal -> ethanoic acid",
+    "answer": "K2Cr2O7/H+, reflux"
+  },
+  {
+    "id": "as-path-044",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "ketone reduction path",
+    "type": "reaction_path",
+    "prompt": "propanone -> propan-2-ol",
+    "answer": "NaBH4"
+  }
+]

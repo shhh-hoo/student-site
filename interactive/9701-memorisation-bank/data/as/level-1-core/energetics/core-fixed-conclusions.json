@@ -1,0 +1,22 @@
+[
+  {
+    "id": "as-def-076",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard conditions",
+    "type": "fixed_conclusion",
+    "prompt": "State the standard conditions used for enthalpy changes.",
+    "answer": "100 kPa and 298 K"
+  },
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard conditions",
+    "type": "fixed_conclusion",
+    "prompt": "State the standard conditions used for enthalpy changes.",
+    "answer": "100 kPa and 298 K"
+  }
+]

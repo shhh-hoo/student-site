@@ -1,33 +1,40 @@
 {
-  "id": "as-memorisation-bank",
   "stage": "AS",
-  "modes": [
-    {
-      "mode": "definition",
-      "file": "definitions.json",
-      "count": 70
-    },
-    {
-      "mode": "reagent_condition",
-      "file": "reagents_conditions.json",
-      "count": 57
-    },
-    {
-      "mode": "reaction_path",
-      "file": "reaction_paths.json",
-      "count": 45
-    },
-    {
-      "mode": "equation",
-      "file": "equations.json",
-      "count": 74
-    },
-    {
-      "mode": "explanation_cloze",
-      "file": "explanation_cloze.json",
-      "count": 45
-    }
+  "levels": [
+    "level-1-core",
+    "level-2-guided-cloze",
+    "level-3-multi-round-cloze",
+    "level-4-full-reconstruction"
   ],
-  "checking_profile": "exact-match-lite",
-  "build_label": "full-batch"
+  "topics": [
+    "acids-and-bases",
+    "analytical-techniques",
+    "atomic-structure",
+    "bonding",
+    "carbonyl-compounds",
+    "carboxylic-acids-and-derivatives",
+    "energetics",
+    "equilibrium",
+    "group-17",
+    "group-2",
+    "halogenoalkanes",
+    "hydrocarbons",
+    "hydroxy-compounds",
+    "kinetics",
+    "nitrogen-and-sulfur",
+    "organic-general",
+    "periodicity",
+    "redox",
+    "states-of-matter",
+    "stoichiometry",
+    "tests-and-observations"
+  ],
+  "counts": {
+    "level-1-core": 280,
+    "level-2-guided-cloze": 57,
+    "level-3-multi-round-cloze": 57,
+    "level-4-full-reconstruction": 57
+  },
+  "definition_policy": "definitions retained only if sourced from real past-paper definition prompts or syllabus-required definition-style terms",
+  "matching_policy": "exact-match after simple whitespace trimming"
 }

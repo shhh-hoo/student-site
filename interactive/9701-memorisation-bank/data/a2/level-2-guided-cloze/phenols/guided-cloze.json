@@ -1,0 +1,30 @@
+[
+  {
+    "id": "a2-exp-021",
+    "stage": "A2",
+    "level": 2,
+    "topic": "phenols",
+    "subtopic": "bromination without catalyst",
+    "type": "guided_cloze",
+    "question": "Explain why phenol reacts with bromine water without a catalyst.",
+    "prompt": "The lone pair on the oxygen atom is delocalised into the benzene ring. This increases the _____ density of the ring, so the ring attracts electrophiles more strongly and reacts without a catalyst.",
+    "answers": [
+      "electron"
+    ],
+    "full_answer": "The lone pair on the oxygen atom is delocalised into the benzene ring. This increases the electron density of the ring, so the ring attracts electrophiles more strongly and reacts without a catalyst."
+  },
+  {
+    "id": "a2-exp-044",
+    "stage": "A2",
+    "level": 2,
+    "topic": "phenols",
+    "subtopic": "acidity of phenol",
+    "type": "guided_cloze",
+    "question": "Explain why phenol is more acidic than cyclohexanol.",
+    "prompt": "The phenoxide ion is stabilised by _____ of the negative charge into the benzene ring. The cyclohexoxide ion is not stabilised in this way, so phenol is more acidic.",
+    "answers": [
+      "delocalisation"
+    ],
+    "full_answer": "The phenoxide ion is stabilised by delocalisation of the negative charge into the benzene ring. The cyclohexoxide ion is not stabilised in this way, so phenol is more acidic."
+  }
+]

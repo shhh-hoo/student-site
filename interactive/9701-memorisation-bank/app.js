@@ -1,14 +1,27 @@
-const stageConfig = [
-  { id: "AS", slug: "as" },
-  { id: "A2", slug: "a2" },
+const definitionScopeOptions = [
+  { id: "all", label: "All" },
+  { id: "paper_only", label: "Past paper only" },
+  { id: "syllabus_only", label: "Syllabus only" },
+  { id: "paper_and_syllabus", label: "Paper + syllabus" },
 ];
 
-const modeConfig = [
-  { id: "definition", label: "Definition" },
-  { id: "reagent_condition", label: "Reagent + condition" },
-  { id: "reaction_path", label: "Reaction path" },
-  { id: "equation", label: "Equation" },
-  { id: "explanation_cloze", label: "Explanation cloze" },
+const levelOrder = [
+  "level-1-core",
+  "level-2-guided-cloze",
+  "level-3-multi-round-cloze",
+  "level-4-full-reconstruction",
+];
+
+const fileOrder = [
+  "core-definitions",
+  "core-reagents-conditions",
+  "core-reaction-paths",
+  "core-equations",
+  "core-observations",
+  "core-fixed-conclusions",
+  "guided-cloze",
+  "multi-round-cloze",
+  "full-reconstruction",
 ];
 
 const collator = new Intl.Collator(undefined, {
@@ -17,15 +30,22 @@ const collator = new Intl.Collator(undefined, {
 });
 
 const stageSwitcher = document.getElementById("stage-switcher");
-const modeTabs = document.getElementById("mode-tabs");
+const levelSwitcher = document.getElementById("level-switcher");
 const topicFilter = document.getElementById("topic-filter");
-const modeManifestCount = document.getElementById("mode-manifest-count");
+const fileSwitcher = document.getElementById("file-switcher");
+const definitionFilterSection = document.getElementById("definition-filter-section");
+const definitionFilterGrid = document.getElementById("definition-filter-grid");
+const roundSwitcherSection = document.getElementById("round-switcher-section");
+const roundSwitcher = document.getElementById("round-switcher");
+const fileManifestCount = document.getElementById("file-manifest-count");
 const poolCount = document.getElementById("pool-count");
 const itemCounter = document.getElementById("item-counter");
 const counterChip = document.getElementById("counter-chip");
 const stageBadge = document.getElementById("stage-badge");
-const modeBadge = document.getElementById("mode-badge");
+const levelBadge = document.getElementById("level-badge");
 const topicBadge = document.getElementById("topic-badge");
+const fileBadge = document.getElementById("file-badge");
+const sourceBadge = document.getElementById("source-badge");
 const roundBadge = document.getElementById("round-badge");
 const questionLabel = document.getElementById("question-label");
 const questionTitle = document.getElementById("question-title");
@@ -39,15 +59,21 @@ const answerText = document.getElementById("answer-text");
 const answerNote = document.getElementById("answer-note");
 
 const appState = {
-  manifests: {},
-  unitsByStage: {},
-  stage: "AS",
-  mode: "definition",
+  catalog: null,
+  topicNormalizationMap: {},
+  stage: "",
+  level: "",
   topic: "",
+  file: "",
+  definitionScope: "all",
+  round: "all",
+  activePool: [],
   sequence: [],
   sequenceIndex: 0,
   currentUnitId: "",
   revealed: false,
+  renderToken: 0,
+  fileDataCache: new Map(),
 };
 
 function fetchJson(path) {
@@ -63,17 +89,38 @@ function fetchJson(path) {
 function formatLabel(value) {
   return String(value || "")
     .trim()
-    .split(/[\s-]+/)
+    .split(/[-\s]+/)
     .filter(Boolean)
     .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
     .join(" ");
 }
 
+function formatDefinitionScope(scope) {
+  return definitionScopeOptions.find((option) => option.id === scope)?.label || formatLabel(scope);
+}
+
 function normaliseExactMatch(value) {
   return String(value ?? "")
     .trim()
-    .replace(/\s+/g, " ")
-    .toLowerCase();
+    .replace(/\s+/g, " ");
+}
+
+function normalizeTopicKey(topicValue) {
+  const rawTopic = String(topicValue || "").trim();
+
+  if (!rawTopic) {
+    return "";
+  }
+
+  const hyphenatedTopic = rawTopic.toLowerCase().replace(/_/g, "-").replace(/\s+/g, "-");
+  const spacedTopic = rawTopic.toLowerCase().replace(/[-_]+/g, " ").trim();
+
+  return (
+    appState.topicNormalizationMap[rawTopic] ||
+    appState.topicNormalizationMap[hyphenatedTopic] ||
+    appState.topicNormalizationMap[spacedTopic] ||
+    hyphenatedTopic
+  );
 }
 
 function pluralise(count, singular, plural = `${singular}s`) {
@@ -89,59 +136,152 @@ function applyFieldState(field, state) {
   field.dataset.state = state;
 }
 
-function buildRuntimeUnits(mode, items) {
-  const sourceItems = Array.isArray(items) ? items : [];
-
-  if (mode !== "explanation_cloze") {
-    return sourceItems.map((item) => ({
-      ...item,
-      kind: "single",
-      unitId: item.id,
-    }));
-  }
-
-  return sourceItems.flatMap((item) => {
-    const rounds = Array.isArray(item.rounds) ? item.rounds : [];
-
-    return rounds.map((round, index) => ({
-      ...item,
-      kind: "cloze",
-      unitId: `${item.id}::round-${round.round ?? index + 1}`,
-      prompt: round.prompt,
-      answers: Array.isArray(round.answers) ? round.answers.slice() : [],
-      round: round.round ?? index + 1,
-      roundTotal: rounds.length,
-    }));
-  });
+function getStageEntries() {
+  return Array.isArray(appState.catalog?.stages) ? appState.catalog.stages : [];
 }
 
-function getManifestForStage(stageId) {
-  return appState.manifests[stageId] || { modes: [] };
+function getStageEntry(stageId = appState.stage) {
+  return getStageEntries().find((stage) => stage.id === stageId) || null;
 }
 
-function getModeManifestEntry(stageId, modeId) {
-  return (getManifestForStage(stageId).modes || []).find((mode) => mode.mode === modeId) || null;
+function getLevelEntries(stageId = appState.stage) {
+  return getStageEntry(stageId)?.levels || [];
 }
 
-function getStageSourceTotal(stageId) {
-  return (getManifestForStage(stageId).modes || []).reduce(
-    (sum, mode) => sum + Number(mode.count || 0),
+function getLevelEntry(stageId = appState.stage, levelId = appState.level) {
+  return getLevelEntries(stageId).find((level) => level.id === levelId) || null;
+}
+
+function getTopicEntries(stageId = appState.stage, levelId = appState.level) {
+  return getLevelEntry(stageId, levelId)?.topics || [];
+}
+
+function getTopicEntry(
+  stageId = appState.stage,
+  levelId = appState.level,
+  topicId = appState.topic,
+) {
+  return getTopicEntries(stageId, levelId).find((topic) => topic.id === topicId) || null;
+}
+
+function getFileEntries(
+  stageId = appState.stage,
+  levelId = appState.level,
+  topicId = appState.topic,
+) {
+  return getTopicEntry(stageId, levelId, topicId)?.files || [];
+}
+
+function getFileEntry(
+  stageId = appState.stage,
+  levelId = appState.level,
+  topicId = appState.topic,
+  fileId = appState.file,
+) {
+  return getFileEntries(stageId, levelId, topicId).find((file) => file.id === fileId) || null;
+}
+
+function getStageSourceTotal(stageEntry) {
+  return Object.values(stageEntry?.counts || {}).reduce(
+    (sum, count) => sum + Number(count || 0),
     0,
   );
 }
 
-function getUnitsForStageMode(stageId, modeId) {
-  return appState.unitsByStage[stageId]?.[modeId] || [];
+function getDefaultLevelId(stageId) {
+  return (
+    getLevelEntries(stageId).find((level) => (level.topics || []).length > 0)?.id ||
+    getLevelEntries(stageId)[0]?.id ||
+    ""
+  );
 }
 
-function getActivePool() {
-  const units = getUnitsForStageMode(appState.stage, appState.mode);
+function getDefaultTopicId(stageId, levelId) {
+  return getTopicEntries(stageId, levelId)[0]?.id || "";
+}
 
-  if (!appState.topic) {
-    return units;
+function getDefaultFileId(stageId, levelId, topicId) {
+  return getFileEntries(stageId, levelId, topicId)[0]?.id || "";
+}
+
+function getInitialSelectionFromUrl() {
+  const searchParams = new URLSearchParams(window.location.search);
+  const requestedRound = searchParams.get("round");
+
+  return {
+    stage: String(searchParams.get("stage") || "")
+      .trim()
+      .toUpperCase(),
+    level: String(searchParams.get("level") || "").trim(),
+    topic: normalizeTopicKey(searchParams.get("topic") || ""),
+    file: String(searchParams.get("file") || "").trim(),
+    definitionScope: String(searchParams.get("definition_scope") || "all").trim(),
+    round: requestedRound && requestedRound !== "all" ? String(Number(requestedRound)) : "all",
+  };
+}
+
+function initializeSelection() {
+  const requestedSelection = getInitialSelectionFromUrl();
+  const stageEntries = getStageEntries();
+  const stageId = stageEntries.some((stage) => stage.id === requestedSelection.stage)
+    ? requestedSelection.stage
+    : stageEntries[0]?.id || "";
+  const levelEntries = getLevelEntries(stageId);
+  const levelId = levelEntries.some((level) => level.id === requestedSelection.level)
+    ? requestedSelection.level
+    : getDefaultLevelId(stageId);
+  const topicEntries = getTopicEntries(stageId, levelId);
+  const topicId = topicEntries.some((topic) => topic.id === requestedSelection.topic)
+    ? requestedSelection.topic
+    : getDefaultTopicId(stageId, levelId);
+  const fileEntries = getFileEntries(stageId, levelId, topicId);
+  const fileId = fileEntries.some((file) => file.id === requestedSelection.file)
+    ? requestedSelection.file
+    : getDefaultFileId(stageId, levelId, topicId);
+  const fileEntry = getFileEntry(stageId, levelId, topicId, fileId);
+  const definitionScope =
+    fileId === "core-definitions" &&
+    definitionScopeOptions.some((option) => option.id === requestedSelection.definitionScope)
+      ? requestedSelection.definitionScope
+      : "all";
+  const round =
+    fileId === "multi-round-cloze" &&
+    fileEntry?.rounds?.some((roundNumber) => String(roundNumber) === requestedSelection.round)
+      ? requestedSelection.round
+      : "all";
+
+  appState.stage = stageId;
+  appState.level = levelId;
+  appState.topic = topicId;
+  appState.file = fileId;
+  appState.definitionScope = definitionScope;
+  appState.round = round;
+}
+
+function updateUrlFromState() {
+  const searchParams = new URLSearchParams(window.location.search);
+
+  searchParams.set("stage", appState.stage);
+  searchParams.set("level", appState.level);
+  searchParams.set("topic", appState.topic);
+  searchParams.set("file", appState.file);
+
+  if (appState.definitionScope !== "all" && appState.file === "core-definitions") {
+    searchParams.set("definition_scope", appState.definitionScope);
+  } else {
+    searchParams.delete("definition_scope");
   }
 
-  return units.filter((unit) => unit.topic === appState.topic);
+  if (appState.round !== "all" && appState.file === "multi-round-cloze") {
+    searchParams.set("round", appState.round);
+  } else {
+    searchParams.delete("round");
+  }
+
+  const nextSearch = searchParams.toString();
+  const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`;
+
+  window.history.replaceState(null, "", nextUrl);
 }
 
 function createShuffledSequence(unitIds, avoidUnitId = "") {
@@ -164,35 +304,41 @@ function createShuffledSequence(unitIds, avoidUnitId = "") {
 }
 
 function getCurrentUnit() {
-  const activePool = getActivePool();
-
-  return activePool.find((unit) => unit.unitId === appState.currentUnitId) || activePool[0] || null;
+  return (
+    appState.activePool.find((unit) => unit.unitId === appState.currentUnitId) ||
+    appState.activePool[0] ||
+    null
+  );
 }
 
-function buildQuestionMeta(unit) {
-  const parts = [formatLabel(unit.topic), formatLabel(unit.subtopic)].filter(Boolean);
-
-  if (unit.kind === "cloze") {
-    parts.push(`Round ${unit.round} of ${unit.roundTotal}`);
-    parts.push(pluralise(unit.answers.length, "blank"));
+function getFileCountLabel(fileEntry) {
+  if (!fileEntry) {
+    return "0 items";
   }
 
-  return parts.join(" · ");
+  if (fileEntry.id === "multi-round-cloze") {
+    return `${pluralise(fileEntry.count, "prompt")} · ${pluralise(
+      fileEntry.runtime_unit_count,
+      "round",
+    )}`;
+  }
+
+  return pluralise(fileEntry.count, "item");
 }
 
 function renderStageSwitcher() {
-  stageSwitcher.innerHTML = stageConfig
-    .map((stage) => {
-      const countLabel = pluralise(getStageSourceTotal(stage.id), "source item");
+  stageSwitcher.innerHTML = getStageEntries()
+    .map((stageEntry) => {
+      const countLabel = pluralise(getStageSourceTotal(stageEntry), "source item");
 
       return `
         <button
           class="memorisation-toggle"
           type="button"
-          data-stage-id="${stage.id}"
-          data-active="${stage.id === appState.stage ? "true" : "false"}"
+          data-stage-id="${stageEntry.id}"
+          data-active="${stageEntry.id === appState.stage ? "true" : "false"}"
         >
-          <span class="memorisation-toggle__label">${stage.id}</span>
+          <span class="memorisation-toggle__label">${stageEntry.id}</span>
           <span class="memorisation-toggle__count">${countLabel}</span>
         </button>
       `;
@@ -208,81 +354,378 @@ function renderStageSwitcher() {
       }
 
       appState.stage = nextStage;
-      appState.topic = "";
-      renderStageSwitcher();
-      renderModeTabs();
-      renderTopicFilter();
-      resetSelection();
+      appState.level = getDefaultLevelId(nextStage);
+      appState.topic = getDefaultTopicId(appState.stage, appState.level);
+      appState.file = getDefaultFileId(appState.stage, appState.level, appState.topic);
+      appState.definitionScope = "all";
+      appState.round = "all";
+      renderControls();
+      refreshPool({ resetSequence: true });
     });
   });
 }
 
-function renderModeTabs() {
-  modeTabs.innerHTML = modeConfig
-    .map((mode) => {
-      const manifestEntry = getModeManifestEntry(appState.stage, mode.id);
-      const countLabel = pluralise(Number(manifestEntry?.count || 0), "source item");
-
-      return `
+function renderLevelSwitcher() {
+  levelSwitcher.innerHTML = getLevelEntries()
+    .sort((left, right) => levelOrder.indexOf(left.id) - levelOrder.indexOf(right.id))
+    .map(
+      (levelEntry) => `
         <button
           class="memorisation-toggle"
           type="button"
-          data-mode-id="${mode.id}"
-          data-active="${mode.id === appState.mode ? "true" : "false"}"
+          data-level-id="${levelEntry.id}"
+          data-active="${levelEntry.id === appState.level ? "true" : "false"}"
         >
-          <span class="memorisation-toggle__label">${mode.label}</span>
-          <span class="memorisation-toggle__count">${countLabel}</span>
+          <span class="memorisation-toggle__label">${levelEntry.label}</span>
+          <span class="memorisation-toggle__count">${pluralise(
+            levelEntry.count,
+            "source item",
+          )}</span>
         </button>
-      `;
-    })
+      `,
+    )
     .join("");
 
-  modeTabs.querySelectorAll("[data-mode-id]").forEach((button) => {
+  levelSwitcher.querySelectorAll("[data-level-id]").forEach((button) => {
     button.addEventListener("click", () => {
-      const nextMode = button.dataset.modeId;
+      const nextLevel = button.dataset.levelId;
 
-      if (!nextMode || nextMode === appState.mode) {
+      if (!nextLevel || nextLevel === appState.level) {
         return;
       }
 
-      appState.mode = nextMode;
-      appState.topic = "";
-      renderModeTabs();
-      renderTopicFilter();
-      resetSelection();
+      appState.level = nextLevel;
+      appState.topic = getDefaultTopicId(appState.stage, appState.level);
+      appState.file = getDefaultFileId(appState.stage, appState.level, appState.topic);
+      appState.definitionScope = "all";
+      appState.round = "all";
+      renderControls();
+      refreshPool({ resetSequence: true });
     });
   });
 }
 
 function renderTopicFilter() {
-  const topics = [
-    ...new Set(getUnitsForStageMode(appState.stage, appState.mode).map((unit) => unit.topic)),
-  ]
-    .filter(Boolean)
-    .sort(collator.compare);
+  const topics = getTopicEntries()
+    .slice()
+    .sort((left, right) => collator.compare(left.label, right.label));
 
-  topicFilter.innerHTML = [
-    `<option value="">All topics</option>`,
-    ...topics.map((topic) => `<option value="${topic}">${formatLabel(topic)}</option>`),
-  ].join("");
+  topicFilter.innerHTML = topics
+    .map((topic) => `<option value="${topic.id}">${topic.label}</option>`)
+    .join("");
 
-  if (!topics.includes(appState.topic)) {
-    appState.topic = "";
+  if (!topics.some((topic) => topic.id === appState.topic)) {
+    appState.topic = topics[0]?.id || "";
   }
 
   topicFilter.value = appState.topic;
 }
 
-function renderStats() {
-  const manifestEntry = getModeManifestEntry(appState.stage, appState.mode);
-  const activePool = getActivePool();
-  const counterValue =
-    activePool.length === 0 ? "0 / 0" : `${appState.sequenceIndex + 1} / ${activePool.length}`;
+function renderFileSwitcher() {
+  fileSwitcher.innerHTML = getFileEntries()
+    .slice()
+    .sort((left, right) => fileOrder.indexOf(left.id) - fileOrder.indexOf(right.id))
+    .map(
+      (fileEntry) => `
+        <button
+          class="memorisation-toggle memorisation-toggle--compact"
+          type="button"
+          data-file-id="${fileEntry.id}"
+          data-active="${fileEntry.id === appState.file ? "true" : "false"}"
+        >
+          <span class="memorisation-toggle__label">${fileEntry.label}</span>
+          <span class="memorisation-toggle__count">${getFileCountLabel(fileEntry)}</span>
+        </button>
+      `,
+    )
+    .join("");
 
-  modeManifestCount.textContent = pluralise(Number(manifestEntry?.count || 0), "source item");
-  poolCount.textContent = pluralise(activePool.length, "runtime unit");
+  fileSwitcher.querySelectorAll("[data-file-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextFile = button.dataset.fileId;
+
+      if (!nextFile || nextFile === appState.file) {
+        return;
+      }
+
+      appState.file = nextFile;
+      appState.definitionScope = "all";
+      appState.round = "all";
+      renderControls();
+      refreshPool({ resetSequence: true });
+    });
+  });
+}
+
+function renderDefinitionFilter() {
+  const fileEntry = getFileEntry();
+
+  if (fileEntry?.id !== "core-definitions") {
+    definitionFilterSection.hidden = true;
+    definitionFilterGrid.innerHTML = "";
+    appState.definitionScope = "all";
+    return;
+  }
+
+  definitionFilterSection.hidden = false;
+
+  const definitionSourceCounts = fileEntry.definition_source_counts || {};
+  definitionFilterGrid.innerHTML = definitionScopeOptions
+    .map((option) => {
+      const count =
+        option.id === "all" ? fileEntry.count : Number(definitionSourceCounts[option.id] || 0);
+
+      return `
+        <button
+          class="memorisation-toggle memorisation-toggle--compact"
+          type="button"
+          data-definition-scope="${option.id}"
+          data-active="${option.id === appState.definitionScope ? "true" : "false"}"
+        >
+          <span class="memorisation-toggle__label">${option.label}</span>
+          <span class="memorisation-toggle__count">${pluralise(count, "item")}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  definitionFilterGrid.querySelectorAll("[data-definition-scope]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextScope = button.dataset.definitionScope;
+
+      if (!nextScope || nextScope === appState.definitionScope) {
+        return;
+      }
+
+      appState.definitionScope = nextScope;
+      renderDefinitionFilter();
+      refreshPool({ resetSequence: true });
+    });
+  });
+}
+
+function renderRoundSwitcher() {
+  const fileEntry = getFileEntry();
+
+  if (fileEntry?.id !== "multi-round-cloze") {
+    roundSwitcherSection.hidden = true;
+    roundSwitcher.innerHTML = "";
+    appState.round = "all";
+    return;
+  }
+
+  roundSwitcherSection.hidden = false;
+  const roundOptions = ["all", ...fileEntry.rounds.map((round) => String(round))];
+
+  if (!roundOptions.includes(appState.round)) {
+    appState.round = "all";
+  }
+
+  roundSwitcher.innerHTML = roundOptions
+    .map((option) => {
+      const label = option === "all" ? "All rounds" : `Round ${option}`;
+
+      return `
+        <button
+          class="memorisation-toggle memorisation-toggle--compact"
+          type="button"
+          data-round-value="${option}"
+          data-active="${option === appState.round ? "true" : "false"}"
+        >
+          <span class="memorisation-toggle__label">${label}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  roundSwitcher.querySelectorAll("[data-round-value]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextRound = button.dataset.roundValue;
+
+      if (!nextRound || nextRound === appState.round) {
+        return;
+      }
+
+      appState.round = nextRound;
+      renderRoundSwitcher();
+      refreshPool({ resetSequence: true });
+    });
+  });
+}
+
+function renderControls() {
+  renderStageSwitcher();
+  renderLevelSwitcher();
+  renderTopicFilter();
+  renderFileSwitcher();
+  renderDefinitionFilter();
+  renderRoundSwitcher();
+}
+
+async function loadCurrentFileItems() {
+  const fileEntry = getFileEntry();
+
+  if (!fileEntry) {
+    return [];
+  }
+
+  if (appState.fileDataCache.has(fileEntry.path)) {
+    return appState.fileDataCache.get(fileEntry.path);
+  }
+
+  const items = await fetchJson(`./data/${fileEntry.path}`);
+  const normalizedItems = Array.isArray(items)
+    ? items.map((item) => ({
+        ...item,
+        topic: normalizeTopicKey(item.topic || appState.topic),
+      }))
+    : [];
+
+  appState.fileDataCache.set(fileEntry.path, normalizedItems);
+  return normalizedItems;
+}
+
+function buildActivePool(items, fileEntry) {
+  const filteredItems =
+    fileEntry.id === "core-definitions" && appState.definitionScope !== "all"
+      ? items.filter((item) => item.source_scope === appState.definitionScope)
+      : items;
+
+  if (fileEntry.id === "guided-cloze") {
+    return filteredItems.map((item) => ({
+      ...item,
+      kind: "guided-cloze",
+      unitId: item.id,
+    }));
+  }
+
+  if (fileEntry.id === "multi-round-cloze") {
+    return filteredItems
+      .flatMap((item) => {
+        const rounds = Array.isArray(item.rounds) ? item.rounds : [];
+
+        return rounds.map((round, index) => ({
+          ...item,
+          kind: "multi-round-cloze",
+          unitId: `${item.id}::round-${round.round ?? index + 1}`,
+          prompt: round.prompt,
+          answers: Array.isArray(round.answers) ? round.answers.slice() : [],
+          round: Number(round.round ?? index + 1),
+          roundTotal: rounds.length,
+        }));
+      })
+      .filter((unit) => appState.round === "all" || String(unit.round) === appState.round);
+  }
+
+  if (fileEntry.id === "full-reconstruction") {
+    return filteredItems.map((item) => ({
+      ...item,
+      kind: "full-reconstruction",
+      unitId: item.id,
+    }));
+  }
+
+  return filteredItems.map((item) => ({
+    ...item,
+    kind: "single",
+    unitId: item.id,
+  }));
+}
+
+function setLoadingState(message = "Loading current training file...") {
+  questionLabel.textContent = "Loading";
+  questionTitle.textContent = message;
+  questionCopy.textContent = "Reading the selected level, topic, and training file.";
+  promptCard.innerHTML = `<p class="memorisation-empty">${message}</p>`;
+  answerPanel.hidden = true;
+  revealAnswerButton.disabled = true;
+  nextItemButton.disabled = true;
+}
+
+function getEmptyStateMessage() {
+  const fileEntry = getFileEntry();
+
+  if (!fileEntry) {
+    return "No training file is available for this topic.";
+  }
+
+  if (fileEntry.id === "core-definitions" && appState.definitionScope !== "all") {
+    return "No definition items match the selected source filter in this topic.";
+  }
+
+  if (fileEntry.id === "multi-round-cloze" && appState.round !== "all") {
+    return `No prompts expose ${`Round ${appState.round}`} in this topic.`;
+  }
+
+  return "No items are available in the selected training file.";
+}
+
+function renderStats() {
+  const fileEntry = getFileEntry();
+  const counterValue =
+    appState.activePool.length === 0
+      ? "0 / 0"
+      : `${appState.sequenceIndex + 1} / ${appState.activePool.length}`;
+
+  fileManifestCount.textContent = getFileCountLabel(fileEntry);
+  poolCount.textContent = pluralise(appState.activePool.length, "runtime unit");
   itemCounter.textContent = counterValue;
   counterChip.textContent = counterValue;
+}
+
+function buildQuestionMeta(unit) {
+  const parts = [];
+
+  if (unit.subtopic) {
+    parts.push(formatLabel(unit.subtopic));
+  }
+
+  if (unit.source_scope) {
+    parts.push(formatDefinitionScope(unit.source_scope));
+  }
+
+  if (unit.kind === "guided-cloze" || unit.kind === "multi-round-cloze") {
+    parts.push(pluralise(unit.answers.length, "blank"));
+  }
+
+  if (unit.kind === "multi-round-cloze") {
+    parts.push(`Round ${unit.round} of ${unit.roundTotal}`);
+  }
+
+  if (unit.kind === "full-reconstruction") {
+    parts.push("Full canonical reconstruction");
+  }
+
+  return parts.join(" · ");
+}
+
+function updateBadges(unit) {
+  const stageEntry = getStageEntry();
+  const levelEntry = getLevelEntry();
+  const topicEntry = getTopicEntry();
+  const fileEntry = getFileEntry();
+
+  stageBadge.textContent = stageEntry?.id || "Stage";
+  levelBadge.textContent = levelEntry?.label || "Level";
+  topicBadge.textContent = topicEntry?.label || "Topic";
+  fileBadge.textContent = fileEntry?.label || "Training file";
+
+  if (fileEntry?.id === "core-definitions") {
+    sourceBadge.hidden = false;
+    sourceBadge.textContent =
+      appState.definitionScope === "all"
+        ? "All definition sources"
+        : formatDefinitionScope(appState.definitionScope);
+  } else {
+    sourceBadge.hidden = true;
+  }
+
+  if (fileEntry?.id === "multi-round-cloze") {
+    roundBadge.hidden = false;
+    roundBadge.textContent = appState.round === "all" ? "All rounds" : `Round ${appState.round}`;
+  } else {
+    roundBadge.hidden = true;
+  }
 }
 
 function updateAnswerPanel(unit) {
@@ -293,20 +736,25 @@ function updateAnswerPanel(unit) {
     return;
   }
 
+  const isFullAnswerUnit =
+    unit.kind === "guided-cloze" ||
+    unit.kind === "multi-round-cloze" ||
+    unit.kind === "full-reconstruction";
+
   answerPanel.hidden = false;
-  answerLabel.textContent = unit.kind === "cloze" ? "Canonical full answer" : "Canonical answer";
-  answerText.textContent = unit.kind === "cloze" ? unit.full_answer : unit.answer;
+  answerLabel.textContent = isFullAnswerUnit ? "Canonical full answer" : "Canonical answer";
+  answerText.textContent = isFullAnswerUnit ? unit.full_answer || unit.answer : unit.answer;
   answerNote.textContent =
-    unit.kind === "cloze"
-      ? "Cloze rounds are flattened for drilling, but reveal always shows the stored full_answer."
-      : "Only leading or trailing spaces, repeated spaces, and case are ignored during checking.";
+    unit.kind === "guided-cloze" || unit.kind === "multi-round-cloze"
+      ? "Reveal shows the stored full explanation answer for this prompt."
+      : "Only outer whitespace and repeated internal whitespace are normalised during checking.";
 }
 
 function updateActionButtons(unit) {
-  const revealLabel = unit?.kind === "cloze" ? "Show full answer" : "Show answer";
+  const revealLabel = unit && unit.kind !== "single" ? "Show full answer" : "Show answer";
 
   revealAnswerButton.textContent = appState.revealed
-    ? unit?.kind === "cloze"
+    ? unit && unit.kind !== "single"
       ? "Full answer shown"
       : "Answer shown"
     : revealLabel;
@@ -315,31 +763,41 @@ function updateActionButtons(unit) {
 }
 
 function renderEmptyState(message) {
+  renderStats();
+  updateBadges(null);
   questionLabel.textContent = "No drill units";
-  questionTitle.textContent = "Nothing matches the current filters.";
+  questionTitle.textContent = "Nothing matches the current selection.";
   questionCopy.textContent = message;
-  stageBadge.textContent = appState.stage;
-  modeBadge.textContent =
-    modeConfig.find((mode) => mode.id === appState.mode)?.label || "Mode unavailable";
-  topicBadge.textContent = appState.topic ? formatLabel(appState.topic) : "All topics";
-  roundBadge.hidden = true;
   promptCard.innerHTML = `<p class="memorisation-empty">${message}</p>`;
   appState.revealed = false;
   updateAnswerPanel(null);
   updateActionButtons(null);
+  updateUrlFromState();
 }
 
-function checkSingleAnswer(field, answer, feedbackElement) {
-  if (!field.value.trim()) {
+function renderErrorState(message) {
+  questionLabel.textContent = "Memorisation bank unavailable";
+  questionTitle.textContent = "Could not load the selected training file.";
+  questionCopy.textContent = message;
+  promptCard.innerHTML = `<p class="memorisation-empty">${message}</p>`;
+  answerPanel.hidden = true;
+  revealAnswerButton.disabled = true;
+  nextItemButton.disabled = true;
+}
+
+function checkExactMatch(field, answer, feedbackElement) {
+  const currentValue = String(field.value || "");
+
+  if (!currentValue.trim()) {
     applyFieldState(field, "untouched");
     setFeedbackMessage(
       feedbackElement,
-      "Checked on blur or Enter. Only spaces and case are ignored.",
+      "Only outer whitespace and repeated internal whitespace are normalised.",
     );
     return;
   }
 
-  const isCorrect = normaliseExactMatch(field.value) === normaliseExactMatch(answer);
+  const isCorrect = normaliseExactMatch(currentValue) === normaliseExactMatch(answer);
 
   applyFieldState(field, isCorrect ? "correct" : "incorrect");
   setFeedbackMessage(
@@ -359,31 +817,76 @@ function renderSinglePrompt(unit) {
   fieldLabel.className = "memorisation-field__label";
   fieldLabel.textContent = "Your answer";
 
-  const field = document.createElement("textarea");
-  field.className = "memorisation-input";
-  field.rows = 4;
+  const field = document.createElement("input");
+  field.type = "text";
+  field.className = "memorisation-input memorisation-input--single";
   field.spellcheck = false;
   field.autocomplete = "off";
   field.autocapitalize = "off";
-  field.placeholder = "Type the stored answer exactly.";
+  field.placeholder = "Type the canonical answer exactly.";
   applyFieldState(field, "untouched");
 
   const feedback = document.createElement("p");
   feedback.className = "memorisation-feedback";
   feedback.setAttribute("aria-live", "polite");
-  setFeedbackMessage(feedback, "Checked on blur or Enter. Only spaces and case are ignored.");
+  setFeedbackMessage(
+    feedback,
+    "Check on blur or Enter. Only outer whitespace and repeated internal whitespace are normalised.",
+  );
 
   field.addEventListener("blur", () => {
-    checkSingleAnswer(field, unit.answer, feedback);
+    checkExactMatch(field, unit.answer, feedback);
   });
 
   field.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" || event.shiftKey) {
+    if (event.key !== "Enter") {
       return;
     }
 
     event.preventDefault();
-    checkSingleAnswer(field, unit.answer, feedback);
+    checkExactMatch(field, unit.answer, feedback);
+  });
+
+  fieldWrapper.append(fieldLabel, field, feedback);
+  promptCard.replaceChildren(fieldWrapper);
+}
+
+function renderReconstructionPrompt(unit) {
+  const fieldWrapper = document.createElement("label");
+  fieldWrapper.className = "memorisation-field";
+
+  const fieldLabel = document.createElement("span");
+  fieldLabel.className = "memorisation-field__label";
+  fieldLabel.textContent = "Your full answer";
+
+  const field = document.createElement("textarea");
+  field.className = "memorisation-input memorisation-input--reconstruction";
+  field.rows = 6;
+  field.spellcheck = false;
+  field.autocomplete = "off";
+  field.autocapitalize = "off";
+  field.placeholder = "Type the full canonical answer.";
+  applyFieldState(field, "untouched");
+
+  const feedback = document.createElement("p");
+  feedback.className = "memorisation-feedback";
+  feedback.setAttribute("aria-live", "polite");
+  setFeedbackMessage(
+    feedback,
+    "Check on blur or Ctrl/Cmd+Enter. Only outer whitespace and repeated internal whitespace are normalised.",
+  );
+
+  field.addEventListener("blur", () => {
+    checkExactMatch(field, unit.answer, feedback);
+  });
+
+  field.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || (!event.ctrlKey && !event.metaKey)) {
+      return;
+    }
+
+    event.preventDefault();
+    checkExactMatch(field, unit.answer, feedback);
   });
 
   fieldWrapper.append(fieldLabel, field, feedback);
@@ -391,37 +894,34 @@ function renderSinglePrompt(unit) {
 }
 
 function updateClozeSummary(summaryElement, inputs) {
-  const correct = inputs.filter((input) => input.dataset.state === "correct").length;
-  const incorrect = inputs.filter((input) => input.dataset.state === "incorrect").length;
-  const untouched = inputs.length - correct - incorrect;
+  const correctCount = inputs.filter((input) => input.dataset.state === "correct").length;
+  const incorrectCount = inputs.filter((input) => input.dataset.state === "incorrect").length;
+  const untouchedCount = inputs.length - correctCount - incorrectCount;
 
-  if (correct === 0 && incorrect === 0) {
-    setFeedbackMessage(
-      summaryElement,
-      "Each blank checks independently on blur or Enter.",
-      "neutral",
-    );
+  if (correctCount === 0 && incorrectCount === 0) {
+    setFeedbackMessage(summaryElement, "Each blank checks independently on blur or Enter.");
     return;
   }
 
   setFeedbackMessage(
     summaryElement,
-    `${pluralise(correct, "blank")} correct · ${pluralise(incorrect, "blank")} incorrect · ${pluralise(
-      untouched,
+    `${pluralise(correctCount, "blank")} correct · ${pluralise(
+      incorrectCount,
       "blank",
-    )} untouched`,
-    incorrect > 0 ? "incorrect" : "correct",
+    )} incorrect · ${pluralise(untouchedCount, "blank")} untouched`,
+    incorrectCount > 0 ? "incorrect" : "correct",
   );
 }
 
 function checkClozeBlank(field, answer, summaryElement, inputs) {
-  if (!field.value.trim()) {
+  if (!String(field.value || "").trim()) {
     applyFieldState(field, "untouched");
     updateClozeSummary(summaryElement, inputs);
     return;
   }
 
   const isCorrect = normaliseExactMatch(field.value) === normaliseExactMatch(answer);
+
   applyFieldState(field, isCorrect ? "correct" : "incorrect");
   updateClozeSummary(summaryElement, inputs);
 }
@@ -432,7 +932,7 @@ function renderClozePrompt(unit) {
 
   const intro = document.createElement("p");
   intro.className = "cloze-intro";
-  intro.textContent = "Fill each blank in prompt order. Each blank is checked independently.";
+  intro.textContent = "Fill each blank in prompt order. Each blank checks independently.";
 
   const summary = document.createElement("p");
   summary.className = "memorisation-feedback";
@@ -449,7 +949,7 @@ function renderClozePrompt(unit) {
   if (blankCount !== unit.answers.length) {
     promptCard.innerHTML = `
       <p class="memorisation-empty">
-        This cloze round could not be rendered because the prompt blank count does not match the stored answers.
+        This cloze prompt could not be rendered because the blank count does not match the stored answers.
       </p>
     `;
     return;
@@ -501,51 +1001,79 @@ function renderCurrentUnit() {
   renderStats();
 
   if (!currentUnit) {
-    renderEmptyState("Choose a different topic or mode to rebuild the active drill pool.");
+    renderEmptyState(getEmptyStateMessage());
     return;
   }
 
-  stageBadge.textContent = currentUnit.stage;
-  modeBadge.textContent =
-    modeConfig.find((mode) => mode.id === currentUnit.mode)?.label || formatLabel(currentUnit.mode);
-  topicBadge.textContent = formatLabel(currentUnit.topic);
-  roundBadge.hidden = currentUnit.kind !== "cloze";
-  roundBadge.textContent =
-    currentUnit.kind === "cloze" ? `Round ${currentUnit.round} of ${currentUnit.roundTotal}` : "";
-
-  questionLabel.textContent =
-    currentUnit.kind === "cloze"
-      ? "Explanation cloze"
-      : modeConfig.find((mode) => mode.id === currentUnit.mode)?.label || "Memorisation prompt";
+  updateBadges(currentUnit);
+  questionLabel.textContent = getFileEntry()?.label || "Training file";
   questionTitle.textContent =
-    currentUnit.kind === "cloze" ? currentUnit.question : currentUnit.prompt;
+    currentUnit.kind === "single"
+      ? currentUnit.prompt || currentUnit.question
+      : currentUnit.question || currentUnit.prompt;
   questionCopy.textContent = buildQuestionMeta(currentUnit);
 
-  if (currentUnit.kind === "cloze") {
+  if (currentUnit.kind === "guided-cloze" || currentUnit.kind === "multi-round-cloze") {
     renderClozePrompt(currentUnit);
+  } else if (currentUnit.kind === "full-reconstruction") {
+    renderReconstructionPrompt(currentUnit);
   } else {
     renderSinglePrompt(currentUnit);
   }
 
   updateAnswerPanel(currentUnit);
   updateActionButtons(currentUnit);
+  updateUrlFromState();
 }
 
-function resetSelection() {
-  const activePool = getActivePool();
+async function refreshPool({ resetSequence = true } = {}) {
+  const fileEntry = getFileEntry();
 
-  appState.sequence = createShuffledSequence(activePool.map((unit) => unit.unitId));
-  appState.sequenceIndex = 0;
-  appState.currentUnitId = appState.sequence[0] || "";
-  appState.revealed = false;
-  renderCurrentUnit();
+  if (!fileEntry) {
+    appState.activePool = [];
+    renderEmptyState("No training file is available for the current selection.");
+    return;
+  }
+
+  setLoadingState(`Loading ${fileEntry.label.toLowerCase()}...`);
+
+  const renderToken = ++appState.renderToken;
+
+  try {
+    const items = await loadCurrentFileItems();
+
+    if (renderToken !== appState.renderToken) {
+      return;
+    }
+
+    appState.activePool = buildActivePool(items, fileEntry);
+
+    if (
+      resetSequence ||
+      !appState.activePool.some((unit) => unit.unitId === appState.currentUnitId)
+    ) {
+      appState.sequence = createShuffledSequence(appState.activePool.map((unit) => unit.unitId));
+      appState.sequenceIndex = 0;
+      appState.currentUnitId = appState.sequence[0] || "";
+    } else {
+      const currentIndex = appState.sequence.indexOf(appState.currentUnitId);
+      appState.sequenceIndex = currentIndex >= 0 ? currentIndex : 0;
+    }
+
+    appState.revealed = false;
+    renderCurrentUnit();
+  } catch (error) {
+    if (renderToken !== appState.renderToken) {
+      return;
+    }
+
+    renderErrorState(error.message);
+  }
 }
 
 function moveToNextUnit() {
-  const activePool = getActivePool();
-
-  if (!activePool.length) {
-    resetSelection();
+  if (appState.activePool.length === 0) {
+    refreshPool({ resetSequence: true });
     return;
   }
 
@@ -554,7 +1082,7 @@ function moveToNextUnit() {
     appState.currentUnitId = appState.sequence[appState.sequenceIndex];
   } else {
     appState.sequence = createShuffledSequence(
-      activePool.map((unit) => unit.unitId),
+      appState.activePool.map((unit) => unit.unitId),
       appState.currentUnitId,
     );
     appState.sequenceIndex = 0;
@@ -565,38 +1093,16 @@ function moveToNextUnit() {
   renderCurrentUnit();
 }
 
-async function loadAllData() {
-  const stageEntries = await Promise.all(
-    stageConfig.map(async (stage) => {
-      const manifest = await fetchJson(`./data/${stage.slug}/manifest.json`);
-      const unitsByModeEntries = await Promise.all(
-        (manifest.modes || []).map(async (modeEntry) => {
-          const items = await fetchJson(`./data/${stage.slug}/${modeEntry.file}`);
-          return [modeEntry.mode, buildRuntimeUnits(modeEntry.mode, items)];
-        }),
-      );
+function registerStaticEvents() {
+  topicFilter.addEventListener("change", (event) => {
+    appState.topic = normalizeTopicKey(event.target.value || "");
+    appState.file = getDefaultFileId(appState.stage, appState.level, appState.topic);
+    appState.definitionScope = "all";
+    appState.round = "all";
+    renderControls();
+    refreshPool({ resetSequence: true });
+  });
 
-      return [stage.id, { manifest, unitsByMode: Object.fromEntries(unitsByModeEntries) }];
-    }),
-  );
-
-  for (const [stageId, data] of stageEntries) {
-    appState.manifests[stageId] = data.manifest;
-    appState.unitsByStage[stageId] = data.unitsByMode;
-  }
-}
-
-function renderErrorState(message) {
-  questionLabel.textContent = "Memorisation bank unavailable";
-  questionTitle.textContent = "Could not load memorisation data.";
-  questionCopy.textContent = message;
-  promptCard.innerHTML = `<p class="memorisation-empty">${message}</p>`;
-  answerPanel.hidden = true;
-  revealAnswerButton.disabled = true;
-  nextItemButton.disabled = true;
-}
-
-async function init() {
   revealAnswerButton.addEventListener("click", () => {
     appState.revealed = true;
     updateAnswerPanel(getCurrentUnit());
@@ -606,18 +1112,22 @@ async function init() {
   nextItemButton.addEventListener("click", () => {
     moveToNextUnit();
   });
+}
 
-  topicFilter.addEventListener("change", (event) => {
-    appState.topic = event.target.value || "";
-    resetSelection();
-  });
+async function init() {
+  registerStaticEvents();
 
   try {
-    await loadAllData();
-    renderStageSwitcher();
-    renderModeTabs();
-    renderTopicFilter();
-    resetSelection();
+    const [catalog, topicNormalizationMap] = await Promise.all([
+      fetchJson("./data/catalog.json"),
+      fetchJson("./data/context/topic_normalization_map.json"),
+    ]);
+
+    appState.catalog = catalog;
+    appState.topicNormalizationMap = topicNormalizationMap;
+    initializeSelection();
+    renderControls();
+    refreshPool({ resetSequence: true });
   } catch (error) {
     renderErrorState(error.message);
   }

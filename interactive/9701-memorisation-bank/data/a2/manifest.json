@@ -1,33 +1,40 @@
 {
-  "id": "a2-memorisation-bank",
   "stage": "A2",
-  "modes": [
-    {
-      "mode": "definition",
-      "file": "definitions.json",
-      "count": 62
-    },
-    {
-      "mode": "reagent_condition",
-      "file": "reagents_conditions.json",
-      "count": 74
-    },
-    {
-      "mode": "reaction_path",
-      "file": "reaction_paths.json",
-      "count": 65
-    },
-    {
-      "mode": "equation",
-      "file": "equations.json",
-      "count": 66
-    },
-    {
-      "mode": "explanation_cloze",
-      "file": "explanation_cloze.json",
-      "count": 45
-    }
+  "levels": [
+    "level-1-core",
+    "level-2-guided-cloze",
+    "level-3-multi-round-cloze",
+    "level-4-full-reconstruction"
   ],
-  "checking_profile": "exact-match-lite",
-  "build_label": "full-batch"
+  "topics": [
+    "amino-acids-and-proteins",
+    "analytical-techniques",
+    "benzene-and-arenes",
+    "buffers",
+    "carbonyl-compounds",
+    "carboxylic-acids-and-derivatives",
+    "electrochemistry",
+    "energetics",
+    "equilibrium",
+    "group-2",
+    "hydroxy-compounds",
+    "kinetics",
+    "nitrogen-compounds",
+    "organic-general",
+    "organic-synthesis",
+    "pharmaceutical-chemistry",
+    "phenols",
+    "polymers",
+    "stereochemistry",
+    "thermodynamics",
+    "transition-elements"
+  ],
+  "counts": {
+    "level-1-core": 309,
+    "level-2-guided-cloze": 45,
+    "level-3-multi-round-cloze": 45,
+    "level-4-full-reconstruction": 45
+  },
+  "definition_policy": "definitions retained only if sourced from real past-paper definition prompts or syllabus-required definition-style terms",
+  "matching_policy": "exact-match after simple whitespace trimming"
 }
