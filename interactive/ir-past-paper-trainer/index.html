@@ -3,113 +3,67 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IR Past-Paper Trainer v3 | CAIE 9701</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="color-scheme" content="light dark" />
+    <script src="../../theme.js"></script>
+    <title>IR Past-Paper Trainer | Student Site</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="../../styles/tokens.css" />
     <link rel="stylesheet" href="../../styles/base.css" />
+    <link rel="stylesheet" href="../../styles/brand.css" />
+    <link rel="stylesheet" href="../../styles/homepage.css" />
     <link rel="stylesheet" href="../../styles/interactive-shell.css" />
-    <style>
-      .chart-wrap {
-        position: relative;
-        width: 100%;
-        height: 100%;
-      }
-      .btn-tab,
-      .btn-subtab,
-      .peak-card,
-      .case-card,
-      .choice-btn {
-        transition:
-          background 140ms ease,
-          border-color 140ms ease,
-          color 140ms ease,
-          transform 140ms ease,
-          box-shadow 140ms ease;
-      }
-      .btn-tab[data-active="true"] {
-        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-        color: white;
-        box-shadow: 0 12px 22px rgba(15, 139, 141, 0.18);
-      }
-      .btn-tab:hover,
-      .btn-subtab:hover {
-        transform: translateY(-1px);
-      }
-      .btn-subtab[data-active="true"] {
-        background: rgba(15, 139, 141, 0.12);
-        color: var(--accent-strong);
-        border-color: rgba(15, 139, 141, 0.24);
-      }
-      .peak-card.active,
-      .case-card.active {
-        border-color: rgba(15, 139, 141, 0.28);
-        background: rgba(242, 250, 247, 0.9);
-        box-shadow: 0 12px 20px rgba(15, 139, 141, 0.08);
-      }
-      .choice-btn[data-state="selected"] {
-        border-color: rgba(15, 139, 141, 0.3);
-        background: rgba(242, 250, 247, 0.94);
-        color: var(--accent-strong);
-      }
-      .choice-btn[data-state="correct"] {
-        border-color: #059669;
-        background: #ecfdf5;
-        color: #047857;
-      }
-      .choice-btn[data-state="wrong"] {
-        border-color: #dc2626;
-        background: #fff1f1;
-        color: #b42318;
-      }
-      .mono {
-        font-variant-ligatures: none;
-      }
-
-      @media (max-width: 768px) {
-        body {
-          overflow-x: hidden;
-        }
-        .chart-wrap {
-          min-height: 280px;
-        }
-        #choices {
-          gap: 0.75rem;
-        }
-        #submit-answer,
-        #next-question {
-          flex: 1 1 0%;
-          padding-top: 0.85rem;
-          padding-bottom: 0.85rem;
-        }
-        #feedback-box {
-          scroll-margin-top: 1rem;
-        }
-      }
-
-      @media (max-width: 520px) {
-        .chart-wrap {
-          min-height: 240px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="interactive-shell-page text-slate-800 min-h-screen">
-    <div class="page-shell interactive-site-shell">
+  <body class="interactive-shell-page ir-trainer-page">
+    <div class="page-shell interactive-site-shell ir-trainer-shell">
+      <header class="site-header" aria-label="Site header">
+        <div class="site-header__brand">
+          <span class="site-header__mark" aria-hidden="true">J2</span>
+          <div>
+            <p class="site-header__eyebrow">Student Site</p>
+            <a class="site-header__title" href="../../index.html" data-preserve-theme
+              >Chemistry Resource Bank</a
+            >
+          </div>
+        </div>
+        <nav class="site-header__nav" aria-label="Primary">
+          <a class="site-header__nav-link" href="../../index.html" data-preserve-theme>Home</a>
+          <a class="site-header__nav-link" href="../../as/index.html" data-preserve-theme>AS</a>
+          <a class="site-header__nav-link" href="../../a2/index.html" data-preserve-theme>A2</a>
+          <a
+            class="site-header__nav-link site-header__nav-link--current"
+            href="../index.html"
+            aria-current="page"
+            data-preserve-theme
+            >Interactive</a
+          >
+        </nav>
+        <div class="site-header__action">
+          <a
+            class="cta-button cta-button--secondary cta-button--compact"
+            href="../index.html"
+            data-preserve-theme
+            >Open Hub</a
+          >
+        </div>
+      </header>
+
       <header class="interactive-hero">
-        <a class="interactive-return" href="../index.html"> Back to Interactive </a>
+        <a class="interactive-return" href="../index.html" data-preserve-theme
+          >Back to Interactive</a
+        >
         <p class="interactive-kicker">Student Site · Interactive Chemistry</p>
         <div class="interactive-hero-grid">
           <div class="interactive-title-block">
             <div class="interactive-meta-row">
               <span class="interactive-meta-chip">CAIE 9701</span>
               <span class="interactive-meta-chip">Analysis</span>
-              <span class="interactive-meta-chip">Standalone route</span>
+              <span class="interactive-meta-chip">Integrated tool</span>
             </div>
             <h1>IR Past-Paper Trainer</h1>
             <p class="interactive-summary">
               Compare memorable peak shapes, practise elimination, and turn spectral evidence into
-              compact structured answers without leaving the focused interactive route.
+              compact structured answers inside the shared student-site practice shell.
             </p>
           </div>
           <div class="interactive-meta-group">
@@ -125,178 +79,165 @@
         </div>
       </header>
 
-      <main class="interactive-app-shell">
-        <div class="grid grid-cols-1 xl:grid-cols-[330px_minmax(0,1fr)] gap-6">
-          <aside class="interactive-panel p-5 md:p-6 h-fit">
-            <div class="interactive-subtle-panel flex p-1 mb-6">
-              <button
-                id="tab-learn"
-                class="btn-tab flex-1 rounded-xl px-4 py-3 font-bold"
-                data-active="true"
-                type="button"
-              >
-                Learn mode
-              </button>
-              <button
-                id="tab-exam"
-                class="btn-tab flex-1 rounded-xl px-4 py-3 font-bold"
-                data-active="false"
-                type="button"
-              >
-                Exam mode
-              </button>
-            </div>
+      <main class="interactive-app-shell ir-trainer-main">
+        <div class="ir-trainer-layout">
+          <aside class="interactive-panel ir-trainer-sidebar">
+            <section class="ir-panel-section">
+              <div class="ir-panel-heading">
+                <p class="ir-panel-heading__kicker">Practice route</p>
+                <h2>Choose how to work</h2>
+                <p class="ir-panel-heading__copy">
+                  Switch between recognition drills and past-paper decision tasks without dropping
+                  into a separate mini-site UI.
+                </p>
+              </div>
 
-            <section id="learn-panel" class="space-y-5">
-              <div class="interactive-subtle-panel flex p-1">
+              <div class="ir-segmented-control" role="tablist" aria-label="Practice mode">
+                <button
+                  id="tab-learn"
+                  class="ir-segment-button"
+                  data-active="true"
+                  aria-pressed="true"
+                  type="button"
+                >
+                  Learn mode
+                </button>
+                <button
+                  id="tab-exam"
+                  class="ir-segment-button"
+                  data-active="false"
+                  aria-pressed="false"
+                  type="button"
+                >
+                  Exam mode
+                </button>
+              </div>
+            </section>
+
+            <section id="learn-panel" class="ir-panel-stack">
+              <div class="ir-segmented-control" role="tablist" aria-label="Learn mode sections">
                 <button
                   id="subtab-peaks"
-                  class="btn-subtab flex-1 rounded-xl px-3 py-2 font-bold text-sm border border-transparent"
+                  class="ir-segment-button"
                   data-active="true"
+                  aria-pressed="true"
                   type="button"
                 >
                   Peak compare
                 </button>
                 <button
                   id="subtab-cases"
-                  class="btn-subtab flex-1 rounded-xl px-3 py-2 font-bold text-sm border border-transparent"
+                  class="ir-segment-button"
                   data-active="false"
+                  aria-pressed="false"
                   type="button"
                 >
                   Elimination panel
                 </button>
               </div>
 
-              <section id="peak-compare-panel" class="space-y-4">
-                <div>
-                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">
-                    Compare memorable shapes
-                  </div>
-                  <div id="peak-buttons" class="grid grid-cols-1 gap-2"></div>
-                </div>
-                <div class="interactive-subtle-panel p-4">
-                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">
-                    Why this matters in papers
-                  </div>
-                  <p id="peak-explanation" class="text-sm text-slate-700 leading-relaxed"></p>
-                </div>
+              <section id="peak-compare-panel" class="ir-panel-stack">
+                <section class="ir-panel-block">
+                  <p class="ir-block-label">Compare memorable shapes</p>
+                  <div id="peak-buttons" class="ir-option-list"></div>
+                </section>
+
+                <article class="interactive-subtle-panel ir-copy-panel">
+                  <p class="ir-block-label">Why this matters in papers</p>
+                  <p id="peak-explanation"></p>
+                </article>
               </section>
 
-              <section id="elimination-panel" class="space-y-4 hidden">
-                <div>
-                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">
-                    Compare full spectra
-                  </div>
-                  <div id="case-buttons" class="grid grid-cols-1 gap-2"></div>
-                </div>
-                <div class="interactive-subtle-panel p-4">
-                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">
-                    Decisive evidence
-                  </div>
-                  <div
-                    id="case-decisive"
-                    class="space-y-2 text-sm text-slate-700 leading-relaxed"
-                  ></div>
-                </div>
-                <div class="interactive-subtle-panel p-4">
-                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">
-                    How to eliminate others
-                  </div>
-                  <div
-                    id="case-elimination"
-                    class="space-y-2 text-sm text-slate-700 leading-relaxed"
-                  ></div>
-                </div>
-                <div class="interactive-accent-panel p-4">
-                  <div class="text-xs uppercase tracking-[0.25em] text-orange-700 font-bold mb-2">
-                    Useful structured wording
-                  </div>
-                  <div
-                    id="case-wording"
-                    class="space-y-2 text-sm text-slate-800 leading-relaxed"
-                  ></div>
-                </div>
+              <section id="elimination-panel" class="ir-panel-stack hidden">
+                <section class="ir-panel-block">
+                  <p class="ir-block-label">Compare full spectra</p>
+                  <div id="case-buttons" class="ir-option-list"></div>
+                </section>
+
+                <article class="interactive-subtle-panel ir-copy-panel">
+                  <p class="ir-block-label">Decisive evidence</p>
+                  <div id="case-decisive" class="ir-insight-list"></div>
+                </article>
+
+                <article class="interactive-subtle-panel ir-copy-panel">
+                  <p class="ir-block-label">How to eliminate others</p>
+                  <div id="case-elimination" class="ir-insight-list"></div>
+                </article>
+
+                <article class="interactive-accent-panel ir-copy-panel">
+                  <p class="ir-block-label">Useful structured wording</p>
+                  <div id="case-wording" class="ir-structured-list"></div>
+                </article>
               </section>
             </section>
 
-            <section id="exam-panel" class="space-y-5 hidden">
-              <div>
-                <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">
-                  Exam task
-                </div>
-                <h2 id="question-title" class="text-xl font-black text-slate-900"></h2>
-                <p id="question-prompt" class="mt-2 text-sm text-slate-700 leading-relaxed"></p>
+            <section id="exam-panel" class="ir-panel-stack hidden">
+              <div class="ir-question-intro">
+                <p class="ir-block-label">Exam task</p>
+                <h2 id="question-title" class="ir-question-title"></h2>
+                <p id="question-prompt" class="ir-question-copy"></p>
               </div>
 
-              <div class="interactive-subtle-panel p-4 space-y-3">
-                <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold">
-                  What to notice first
-                </div>
-                <ul id="hint-list" class="list-disc pl-5 text-sm text-slate-700 space-y-1"></ul>
+              <article class="interactive-subtle-panel ir-copy-panel">
+                <p class="ir-block-label">What to notice first</p>
+                <ul id="hint-list" class="ir-bullet-list"></ul>
+              </article>
+
+              <div id="choices" class="ir-choice-list"></div>
+
+              <div class="ir-action-row">
+                <button
+                  id="submit-answer"
+                  class="ir-action-button ir-action-button--primary"
+                  type="button"
+                >
+                  Check answer
+                </button>
+                <button
+                  id="next-question"
+                  class="ir-action-button ir-action-button--secondary"
+                  type="button"
+                >
+                  Next item
+                </button>
               </div>
 
-              <div class="flex flex-col gap-2" id="choices"></div>
-
-              <div class="flex flex-col sm:flex-row gap-3 pt-1">
-                <button id="submit-answer" class="doc-link" type="button">Check answer</button>
-                <button id="next-question" class="secondary-link" type="button">Next item</button>
-              </div>
-
-              <div id="feedback-box" class="hidden interactive-subtle-panel p-4">
-                <div class="flex items-center justify-between gap-4 mb-3">
+              <div id="feedback-box" class="interactive-subtle-panel ir-feedback-panel hidden">
+                <div class="ir-feedback-panel__header">
                   <div>
-                    <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold">
-                      Examiner feedback
-                    </div>
-                    <div id="mark-line" class="text-xl font-black text-slate-900 mt-1"></div>
+                    <p class="ir-block-label">Examiner feedback</p>
+                    <p id="mark-line" class="ir-feedback-panel__title"></p>
                   </div>
-                  <div
-                    id="result-pill"
-                    class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em]"
-                  ></div>
+                  <span id="result-pill" class="ir-result-pill" data-state="idle"></span>
                 </div>
-                <div
-                  id="feedback-points"
-                  class="space-y-2 text-sm text-slate-700 leading-relaxed mb-4"
-                ></div>
-                <div class="interactive-accent-panel p-4">
-                  <div class="text-xs uppercase tracking-[0.25em] text-orange-700 font-bold mb-2">
-                    Structured answer skeleton
-                  </div>
-                  <div
-                    id="structured-points"
-                    class="space-y-2 text-sm text-slate-800 leading-relaxed"
-                  ></div>
-                </div>
+                <div id="feedback-points" class="ir-feedback-list"></div>
+                <article class="interactive-accent-panel ir-copy-panel">
+                  <p class="ir-block-label">Structured answer skeleton</p>
+                  <div id="structured-points" class="ir-structured-list"></div>
+                </article>
               </div>
             </section>
           </aside>
 
-          <section class="space-y-6">
-            <div class="interactive-panel p-4 md:p-6">
-              <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-4">
-                <div>
-                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-2">
-                    Interactive spectrum workspace
-                  </div>
-                  <h2 id="workspace-title" class="text-2xl md:text-3xl font-black text-slate-900">
-                    Peak-shape comparison
-                  </h2>
-                  <p id="workspace-subtitle" class="mt-2 text-slate-600 max-w-3xl"></p>
-                </div>
-                <div class="interactive-subtle-panel px-4 py-3">
-                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500 font-bold mb-1">
-                    9701 habit
-                  </div>
-                  <div id="workspace-note" class="text-sm font-medium text-slate-800"></div>
-                </div>
+          <section class="interactive-panel ir-trainer-workspace">
+            <div class="ir-workspace-header">
+              <div>
+                <p class="ir-panel-heading__kicker">Spectrum workspace</p>
+                <h2 id="workspace-title" class="ir-workspace-title">Peak-shape comparison</h2>
+                <p id="workspace-subtitle" class="ir-workspace-copy"></p>
               </div>
-              <div class="interactive-subtle-panel p-3 md:p-5">
-                <div class="chart-wrap h-[340px] md:h-[420px]">
-                  <canvas id="mainChart"></canvas>
-                </div>
-              </div>
+
+              <article class="interactive-subtle-panel ir-workspace-habit">
+                <p class="ir-workspace-habit__label">9701 habit</p>
+                <p id="workspace-note" class="ir-workspace-habit__copy"></p>
+              </article>
             </div>
+
+            <article class="interactive-subtle-panel ir-chart-panel">
+              <div class="chart-wrap">
+                <canvas id="mainChart"></canvas>
+              </div>
+            </article>
           </section>
         </div>
 
@@ -1003,9 +944,52 @@
         return makeData(500, 4000, (x) => 95);
       }
 
-      Chart.defaults.color = "#64748b";
-      Chart.defaults.font.family =
-        'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function getPageVariable(name, fallback = "") {
+        return getComputedStyle(document.body).getPropertyValue(name).trim() || fallback;
+      }
+
+      function preserveThemeOnLinks() {
+        const preserveThemeOnUrl = window.StudentSiteTheme?.preserveThemeOnUrl;
+
+        if (!preserveThemeOnUrl) {
+          return;
+        }
+
+        document.querySelectorAll("[data-preserve-theme]").forEach((link) => {
+          const href = link.getAttribute("href");
+
+          if (!href) {
+            return;
+          }
+
+          const destination = preserveThemeOnUrl(href, window.location.href);
+          link.setAttribute(
+            "href",
+            `${destination.pathname}${destination.search}${destination.hash}`,
+          );
+        });
+      }
+
+      const chartPalette = {
+        ink: getPageVariable("--ir-ink", "#221c16"),
+        muted: getPageVariable("--ir-muted", "#695d51"),
+        grid: getPageVariable("--ir-grid-line", "rgba(42, 34, 27, 0.12)"),
+        font:
+          getPageVariable("--font-sans") ||
+          '"Avenir Next", "Helvetica Neue", "Segoe UI", sans-serif',
+      };
+
+      Chart.defaults.color = chartPalette.muted;
+      Chart.defaults.font.family = chartPalette.font;
 
       let mainChart;
       let currentPeak = peakComparisons[0];
@@ -1044,6 +1028,8 @@
       const markLine = document.getElementById("mark-line");
       const resultPill = document.getElementById("result-pill");
 
+      preserveThemeOnLinks();
+
       function makeChart(data, color, xMin, xMax) {
         if (mainChart) mainChart.destroy();
         mainChart = new Chart(mainCanvas.getContext("2d"), {
@@ -1073,11 +1059,11 @@
                 title: {
                   display: true,
                   text: "Wavenumber (cm⁻¹)",
-                  color: "#475569",
+                  color: chartPalette.ink,
                   font: { weight: "bold" },
                 },
-                grid: { color: "#e2e8f0" },
-                ticks: { color: "#64748b" },
+                grid: { color: chartPalette.grid },
+                ticks: { color: chartPalette.muted },
               },
               y: {
                 min: 0,
@@ -1085,11 +1071,11 @@
                 title: {
                   display: true,
                   text: "Transmittance (%)",
-                  color: "#475569",
+                  color: chartPalette.ink,
                   font: { weight: "bold" },
                 },
-                grid: { color: "#e2e8f0" },
-                ticks: { color: "#64748b" },
+                grid: { color: chartPalette.grid },
+                ticks: { color: chartPalette.muted },
               },
             },
             plugins: {
@@ -1113,12 +1099,12 @@
         peakButtons.innerHTML = "";
         peakComparisons.forEach((peak) => {
           const button = document.createElement("button");
-          button.className =
-            "peak-card interactive-surface-choice w-full text-left rounded-2xl px-4 py-3";
+          button.type = "button";
+          button.className = "peak-card ir-select-card";
           button.innerHTML =
-            '<div class="font-bold text-slate-900">' +
-            peak.name +
-            '</div><div class="text-xs uppercase tracking-[0.2em] text-slate-500 mt-1 mono">' +
+            '<div class="ir-select-card__title">' +
+            escapeHtml(peak.name) +
+            '</div><div class="ir-select-card__meta ir-mono">' +
             peak.xMin +
             "–" +
             peak.xMax +
@@ -1136,13 +1122,13 @@
         caseButtons.innerHTML = "";
         eliminationCases.forEach((item) => {
           const button = document.createElement("button");
-          button.className =
-            "case-card interactive-surface-choice w-full text-left rounded-2xl px-4 py-3";
+          button.type = "button";
+          button.className = "case-card ir-select-card";
           button.innerHTML =
-            '<div class="font-bold text-slate-900">' +
-            item.name +
-            '</div><div class="text-xs text-slate-500 mt-1">' +
-            item.note +
+            '<div class="ir-select-card__title">' +
+            escapeHtml(item.name) +
+            '</div><div class="ir-select-card__note">' +
+            escapeHtml(item.note) +
             "</div>";
           if (item.id === currentCase.id) button.classList.add("active");
           button.addEventListener("click", () => {
@@ -1156,6 +1142,8 @@
       function renderPeakCompare() {
         subtabPeaks.dataset.active = "true";
         subtabCases.dataset.active = "false";
+        subtabPeaks.setAttribute("aria-pressed", "true");
+        subtabCases.setAttribute("aria-pressed", "false");
         peakComparePanel.classList.remove("hidden");
         eliminationPanel.classList.add("hidden");
         renderPeakButtons();
@@ -1177,6 +1165,8 @@
       function renderEliminationPanel() {
         subtabPeaks.dataset.active = "false";
         subtabCases.dataset.active = "true";
+        subtabPeaks.setAttribute("aria-pressed", "false");
+        subtabCases.setAttribute("aria-pressed", "true");
         peakComparePanel.classList.add("hidden");
         eliminationPanel.classList.remove("hidden");
         renderCaseButtons();
@@ -1184,20 +1174,17 @@
         workspaceSubtitle.textContent =
           "Use this spectrum the way a short structured question expects: identify decisive evidence, then rule out the near misses.";
         workspaceNote.textContent = currentCase.note;
-        makeChart(buildProfileData(currentCase.profile), "#0f172a", 500, 4000);
+        makeChart(buildProfileData(currentCase.profile), chartPalette.ink, 500, 4000);
         caseDecisive.innerHTML = currentCase.decisive
-          .map(
-            (point) => '<div class="interactive-surface-choice rounded-xl p-3">' + point + "</div>",
-          )
+          .map((point) => `<div class="ir-insight-card">${escapeHtml(point)}</div>`)
           .join("");
         caseElimination.innerHTML = currentCase.eliminate
-          .map(
-            (point) => '<div class="interactive-surface-choice rounded-xl p-3">' + point + "</div>",
-          )
+          .map((point) => `<div class="ir-insight-card">${escapeHtml(point)}</div>`)
           .join("");
         caseWording.innerHTML = currentCase.wording
           .map(
-            (point) => '<div class="interactive-accent-panel rounded-xl p-3">' + point + "</div>",
+            (point) =>
+              `<div class="ir-insight-card ir-insight-card--accent">${escapeHtml(point)}</div>`,
           )
           .join("");
       }
@@ -1205,6 +1192,8 @@
       function renderLearnMode() {
         tabLearn.dataset.active = "true";
         tabExam.dataset.active = "false";
+        tabLearn.setAttribute("aria-pressed", "true");
+        tabExam.setAttribute("aria-pressed", "false");
         learnPanel.classList.remove("hidden");
         examPanel.classList.add("hidden");
         renderPeakCompare();
@@ -1213,6 +1202,8 @@
       function renderExamQuestion() {
         tabLearn.dataset.active = "false";
         tabExam.dataset.active = "true";
+        tabLearn.setAttribute("aria-pressed", "false");
+        tabExam.setAttribute("aria-pressed", "true");
         learnPanel.classList.add("hidden");
         examPanel.classList.remove("hidden");
         const question = examQuestions[currentQuestionIndex];
@@ -1220,18 +1211,20 @@
         submitted = false;
         questionTitle.textContent = question.titleLine;
         questionPrompt.textContent = question.prompt;
-        hintList.innerHTML = question.hints.map((hint) => "<li>" + hint + "</li>").join("");
+        hintList.innerHTML = question.hints.map((hint) => `<li>${escapeHtml(hint)}</li>`).join("");
         feedbackBox.classList.add("hidden");
+        resultPill.dataset.state = "idle";
+        resultPill.textContent = "";
         workspaceTitle.textContent = "Unknown spectrum";
         workspaceSubtitle.textContent =
           "Use the spectrum as you would in a structured question: quote the evidence first, then state the conclusion.";
         workspaceNote.textContent = question.note;
-        makeChart(buildProfileData(question.profile), "#0f172a", 500, 4000);
+        makeChart(buildProfileData(question.profile), chartPalette.ink, 500, 4000);
         choices.innerHTML = "";
         question.choices.forEach((choice) => {
           const button = document.createElement("button");
-          button.className =
-            "choice-btn interactive-surface-choice w-full text-left rounded-2xl px-4 py-3 font-semibold";
+          button.type = "button";
+          button.className = "choice-btn ir-choice-button";
           button.dataset.state = "idle";
           button.textContent = choice;
           button.addEventListener("click", () => {
@@ -1263,12 +1256,11 @@
           feedbackBox.classList.remove("hidden");
           markLine.textContent = "No mark awarded";
           resultPill.textContent = "Select one";
-          resultPill.className =
-            "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] bg-amber-100 text-amber-700";
+          resultPill.dataset.state = "warning";
           feedbackPoints.innerHTML =
-            '<div class="rounded-xl bg-amber-50 border border-amber-200 p-3">Choose the best answer first, then submit.</div>';
+            '<div class="ir-feedback-card ir-feedback-card--warning">Choose the best answer first, then submit.</div>';
           structuredPoints.innerHTML =
-            '<div class="interactive-accent-panel rounded-xl p-3">After choosing an answer, this section will show a clean structured-response skeleton.</div>';
+            '<div class="ir-insight-card ir-insight-card--accent">After choosing an answer, this section will show a clean structured-response skeleton.</div>';
           return;
         }
         submitted = true;
@@ -1277,20 +1269,17 @@
         const isCorrect = selectedChoice === question.correct;
         markLine.textContent = isCorrect ? "MARKS: " + question.marks : "MARKS: 0 / 2";
         resultPill.textContent = isCorrect ? "Correct" : "Needs review";
-        resultPill.className = isCorrect
-          ? "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] bg-emerald-100 text-emerald-700"
-          : "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] bg-red-100 text-red-700";
+        resultPill.dataset.state = isCorrect ? "correct" : "review";
         const bulletPoints = isCorrect
           ? question.feedback.correct
           : question.feedback.wrong[selectedChoice];
         feedbackPoints.innerHTML = bulletPoints
-          .map(
-            (point) => '<div class="interactive-surface-choice rounded-xl p-3">' + point + "</div>",
-          )
+          .map((point) => `<div class="ir-feedback-card">${escapeHtml(point)}</div>`)
           .join("");
         structuredPoints.innerHTML = question.structuredPoints
           .map(
-            (point) => '<div class="interactive-accent-panel rounded-xl p-3">' + point + "</div>",
+            (point) =>
+              `<div class="ir-insight-card ir-insight-card--accent">${escapeHtml(point)}</div>`,
           )
           .join("");
       }

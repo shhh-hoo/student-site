@@ -470,6 +470,75 @@
   gap: 0.65rem;
 }
 
+html[data-theme="dark"] .memorisation-control__label,
+html[data-theme="dark"] .memorisation-question-label,
+html[data-theme="dark"] .memorisation-answer__label {
+  color: rgba(168, 215, 255, 0.78);
+}
+
+html[data-theme="dark"] .memorisation-toggle,
+html[data-theme="dark"] .memorisation-select,
+html[data-theme="dark"] .memorisation-mirror-field,
+html[data-theme="dark"] .cloze-detail {
+  border-color: rgba(230, 219, 202, 0.14);
+  background: rgba(42, 38, 34, 0.92);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .memorisation-toggle:hover,
+html[data-theme="dark"] .memorisation-toggle:focus-visible {
+  border-color: rgba(168, 215, 255, 0.22);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.24);
+}
+
+html[data-theme="dark"] .memorisation-toggle[data-active="true"] {
+  border-color: rgba(168, 215, 255, 0.26);
+  background: rgba(29, 54, 54, 0.94);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.24);
+}
+
+html[data-theme="dark"] .memorisation-toggle__count,
+html[data-theme="dark"] .memorisation-question-copy,
+html[data-theme="dark"] .memorisation-stat span,
+html[data-theme="dark"] .memorisation-field__label,
+html[data-theme="dark"] .cloze-intro,
+html[data-theme="dark"] .memorisation-feedback,
+html[data-theme="dark"] .memorisation-empty {
+  color: rgba(230, 219, 202, 0.74);
+}
+
+html[data-theme="dark"] .memorisation-badge {
+  background: rgba(42, 38, 34, 0.94);
+  color: rgba(247, 240, 228, 0.94);
+}
+
+html[data-theme="dark"] .memorisation-counter-chip {
+  background: rgba(91, 53, 40, 0.96);
+  color: rgba(255, 213, 188, 0.94);
+}
+
+html[data-theme="dark"] .memorisation-mirror-field__control {
+  caret-color: rgba(247, 240, 228, 0.92);
+}
+
+html[data-theme="dark"] .memorisation-mirror-field__control::placeholder {
+  color: rgba(230, 219, 202, 0.46);
+  -webkit-text-fill-color: rgba(230, 219, 202, 0.46);
+}
+
+html[data-theme="dark"] .memorisation-mirror-field__segment--neutral {
+  color: rgba(230, 219, 202, 0.8);
+}
+
+html[data-theme="dark"] .memorisation-mirror-field[data-state="untouched"] {
+  border-color: rgba(230, 219, 202, 0.14);
+  background: rgba(42, 38, 34, 0.92);
+}
+
+html[data-theme="dark"] .memorisation-answer__note {
+  color: rgba(255, 213, 188, 0.84);
+}
+
 @media (max-width: 980px) {
   .memorisation-layout {
     grid-template-columns: 1fr;

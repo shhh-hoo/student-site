@@ -63,6 +63,31 @@
     return resolvedDestination;
   }
 
+  function preserveThemeOnAnchors(
+    root = document,
+    explicitTheme = getExplicitTheme(window.location.search),
+  ) {
+    const anchorRoot = root && typeof root.querySelectorAll === "function" ? root : document;
+    const anchors = anchorRoot.querySelectorAll("[data-preserve-theme]");
+
+    anchors.forEach((anchor) => {
+      if (!(anchor instanceof Element) || anchor.tagName !== "A") {
+        return;
+      }
+
+      const href = anchor.getAttribute("href");
+
+      if (!href) {
+        return;
+      }
+
+      const destination = preserveThemeOnUrl(href, window.location.href, explicitTheme);
+      anchor.setAttribute("href", destination.toString());
+    });
+
+    return anchors.length;
+  }
+
   window.StudentSiteTheme = {
     themeQueryKey,
     isThemeValue,
@@ -71,6 +96,7 @@
     applyTheme,
     preserveThemeInSearchParams,
     preserveThemeOnUrl,
+    preserveThemeOnAnchors,
   };
 
   applyTheme();

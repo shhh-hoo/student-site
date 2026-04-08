@@ -4,54 +4,77 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <script>
-      (() => {
-        const params = new URLSearchParams(window.location.search);
-        const explicitTheme = params.get("theme");
-        const resolvedTheme =
-          explicitTheme === "dark" || explicitTheme === "light"
-            ? explicitTheme
-            : window.matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-
-        document.documentElement.dataset.theme = resolvedTheme;
-      })();
-    </script>
+    <script src="../theme.js"></script>
     <title>Interactive Chemistry | Student Site</title>
     <link rel="stylesheet" href="../styles/tokens.css" />
     <link rel="stylesheet" href="../styles/base.css" />
     <link rel="stylesheet" href="../styles/brand.css" />
+    <link rel="stylesheet" href="../styles/homepage.css" />
     <link rel="stylesheet" href="../styles/interactive-shell.css" />
     <link rel="stylesheet" href="./hub.css" />
   </head>
   <body class="interactive-shell-page">
     <div class="page-shell interactive-site-shell">
+      <header class="site-header" aria-label="Site header">
+        <div class="site-header__brand">
+          <span class="site-header__mark" aria-hidden="true">J2</span>
+          <div>
+            <p class="site-header__eyebrow">Student Site</p>
+            <a class="site-header__title" href="../index.html" data-preserve-theme
+              >Chemistry Resource Bank</a
+            >
+          </div>
+        </div>
+        <nav class="site-header__nav" aria-label="Primary">
+          <a class="site-header__nav-link" href="../index.html" data-preserve-theme>Home</a>
+          <a class="site-header__nav-link" href="../as/index.html" data-preserve-theme>AS</a>
+          <a class="site-header__nav-link" href="../a2/index.html" data-preserve-theme>A2</a>
+          <a
+            class="site-header__nav-link site-header__nav-link--current"
+            href="./index.html"
+            aria-current="page"
+            data-preserve-theme
+            >Interactive</a
+          >
+        </nav>
+        <div class="site-header__action">
+          <a
+            class="cta-button cta-button--secondary cta-button--compact"
+            href="../index.html#homepage-interactive-root"
+            data-preserve-theme
+            >Browse Home</a
+          >
+        </div>
+      </header>
+
       <header class="interactive-hero">
-        <a class="interactive-return" href="../index.html">Back to Student Site</a>
+        <a class="interactive-return" href="../index.html" data-preserve-theme
+          >Back to Student Site</a
+        >
         <p class="interactive-kicker">Student Site · Interactive Chemistry</p>
         <div class="interactive-hero-grid">
           <div class="interactive-title-block">
             <div class="interactive-meta-row">
               <span class="interactive-meta-chip">CAIE 9701</span>
               <span class="interactive-meta-chip" id="interactive-count-chip">Loading tools</span>
-              <span class="interactive-meta-chip">Hub route</span>
+              <span class="interactive-meta-chip">Practice hub</span>
             </div>
             <h1>Interactive practice</h1>
             <p class="interactive-summary">
-              Choose between the IR trainer and the memorisation bank without jumping back through
-              the document directory. Each tool stays focused on short, deliberate drill work.
+              Choose between the IR trainer and the memorisation bank from the same shared
+              student-site shell. Each tool stays focused on short, deliberate drill work without
+              turning into a separate mini-site.
             </p>
           </div>
           <div class="interactive-meta-group">
             <article class="interactive-meta-card">
               <span>Use this page for</span>
-              <strong>Quick route selection between standalone practice tools.</strong>
+              <strong>Quick route selection between focused chemistry practice pages.</strong>
             </article>
             <article class="interactive-meta-card">
               <span>Why separate?</span>
               <strong
-                >Interactive drills stay lightweight while AS, A2, and library browse stay
+                >Interactive drills stay lightweight while AS, A2, and library browsing stays
                 calm.</strong
               >
             </article>
@@ -75,7 +98,7 @@
             <article class="interactive-hub-card interactive-hub-card--placeholder">
               <p class="interactive-hub-card__eyebrow">Loading</p>
               <h3>Reading interactive registry...</h3>
-              <p>Preparing the current list of standalone chemistry tools.</p>
+              <p>Preparing the current list of chemistry practice routes.</p>
             </article>
           </div>
         </section>
@@ -91,6 +114,9 @@
       </main>
     </div>
 
+    <script>
+      window.StudentSiteTheme?.preserveThemeOnAnchors?.();
+    </script>
     <script type="module" src="./hub.js"></script>
   </body>
 </html>
