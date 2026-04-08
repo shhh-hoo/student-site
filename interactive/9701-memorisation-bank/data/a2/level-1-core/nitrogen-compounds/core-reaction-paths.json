@@ -1,0 +1,112 @@
+[
+  {
+    "id": "a2-path-008",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "nitrile to carboxylic acid",
+    "type": "reaction_path",
+    "prompt": "nitrile -> carboxylic acid",
+    "answer": "dilute HCl, heat"
+  },
+  {
+    "id": "a2-path-009",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "nitrile to amine",
+    "type": "reaction_path",
+    "prompt": "nitrile -> amine",
+    "answer": "LiAlH4 in dry ether"
+  },
+  {
+    "id": "a2-path-018",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "phenylamine bromination",
+    "type": "reaction_path",
+    "prompt": "phenylamine -> 2,4,6-tribromophenylamine",
+    "answer": "Br2(aq), room temperature"
+  },
+  {
+    "id": "a2-path-029",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "nitrile network",
+    "type": "reaction_path",
+    "prompt": "nitrile -> carboxylic acid",
+    "answer": "H+, H2O, heat"
+  },
+  {
+    "id": "a2-path-030",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "nitrile network",
+    "type": "reaction_path",
+    "prompt": "nitrile -> amine",
+    "answer": "LiAlH4 in dry ether"
+  },
+  {
+    "id": "a2-path-039",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "haloalkane to nitrile",
+    "type": "reaction_path",
+    "prompt": "halogenoalkane -> nitrile",
+    "answer": "KCN in ethanol, heat"
+  },
+  {
+    "id": "a2-path-040",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "haloalkane to amine",
+    "type": "reaction_path",
+    "prompt": "halogenoalkane -> primary amine",
+    "answer": "excess NH3 in ethanol, heat"
+  },
+  {
+    "id": "a2-path-056",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "nitrile hydrolysis path",
+    "type": "reaction_path",
+    "prompt": "ethanenitrile -> ethanoic acid",
+    "answer": "dilute HCl, heat"
+  },
+  {
+    "id": "a2-path-057",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "nitrile reduction path",
+    "type": "reaction_path",
+    "prompt": "ethanenitrile -> ethylamine",
+    "answer": "LiAlH4 in dry ether"
+  },
+  {
+    "id": "a2-path-064",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "amide hydrolysis path",
+    "type": "reaction_path",
+    "prompt": "ethanamide -> ethanoic acid",
+    "answer": "dilute acid, heat"
+  },
+  {
+    "id": "a2-path-065",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "amide hydrolysis alkali path",
+    "type": "reaction_path",
+    "prompt": "ethanamide -> ethanoate ion + ammonia",
+    "answer": "aqueous NaOH, heat"
+  }
+]

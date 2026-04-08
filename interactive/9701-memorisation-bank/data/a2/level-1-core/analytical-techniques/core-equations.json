@@ -1,0 +1,32 @@
+[
+  {
+    "id": "a2-eq-065",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "amino acid zwitterion",
+    "type": "equation",
+    "prompt": "Write the formula of the zwitterion of glycine.",
+    "answer": "H3N+CH2COO-"
+  },
+  {
+    "id": "a2-eq-070",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "chromate dichromate equilibrium",
+    "type": "equation",
+    "prompt": "Write the equation for the equilibrium between chromate(VI) and dichromate(VI) ions.",
+    "answer": "2CrO4^2- + 2H+ <-> Cr2O7^2- + H2O"
+  },
+  {
+    "id": "a2-eq-078",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "silver chloride formation",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of silver ions with chloride ions.",
+    "answer": "Ag+ + Cl- -> AgCl"
+  }
+]

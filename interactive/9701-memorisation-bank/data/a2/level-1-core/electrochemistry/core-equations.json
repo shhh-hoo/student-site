@@ -1,0 +1,42 @@
+[
+  {
+    "id": "a2-eq-001",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "standard hydrogen electrode",
+    "type": "equation",
+    "prompt": "Write the half-equation for the standard hydrogen electrode.",
+    "answer": "2H+ + 2e- -> H2"
+  },
+  {
+    "id": "a2-eq-003",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "permanganate with iron(II)",
+    "type": "equation",
+    "prompt": "Write the ionic equation for MnO4- reacting with Fe2+ in acid.",
+    "answer": "MnO4- + 8H+ + 5Fe2+ -> Mn2+ + 4H2O + 5Fe3+"
+  },
+  {
+    "id": "a2-eq-051",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "permanganate with iron(II)",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of acidified manganate(VII) ions with iron(II) ions.",
+    "answer": "MnO4- + 8H+ + 5Fe2+ -> Mn2+ + 4H2O + 5Fe3+"
+  },
+  {
+    "id": "a2-eq-052",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "iodine thiosulfate titration",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of iodine with thiosulfate ions.",
+    "answer": "I2 + 2S2O3 2- -> 2I- + S4O6 2-"
+  }
+]

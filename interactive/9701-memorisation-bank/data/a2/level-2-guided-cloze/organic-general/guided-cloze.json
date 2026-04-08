@@ -1,0 +1,16 @@
+[
+  {
+    "id": "a2-exp-030",
+    "stage": "A2",
+    "level": 2,
+    "topic": "organic-general",
+    "subtopic": "single enantiomer drug",
+    "type": "guided_cloze",
+    "question": "Explain why only one optical isomer of a drug may be preferred.",
+    "prompt": "Biological receptors are _____. The two enantiomers can therefore interact differently with the body. One enantiomer may have the desired effect, while the other may be less active or cause side effects.",
+    "answers": [
+      "chiral"
+    ],
+    "full_answer": "Biological receptors are chiral. The two enantiomers can therefore interact differently with the body. One enantiomer may have the desired effect, while the other may be less active or cause side effects."
+  }
+]

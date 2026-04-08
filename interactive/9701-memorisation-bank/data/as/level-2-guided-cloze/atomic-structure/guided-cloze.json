@@ -1,0 +1,16 @@
+[
+  {
+    "id": "as-exp-034",
+    "stage": "AS",
+    "level": 2,
+    "topic": "atomic-structure",
+    "subtopic": "second ionisation energy of hydrogen",
+    "type": "guided_cloze",
+    "question": "Explain why there is no second ionisation energy for hydrogen.",
+    "prompt": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one _____. After the first electron has been removed, no electron remains to be removed.",
+    "answers": [
+      "electron"
+    ],
+    "full_answer": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one electron. After the first electron has been removed, no electron remains to be removed."
+  }
+]

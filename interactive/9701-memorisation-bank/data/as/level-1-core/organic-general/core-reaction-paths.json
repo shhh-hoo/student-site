@@ -1,0 +1,12 @@
+[
+  {
+    "id": "as-path-015",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "alkene hydration / halogenation contrast",
+    "type": "reaction_path",
+    "prompt": "propene -> propan-2-ol major pathway clue",
+    "answer": "secondary carbocation more stable"
+  }
+]

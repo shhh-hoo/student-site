@@ -1,0 +1,52 @@
+[
+  {
+    "id": "as-eq-011",
+    "stage": "AS",
+    "level": 1,
+    "topic": "halogenoalkanes",
+    "subtopic": "hydrolysis of bromoethane",
+    "type": "equation",
+    "prompt": "Write the equation for the hydrolysis of bromoethane with aqueous sodium hydroxide.",
+    "answer": "C2H5Br + NaOH -> C2H5OH + NaBr"
+  },
+  {
+    "id": "as-eq-012",
+    "stage": "AS",
+    "level": 1,
+    "topic": "halogenoalkanes",
+    "subtopic": "elimination from bromoethane",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of bromoethane with ethanolic potassium hydroxide.",
+    "answer": "C2H5Br + KOH -> C2H4 + KBr + H2O"
+  },
+  {
+    "id": "as-eq-030",
+    "stage": "AS",
+    "level": 1,
+    "topic": "halogenoalkanes",
+    "subtopic": "hydrolysis of bromoethane ionic",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the hydrolysis of bromoethane by hydroxide ions.",
+    "answer": "C2H5Br + OH- -> C2H5OH + Br-"
+  },
+  {
+    "id": "as-eq-066",
+    "stage": "AS",
+    "level": 1,
+    "topic": "halogenoalkanes",
+    "subtopic": "hydrolysis of bromoethane",
+    "type": "equation",
+    "prompt": "Write the equation for the hydrolysis of bromoethane with aqueous hydroxide ions.",
+    "answer": "CH3CH2Br + OH- -> CH3CH2OH + Br-"
+  },
+  {
+    "id": "as-eq-067",
+    "stage": "AS",
+    "level": 1,
+    "topic": "halogenoalkanes",
+    "subtopic": "elimination of bromoethane",
+    "type": "equation",
+    "prompt": "Write the equation for the elimination reaction of bromoethane with ethanolic hydroxide ions.",
+    "answer": "CH3CH2Br + OH- -> CH2=CH2 + Br- + H2O"
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "a2-def-005",
+    "stage": "A2",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "entropy",
+    "type": "definition",
+    "prompt": "Define entropy.",
+    "answer": "a measure of the disorder of a system",
+    "source_scope": "paper_and_syllabus"
+  }
+]

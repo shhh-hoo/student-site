@@ -1,0 +1,22 @@
+[
+  {
+    "id": "a2-path-066",
+    "stage": "A2",
+    "level": 1,
+    "topic": "amino-acids-and-proteins",
+    "subtopic": "protein hydrolysis",
+    "type": "reaction_path",
+    "prompt": "protein -> amino acids",
+    "answer": "dilute HCl, heat"
+  },
+  {
+    "id": "a2-path-067",
+    "stage": "A2",
+    "level": 1,
+    "topic": "amino-acids-and-proteins",
+    "subtopic": "peptide hydrolysis",
+    "type": "reaction_path",
+    "prompt": "dipeptide -> amino acids",
+    "answer": "dilute HCl, heat"
+  }
+]

@@ -1,0 +1,100 @@
+[
+  {
+    "id": "a2-exp-009",
+    "stage": "A2",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "D2O effect in proton NMR",
+    "type": "guided_cloze",
+    "question": "Explain why an O-H peak disappears after shaking with D2O.",
+    "prompt": "The O-H proton is _____. It is replaced by deuterium from D2O, and deuterium is not detected in the same way in a proton NMR spectrum. Therefore the O-H peak disappears.",
+    "answers": [
+      "exchangeable"
+    ],
+    "full_answer": "The O-H proton is exchangeable. It is replaced by deuterium from D2O, and deuterium is not detected in the same way in a proton NMR spectrum. Therefore the O-H peak disappears."
+  },
+  {
+    "id": "a2-exp-012",
+    "stage": "A2",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "iodine in two solvents",
+    "type": "guided_cloze",
+    "question": "Explain why iodine has a different concentration in two immiscible solvents at equilibrium.",
+    "prompt": "Iodine has different _____ in the two solvents because the intermolecular interactions are different. At equilibrium the solute is distributed between the two layers, giving a constant concentration ratio at a fixed temperature.",
+    "answers": [
+      "solubilities"
+    ],
+    "full_answer": "Iodine has different solubilities in the two solvents because the intermolecular interactions are different. At equilibrium the solute is distributed between the two layers, giving a constant concentration ratio at a fixed temperature."
+  },
+  {
+    "id": "a2-exp-017",
+    "stage": "A2",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "why use CDCl3",
+    "type": "guided_cloze",
+    "question": "Explain why CDCl3 is used instead of CHCl3 as the solvent for proton NMR.",
+    "prompt": "CHCl3 would give a proton NMR _____ from the solvent. CDCl3 does not give the same proton signal, so it does not interfere with the spectrum of the sample.",
+    "answers": [
+      "signal"
+    ],
+    "full_answer": "CHCl3 would give a proton NMR signal from the solvent. CDCl3 does not give the same proton signal, so it does not interfere with the spectrum of the sample."
+  },
+  {
+    "id": "a2-exp-018",
+    "stage": "A2",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "why peak disappears in D2O",
+    "type": "guided_cloze",
+    "question": "Explain why an O-H peak disappears when D2O is added.",
+    "prompt": "The proton on the O-H group is _____. It is replaced by deuterium from D2O, and deuterium is not detected in the proton NMR spectrum in the same way.",
+    "answers": [
+      "exchangeable"
+    ],
+    "full_answer": "The proton on the O-H group is exchangeable. It is replaced by deuterium from D2O, and deuterium is not detected in the proton NMR spectrum in the same way."
+  },
+  {
+    "id": "a2-exp-029",
+    "stage": "A2",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "D2O exchange",
+    "type": "guided_cloze",
+    "question": "Explain why an O-H proton signal disappears after shaking with D2O.",
+    "prompt": "The O-H proton is _____. It is replaced by deuterium from D2O. Deuterium does not give the same signal in a proton NMR spectrum, so the O-H peak disappears.",
+    "answers": [
+      "exchangeable"
+    ],
+    "full_answer": "The O-H proton is exchangeable. It is replaced by deuterium from D2O. Deuterium does not give the same signal in a proton NMR spectrum, so the O-H peak disappears."
+  },
+  {
+    "id": "a2-exp-041",
+    "stage": "A2",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "deuterated solvent",
+    "type": "guided_cloze",
+    "question": "Explain why deuterated solvents are used in proton NMR.",
+    "prompt": "A solvent containing ordinary hydrogen would give its own _____ NMR peak. A deuterated solvent avoids this because deuterium does not give the same signal in a proton NMR spectrum.",
+    "answers": [
+      "proton"
+    ],
+    "full_answer": "A solvent containing ordinary hydrogen would give its own proton NMR peak. A deuterated solvent avoids this because deuterium does not give the same signal in a proton NMR spectrum."
+  },
+  {
+    "id": "a2-exp-042",
+    "stage": "A2",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "D2O exchange",
+    "type": "guided_cloze",
+    "question": "Explain why an O-H proton signal disappears after shaking with D2O.",
+    "prompt": "The O-H proton is exchangeable and is replaced by _____ from D2O. Deuterium is not detected in the proton NMR spectrum in the same way, so the signal disappears.",
+    "answers": [
+      "deuterium"
+    ],
+    "full_answer": "The O-H proton is exchangeable and is replaced by deuterium from D2O. Deuterium is not detected in the proton NMR spectrum in the same way, so the signal disappears."
+  }
+]

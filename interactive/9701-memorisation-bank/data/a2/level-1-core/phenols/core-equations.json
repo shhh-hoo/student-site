@@ -1,0 +1,42 @@
+[
+  {
+    "id": "a2-eq-018",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "phenol with bromine water",
+    "type": "equation",
+    "prompt": "Write the equation for phenol reacting with bromine water.",
+    "answer": "C6H5OH + 3Br2 -> C6H2Br3OH + 3HBr"
+  },
+  {
+    "id": "a2-eq-019",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "phenol with sodium hydroxide",
+    "type": "equation",
+    "prompt": "Write the equation for phenol reacting with sodium hydroxide.",
+    "answer": "C6H5OH + NaOH -> C6H5ONa + H2O"
+  },
+  {
+    "id": "a2-eq-028",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "phenol with bromine water",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of phenol with bromine water.",
+    "answer": "C6H5OH + 3Br2 -> C6H2Br3OH + 3HBr"
+  },
+  {
+    "id": "a2-eq-029",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "phenol with sodium",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of phenol with sodium.",
+    "answer": "2C6H5OH + 2Na -> 2C6H5ONa + H2"
+  }
+]

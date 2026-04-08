@@ -1,0 +1,72 @@
+[
+  {
+    "id": "as-exp-048",
+    "stage": "AS",
+    "level": 3,
+    "topic": "nitrogen-and-sulfur",
+    "subtopic": "hydrogen iodide yield",
+    "type": "multi_round_cloze",
+    "question": "Explain why sodium iodide gives a smaller percentage yield of hydrogen halide than sodium chloride when reacted with concentrated sulfuric acid.",
+    "full_answer": "Iodide ions are stronger reducing agents than chloride ions. The hydrogen iodide formed is oxidised by concentrated sulfuric acid. Therefore some HI is used up and the percentage yield is lower.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Iodide ions are stronger _____ _____ than chloride ions. The hydrogen iodide formed is oxidised by concentrated sulfuric acid. Therefore some HI is used up and the percentage yield is lower.",
+        "answers": [
+          "reducing",
+          "agents"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Iodide ions are stronger reducing agents than chloride ions. The hydrogen iodide formed is _____ by concentrated sulfuric acid. Therefore some HI is used up and the percentage yield is _____.",
+        "answers": [
+          "oxidised",
+          "lower"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Iodide ions are stronger reducing agents than chloride ions. The hydrogen iodide formed is oxidised by concentrated sulfuric acid. Therefore some _____ is used up and the percentage yield is lower.",
+        "answers": [
+          "HI"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-049",
+    "stage": "AS",
+    "level": 3,
+    "topic": "nitrogen-and-sulfur",
+    "subtopic": "alkaline solution after magnesium nitride",
+    "type": "multi_round_cloze",
+    "question": "Explain why the solution produced when magnesium nitride reacts with water has a pH greater than 7.",
+    "full_answer": "Magnesium nitride reacts with water to form ammonia and magnesium hydroxide. Ammonia reacts with water to form hydroxide ions. Therefore the solution is alkaline and has a pH greater than 7.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Magnesium nitride reacts with water to form _____ and magnesium hydroxide. Ammonia reacts with water to form _____ ions. Therefore the solution is alkaline and has a pH greater than 7.",
+        "answers": [
+          "ammonia",
+          "hydroxide"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Magnesium nitride reacts with water to form ammonia and magnesium hydroxide. Ammonia reacts with water to form hydroxide ions. Therefore the solution is _____ and has a pH greater than _____.",
+        "answers": [
+          "alkaline",
+          "7"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Magnesium nitride reacts with _____ to form ammonia and magnesium hydroxide. Ammonia reacts with water to form hydroxide ions. Therefore the solution is alkaline and has a pH greater than 7.",
+        "answers": [
+          "water"
+        ]
+      }
+    ]
+  }
+]

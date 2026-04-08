@@ -1,0 +1,12 @@
+[
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: increasing pressure shifts the equilibrium to the side with ____ moles of gas.",
+    "answer": "fewer"
+  }
+]

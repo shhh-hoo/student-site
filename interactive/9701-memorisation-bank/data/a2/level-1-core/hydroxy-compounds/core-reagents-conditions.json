@@ -1,0 +1,22 @@
+[
+  {
+    "id": "a2-rc-020",
+    "stage": "A2",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "secondary alcohol oxidation",
+    "type": "reagent_condition",
+    "prompt": "secondary alcohol -> ketone : reagent and conditions",
+    "answer": "K2Cr2O7/H+, reflux"
+  },
+  {
+    "id": "a2-rc-050",
+    "stage": "A2",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "secondary alcohol to ketone",
+    "type": "reagent_condition",
+    "prompt": "cyclohexanol -> cyclohexanone : reagent and conditions",
+    "answer": "K2Cr2O7/H+, reflux"
+  }
+]

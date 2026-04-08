@@ -1,0 +1,12 @@
+[
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-2",
+    "subtopic": "charge density",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: down Group 2 the cation has lower ____ density.",
+    "answer": "charge"
+  }
+]

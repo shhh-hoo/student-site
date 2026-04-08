@@ -1,0 +1,46 @@
+[
+  {
+    "id": "as-def-037",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard enthalpy change of formation",
+    "type": "definition",
+    "prompt": "Define the standard enthalpy change of formation.",
+    "answer": "the enthalpy change when one mole of a compound is formed from its elements under standard conditions",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-038",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard enthalpy change of combustion",
+    "type": "definition",
+    "prompt": "Define the standard enthalpy change of combustion.",
+    "answer": "the enthalpy change when one mole of a substance is completely burned in oxygen under standard conditions",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-055",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard enthalpy change of formation",
+    "type": "definition",
+    "prompt": "Define standard enthalpy change of formation.",
+    "answer": "the enthalpy change when one mole of a compound is formed from its elements under standard conditions with all substances in their standard states",
+    "source_scope": "paper_only"
+  },
+  {
+    "id": "as-def-056",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard enthalpy change of combustion",
+    "type": "definition",
+    "prompt": "Define standard enthalpy change of combustion.",
+    "answer": "the enthalpy change when one mole of a substance is completely burned in oxygen under standard conditions with all substances in their standard states",
+    "source_scope": "syllabus_only"
+  }
+]

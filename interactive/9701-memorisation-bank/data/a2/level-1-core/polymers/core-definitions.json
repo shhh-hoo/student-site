@@ -1,0 +1,35 @@
+[
+  {
+    "id": "a2-def-018",
+    "stage": "A2",
+    "level": 1,
+    "topic": "polymers",
+    "subtopic": "condensation polymerisation",
+    "type": "definition",
+    "prompt": "Define condensation polymerisation.",
+    "answer": "polymerisation in which monomers join together with elimination of a small molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-069",
+    "stage": "A2",
+    "level": 1,
+    "topic": "polymers",
+    "subtopic": "addition polymer",
+    "type": "definition",
+    "prompt": "Define addition polymer.",
+    "answer": "a polymer formed from monomers adding together without the elimination of a small molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-070",
+    "stage": "A2",
+    "level": 1,
+    "topic": "polymers",
+    "subtopic": "condensation polymer",
+    "type": "definition",
+    "prompt": "Define condensation polymer.",
+    "answer": "a polymer formed when monomers join together with the elimination of a small molecule",
+    "source_scope": "syllabus_only"
+  }
+]

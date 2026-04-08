@@ -1,0 +1,101 @@
+[
+  {
+    "id": "a2-exp-003",
+    "stage": "A2",
+    "level": 3,
+    "topic": "stereochemistry",
+    "subtopic": "polar isomer of complex",
+    "type": "multi_round_cloze",
+    "question": "Identify one isomer that is polar and explain your answer.",
+    "full_answer": "The cis isomer is polar because the bond dipoles do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The cis isomer is polar because the bond _____ do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
+        "answers": [
+          "dipoles"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The cis isomer is polar because the bond dipoles do not _____. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
+        "answers": [
+          "cancel"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The cis isomer is polar because the bond dipoles do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole _____",
+        "answers": [
+          "moment"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-exp-019",
+    "stage": "A2",
+    "level": 3,
+    "topic": "stereochemistry",
+    "subtopic": "why one enantiomer is preferred",
+    "type": "multi_round_cloze",
+    "question": "Explain why it may be important to make only one optical isomer of a drug.",
+    "full_answer": "Biological receptors are chiral. Different enantiomers can interact differently with the body, so one may have the desired effect while the other may be less effective or have unwanted side effects.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Biological receptors are _____. Different enantiomers can interact differently with the body, so one may have the desired effect while the other may be less effective or have unwanted side effects.",
+        "answers": [
+          "chiral"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Biological receptors are chiral. Different _____ can interact differently with the body, so one may have the desired effect while the other may be less effective or have unwanted side effects.",
+        "answers": [
+          "enantiomers"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Biological receptors are chiral. Different enantiomers can interact differently with the body, so one may have the desired _____ while the other may be less effective or have unwanted side effects.",
+        "answers": [
+          "effect"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-exp-037",
+    "stage": "A2",
+    "level": 3,
+    "topic": "stereochemistry",
+    "subtopic": "polar isomer",
+    "type": "multi_round_cloze",
+    "question": "Explain why one stereoisomer is polar.",
+    "full_answer": "The bond dipoles do not cancel because the ligands are arranged asymmetrically in space. So the molecule has an overall dipole moment.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The bond dipoles do not _____ because the ligands are arranged asymmetrically in space. So the molecule has an overall dipole moment.",
+        "answers": [
+          "cancel"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The bond dipoles do not cancel because the ligands are arranged _____ in space. So the molecule has an overall dipole moment.",
+        "answers": [
+          "asymmetrically"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The bond dipoles do not cancel because the ligands are arranged asymmetrically in space. So the molecule has an overall _____ moment.",
+        "answers": [
+          "dipole"
+        ]
+      }
+    ]
+  }
+]

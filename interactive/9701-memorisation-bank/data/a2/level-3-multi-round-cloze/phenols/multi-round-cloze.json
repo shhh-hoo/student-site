@@ -1,0 +1,68 @@
+[
+  {
+    "id": "a2-exp-021",
+    "stage": "A2",
+    "level": 3,
+    "topic": "phenols",
+    "subtopic": "bromination without catalyst",
+    "type": "multi_round_cloze",
+    "question": "Explain why phenol reacts with bromine water without a catalyst.",
+    "full_answer": "The lone pair on the oxygen atom is delocalised into the benzene ring. This increases the electron density of the ring, so the ring attracts electrophiles more strongly and reacts without a catalyst.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The lone pair on the oxygen atom is delocalised into the benzene ring. This increases the _____ density of the ring, so the ring attracts electrophiles more strongly and reacts without a catalyst.",
+        "answers": [
+          "electron"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The lone pair on the oxygen atom is delocalised into the benzene ring. This increases the electron density of the ring, so the ring attracts _____ more strongly and reacts without a catalyst.",
+        "answers": [
+          "electrophiles"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The lone pair on the oxygen atom is delocalised into the benzene ring. This increases the electron density of the ring, so the ring attracts electrophiles more strongly and reacts without a _____.",
+        "answers": [
+          "catalyst"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-exp-044",
+    "stage": "A2",
+    "level": 3,
+    "topic": "phenols",
+    "subtopic": "acidity of phenol",
+    "type": "multi_round_cloze",
+    "question": "Explain why phenol is more acidic than cyclohexanol.",
+    "full_answer": "The phenoxide ion is stabilised by delocalisation of the negative charge into the benzene ring. The cyclohexoxide ion is not stabilised in this way, so phenol is more acidic.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The phenoxide ion is stabilised by _____ of the negative charge into the benzene ring. The cyclohexoxide ion is not stabilised in this way, so phenol is more acidic.",
+        "answers": [
+          "delocalisation"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The phenoxide ion is stabilised by delocalisation of the negative charge into the _____ ring. The cyclohexoxide ion is not stabilised in this way, so phenol is more acidic.",
+        "answers": [
+          "benzene"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The phenoxide ion is stabilised by delocalisation of the negative charge into the benzene ring. The cyclohexoxide ion is not stabilised in this way, so phenol is more _____.",
+        "answers": [
+          "acidic"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-fc-020",
+    "stage": "A2",
+    "level": 1,
+    "topic": "pharmaceutical-chemistry",
+    "subtopic": "chirality",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: biological receptors are ____, so enantiomers can behave differently.",
+    "answer": "chiral"
+  }
+]

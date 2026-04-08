@@ -1,0 +1,24 @@
+[
+  {
+    "id": "as-def-013",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "catalyst",
+    "type": "definition",
+    "prompt": "Define catalyst.",
+    "answer": "a substance that increases the rate of a reaction by providing an alternative pathway with a lower activation energy and is unchanged at the end of the reaction",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-031",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "activation energy",
+    "type": "definition",
+    "prompt": "Define activation energy.",
+    "answer": "the minimum energy that colliding particles must have for a reaction to occur",
+    "source_scope": "syllabus_only"
+  }
+]
