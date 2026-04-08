@@ -59,10 +59,6 @@
   background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(251, 244, 232, 0.94));
 }
 
-.ir-trainer-page .site-header::before {
-  background: linear-gradient(90deg, var(--home-brand-teal), var(--home-brand-rust));
-}
-
 .ir-trainer-page .interactive-hero,
 .ir-trainer-page .interactive-panel,
 .ir-trainer-page .interactive-subtle-panel,
