@@ -8,7 +8,7 @@ Do not change the content workflow unless explicitly requested.
 - Do not modify `content-source/context/` from this repository.
 - Do not redesign document sync rules.
 - Do not route code-based interactive assets through the document flow.
-- Interactive assets remain manually integrated and visually distinct.
+- Interactive assets remain manually integrated and visually distinct from document resources, but must still use the shared `student-site` visual language.
 
 ## Visual baseline
 The binding design baseline is in:
@@ -29,6 +29,9 @@ If the current implementation differs from older site structure, prioritize matc
 
 ## Implementation rules
 - Reuse the shared branded layer instead of creating parallel style systems.
+- Reuse the shared shell, tokens, and UI styles before adding route-local CSS.
+- Add route-local CSS only when shared styles are not sufficient for a page's structure or interaction states.
+- Promote repeated interactive patterns into shared styles or components instead of duplicating route-local CSS across pages.
 - Keep comments in English.
 - Prefer small, reviewable changes.
 - Preserve existing behavior unless the task explicitly asks for behavior changes.

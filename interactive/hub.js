@@ -3,6 +3,16 @@ import { loadInteractiveResources } from "../ui/site-data.js";
 const interactiveList = document.getElementById("interactive-list");
 const interactiveCountChip = document.getElementById("interactive-count-chip");
 
+function preserveThemeHref(destination) {
+  const preserveThemeOnUrl = window.StudentSiteTheme?.preserveThemeOnUrl;
+
+  if (!preserveThemeOnUrl) {
+    return String(destination || "");
+  }
+
+  return preserveThemeOnUrl(destination, window.location.href).toString();
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -48,7 +58,7 @@ function createToolCardMarkup(resource) {
       </div>
       <div class="interactive-hub-card__footer">
         <p class="interactive-hub-card__meta">${escapeHtml(meta)}</p>
-        <a class="interactive-hub-card__cta" href="${escapeHtml(resource.href)}">Open tool</a>
+        <a class="interactive-hub-card__cta" href="${escapeHtml(preserveThemeHref(resource.href))}">Open tool</a>
       </div>
     </article>
   `;
