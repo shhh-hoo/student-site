@@ -498,7 +498,7 @@ function updateDraftGuide(guideElement, userValue, canonicalValue, matcherConfig
   );
 }
 
-function normalizeTopicKey(topicValue) {
+function normalizeTopicKeyWithMap(topicValue, topicNormalizationMap = appState.topicNormalizationMap) {
   const rawTopic = String(topicValue || "").trim();
 
   if (!rawTopic) {
@@ -509,11 +509,15 @@ function normalizeTopicKey(topicValue) {
   const spacedTopic = rawTopic.toLowerCase().replace(/[-_]+/g, " ").trim();
 
   return (
-    appState.topicNormalizationMap[rawTopic] ||
-    appState.topicNormalizationMap[hyphenatedTopic] ||
-    appState.topicNormalizationMap[spacedTopic] ||
+    topicNormalizationMap[rawTopic] ||
+    topicNormalizationMap[hyphenatedTopic] ||
+    topicNormalizationMap[spacedTopic] ||
     hyphenatedTopic
   );
+}
+
+function normalizeTopicKey(topicValue) {
+  return normalizeTopicKeyWithMap(topicValue, appState.topicNormalizationMap);
 }
 
 function pluralise(count, singular, plural = `${singular}s`) {
@@ -618,7 +622,7 @@ function getInitialSelectionFromUrl() {
       .trim()
       .toUpperCase(),
     level: String(searchParams.get("level") || "").trim(),
-    topic: normalizeTopicKey(searchParams.get("topic") || ""),
+    topic: String(searchParams.get("topic") || "").trim(),
     file: String(searchParams.get("file") || "").trim(),
     definitionScope: String(searchParams.get("definition_scope") || "all").trim(),
     round: requestedRound && requestedRound !== "all" ? String(Number(requestedRound)) : "all",
@@ -919,6 +923,7 @@ function renderDefinitionFilter() {
 
       appState.definitionScope = nextScope;
       renderDefinitionFilter();
+      updateUrlFromState();
       refreshPool({ resetSequence: true });
     });
   });
@@ -968,6 +973,7 @@ function renderRoundSwitcher() {
 
       appState.round = nextRound;
       renderRoundSwitcher();
+      updateUrlFromState();
       refreshPool({ resetSequence: true });
     });
   });
@@ -1028,7 +1034,10 @@ async function loadCatalogResources({ preserveSelection = true } = {}) {
   appState.catalog = catalog;
   appState.topicNormalizationMap = topicNormalizationMap;
   appState.fileDataCache.clear();
-  synchroniseSelection(fallbackSelection);
+  synchroniseSelection({
+    ...fallbackSelection,
+    topic: normalizeTopicKeyWithMap(fallbackSelection.topic, topicNormalizationMap),
+  });
 }
 
 function buildActivePool(items, fileEntry) {
@@ -1250,10 +1259,14 @@ function renderEmptyState(message) {
 }
 
 function renderCatalogErrorState(message) {
+  appState.catalog = null;
+  appState.topicNormalizationMap = {};
   appState.activePool = [];
   appState.sequence = [];
   appState.sequenceIndex = 0;
   appState.currentUnitId = "";
+  appState.fileDataCache.clear();
+  renderControls();
   renderStats();
   updateBadges(null);
   questionLabel.textContent = "Memorisation bank unavailable";
