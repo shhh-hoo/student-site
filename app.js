@@ -12,7 +12,13 @@ import {
   createResourceCardMarkup,
   createSiteHeaderMarkup,
 } from "./ui/homepage-components.js";
-import { buildOverviewFilterGroups, filterOverviewItems } from "./ui/site-helpers.js";
+import {
+  buildDocumentLinkHref,
+  buildLibraryHref,
+  buildOverviewFilterGroups,
+  buildSitePageHref,
+  filterOverviewItems,
+} from "./ui/site-helpers.js";
 
 const siteHeaderRoot = document.getElementById("site-header-root");
 const homepageHeroRoot = document.getElementById("homepage-hero-root");
@@ -213,10 +219,15 @@ async function fetchLibraryDocuments() {
 }
 
 function renderHomepage() {
+  const currentLibrarySearch = window.location.search.replace(/^\?/, "");
   const helpers = {
-    buildDocumentLinkHref,
-    buildLibraryHref,
-    buildSiteHref,
+    buildDocumentLinkHref: (linkPath) =>
+      buildDocumentLinkHref(linkPath, {
+        returnSearch: currentLibrarySearch,
+      }),
+    buildLibraryHref: (filters, hashId = "library-panel") =>
+      buildLibraryHref(filters, { hashId }),
+    buildSiteHref: (relativePath) => buildSitePageHref(relativePath),
     getContentFormatLabel,
     getDocumentDisplayTitle,
     getDocumentUiTags,
@@ -906,67 +917,15 @@ function handleFilterTagToggle() {
   renderFilterControls(libraryState.documents);
 }
 
-function buildDocumentLinkHref(linkPath) {
-  const normalizedLinkPath = typeof linkPath === "string" ? linkPath.trim() : "";
-
-  if (!normalizedLinkPath) {
-    return "#";
-  }
-
-  try {
-    const destination = new URL(normalizedLinkPath, window.location.href);
-
-    if (!isDocumentViewerPath(destination.pathname)) {
-      return encodeURI(normalizedLinkPath);
-    }
-
-    const currentLibrarySearch = window.location.search.replace(/^\?/, "");
-
-    if (currentLibrarySearch) {
-      destination.searchParams.set("from", currentLibrarySearch);
-    } else {
-      destination.searchParams.delete("from");
-    }
-
-    return `${destination.pathname}${destination.search}${destination.hash}`;
-  } catch {
-    return encodeURI(normalizedLinkPath);
-  }
-}
-
-function buildLibraryHref({ stage = "", part = "", tags = [] } = {}, hashId = "library-panel") {
-  const searchParams = new URLSearchParams();
-  const normalizedTags = [
-    ...new Set((Array.isArray(tags) ? tags : [tags]).map(normalizeUiTag).filter(Boolean)),
-  ].sort(sortTagValues);
-
-  if (stage) {
-    searchParams.set(filterQueryKeys.stage, stage);
-  }
-
-  if (part) {
-    searchParams.set(filterQueryKeys.part, part);
-  }
-
-  if (normalizedTags.length > 0) {
-    searchParams.set(filterQueryKeys.tags, normalizedTags.join(","));
-  }
-
-  const search = searchParams.toString();
-  return `./index.html${search ? `?${search}` : ""}${hashId ? `#${hashId}` : ""}`;
-}
-
-function isDocumentViewerPath(pathname) {
-  const normalizedPath = String(pathname || "");
-
-  return normalizedPath.endsWith("/document.html") || normalizedPath.endsWith("document.html");
-}
-
 function createCardMarkup(documentItem) {
+  const currentLibrarySearch = window.location.search.replace(/^\?/, "");
   const resourceCard = createDocumentResourceModel(
     documentItem,
     {
-      buildDocumentLinkHref,
+      buildDocumentLinkHref: (linkPath) =>
+        buildDocumentLinkHref(linkPath, {
+          returnSearch: currentLibrarySearch,
+        }),
       getContentFormatLabel,
       getDocumentDisplayTitle,
       getDocumentUiTags,
@@ -981,21 +940,6 @@ function createCardMarkup(documentItem) {
   );
 
   return createResourceCardMarkup(resourceCard, { layout: "library" });
-}
-
-function buildSiteHref(relativePath) {
-  const normalizedPath = String(relativePath || "").trim();
-
-  if (!normalizedPath) {
-    return "#";
-  }
-
-  try {
-    const destination = new URL(normalizedPath, window.location.href);
-    return `${destination.pathname}${destination.search}${destination.hash}`;
-  } catch {
-    return encodeURI(normalizedPath);
-  }
 }
 
 function getSourceKindLabel(sourceKind) {

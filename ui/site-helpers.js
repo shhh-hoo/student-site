@@ -118,6 +118,20 @@ function getResolvedBaseUrl(sitePrefix = "./") {
   return new URL(sitePrefix, window.location.href);
 }
 
+function getExplicitTheme() {
+  return window.StudentSiteTheme?.getExplicitTheme?.() || "";
+}
+
+function preserveExplicitTheme(destination) {
+  const explicitTheme = getExplicitTheme();
+
+  if (window.StudentSiteTheme?.isThemeValue?.(explicitTheme)) {
+    destination.searchParams.set(window.StudentSiteTheme.themeQueryKey, explicitTheme);
+  }
+
+  return destination;
+}
+
 export function buildSiteHref(relativePath, sitePrefix = "./") {
   const normalizedPath = String(relativePath || "").trim();
 
@@ -126,6 +140,18 @@ export function buildSiteHref(relativePath, sitePrefix = "./") {
   }
 
   const destination = new URL(normalizedPath, getResolvedBaseUrl(sitePrefix));
+  return `${destination.pathname}${destination.search}${destination.hash}`;
+}
+
+export function buildSitePageHref(relativePath, sitePrefix = "./") {
+  const normalizedPath = String(relativePath || "").trim();
+
+  if (!normalizedPath) {
+    return "#";
+  }
+
+  const destination = new URL(normalizedPath, getResolvedBaseUrl(sitePrefix));
+  preserveExplicitTheme(destination);
   return `${destination.pathname}${destination.search}${destination.hash}`;
 }
 
@@ -149,6 +175,7 @@ export function buildDocumentLinkHref(linkPath, { sitePrefix = "./", returnSearc
       destination.searchParams.delete("from");
     }
 
+    preserveExplicitTheme(destination);
     return `${destination.pathname}${destination.search}${destination.hash}`;
   } catch {
     return encodeURI(normalizedLinkPath);
@@ -183,6 +210,7 @@ export function buildLibraryHref(
   }
 
   destination.hash = hashId ? `#${hashId}` : "";
+  preserveExplicitTheme(destination);
   return `${destination.pathname}${destination.search}${destination.hash}`;
 }
 

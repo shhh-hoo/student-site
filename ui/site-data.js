@@ -1,4 +1,5 @@
 import {
+  buildSitePageHref,
   buildSiteHref,
   getContentFormatLabel,
   getDocumentDisplayTitle,
@@ -78,7 +79,7 @@ export async function loadInteractiveResources(sitePrefix = "./") {
         return {
           ...meta,
           ...entry,
-          href: buildSiteHref(entry.href, sitePrefix),
+          href: buildSitePageHref(entry.href, sitePrefix),
           kind: "interactive",
         };
       } catch (error) {

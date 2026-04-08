@@ -18,6 +18,7 @@ const mathJaxScriptId = "student-site-mathjax-script";
 const mathJaxScriptUrl = "https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js";
 const mathJaxConfigFlag = "__studentSiteMathJaxConfigured";
 const mathJaxPromiseKey = "__studentSiteMathJaxPromise";
+const themeQueryKey = window.StudentSiteTheme?.themeQueryKey || "theme";
 
 async function initDocumentView() {
   const params = new URLSearchParams(window.location.search);
@@ -87,8 +88,19 @@ function normalizeDocumentId(value) {
 
 function buildLibraryReturnHref(params) {
   const librarySearch = normalizeLibrarySearchParam(params.get("from"));
+  const explicitTheme =
+    params.get(themeQueryKey) || window.StudentSiteTheme?.getExplicitTheme?.(window.location.search);
+  const destination = new URL("./index.html", window.location.href);
 
-  return librarySearch ? `./index.html?${librarySearch}` : "./index.html";
+  if (librarySearch) {
+    destination.search = librarySearch;
+  }
+
+  if (window.StudentSiteTheme?.isThemeValue?.(explicitTheme)) {
+    destination.searchParams.set(themeQueryKey, explicitTheme);
+  }
+
+  return `${destination.pathname}${destination.search}${destination.hash}`;
 }
 
 function normalizeLibrarySearchParam(value) {
@@ -114,6 +126,12 @@ function normalizeLibrarySearchParam(value) {
 
   if (tags.length > 0) {
     normalizedParams.set(libraryFilterQueryKeys.tags, tags.join(","));
+  }
+
+  const explicitTheme = sourceParams.get(themeQueryKey);
+
+  if (window.StudentSiteTheme?.isThemeValue?.(explicitTheme)) {
+    normalizedParams.set(themeQueryKey, explicitTheme);
   }
 
   return normalizedParams.toString();
