@@ -24,6 +24,72 @@ const fileOrder = [
   "full-reconstruction",
 ];
 
+const articleTokens = new Set(["a", "an", "the"]);
+const prepositionTokens = new Set([
+  "in",
+  "on",
+  "at",
+  "of",
+  "to",
+  "from",
+  "with",
+  "by",
+  "for",
+  "into",
+  "between",
+  "under",
+  "through",
+  "over",
+  "within",
+  "without",
+  "across",
+  "after",
+  "before",
+  "around",
+  "against",
+  "among",
+  "along",
+  "during",
+  "inside",
+  "outside",
+  "onto",
+  "upon",
+]);
+const exactSuccessStates = new Set(["exact", "normalized_match"]);
+const britishAmericanVariantMap = new Map([
+  ["sulphur", "sulfur"],
+  ["sulphate", "sulfate"],
+  ["sulphates", "sulfates"],
+  ["sulphite", "sulfite"],
+  ["sulphites", "sulfites"],
+  ["aluminium", "aluminum"],
+  ["ionisation", "ionization"],
+  ["ionisations", "ionizations"],
+  ["ionise", "ionize"],
+  ["ionised", "ionized"],
+  ["ionises", "ionizes"],
+  ["ionising", "ionizing"],
+  ["oxidise", "oxidize"],
+  ["oxidised", "oxidized"],
+  ["oxidises", "oxidizes"],
+  ["oxidising", "oxidizing"],
+  ["polymerisation", "polymerization"],
+  ["polymerisations", "polymerizations"],
+  ["polymerise", "polymerize"],
+  ["polymerised", "polymerized"],
+  ["polymerises", "polymerizes"],
+  ["polymerising", "polymerizing"],
+]);
+const hyphenLikePattern = /[‐‑‒–—−]/g;
+const singleQuotePattern = /[‘’‚‛`´]/g;
+const doubleQuotePattern = /[“”„‟]/g;
+const punctuationSpacingPattern = /\s*([,.;:!?])\s*/g;
+const bracketSpacingPattern = /\s*([()[\]{}])\s*/g;
+const quoteCharacterPattern = /["']/g;
+const stateSymbolPattern = /\(\s*(aq|s|l|g)\s*\)/gi;
+const reversibleArrowPattern = /(?:⇌|↔|⟷|<=>)/g;
+const forwardArrowPattern = /(?:⟶|⟹|→|=>)/g;
+
 const collator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: "base",
@@ -74,6 +140,7 @@ const appState = {
   revealed: false,
   renderToken: 0,
   fileDataCache: new Map(),
+  staticEventsRegistered: false,
 };
 
 function fetchJson(path) {
@@ -99,10 +166,336 @@ function formatDefinitionScope(scope) {
   return definitionScopeOptions.find((option) => option.id === scope)?.label || formatLabel(scope);
 }
 
-function normaliseExactMatch(value) {
+function normaliseUnicodeText(value) {
   return String(value ?? "")
+    .normalize("NFC")
+    .replace(hyphenLikePattern, "-")
+    .replace(singleQuotePattern, "'")
+    .replace(doubleQuotePattern, '"')
+    .replace(/\u00a0/g, " ");
+}
+
+function normaliseVariantToken(token) {
+  return token
+    .split("-")
+    .map((segment) => britishAmericanVariantMap.get(segment) || segment)
+    .join("-");
+}
+
+function buildControlledTextComparable(value, { ignorePrepositions = false } = {}) {
+  const normalizedText = normaliseUnicodeText(value)
     .trim()
-    .replace(/\s+/g, " ");
+    .replace(bracketSpacingPattern, "$1")
+    .replace(punctuationSpacingPattern, " ")
+    .replace(quoteCharacterPattern, "")
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+
+  if (!normalizedText) {
+    return { text: "", tokens: [] };
+  }
+
+  const tokens = normalizedText
+    .split(" ")
+    .filter(Boolean)
+    .map(normaliseVariantToken)
+    .filter((token) => !articleTokens.has(token))
+    .filter((token) => !(ignorePrepositions && prepositionTokens.has(token)));
+
+  return {
+    text: tokens.join(" "),
+    tokens,
+  };
+}
+
+function buildEquationComparable(value, { ignoreStateSymbols = true } = {}) {
+  let normalizedText = normaliseUnicodeText(value)
+    .trim()
+    .replace(reversibleArrowPattern, "<->")
+    .replace(forwardArrowPattern, "->");
+
+  if (ignoreStateSymbols) {
+    normalizedText = normalizedText.replace(stateSymbolPattern, "");
+  }
+
+  return normalizedText
+    .replace(/\s*<->\s*/g, "<->")
+    .replace(/\s*->\s*/g, "->")
+    .replace(/\s+/g, "")
+    .toLowerCase();
+}
+
+function getMatcherConfig(unit) {
+  const fileId = getFileEntry()?.id;
+
+  if (fileId === "core-equations") {
+    const sourceText = `${unit?.prompt || ""} ${unit?.question || ""}`;
+
+    return {
+      type: "equation",
+      ignoreStateSymbols: !/state symbols?/i.test(sourceText),
+    };
+  }
+
+  return {
+    type: "controlled-text",
+  };
+}
+
+function buildComparablePair(userValue, canonicalValue, matcherConfig) {
+  if (matcherConfig.type === "equation") {
+    return {
+      canonicalText: buildEquationComparable(canonicalValue, matcherConfig),
+      userText: buildEquationComparable(userValue, matcherConfig),
+    };
+  }
+
+  return {
+    canonicalText: buildControlledTextComparable(canonicalValue).text,
+    userText: buildControlledTextComparable(userValue).text,
+  };
+}
+
+function evaluateMatchResult(userValue, canonicalValue, matcherConfig) {
+  const rawUserText = String(userValue ?? "");
+  const comparablePair = buildComparablePair(rawUserText, canonicalValue, matcherConfig);
+
+  if (!rawUserText.trim()) {
+    return {
+      state: "untouched",
+      ...comparablePair,
+    };
+  }
+
+  if (rawUserText === String(canonicalValue ?? "")) {
+    return {
+      state: "exact",
+      ...comparablePair,
+    };
+  }
+
+  if (comparablePair.userText === comparablePair.canonicalText) {
+    return {
+      state: "normalized_match",
+      ...comparablePair,
+    };
+  }
+
+  if (matcherConfig.type !== "equation") {
+    const canonicalWithoutPrepositions = buildControlledTextComparable(canonicalValue, {
+      ignorePrepositions: true,
+    }).text;
+    const userWithoutPrepositions = buildControlledTextComparable(rawUserText, {
+      ignorePrepositions: true,
+    }).text;
+
+    if (
+      canonicalWithoutPrepositions &&
+      userWithoutPrepositions &&
+      canonicalWithoutPrepositions === userWithoutPrepositions
+    ) {
+      return {
+        state: "near_miss_preposition",
+        ...comparablePair,
+      };
+    }
+  }
+
+  return {
+    state: "incorrect",
+    ...comparablePair,
+  };
+}
+
+function createMatchGuideSegments(canonicalText, userText, state) {
+  if (!canonicalText) {
+    return {
+      matchedText: "",
+      mismatchText: "",
+      remainingText: "",
+      extraText: "",
+    };
+  }
+
+  if (!userText) {
+    return {
+      matchedText: "",
+      mismatchText: "",
+      remainingText: canonicalText,
+      extraText: "",
+    };
+  }
+
+  if (exactSuccessStates.has(state)) {
+    return {
+      matchedText: canonicalText,
+      mismatchText: "",
+      remainingText: "",
+      extraText: "",
+    };
+  }
+
+  const canonicalCharacters = Array.from(canonicalText);
+  const userCharacters = Array.from(userText);
+  let matchedLength = 0;
+
+  while (
+    matchedLength < canonicalCharacters.length &&
+    matchedLength < userCharacters.length &&
+    canonicalCharacters[matchedLength] === userCharacters[matchedLength]
+  ) {
+    matchedLength += 1;
+  }
+
+  return {
+    matchedText: canonicalCharacters.slice(0, matchedLength).join(""),
+    mismatchText:
+      matchedLength < canonicalCharacters.length ? canonicalCharacters[matchedLength] : "",
+    remainingText:
+      matchedLength < canonicalCharacters.length
+        ? canonicalCharacters.slice(matchedLength + 1).join("")
+        : "",
+    extraText:
+      matchedLength >= canonicalCharacters.length &&
+      userCharacters.length > canonicalCharacters.length
+        ? " +"
+        : "",
+  };
+}
+
+function renderMatchGuide(guideElement, result, label = "Match guide") {
+  guideElement.replaceChildren();
+  guideElement.dataset.state = result.state;
+
+  const labelElement = document.createElement("span");
+  labelElement.className = "memorisation-match-guide__label";
+  labelElement.textContent = label;
+
+  const copyElement = document.createElement("span");
+  copyElement.className = "memorisation-match-guide__copy";
+
+  const segments = createMatchGuideSegments(
+    result.canonicalText || "",
+    result.userText || "",
+    result.state,
+  );
+
+  const segmentDescriptors = [
+    {
+      className: "memorisation-match-guide__matched",
+      text: segments.matchedText,
+    },
+    {
+      className: "memorisation-match-guide__mismatch",
+      text: segments.mismatchText,
+    },
+    {
+      className: "memorisation-match-guide__remaining",
+      text: segments.remainingText,
+    },
+    {
+      className: "memorisation-match-guide__extra",
+      text: segments.extraText,
+    },
+  ];
+
+  segmentDescriptors.forEach((segment) => {
+    if (!segment.text) {
+      return;
+    }
+
+    const segmentElement = document.createElement("span");
+    segmentElement.className = segment.className;
+    segmentElement.textContent = segment.text;
+    copyElement.append(segmentElement);
+  });
+
+  guideElement.append(labelElement, copyElement);
+}
+
+function isSuccessfulMatchState(state) {
+  return exactSuccessStates.has(state);
+}
+
+function getUntouchedMessage(matcherConfig, interactionLabel) {
+  if (matcherConfig.type === "equation") {
+    return `${interactionLabel} Equation matching normalizes spacing, arrow variants, and optional state symbols only.`;
+  }
+
+  return `${interactionLabel} Formatting, spelling, quote, punctuation, and article variants are normalized. Prepositions stay strict.`;
+}
+
+function getMatchMessage(state, matcherConfig) {
+  if (state === "exact") {
+    return {
+      text: "Exact match.",
+      tone: "correct",
+    };
+  }
+
+  if (state === "normalized_match") {
+    return {
+      text:
+        matcherConfig.type === "equation"
+          ? "Accepted equation formatting variant."
+          : "Accepted formatting / spelling / article variant.",
+      tone: "correct",
+    };
+  }
+
+  if (state === "near_miss_preposition") {
+    return {
+      text: "Almost there. The remaining difference is a preposition.",
+      tone: "warning",
+    };
+  }
+
+  return {
+    text:
+      matcherConfig.type === "equation"
+        ? "Equation structure or chemistry does not match the stored answer."
+        : "Does not match the canonical answer.",
+    tone: "incorrect",
+  };
+}
+
+function applyMatchResultToField(
+  field,
+  feedbackElement,
+  guideElement,
+  result,
+  matcherConfig,
+  label,
+) {
+  applyFieldState(field, result.state);
+  renderMatchGuide(guideElement, result, label);
+
+  const message = getMatchMessage(result.state, matcherConfig);
+  setFeedbackMessage(feedbackElement, message.text, message.tone);
+}
+
+function resetFieldToUntouched(
+  field,
+  feedbackElement,
+  guideElement,
+  canonicalValue,
+  matcherConfig,
+  interactionLabel,
+  guideLabel,
+) {
+  const result = evaluateMatchResult("", canonicalValue, matcherConfig);
+
+  applyFieldState(field, "untouched");
+  renderMatchGuide(guideElement, result, guideLabel);
+  setFeedbackMessage(feedbackElement, getUntouchedMessage(matcherConfig, interactionLabel));
+}
+
+function updateDraftGuide(guideElement, userValue, canonicalValue, matcherConfig, guideLabel) {
+  renderMatchGuide(
+    guideElement,
+    evaluateMatchResult(userValue, canonicalValue, matcherConfig),
+    guideLabel,
+  );
 }
 
 function normalizeTopicKey(topicValue) {
@@ -204,6 +597,18 @@ function getDefaultFileId(stageId, levelId, topicId) {
   return getFileEntries(stageId, levelId, topicId)[0]?.id || "";
 }
 
+function getSelectionSnapshot(overrides = {}) {
+  return {
+    stage: appState.stage,
+    level: appState.level,
+    topic: appState.topic,
+    file: appState.file,
+    definitionScope: appState.definitionScope,
+    round: appState.round,
+    ...overrides,
+  };
+}
+
 function getInitialSelectionFromUrl() {
   const searchParams = new URLSearchParams(window.location.search);
   const requestedRound = searchParams.get("round");
@@ -220,8 +625,7 @@ function getInitialSelectionFromUrl() {
   };
 }
 
-function initializeSelection() {
-  const requestedSelection = getInitialSelectionFromUrl();
+function synchroniseSelection(requestedSelection = getSelectionSnapshot()) {
   const stageEntries = getStageEntries();
   const stageId = stageEntries.some((stage) => stage.id === requestedSelection.stage)
     ? requestedSelection.stage
@@ -256,6 +660,15 @@ function initializeSelection() {
   appState.file = fileId;
   appState.definitionScope = definitionScope;
   appState.round = round;
+
+  return getFileEntry(stageId, levelId, topicId, fileId);
+}
+
+function applySelection(nextSelection, { resetSequence = true } = {}) {
+  synchroniseSelection(nextSelection);
+  renderControls();
+  updateUrlFromState();
+  refreshPool({ resetSequence });
 }
 
 function updateUrlFromState() {
@@ -353,14 +766,16 @@ function renderStageSwitcher() {
         return;
       }
 
-      appState.stage = nextStage;
-      appState.level = getDefaultLevelId(nextStage);
-      appState.topic = getDefaultTopicId(appState.stage, appState.level);
-      appState.file = getDefaultFileId(appState.stage, appState.level, appState.topic);
-      appState.definitionScope = "all";
-      appState.round = "all";
-      renderControls();
-      refreshPool({ resetSequence: true });
+      applySelection(
+        getSelectionSnapshot({
+          stage: nextStage,
+          level: "",
+          topic: "",
+          file: "",
+          definitionScope: "all",
+          round: "all",
+        }),
+      );
     });
   });
 }
@@ -394,13 +809,15 @@ function renderLevelSwitcher() {
         return;
       }
 
-      appState.level = nextLevel;
-      appState.topic = getDefaultTopicId(appState.stage, appState.level);
-      appState.file = getDefaultFileId(appState.stage, appState.level, appState.topic);
-      appState.definitionScope = "all";
-      appState.round = "all";
-      renderControls();
-      refreshPool({ resetSequence: true });
+      applySelection(
+        getSelectionSnapshot({
+          level: nextLevel,
+          topic: "",
+          file: "",
+          definitionScope: "all",
+          round: "all",
+        }),
+      );
     });
   });
 }
@@ -410,9 +827,10 @@ function renderTopicFilter() {
     .slice()
     .sort((left, right) => collator.compare(left.label, right.label));
 
-  topicFilter.innerHTML = topics
-    .map((topic) => `<option value="${topic.id}">${topic.label}</option>`)
-    .join("");
+  topicFilter.disabled = topics.length === 0;
+  topicFilter.innerHTML = topics.length
+    ? topics.map((topic) => `<option value="${topic.id}">${topic.label}</option>`).join("")
+    : '<option value="">No topics available</option>';
 
   if (!topics.some((topic) => topic.id === appState.topic)) {
     appState.topic = topics[0]?.id || "";
@@ -448,11 +866,13 @@ function renderFileSwitcher() {
         return;
       }
 
-      appState.file = nextFile;
-      appState.definitionScope = "all";
-      appState.round = "all";
-      renderControls();
-      refreshPool({ resetSequence: true });
+      applySelection(
+        getSelectionSnapshot({
+          file: nextFile,
+          definitionScope: "all",
+          round: "all",
+        }),
+      );
     });
   });
 }
@@ -585,6 +1005,32 @@ async function loadCurrentFileItems() {
   return normalizedItems;
 }
 
+async function loadCatalogResources({ preserveSelection = true } = {}) {
+  const fallbackSelection = preserveSelection
+    ? getSelectionSnapshot()
+    : getInitialSelectionFromUrl();
+  const catalog = await fetchJson("./data/catalog.json");
+
+  if (!Array.isArray(catalog?.stages) || catalog.stages.length === 0) {
+    throw new Error("The memorisation catalog is empty or malformed.");
+  }
+
+  let topicNormalizationMap = appState.topicNormalizationMap;
+
+  try {
+    const loadedMap = await fetchJson("./data/context/topic_normalization_map.json");
+    topicNormalizationMap =
+      loadedMap && typeof loadedMap === "object" && !Array.isArray(loadedMap) ? loadedMap : {};
+  } catch (error) {
+    topicNormalizationMap = preserveSelection ? appState.topicNormalizationMap : {};
+  }
+
+  appState.catalog = catalog;
+  appState.topicNormalizationMap = topicNormalizationMap;
+  appState.fileDataCache.clear();
+  synchroniseSelection(fallbackSelection);
+}
+
 function buildActivePool(items, fileEntry) {
   const filteredItems =
     fileEntry.id === "core-definitions" && appState.definitionScope !== "all"
@@ -640,6 +1086,32 @@ function setLoadingState(message = "Loading current training file...") {
   answerPanel.hidden = true;
   revealAnswerButton.disabled = true;
   nextItemButton.disabled = true;
+}
+
+function renderStatusCard(message, actionLabel = "", actionHandler = null) {
+  const shell = document.createElement("div");
+  shell.className = "memorisation-status-card";
+
+  const copy = document.createElement("p");
+  copy.className = "memorisation-empty";
+  copy.textContent = message;
+  shell.append(copy);
+
+  if (actionLabel && typeof actionHandler === "function") {
+    const actions = document.createElement("div");
+    actions.className = "memorisation-status-actions";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary-link";
+    button.textContent = actionLabel;
+    button.addEventListener("click", actionHandler);
+
+    actions.append(button);
+    shell.append(actions);
+  }
+
+  promptCard.replaceChildren(shell);
 }
 
 function getEmptyStateMessage() {
@@ -746,8 +1218,10 @@ function updateAnswerPanel(unit) {
   answerText.textContent = isFullAnswerUnit ? unit.full_answer || unit.answer : unit.answer;
   answerNote.textContent =
     unit.kind === "guided-cloze" || unit.kind === "multi-round-cloze"
-      ? "Reveal shows the stored full explanation answer for this prompt."
-      : "Only outer whitespace and repeated internal whitespace are normalised during checking.";
+      ? "Reveal shows the stored full explanation answer for this prompt. Formatting, spelling, punctuation, and article variants are normalized; prepositions stay strict."
+      : getFileEntry()?.id === "core-equations"
+        ? "Equation matching normalizes spacing, arrow variants, and optional state symbols unless the prompt explicitly requires them."
+        : "Formatting, spelling, quote, punctuation, hyphen, and article variants are normalized during checking. Prepositions stay strict.";
 }
 
 function updateActionButtons(unit) {
@@ -768,48 +1242,53 @@ function renderEmptyState(message) {
   questionLabel.textContent = "No drill units";
   questionTitle.textContent = "Nothing matches the current selection.";
   questionCopy.textContent = message;
-  promptCard.innerHTML = `<p class="memorisation-empty">${message}</p>`;
+  renderStatusCard(message);
   appState.revealed = false;
   updateAnswerPanel(null);
   updateActionButtons(null);
   updateUrlFromState();
 }
 
-function renderErrorState(message) {
+function renderCatalogErrorState(message) {
+  appState.activePool = [];
+  appState.sequence = [];
+  appState.sequenceIndex = 0;
+  appState.currentUnitId = "";
+  renderStats();
+  updateBadges(null);
   questionLabel.textContent = "Memorisation bank unavailable";
-  questionTitle.textContent = "Could not load the selected training file.";
+  questionTitle.textContent = "Could not load memorisation data.";
+  questionCopy.textContent =
+    "The catalog or its supporting files could not be loaded. Retry this page in a moment.";
+  renderStatusCard(message, "Retry loading", () => {
+    bootRuntime({ preserveSelection: false });
+  });
+  appState.revealed = false;
+  updateAnswerPanel(null);
+  updateActionButtons(null);
+}
+
+function renderFileErrorState(fileEntry, message) {
+  appState.activePool = [];
+  appState.sequence = [];
+  appState.sequenceIndex = 0;
+  appState.currentUnitId = "";
+  renderStats();
+  updateBadges(null);
+  questionLabel.textContent = "Loading error";
+  questionTitle.textContent = `Could not load ${fileEntry?.label || "the selected training file"}.`;
   questionCopy.textContent = message;
-  promptCard.innerHTML = `<p class="memorisation-empty">${message}</p>`;
+  renderStatusCard(message, "Retry loading", () => {
+    refreshPool({ resetSequence: true, allowCatalogResync: true });
+  });
   answerPanel.hidden = true;
   revealAnswerButton.disabled = true;
   nextItemButton.disabled = true;
-}
-
-function checkExactMatch(field, answer, feedbackElement) {
-  const currentValue = String(field.value || "");
-
-  if (!currentValue.trim()) {
-    applyFieldState(field, "untouched");
-    setFeedbackMessage(
-      feedbackElement,
-      "Only outer whitespace and repeated internal whitespace are normalised.",
-    );
-    return;
-  }
-
-  const isCorrect = normaliseExactMatch(currentValue) === normaliseExactMatch(answer);
-
-  applyFieldState(field, isCorrect ? "correct" : "incorrect");
-  setFeedbackMessage(
-    feedbackElement,
-    isCorrect
-      ? "Exact match under the current rules."
-      : "Not an exact match under the current rules.",
-    isCorrect ? "correct" : "incorrect",
-  );
+  updateUrlFromState();
 }
 
 function renderSinglePrompt(unit) {
+  const matcherConfig = getMatcherConfig(unit);
   const fieldWrapper = document.createElement("label");
   fieldWrapper.className = "memorisation-field";
 
@@ -823,19 +1302,41 @@ function renderSinglePrompt(unit) {
   field.spellcheck = false;
   field.autocomplete = "off";
   field.autocapitalize = "off";
-  field.placeholder = "Type the canonical answer exactly.";
+  field.placeholder = "Type the canonical answer.";
   applyFieldState(field, "untouched");
 
   const feedback = document.createElement("p");
   feedback.className = "memorisation-feedback";
   feedback.setAttribute("aria-live", "polite");
-  setFeedbackMessage(
+
+  const guide = document.createElement("p");
+  guide.className = "memorisation-match-guide";
+
+  resetFieldToUntouched(
+    field,
     feedback,
-    "Check on blur or Enter. Only outer whitespace and repeated internal whitespace are normalised.",
+    guide,
+    unit.answer,
+    matcherConfig,
+    "Check on blur or Enter.",
+    "Match guide",
   );
 
+  field.addEventListener("input", () => {
+    applyFieldState(field, "untouched");
+    setFeedbackMessage(feedback, getUntouchedMessage(matcherConfig, "Check on blur or Enter."));
+    updateDraftGuide(guide, field.value, unit.answer, matcherConfig, "Match guide");
+  });
+
   field.addEventListener("blur", () => {
-    checkExactMatch(field, unit.answer, feedback);
+    applyMatchResultToField(
+      field,
+      feedback,
+      guide,
+      evaluateMatchResult(field.value, unit.answer, matcherConfig),
+      matcherConfig,
+      "Match guide",
+    );
   });
 
   field.addEventListener("keydown", (event) => {
@@ -844,14 +1345,22 @@ function renderSinglePrompt(unit) {
     }
 
     event.preventDefault();
-    checkExactMatch(field, unit.answer, feedback);
+    applyMatchResultToField(
+      field,
+      feedback,
+      guide,
+      evaluateMatchResult(field.value, unit.answer, matcherConfig),
+      matcherConfig,
+      "Match guide",
+    );
   });
 
-  fieldWrapper.append(fieldLabel, field, feedback);
+  fieldWrapper.append(fieldLabel, field, feedback, guide);
   promptCard.replaceChildren(fieldWrapper);
 }
 
 function renderReconstructionPrompt(unit) {
+  const matcherConfig = getMatcherConfig(unit);
   const fieldWrapper = document.createElement("label");
   fieldWrapper.className = "memorisation-field";
 
@@ -871,13 +1380,38 @@ function renderReconstructionPrompt(unit) {
   const feedback = document.createElement("p");
   feedback.className = "memorisation-feedback";
   feedback.setAttribute("aria-live", "polite");
-  setFeedbackMessage(
+
+  const guide = document.createElement("p");
+  guide.className = "memorisation-match-guide";
+
+  resetFieldToUntouched(
+    field,
     feedback,
-    "Check on blur or Ctrl/Cmd+Enter. Only outer whitespace and repeated internal whitespace are normalised.",
+    guide,
+    unit.answer,
+    matcherConfig,
+    "Check on blur or Ctrl/Cmd+Enter.",
+    "Match guide",
   );
 
+  field.addEventListener("input", () => {
+    applyFieldState(field, "untouched");
+    setFeedbackMessage(
+      feedback,
+      getUntouchedMessage(matcherConfig, "Check on blur or Ctrl/Cmd+Enter."),
+    );
+    updateDraftGuide(guide, field.value, unit.answer, matcherConfig, "Match guide");
+  });
+
   field.addEventListener("blur", () => {
-    checkExactMatch(field, unit.answer, feedback);
+    applyMatchResultToField(
+      field,
+      feedback,
+      guide,
+      evaluateMatchResult(field.value, unit.answer, matcherConfig),
+      matcherConfig,
+      "Match guide",
+    );
   });
 
   field.addEventListener("keydown", (event) => {
@@ -886,47 +1420,72 @@ function renderReconstructionPrompt(unit) {
     }
 
     event.preventDefault();
-    checkExactMatch(field, unit.answer, feedback);
+    applyMatchResultToField(
+      field,
+      feedback,
+      guide,
+      evaluateMatchResult(field.value, unit.answer, matcherConfig),
+      matcherConfig,
+      "Match guide",
+    );
   });
 
-  fieldWrapper.append(fieldLabel, field, feedback);
+  fieldWrapper.append(fieldLabel, field, feedback, guide);
   promptCard.replaceChildren(fieldWrapper);
 }
 
 function updateClozeSummary(summaryElement, inputs) {
-  const correctCount = inputs.filter((input) => input.dataset.state === "correct").length;
+  const correctCount = inputs.filter((input) => isSuccessfulMatchState(input.dataset.state)).length;
+  const nearMissCount = inputs.filter(
+    (input) => input.dataset.state === "near_miss_preposition",
+  ).length;
   const incorrectCount = inputs.filter((input) => input.dataset.state === "incorrect").length;
-  const untouchedCount = inputs.length - correctCount - incorrectCount;
+  const untouchedCount = inputs.filter((input) => input.dataset.state === "untouched").length;
 
-  if (correctCount === 0 && incorrectCount === 0) {
-    setFeedbackMessage(summaryElement, "Each blank checks independently on blur or Enter.");
+  if (correctCount === 0 && nearMissCount === 0 && incorrectCount === 0) {
+    setFeedbackMessage(
+      summaryElement,
+      "Each blank checks independently on blur or Enter. Formatting, spelling, punctuation, and articles are normalized; prepositions stay strict.",
+    );
     return;
   }
 
   setFeedbackMessage(
     summaryElement,
     `${pluralise(correctCount, "blank")} correct · ${pluralise(
+      nearMissCount,
+      "blank",
+    )} almost there · ${pluralise(
       incorrectCount,
       "blank",
     )} incorrect · ${pluralise(untouchedCount, "blank")} untouched`,
-    incorrectCount > 0 ? "incorrect" : "correct",
+    incorrectCount > 0 ? "incorrect" : nearMissCount > 0 ? "warning" : "correct",
   );
 }
 
-function checkClozeBlank(field, answer, summaryElement, inputs) {
-  if (!String(field.value || "").trim()) {
-    applyFieldState(field, "untouched");
-    updateClozeSummary(summaryElement, inputs);
-    return;
-  }
-
-  const isCorrect = normaliseExactMatch(field.value) === normaliseExactMatch(answer);
-
-  applyFieldState(field, isCorrect ? "correct" : "incorrect");
+function applyClozeBlankResult(
+  field,
+  answer,
+  feedbackElement,
+  guideElement,
+  matcherConfig,
+  summaryElement,
+  inputs,
+  blankLabel,
+) {
+  applyMatchResultToField(
+    field,
+    feedbackElement,
+    guideElement,
+    evaluateMatchResult(field.value, answer, matcherConfig),
+    matcherConfig,
+    `${blankLabel} guide`,
+  );
   updateClozeSummary(summaryElement, inputs);
 }
 
 function renderClozePrompt(unit) {
+  const matcherConfig = getMatcherConfig(unit);
   const shell = document.createElement("div");
   shell.className = "cloze-shell";
 
@@ -937,10 +1496,15 @@ function renderClozePrompt(unit) {
   const summary = document.createElement("p");
   summary.className = "memorisation-feedback";
   summary.setAttribute("aria-live", "polite");
-  setFeedbackMessage(summary, "Each blank checks independently on blur or Enter.");
+  setFeedbackMessage(
+    summary,
+    "Each blank checks independently on blur or Enter. Formatting, spelling, punctuation, and articles are normalized; prepositions stay strict.",
+  );
 
   const promptLine = document.createElement("div");
   promptLine.className = "cloze-prompt-line";
+  const detailList = document.createElement("div");
+  detailList.className = "cloze-detail-list";
   const blankPattern = /_{4,}/g;
   const promptText = String(unit.prompt || "");
   const promptParts = promptText.split(blankPattern);
@@ -956,19 +1520,62 @@ function renderClozePrompt(unit) {
   }
 
   const inputs = unit.answers.map((answer, index) => {
+    const blankLabel = `Blank ${index + 1}`;
     promptLine.append(document.createTextNode(promptParts[index]));
 
     const input = document.createElement("input");
     input.type = "text";
     input.className = "cloze-input";
-    input.placeholder = `Blank ${index + 1}`;
+    input.placeholder = blankLabel;
     input.spellcheck = false;
     input.autocomplete = "off";
     input.autocapitalize = "off";
     applyFieldState(input, "untouched");
 
+    const detail = document.createElement("div");
+    detail.className = "cloze-detail";
+
+    const detailLabel = document.createElement("span");
+    detailLabel.className = "cloze-detail__label";
+    detailLabel.textContent = blankLabel;
+
+    const detailFeedback = document.createElement("p");
+    detailFeedback.className = "memorisation-feedback";
+
+    const detailGuide = document.createElement("p");
+    detailGuide.className = "memorisation-match-guide";
+
+    resetFieldToUntouched(
+      input,
+      detailFeedback,
+      detailGuide,
+      answer,
+      matcherConfig,
+      "Check on blur or Enter.",
+      `${blankLabel} guide`,
+    );
+
+    input.addEventListener("input", () => {
+      applyFieldState(input, "untouched");
+      setFeedbackMessage(
+        detailFeedback,
+        getUntouchedMessage(matcherConfig, "Check on blur or Enter."),
+      );
+      updateDraftGuide(detailGuide, input.value, answer, matcherConfig, `${blankLabel} guide`);
+      updateClozeSummary(summary, inputs);
+    });
+
     input.addEventListener("blur", () => {
-      checkClozeBlank(input, answer, summary, inputs);
+      applyClozeBlankResult(
+        input,
+        answer,
+        detailFeedback,
+        detailGuide,
+        matcherConfig,
+        summary,
+        inputs,
+        blankLabel,
+      );
     });
 
     input.addEventListener("keydown", (event) => {
@@ -977,7 +1584,16 @@ function renderClozePrompt(unit) {
       }
 
       event.preventDefault();
-      checkClozeBlank(input, answer, summary, inputs);
+      applyClozeBlankResult(
+        input,
+        answer,
+        detailFeedback,
+        detailGuide,
+        matcherConfig,
+        summary,
+        inputs,
+        blankLabel,
+      );
 
       const nextInput = inputs[index + 1];
 
@@ -987,11 +1603,13 @@ function renderClozePrompt(unit) {
     });
 
     promptLine.append(input);
+    detail.append(detailLabel, detailFeedback, detailGuide);
+    detailList.append(detail);
     return input;
   });
 
   promptLine.append(document.createTextNode(promptParts[promptParts.length - 1]));
-  shell.append(intro, promptLine, summary);
+  shell.append(intro, promptLine, summary, detailList);
   promptCard.replaceChildren(shell);
 }
 
@@ -1026,7 +1644,8 @@ function renderCurrentUnit() {
   updateUrlFromState();
 }
 
-async function refreshPool({ resetSequence = true } = {}) {
+async function refreshPool({ resetSequence = true, allowCatalogResync = true } = {}) {
+  synchroniseSelection();
   const fileEntry = getFileEntry();
 
   if (!fileEntry) {
@@ -1067,7 +1686,31 @@ async function refreshPool({ resetSequence = true } = {}) {
       return;
     }
 
-    renderErrorState(error.message);
+    if (allowCatalogResync) {
+      try {
+        await loadCatalogResources({ preserveSelection: true });
+
+        if (renderToken !== appState.renderToken) {
+          return;
+        }
+
+        renderControls();
+        updateUrlFromState();
+        return refreshPool({ resetSequence, allowCatalogResync: false });
+      } catch (catalogError) {
+        if (renderToken !== appState.renderToken) {
+          return;
+        }
+
+        renderFileErrorState(
+          fileEntry,
+          `${error.message} Retry to resync the current selection with the latest catalog.`,
+        );
+        return;
+      }
+    }
+
+    renderFileErrorState(fileEntry, `${error.message} Retry to try the current selection again.`);
   }
 }
 
@@ -1094,13 +1737,19 @@ function moveToNextUnit() {
 }
 
 function registerStaticEvents() {
+  if (appState.staticEventsRegistered) {
+    return;
+  }
+
   topicFilter.addEventListener("change", (event) => {
-    appState.topic = normalizeTopicKey(event.target.value || "");
-    appState.file = getDefaultFileId(appState.stage, appState.level, appState.topic);
-    appState.definitionScope = "all";
-    appState.round = "all";
-    renderControls();
-    refreshPool({ resetSequence: true });
+    applySelection(
+      getSelectionSnapshot({
+        topic: normalizeTopicKey(event.target.value || ""),
+        file: "",
+        definitionScope: "all",
+        round: "all",
+      }),
+    );
   });
 
   revealAnswerButton.addEventListener("click", () => {
@@ -1112,25 +1761,26 @@ function registerStaticEvents() {
   nextItemButton.addEventListener("click", () => {
     moveToNextUnit();
   });
+
+  appState.staticEventsRegistered = true;
+}
+
+async function bootRuntime({ preserveSelection = true } = {}) {
+  setLoadingState("Loading memorisation bank...");
+
+  try {
+    await loadCatalogResources({ preserveSelection });
+    renderControls();
+    updateUrlFromState();
+    await refreshPool({ resetSequence: true, allowCatalogResync: false });
+  } catch (error) {
+    renderCatalogErrorState(error.message);
+  }
 }
 
 async function init() {
   registerStaticEvents();
-
-  try {
-    const [catalog, topicNormalizationMap] = await Promise.all([
-      fetchJson("./data/catalog.json"),
-      fetchJson("./data/context/topic_normalization_map.json"),
-    ]);
-
-    appState.catalog = catalog;
-    appState.topicNormalizationMap = topicNormalizationMap;
-    initializeSelection();
-    renderControls();
-    refreshPool({ resetSequence: true });
-  } catch (error) {
-    renderErrorState(error.message);
-  }
+  bootRuntime({ preserveSelection: false });
 }
 
 init();
