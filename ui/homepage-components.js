@@ -46,7 +46,11 @@ export function createSiteHeaderMarkup(header) {
   const navMarkup = (header.navLinks || [])
     .map(
       (link) => `
-        <a class="site-header__nav-link" href="${escapeHtml(link.href)}">
+        <a
+          class="${joinClasses("site-header__nav-link", link.current && "site-header__nav-link--current")}"
+          href="${escapeHtml(link.href)}"
+          ${link.current ? 'aria-current="page"' : ""}
+        >
           ${escapeHtml(link.label)}
         </a>
       `,
@@ -128,7 +132,7 @@ export function createHomepageHeroMarkup(hero) {
         </div>
         <div class="homepage-hero__support">
           <div class="homepage-hero__panel homepage-hero__panel--stats">
-            <p class="homepage-hero__panel-kicker">At a glance</p>
+            <p class="homepage-hero__panel-kicker">${escapeHtml(hero.panelKicker || "At a glance")}</p>
             <div class="homepage-hero__stats">${statsMarkup}</div>
           </div>
           <div class="homepage-hero__notes">${notesMarkup}</div>
