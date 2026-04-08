@@ -40,8 +40,8 @@ export function buildStagePageViewModel({
         { href: helpers.buildSiteHref("interactive/"), label: "Interactive" },
       ],
       quickAction: {
-        href: helpers.buildLibraryHref({ stage: stageKey }, "library-panel"),
-        label: `Browse ${stageKey} library`,
+        href: helpers.buildLibraryHref({}, "library-panel"),
+        label: "Browse full library",
       },
     },
     hero: {
