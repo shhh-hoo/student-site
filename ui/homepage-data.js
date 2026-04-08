@@ -36,21 +36,22 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
       title: "Chemistry Resource Bank",
       homeHref: helpers.buildSiteHref("index.html"),
       navLinks: [
+        { href: helpers.buildSiteHref("index.html"), label: "Home", current: true },
         { href: helpers.buildSiteHref("as/"), label: "AS" },
         { href: helpers.buildSiteHref("a2/"), label: "A2" },
         { href: helpers.buildSiteHref("interactive/"), label: "Interactive" },
-        { href: "#library-panel", label: "Library" },
       ],
       quickAction: {
         href: "#library-panel",
-        label: "Browse library",
+        label: "Browse full library",
       },
     },
     hero: {
-      kicker: "Home",
+      kicker: "Entry page",
       pill: "CAIE Chemistry 9701",
       title: "Open AS, A2, interactive practice, or the full chemistry library.",
-      copy: "Use the homepage as the entry page. AS and A2 stay separate, the interactive tools stay separate, and the library stays available for full browse.",
+      copy: "Start here, then move into AS, A2, interactive practice, or the full library with the same shared navigation and browse flow.",
+      panelKicker: "Site snapshot",
       actions: [
         {
           href: helpers.buildSiteHref("as/"),
@@ -79,14 +80,14 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
       ],
       notes: [
         {
-          label: "Structure",
-          title: "Separate pages for AS, A2, interactive, and library",
-          copy: "Open the page you need first, then use overview filters when you want a faster scan of the bank.",
+          label: "Page role",
+          title: "Home stays light so the other pages can stay focused",
+          copy: "Use Home as the entry page, then move into AS, A2, interactive, or the full library when you want a more specific browse view.",
         },
         {
-          label: "Overview",
-          title: "Browse by type and topic",
-          copy: "The overview below works like a directory, not a curated guide.",
+          label: "Browse flow",
+          title: "Use overview for a quick scan, then open the full library",
+          copy: "The overview below works like a directory. Open the library when you want the full document set and filters in one place.",
         },
       ],
     },

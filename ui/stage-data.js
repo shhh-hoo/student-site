@@ -30,13 +30,13 @@ export function buildStagePageViewModel({
 
   return {
     header: {
-      eyebrow: stageIdentity.headerEyebrow,
+      eyebrow: "Student Site",
       title: "Chemistry Resource Bank",
       homeHref: helpers.buildSiteHref("index.html"),
       navLinks: [
         { href: helpers.buildSiteHref("index.html"), label: "Home" },
-        { href: helpers.buildSiteHref("as/"), label: "AS" },
-        { href: helpers.buildSiteHref("a2/"), label: "A2" },
+        { href: helpers.buildSiteHref("as/"), label: "AS", current: stageKey === "AS" },
+        { href: helpers.buildSiteHref("a2/"), label: "A2", current: stageKey === "A2" },
         { href: helpers.buildSiteHref("interactive/"), label: "Interactive" },
       ],
       quickAction: {
@@ -45,15 +45,15 @@ export function buildStagePageViewModel({
       },
     },
     hero: {
-      kicker: stageIdentity.heroKicker,
+      kicker: "Stage directory",
       pill: `CAIE Chemistry 9701 · ${stageKey}`,
       title: stageIdentity.title,
       copy: stageIdentity.copy,
       stageMark: stageKey,
-      snapshotLabel: `${stageKey} snapshot`,
+      snapshotLabel: "Stage snapshot",
       supportingChips: stageIdentity.supportingChips,
       spotlight: {
-        label: "Overview",
+        label: "Browse flow",
         title: stageIdentity.spotlightTitle,
         copy: stageIdentity.spotlightCopy,
       },
@@ -85,13 +85,13 @@ export function buildStagePageViewModel({
       ],
       notes: [
         {
-          label: "Directory",
+          label: "Page role",
           title: `Browse the ${stageKey} bank by type and topic`,
           copy: stageIdentity.directoryCopy,
         },
         {
-          label: "Separate page",
-          title: `${stageKey} stays distinct from the rest of the bank`,
+          label: "Library path",
+          title: `Keep ${stageKey} focused, then widen out when needed`,
           copy: `Use the ${stageKey} page for stage-specific browsing, then open the main library when you want the wider document set.`,
         },
       ],
@@ -121,14 +121,12 @@ export function buildStagePageViewModel({
 function getStageIdentity(stageKey) {
   if (stageKey === "A2") {
     return {
-      headerEyebrow: "A2 page",
-      heroKicker: "A2 page",
       title: "A2 Chemistry",
       copy: "Browse the A2 bank by type and topic, then open any document directly.",
       supportingChips: ["Physical", "Organic", "Comparison"],
-      spotlightTitle: "Use the overview as a directory",
+      spotlightTitle: "Use overview first, then open a document",
       spotlightCopy:
-        "Filter the A2 bank by type and topic instead of relying on curated sections or preset guides.",
+        "Filter the A2 bank by type and topic first, then open the document you need directly from the current stage view.",
       directoryCopy:
         "The A2 page keeps the filters simple and the document set visible at a glance.",
       overviewTitle: "Browse the A2 bank",
@@ -139,14 +137,12 @@ function getStageIdentity(stageKey) {
   }
 
   return {
-    headerEyebrow: "AS page",
-    heroKicker: "AS page",
     title: "AS Chemistry",
     copy: "Browse the AS bank by type and topic, then open any document directly.",
     supportingChips: ["Organic", "Inorganic", "Practical"],
-    spotlightTitle: "Use the overview as a directory",
+    spotlightTitle: "Use overview first, then open a document",
     spotlightCopy:
-      "Filter the AS bank by type and topic instead of relying on curated sections or preset guides.",
+      "Filter the AS bank by type and topic first, then open the document you need directly from the current stage view.",
     directoryCopy:
       "The AS page stays focused on overview filters and the full stage document list.",
     overviewTitle: "Browse the AS bank",
