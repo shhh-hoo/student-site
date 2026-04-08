@@ -80,9 +80,7 @@ const britishAmericanVariantMap = new Map([
   ["polymerises", "polymerizes"],
   ["polymerising", "polymerizing"],
 ]);
-const bracketCharacters = new Set(["(", ")", "[", "]", "{", "}"]);
-const punctuationSeparatorCharacters = new Set([",", ".", ";", ":", "!", "?"]);
-const quoteCharacters = new Set(["'", '"']);
+
 const hyphenLikePattern = /[‐‑‒–—−]/g;
 const singleQuotePattern = /[‘’‚‛`´]/g;
 const doubleQuotePattern = /[“”„‟]/g;
@@ -92,6 +90,14 @@ const quoteCharacterPattern = /["']/g;
 const stateSymbolPattern = /\(\s*(aq|s|l|g)\s*\)/gi;
 const reversibleArrowPattern = /(?:⇌|↔|⟷|<=>)/g;
 const forwardArrowPattern = /(?:⟶|⟹|→|=>)/g;
+
+const reviewPageSize = 4;
+const questionPageSizeByFile = {
+  "full-reconstruction": 2,
+  "guided-cloze": 3,
+  "multi-round-cloze": 3,
+  default: 5,
+};
 
 const collator = new Intl.Collator(undefined, {
   numeric: true,
@@ -119,13 +125,15 @@ const roundBadge = document.getElementById("round-badge");
 const questionLabel = document.getElementById("question-label");
 const questionTitle = document.getElementById("question-title");
 const questionCopy = document.getElementById("question-copy");
-const promptCard = document.getElementById("prompt-card");
-const revealAnswerButton = document.getElementById("reveal-answer");
-const nextItemButton = document.getElementById("next-item");
-const answerPanel = document.getElementById("answer-panel");
-const answerLabel = document.getElementById("answer-label");
-const answerText = document.getElementById("answer-text");
-const answerNote = document.getElementById("answer-note");
+const pageCounter = document.getElementById("page-counter");
+const completionChip = document.getElementById("completion-chip");
+const reviewChip = document.getElementById("review-chip");
+const prevPageButton = document.getElementById("prev-page");
+const nextBlankButton = document.getElementById("next-blank");
+const nextPageButton = document.getElementById("next-page");
+const reviewToggleButton = document.getElementById("review-toggle");
+const sessionBanner = document.getElementById("session-banner");
+const sessionPage = document.getElementById("session-page");
 
 const appState = {
   catalog: null,
@@ -136,14 +144,26 @@ const appState = {
   file: "",
   definitionScope: "all",
   round: "all",
-  activePool: [],
-  sequence: [],
-  sequenceIndex: 0,
-  currentUnitId: "",
-  revealed: false,
   renderToken: 0,
   fileDataCache: new Map(),
   staticEventsRegistered: false,
+  sessionQuestions: [],
+  sessionQuestionIds: [],
+  sessionQuestionMap: new Map(),
+  sessionBlankIds: [],
+  sessionBlankMap: new Map(),
+  blankStates: new Map(),
+  pages: [],
+  currentPageIndex: 0,
+  reviewQueueBlankIds: [],
+  reviewPages: [],
+  reviewPageIndex: 0,
+  reviewMode: false,
+  currentBlankId: "",
+  pendingFocusBlankId: "",
+  interactionTick: 0,
+  revealedQuestionIds: new Set(),
+  blankInputRefs: new Map(),
 };
 
 function fetchJson(path) {
@@ -167,6 +187,10 @@ function formatLabel(value) {
 
 function formatDefinitionScope(scope) {
   return definitionScopeOptions.find((option) => option.id === scope)?.label || formatLabel(scope);
+}
+
+function pluralise(count, singular, plural = `${singular}s`) {
+  return `${count} ${count === 1 ? singular : plural}`;
 }
 
 function normaliseUnicodeText(value) {
@@ -229,9 +253,7 @@ function buildEquationComparable(value, { ignoreStateSymbols = true } = {}) {
 }
 
 function getMatcherConfig(unit) {
-  const fileId = getFileEntry()?.id;
-
-  if (fileId === "core-equations") {
+  if (unit?.fileId === "core-equations") {
     const sourceText = `${unit?.prompt || ""} ${unit?.question || ""}`;
 
     return {
@@ -310,661 +332,32 @@ function evaluateMatchResult(userValue, canonicalValue, matcherConfig) {
   };
 }
 
-function getTextCharacterRanges(value) {
-  const text = String(value ?? "");
-  let offset = 0;
-
-  return Array.from(text).map((char) => {
-    const start = offset;
-    offset += char.length;
-    return {
-      char,
-      start,
-      end: offset,
-    };
-  });
-}
-
-function normalizeFeedbackCharacter(char) {
-  if ("‐‑‒–—−".includes(char)) {
-    return "-";
-  }
-
-  if ("‘’‚‛`´".includes(char)) {
-    return "'";
-  }
-
-  if ('“”„‟'.includes(char)) {
-    return '"';
-  }
-
-  if (char === "\u00a0") {
-    return " ";
-  }
-
-  return char;
-}
-
-function projectComparableTokenCharacters(tokenNodes, comparableToken) {
-  const comparableCharacters = Array.from(comparableToken);
-
-  if (!tokenNodes.length || !comparableCharacters.length) {
-    return [];
-  }
-
-  if (
-    comparableCharacters.length === tokenNodes.length &&
-    comparableCharacters.every((char, index) => char === tokenNodes[index].char)
-  ) {
-    return tokenNodes.map((node) => ({
-      char: node.char,
-      rawEnd: node.end,
-    }));
-  }
-
-  return comparableCharacters.map((char, index) => {
-    const sourceIndex = Math.min(
-      tokenNodes.length - 1,
-      Math.floor((((index + 1) * tokenNodes.length) - 1) / comparableCharacters.length),
-    );
-
-    return {
-      char,
-      rawEnd: tokenNodes[sourceIndex].end,
-    };
-  });
-}
-
-function buildControlledTextComparableWithMap(value) {
-  const sourceCharacters = getTextCharacterRanges(value).map((segment) => ({
-    ...segment,
-    char: normalizeFeedbackCharacter(segment.char),
-  }));
-  const surfaceCharacters = [];
-  let pendingSpaceStart = -1;
-  let pendingSpaceEnd = -1;
-
-  function queuePendingSpace(start, end) {
-    if (!surfaceCharacters.length) {
-      return;
-    }
-
-    if (pendingSpaceStart < 0) {
-      pendingSpaceStart = start;
-    }
-
-    pendingSpaceEnd = end;
-  }
-
-  function flushPendingSpace() {
-    if (pendingSpaceStart < 0 || !surfaceCharacters.length) {
-      return;
-    }
-
-    const lastCharacter = surfaceCharacters[surfaceCharacters.length - 1];
-
-    if (lastCharacter.char !== " " && !bracketCharacters.has(lastCharacter.char)) {
-      surfaceCharacters.push({
-        char: " ",
-        start: pendingSpaceStart,
-        end: pendingSpaceEnd,
-      });
-    }
-
-    pendingSpaceStart = -1;
-    pendingSpaceEnd = -1;
-  }
-
-  sourceCharacters.forEach((segment) => {
-    const character = segment.char;
-
-    if (quoteCharacters.has(character)) {
-      return;
-    }
-
-    if (/\s/u.test(character) || punctuationSeparatorCharacters.has(character)) {
-      queuePendingSpace(segment.start, segment.end);
-      return;
-    }
-
-    if (bracketCharacters.has(character)) {
-      if (surfaceCharacters[surfaceCharacters.length - 1]?.char === " ") {
-        surfaceCharacters.pop();
-      }
-
-      pendingSpaceStart = -1;
-      pendingSpaceEnd = -1;
-      surfaceCharacters.push({
-        char: character,
-        start: segment.start,
-        end: segment.end,
-      });
-      return;
-    }
-
-    flushPendingSpace();
-    surfaceCharacters.push({
-      char: character.toLowerCase(),
-      start: segment.start,
-      end: segment.end,
-    });
-  });
-
-  if (surfaceCharacters[surfaceCharacters.length - 1]?.char === " ") {
-    surfaceCharacters.pop();
-  }
-
-  const tokenNodes = [];
-  let currentTokenNodes = [];
-
-  surfaceCharacters.forEach((character) => {
-    if (character.char === " ") {
-      if (currentTokenNodes.length) {
-        tokenNodes.push(currentTokenNodes);
-        currentTokenNodes = [];
-      }
-      return;
-    }
-
-    currentTokenNodes.push(character);
-  });
-
-  if (currentTokenNodes.length) {
-    tokenNodes.push(currentTokenNodes);
-  }
-
-  const comparableCharacters = [];
-  let hasVisibleToken = false;
-
-  tokenNodes.forEach((token) => {
-    const comparableToken = normaliseVariantToken(token.map((node) => node.char).join(""));
-
-    if (!comparableToken || articleTokens.has(comparableToken)) {
-      return;
-    }
-
-    if (hasVisibleToken) {
-      comparableCharacters.push({
-        char: " ",
-        rawEnd: token[0].start,
-      });
-    }
-
-    projectComparableTokenCharacters(token, comparableToken).forEach((character) => {
-      comparableCharacters.push(character);
-    });
-    hasVisibleToken = true;
-  });
-
-  return {
-    text: comparableCharacters.map((character) => character.char).join(""),
-    characters: comparableCharacters,
-  };
-}
-
-function buildEquationComparableWithMap(value, matcherConfig) {
-  const sourceCharacters = getTextCharacterRanges(value).map((segment) => ({
-    ...segment,
-    char: normalizeFeedbackCharacter(segment.char),
-  }));
-  const comparableCharacters = [];
-  let index = 0;
-
-  while (index < sourceCharacters.length) {
-    const remainingText = sourceCharacters.slice(index).map((segment) => segment.char).join("");
-
-    if (matcherConfig.ignoreStateSymbols) {
-      const stateSymbolMatch = remainingText.match(/^\(\s*(aq|s|l|g)\s*\)/i);
-
-      if (stateSymbolMatch) {
-        index += Array.from(stateSymbolMatch[0]).length;
-        continue;
-      }
-    }
-
-    const reversibleArrow = ["<=>", "⇌", "↔", "⟷"].find((token) =>
-      remainingText.startsWith(token),
-    );
-
-    if (reversibleArrow) {
-      const matchLength = Array.from(reversibleArrow).length;
-      const rawEnd = sourceCharacters[index + matchLength - 1].end;
-      comparableCharacters.push(
-        { char: "<", rawEnd },
-        { char: "-", rawEnd },
-        { char: ">", rawEnd },
-      );
-      index += matchLength;
-      continue;
-    }
-
-    const forwardArrow = ["=>", "⟶", "⟹", "→"].find((token) => remainingText.startsWith(token));
-
-    if (forwardArrow) {
-      const matchLength = Array.from(forwardArrow).length;
-      const rawEnd = sourceCharacters[index + matchLength - 1].end;
-      comparableCharacters.push({ char: "-", rawEnd }, { char: ">", rawEnd });
-      index += matchLength;
-      continue;
-    }
-
-    const currentCharacter = sourceCharacters[index];
-
-    if (/\s/u.test(currentCharacter.char)) {
-      index += 1;
-      continue;
-    }
-
-    comparableCharacters.push({
-      char: currentCharacter.char.toLowerCase(),
-      rawEnd: currentCharacter.end,
-    });
-    index += 1;
-  }
-
-  return {
-    text: comparableCharacters.map((character) => character.char).join(""),
-    characters: comparableCharacters,
-  };
-}
-
-function buildComparableWithMap(value, matcherConfig) {
-  if (matcherConfig.type === "equation") {
-    return buildEquationComparableWithMap(value, matcherConfig);
-  }
-
-  return buildControlledTextComparableWithMap(value);
-}
-
-function getMatchedPrefixLength(leftText, rightText) {
-  const leftCharacters = Array.from(leftText);
-  const rightCharacters = Array.from(rightText);
-  let matchedLength = 0;
-
-  while (
-    matchedLength < leftCharacters.length &&
-    matchedLength < rightCharacters.length &&
-    leftCharacters[matchedLength] === rightCharacters[matchedLength]
-  ) {
-    matchedLength += 1;
-  }
-
-  return matchedLength;
-}
-
-function appendHighlightSegment(segments, text, tone) {
-  if (!text) {
-    return;
-  }
-
-  const previousSegment = segments[segments.length - 1];
-
-  if (previousSegment?.tone === tone) {
-    previousSegment.text += text;
-    return;
-  }
-
-  segments.push({ text, tone });
-}
-
-function buildUserHighlightModel(userValue, canonicalValue, matcherConfig, checked) {
-  const rawText = String(userValue ?? "");
-  const result = evaluateMatchResult(rawText, canonicalValue, matcherConfig);
-
-  if (!rawText) {
-    return {
-      checked,
-      state: checked ? result.state : "untouched",
-      issueType: "empty",
-      segments: [],
-    };
-  }
-
-  if (!checked) {
-    return {
-      checked,
-      state: "untouched",
-      issueType: "draft",
-      segments: [{ text: rawText, tone: "neutral" }],
-    };
-  }
-
-  if (result.state === "untouched") {
-    return {
-      checked,
-      state: result.state,
-      issueType: "empty",
-      segments: [{ text: rawText, tone: "neutral" }],
-    };
-  }
-
-  if (isSuccessfulMatchState(result.state)) {
-    return {
-      checked,
-      state: result.state,
-      issueType: "success",
-      segments: [{ text: rawText, tone: "matched" }],
-    };
-  }
-
-  const userComparable = buildComparableWithMap(rawText, matcherConfig);
-  const canonicalText = buildComparablePair(rawText, canonicalValue, matcherConfig).canonicalText;
-
-  if (!userComparable.text) {
-    return {
-      checked,
-      state: result.state,
-      issueType: "first_divergence",
-      segments: [{ text: rawText, tone: "mismatch" }],
-    };
-  }
-
-  const matchedPrefixLength = getMatchedPrefixLength(userComparable.text, canonicalText);
-  const matchedRawEnd =
-    matchedPrefixLength > 0 ? userComparable.characters[matchedPrefixLength - 1].rawEnd : 0;
-  const segments = [];
-
-  if (matchedRawEnd > 0) {
-    appendHighlightSegment(segments, rawText.slice(0, matchedRawEnd), "matched");
-  }
-
-  if (matchedPrefixLength >= userComparable.text.length && userComparable.text.length < canonicalText.length) {
-    appendHighlightSegment(segments, rawText.slice(matchedRawEnd), "neutral");
-    return {
-      checked,
-      state: result.state,
-      issueType: "missing_suffix",
-      segments,
-    };
-  }
-
-  if (matchedPrefixLength >= canonicalText.length) {
-    appendHighlightSegment(segments, rawText.slice(matchedRawEnd), "extra");
-    return {
-      checked,
-      state: result.state,
-      issueType: "extra_suffix",
-      segments,
-    };
-  }
-
-  const mismatchRawEnd = userComparable.characters[matchedPrefixLength]?.rawEnd ?? rawText.length;
-  const mismatchStart = Math.min(matchedRawEnd, rawText.length);
-  const mismatchEnd = Math.max(mismatchStart, mismatchRawEnd);
-
-  appendHighlightSegment(segments, rawText.slice(mismatchStart, mismatchEnd), "mismatch");
-  appendHighlightSegment(segments, rawText.slice(mismatchEnd), "neutral");
-
-  if (!segments.length) {
-    appendHighlightSegment(segments, rawText, "mismatch");
-  }
-
-  return {
-    checked,
-    state: result.state,
-    issueType: "first_divergence",
-    segments,
-  };
-}
-
-function renderUserHighlightModel(mirrorContent, model) {
-  mirrorContent.replaceChildren();
-
-  model.segments.forEach((segment) => {
-    const segmentElement = document.createElement("span");
-    segmentElement.className = `memorisation-mirror-field__segment memorisation-mirror-field__segment--${segment.tone}`;
-    segmentElement.append(document.createTextNode(segment.text));
-    mirrorContent.append(segmentElement);
-  });
-}
-
 function isSuccessfulMatchState(state) {
   return exactSuccessStates.has(state);
 }
 
-function getUntouchedMessage(matcherConfig, interactionLabel) {
-  if (matcherConfig.type === "equation") {
-    return `${interactionLabel} Equation matching normalizes spacing, arrow variants, and optional state symbols only.`;
-  }
-
-  return `${interactionLabel} Formatting, spelling, quote, punctuation, and article variants are normalized. Prepositions stay strict.`;
+function setFeedbackMessage(element, message, tone = "neutral") {
+  element.textContent = message;
+  element.dataset.tone = tone;
 }
 
-function getMatchMessage(state, matcherConfig, highlightModel) {
-  if (state === "exact") {
-    return {
-      text: "Exact match.",
-      tone: "correct",
-    };
+function chunkIntoPages(items, pageSize) {
+  if (!items.length || pageSize <= 0) {
+    return [];
   }
 
-  if (state === "normalized_match") {
-    return {
-      text:
-        matcherConfig.type === "equation"
-          ? "Accepted equation formatting variant."
-          : "Accepted formatting / spelling / article variant.",
-      tone: "correct",
-    };
+  const pages = [];
+
+  for (let index = 0; index < items.length; index += pageSize) {
+    pages.push(items.slice(index, index + pageSize));
   }
 
-  if (state === "near_miss_preposition") {
-    return {
-      text: "Almost there. The remaining issue looks like a preposition.",
-      tone: "warning",
-    };
-  }
-
-  if (highlightModel?.issueType === "extra_suffix") {
-    return {
-      text: "Extra text appears at the end.",
-      tone: "incorrect",
-    };
-  }
-
-  if (highlightModel?.issueType === "missing_suffix") {
-    return {
-      text: "Your answer stops too early.",
-      tone: "incorrect",
-    };
-  }
-
-  return {
-    text:
-      matcherConfig.type === "equation" ? "Your equation diverges here." : "Your answer diverges here.",
-    tone: "incorrect",
-  };
+  return pages;
 }
 
-function syncMirroredFieldScroll(field, mirrorElement) {
-  mirrorElement.scrollTop = field.scrollTop;
-  mirrorElement.scrollLeft = field.scrollLeft;
-}
-
-function isFieldCompositionActive(event, isComposing) {
-  return Boolean(isComposing || event?.isComposing || event?.keyCode === 229);
-}
-
-function createMirroredFieldController({
-  field,
-  canonicalValue,
-  matcherConfig,
-  feedbackElement,
-  interactionLabel,
-  inline = false,
-  shouldCheckOnKeydown = null,
-  onCommit = null,
-  onStateChange = null,
-}) {
-  const shell = document.createElement(inline ? "span" : "div");
-  shell.className = [
-    "memorisation-mirror-field",
-    inline ? "memorisation-mirror-field--inline" : "",
-    field.tagName === "TEXTAREA"
-      ? "memorisation-mirror-field--textarea"
-      : "memorisation-mirror-field--single-line",
-  ]
-    .filter(Boolean)
-    .join(" ");
-  shell.dataset.focused = "false";
-
-  const mirror = document.createElement("div");
-  mirror.className = "memorisation-mirror-field__mirror";
-  mirror.setAttribute("aria-hidden", "true");
-
-  const mirrorContent = document.createElement("div");
-  mirrorContent.className = "memorisation-mirror-field__content";
-  mirror.append(mirrorContent);
-
-  field.classList.add("memorisation-mirror-field__control");
-  shell.append(mirror, field);
-
-  let checked = false;
-  let isComposing = false;
-  let pendingCheckAfterComposition = false;
-  let readyForStateCallbacks = false;
-  let syncFrameId = 0;
-
-  function queueMirrorSync() {
-    if (syncFrameId) {
-      cancelAnimationFrame(syncFrameId);
-    }
-
-    syncFrameId = requestAnimationFrame(() => {
-      syncFrameId = 0;
-      syncMirroredFieldScroll(field, mirror);
-    });
-  }
-
-  function updateSelectionState() {
-    shell.dataset.empty = field.value ? "false" : "true";
-  }
-
-  function updatePresentation() {
-    const result = checked
-      ? evaluateMatchResult(field.value, canonicalValue, matcherConfig)
-      : { state: "untouched" };
-    const highlightModel = buildUserHighlightModel(
-      field.value,
-      canonicalValue,
-      matcherConfig,
-      checked,
-    );
-
-    applyFieldState(field, checked ? result.state : "untouched");
-    renderUserHighlightModel(mirrorContent, highlightModel);
-    updateSelectionState();
-    queueMirrorSync();
-
-    if (!checked || result.state === "untouched") {
-      setFeedbackMessage(feedbackElement, getUntouchedMessage(matcherConfig, interactionLabel));
-    } else {
-      const message = getMatchMessage(result.state, matcherConfig, highlightModel);
-      setFeedbackMessage(feedbackElement, message.text, message.tone);
-    }
-
-    if (readyForStateCallbacks && typeof onStateChange === "function") {
-      onStateChange({
-        checked,
-        field,
-        highlightModel,
-        result: checked ? result : { state: "untouched" },
-      });
-    }
-  }
-
-  function checkField() {
-    pendingCheckAfterComposition = false;
-    checked = true;
-    updatePresentation();
-  }
-
-  function handleSelectionChange() {
-    updateSelectionState();
-    queueMirrorSync();
-  }
-
-  field.addEventListener("input", () => {
-    updatePresentation();
-  });
-
-  field.addEventListener("scroll", () => {
-    queueMirrorSync();
-  });
-
-  field.addEventListener("focus", () => {
-    shell.dataset.focused = "true";
-    handleSelectionChange();
-  });
-
-  field.addEventListener("keyup", () => {
-    handleSelectionChange();
-  });
-
-  field.addEventListener("mouseup", () => {
-    handleSelectionChange();
-  });
-
-  field.addEventListener("select", () => {
-    handleSelectionChange();
-  });
-
-  field.addEventListener("compositionstart", () => {
-    isComposing = true;
-  });
-
-  field.addEventListener("compositionend", () => {
-    isComposing = false;
-    updatePresentation();
-
-    if (pendingCheckAfterComposition) {
-      checkField();
-    }
-  });
-
-  field.addEventListener("blur", (event) => {
-    shell.dataset.focused = "false";
-    updateSelectionState();
-
-    if (isFieldCompositionActive(event, isComposing)) {
-      pendingCheckAfterComposition = true;
-      return;
-    }
-
-    checkField();
-  });
-
-  if (typeof shouldCheckOnKeydown === "function") {
-    field.addEventListener("keydown", (event) => {
-      if (isFieldCompositionActive(event, isComposing)) {
-        return;
-      }
-
-      if (!shouldCheckOnKeydown(event)) {
-        return;
-      }
-
-      event.preventDefault();
-      checkField();
-
-      if (typeof onCommit === "function") {
-        onCommit(event);
-      }
-    });
-  }
-
-  updatePresentation();
-  readyForStateCallbacks = true;
-
-  return {
-    shell,
-    field,
-    check: checkField,
-    update: updatePresentation,
-    isChecked() {
-      return checked;
-    },
-  };
+function nextInteractionTick() {
+  appState.interactionTick += 1;
+  return appState.interactionTick;
 }
 
 function normalizeTopicKeyWithMap(topicValue, topicNormalizationMap = appState.topicNormalizationMap) {
@@ -987,25 +380,6 @@ function normalizeTopicKeyWithMap(topicValue, topicNormalizationMap = appState.t
 
 function normalizeTopicKey(topicValue) {
   return normalizeTopicKeyWithMap(topicValue, appState.topicNormalizationMap);
-}
-
-function pluralise(count, singular, plural = `${singular}s`) {
-  return `${count} ${count === 1 ? singular : plural}`;
-}
-
-function setFeedbackMessage(element, message, tone = "neutral") {
-  element.textContent = message;
-  element.dataset.tone = tone;
-}
-
-function applyFieldState(field, state) {
-  field.dataset.state = state;
-
-  const shell = field.closest(".memorisation-mirror-field");
-
-  if (shell) {
-    shell.dataset.state = state;
-  }
 }
 
 function getStageEntries() {
@@ -1036,12 +410,80 @@ function getTopicEntry(
   return getTopicEntries(stageId, levelId).find((topic) => topic.id === topicId) || null;
 }
 
+function getSelectedTopicEntries(
+  stageId = appState.stage,
+  levelId = appState.level,
+  topicId = appState.topic,
+) {
+  const topicEntries = getTopicEntries(stageId, levelId);
+
+  if (!topicId) {
+    return topicEntries;
+  }
+
+  return topicEntries.filter((topic) => topic.id === topicId);
+}
+
+function aggregateDefinitionSourceCounts(currentCounts, nextCounts) {
+  if (!nextCounts) {
+    return currentCounts;
+  }
+
+  const aggregated = currentCounts || {
+    paper_only: 0,
+    syllabus_only: 0,
+    paper_and_syllabus: 0,
+  };
+
+  Object.entries(nextCounts).forEach(([key, value]) => {
+    aggregated[key] = Number(aggregated[key] || 0) + Number(value || 0);
+  });
+
+  return aggregated;
+}
+
 function getFileEntries(
   stageId = appState.stage,
   levelId = appState.level,
   topicId = appState.topic,
 ) {
-  return getTopicEntry(stageId, levelId, topicId)?.files || [];
+  const fileMap = new Map();
+
+  getSelectedTopicEntries(stageId, levelId, topicId).forEach((topicEntry) => {
+    (topicEntry.files || []).forEach((fileEntry) => {
+      const existing = fileMap.get(fileEntry.id) || {
+        id: fileEntry.id,
+        label: fileEntry.label,
+        count: 0,
+        runtime_unit_count: 0,
+        definition_source_counts: null,
+        rounds: new Set(),
+        sources: [],
+      };
+
+      existing.count += Number(fileEntry.count || 0);
+      existing.runtime_unit_count += Number(fileEntry.runtime_unit_count || 0);
+      existing.definition_source_counts = aggregateDefinitionSourceCounts(
+        existing.definition_source_counts,
+        fileEntry.definition_source_counts,
+      );
+      (fileEntry.rounds || []).forEach((roundValue) => {
+        existing.rounds.add(Number(roundValue));
+      });
+      existing.sources.push({
+        topicId: topicEntry.id,
+        topicLabel: topicEntry.label,
+        path: fileEntry.path,
+      });
+
+      fileMap.set(fileEntry.id, existing);
+    });
+  });
+
+  return Array.from(fileMap.values()).map((fileEntry) => ({
+    ...fileEntry,
+    rounds: Array.from(fileEntry.rounds).sort((left, right) => left - right),
+  }));
 }
 
 function getFileEntry(
@@ -1066,10 +508,6 @@ function getDefaultLevelId(stageId) {
     getLevelEntries(stageId)[0]?.id ||
     ""
   );
-}
-
-function getDefaultTopicId(stageId, levelId) {
-  return getTopicEntries(stageId, levelId)[0]?.id || "";
 }
 
 function getDefaultFileId(stageId, levelId, topicId) {
@@ -1097,7 +535,7 @@ function getInitialSelectionFromUrl() {
       .trim()
       .toUpperCase(),
     level: String(searchParams.get("level") || "").trim(),
-    topic: String(searchParams.get("topic") || "").trim(),
+    topic: normalizeTopicKey(String(searchParams.get("topic") || "").trim()),
     file: String(searchParams.get("file") || "").trim(),
     definitionScope: String(searchParams.get("definition_scope") || "all").trim(),
     round: requestedRound && requestedRound !== "all" ? String(Number(requestedRound)) : "all",
@@ -1116,7 +554,7 @@ function synchroniseSelection(requestedSelection = getSelectionSnapshot()) {
   const topicEntries = getTopicEntries(stageId, levelId);
   const topicId = topicEntries.some((topic) => topic.id === requestedSelection.topic)
     ? requestedSelection.topic
-    : getDefaultTopicId(stageId, levelId);
+    : "";
   const fileEntries = getFileEntries(stageId, levelId, topicId);
   const fileId = fileEntries.some((file) => file.id === requestedSelection.file)
     ? requestedSelection.file
@@ -1140,14 +578,7 @@ function synchroniseSelection(requestedSelection = getSelectionSnapshot()) {
   appState.definitionScope = definitionScope;
   appState.round = round;
 
-  return getFileEntry(stageId, levelId, topicId, fileId);
-}
-
-function applySelection(nextSelection, { resetSequence = true } = {}) {
-  synchroniseSelection(nextSelection);
-  renderControls();
-  updateUrlFromState();
-  refreshPool({ resetSequence });
+  return fileEntry;
 }
 
 function updateUrlFromState() {
@@ -1155,8 +586,13 @@ function updateUrlFromState() {
 
   searchParams.set("stage", appState.stage);
   searchParams.set("level", appState.level);
-  searchParams.set("topic", appState.topic);
   searchParams.set("file", appState.file);
+
+  if (appState.topic) {
+    searchParams.set("topic", appState.topic);
+  } else {
+    searchParams.delete("topic");
+  }
 
   if (appState.definitionScope !== "all" && appState.file === "core-definitions") {
     searchParams.set("definition_scope", appState.definitionScope);
@@ -1176,33 +612,6 @@ function updateUrlFromState() {
   window.history.replaceState(null, "", nextUrl);
 }
 
-function createShuffledSequence(unitIds, avoidUnitId = "") {
-  const shuffled = unitIds.slice();
-
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
-  }
-
-  if (avoidUnitId && shuffled.length > 1 && shuffled[0] === avoidUnitId) {
-    const replacementIndex = shuffled.findIndex((unitId) => unitId !== avoidUnitId);
-
-    if (replacementIndex > 0) {
-      [shuffled[0], shuffled[replacementIndex]] = [shuffled[replacementIndex], shuffled[0]];
-    }
-  }
-
-  return shuffled;
-}
-
-function getCurrentUnit() {
-  return (
-    appState.activePool.find((unit) => unit.unitId === appState.currentUnitId) ||
-    appState.activePool[0] ||
-    null
-  );
-}
-
 function getFileCountLabel(fileEntry) {
   if (!fileEntry) {
     return "0 items";
@@ -1216,6 +625,13 @@ function getFileCountLabel(fileEntry) {
   }
 
   return pluralise(fileEntry.count, "item");
+}
+
+function applySelection(nextSelection) {
+  synchroniseSelection(nextSelection);
+  renderControls();
+  updateUrlFromState();
+  refreshSession({ allowCatalogResync: true });
 }
 
 function renderStageSwitcher() {
@@ -1261,6 +677,7 @@ function renderStageSwitcher() {
 
 function renderLevelSwitcher() {
   levelSwitcher.innerHTML = getLevelEntries()
+    .slice()
     .sort((left, right) => levelOrder.indexOf(left.id) - levelOrder.indexOf(right.id))
     .map(
       (levelEntry) => `
@@ -1308,11 +725,14 @@ function renderTopicFilter() {
 
   topicFilter.disabled = topics.length === 0;
   topicFilter.innerHTML = topics.length
-    ? topics.map((topic) => `<option value="${topic.id}">${topic.label}</option>`).join("")
+    ? [
+        '<option value="">All topics</option>',
+        ...topics.map((topic) => `<option value="${topic.id}">${topic.label}</option>`),
+      ].join("")
     : '<option value="">No topics available</option>';
 
-  if (!topics.some((topic) => topic.id === appState.topic)) {
-    appState.topic = topics[0]?.id || "";
+  if (appState.topic && !topics.some((topic) => topic.id === appState.topic)) {
+    appState.topic = "";
   }
 
   topicFilter.value = appState.topic;
@@ -1399,7 +819,7 @@ function renderDefinitionFilter() {
       appState.definitionScope = nextScope;
       renderDefinitionFilter();
       updateUrlFromState();
-      refreshPool({ resetSequence: true });
+      refreshSession({ allowCatalogResync: true });
     });
   });
 }
@@ -1449,7 +869,7 @@ function renderRoundSwitcher() {
       appState.round = nextRound;
       renderRoundSwitcher();
       updateUrlFromState();
-      refreshPool({ resetSequence: true });
+      refreshSession({ allowCatalogResync: true });
     });
   });
 }
@@ -1463,27 +883,41 @@ function renderControls() {
   renderRoundSwitcher();
 }
 
-async function loadCurrentFileItems() {
-  const fileEntry = getFileEntry();
+async function loadFileItems(path) {
+  if (appState.fileDataCache.has(path)) {
+    return appState.fileDataCache.get(path);
+  }
 
+  const items = await fetchJson(`./data/${path}`);
+  const normalizedItems = Array.isArray(items)
+    ? items.map((item) => ({
+        ...item,
+        topic: normalizeTopicKey(item.topic),
+      }))
+    : [];
+
+  appState.fileDataCache.set(path, normalizedItems);
+  return normalizedItems;
+}
+
+async function loadSessionSourceItems(fileEntry) {
   if (!fileEntry) {
     return [];
   }
 
-  if (appState.fileDataCache.has(fileEntry.path)) {
-    return appState.fileDataCache.get(fileEntry.path);
-  }
+  const settledSources = await Promise.all(
+    fileEntry.sources.map(async (source) => {
+      const items = await loadFileItems(source.path);
 
-  const items = await fetchJson(`./data/${fileEntry.path}`);
-  const normalizedItems = Array.isArray(items)
-    ? items.map((item) => ({
+      return items.map((item) => ({
         ...item,
-        topic: normalizeTopicKey(item.topic || appState.topic),
-      }))
-    : [];
+        topic: normalizeTopicKey(item.topic || source.topicId),
+        topicLabel: source.topicLabel,
+      }));
+    }),
+  );
 
-  appState.fileDataCache.set(fileEntry.path, normalizedItems);
-  return normalizedItems;
+  return settledSources.flat();
 }
 
 async function loadCatalogResources({ preserveSelection = true } = {}) {
@@ -1509,70 +943,673 @@ async function loadCatalogResources({ preserveSelection = true } = {}) {
   appState.catalog = catalog;
   appState.topicNormalizationMap = topicNormalizationMap;
   appState.fileDataCache.clear();
+
   synchroniseSelection({
     ...fallbackSelection,
     topic: normalizeTopicKeyWithMap(fallbackSelection.topic, topicNormalizationMap),
   });
 }
 
-function buildActivePool(items, fileEntry) {
+function getPageSizeForCurrentFile(fileId = appState.file) {
+  return questionPageSizeByFile[fileId] || questionPageSizeByFile.default;
+}
+
+function fillPromptBlanks(prompt, values) {
+  const promptText = String(prompt || "");
+  const parts = promptText.split(/_{4,}/g);
+  const blanks = promptText.match(/_{4,}/g) || [];
+
+  if (!blanks.length || values.length !== blanks.length) {
+    return "";
+  }
+
+  return parts.reduce((built, part, index) => {
+    if (index === 0) {
+      return `${part}${values[0] || ""}`;
+    }
+
+    if (index === parts.length - 1) {
+      return `${built}${part}`;
+    }
+
+    return `${built}${part}${values[index] || ""}`;
+  }, "");
+}
+
+function createAnswerModel({ answer, fullAnswer, fileId, prompt, question }) {
+  const canonicalValue = String(answer ?? fullAnswer ?? "").trim();
+  const resolvedFullAnswer = String(fullAnswer ?? canonicalValue).trim() || canonicalValue;
+  const resolvedMinimalPass = canonicalValue || resolvedFullAnswer;
+
+  return {
+    full_answer: resolvedFullAnswer,
+    minimal_pass: resolvedMinimalPass,
+    concept_groups: [
+      {
+        id: "primary",
+        required: true,
+        variants: [resolvedMinimalPass],
+        hint: "Match the stored chemistry wording.",
+      },
+    ],
+    contradictions: [],
+    matcherConfig: getMatcherConfig({
+      fileId,
+      prompt,
+      question,
+    }),
+  };
+}
+
+function createQuestionBase(item, fileEntry, questionId, kind, questionText, promptText) {
+  return {
+    id: questionId,
+    sourceId: item.id,
+    stage: item.stage || appState.stage,
+    level: item.level || appState.level,
+    topic: item.topic,
+    topicLabel: item.topicLabel || getTopicEntry(appState.stage, appState.level, item.topic)?.label,
+    subtopic: item.subtopic || "",
+    fileId: fileEntry.id,
+    fileLabel: fileEntry.label,
+    kind,
+    type: item.type,
+    question: questionText,
+    prompt: promptText,
+    sourceScope: item.source_scope || "",
+    round: null,
+    roundTotal: null,
+    fullAnswer: "",
+    minimalPass: "",
+    conceptGroups: [],
+    contradictions: [],
+    blanks: [],
+  };
+}
+
+function createBlankModel(question, blankIndex, answerModel, options = {}) {
+  return {
+    id: `${question.id}::${blankIndex}`,
+    questionId: question.id,
+    blankIndex,
+    label: options.label || `Blank ${blankIndex + 1}`,
+    multiline: Boolean(options.multiline),
+    placeholder: options.placeholder || (options.multiline ? "Type your answer." : "Type here."),
+    answerModel,
+  };
+}
+
+function buildSingleQuestion(item, fileEntry) {
+  const questionId = `${fileEntry.id}::${item.topic}::${item.id}`;
+  const promptText = item.prompt || item.question || "";
+  const question = createQuestionBase(item, fileEntry, questionId, "single", promptText, promptText);
+  const answerModel = createAnswerModel({
+    answer: item.answer,
+    fullAnswer: item.full_answer || item.answer,
+    fileId: fileEntry.id,
+    prompt: item.prompt,
+    question: item.question,
+  });
+  const blank = createBlankModel(question, 0, answerModel, {
+    label: "Your answer",
+    placeholder: "Type your answer.",
+  });
+
+  question.fullAnswer = answerModel.full_answer;
+  question.minimalPass = answerModel.minimal_pass;
+  question.conceptGroups = answerModel.concept_groups;
+  question.contradictions = answerModel.contradictions;
+  question.blanks = [blank];
+
+  return question;
+}
+
+function buildGuidedClozeQuestion(item, fileEntry) {
+  const questionId = `${fileEntry.id}::${item.topic}::${item.id}`;
+  const questionText = item.question || item.prompt || "";
+  const question = createQuestionBase(item, fileEntry, questionId, "cloze", questionText, item.prompt);
+  const answers = Array.isArray(item.answers) ? item.answers : [];
+  const blankPattern = /_{4,}/g;
+  const blankCount = (String(item.prompt || "").match(blankPattern) || []).length;
+
+  if (answers.length !== blankCount) {
+    return null;
+  }
+
+  const answerModels = answers.map((answer) =>
+    createAnswerModel({
+      answer,
+      fullAnswer: answer,
+      fileId: fileEntry.id,
+      prompt: item.prompt,
+      question: item.question,
+    }),
+  );
+
+  question.fullAnswer = item.full_answer || fillPromptBlanks(item.prompt, answers);
+  question.minimalPass = fillPromptBlanks(
+    item.prompt,
+    answerModels.map((answerModel) => answerModel.minimal_pass),
+  );
+  question.conceptGroups = answerModels.flatMap((answerModel) => answerModel.concept_groups);
+  question.contradictions = answerModels.flatMap((answerModel) => answerModel.contradictions);
+  question.promptParts = String(item.prompt || "").split(blankPattern);
+  question.blanks = answerModels.map((answerModel, blankIndex) =>
+    createBlankModel(question, blankIndex, answerModel, {
+      label: `Blank ${blankIndex + 1}`,
+      placeholder: `Blank ${blankIndex + 1}`,
+    }),
+  );
+
+  return question;
+}
+
+function buildMultiRoundQuestions(item, fileEntry) {
+  const rounds = Array.isArray(item.rounds) ? item.rounds : [];
+
+  return rounds
+    .filter(
+      (round, roundIndex) =>
+        appState.round === "all" || String(round.round ?? roundIndex + 1) === appState.round,
+    )
+    .map((round, roundIndex) => {
+      const roundNumber = Number(round.round ?? roundIndex + 1);
+      const questionId = `${fileEntry.id}::${item.topic}::${item.id}::round-${roundNumber}`;
+      const questionText = item.question || round.prompt || "";
+      const question = createQuestionBase(
+        item,
+        fileEntry,
+        questionId,
+        "cloze",
+        questionText,
+        round.prompt,
+      );
+      const answers = Array.isArray(round.answers) ? round.answers : [];
+      const blankPattern = /_{4,}/g;
+      const blankCount = (String(round.prompt || "").match(blankPattern) || []).length;
+
+      if (answers.length !== blankCount) {
+        return null;
+      }
+
+      const answerModels = answers.map((answer) =>
+        createAnswerModel({
+          answer,
+          fullAnswer: answer,
+          fileId: fileEntry.id,
+          prompt: round.prompt,
+          question: item.question,
+        }),
+      );
+
+      question.round = roundNumber;
+      question.roundTotal = rounds.length;
+      question.fullAnswer = item.full_answer || fillPromptBlanks(round.prompt, answers);
+      question.minimalPass = fillPromptBlanks(
+        round.prompt,
+        answerModels.map((answerModel) => answerModel.minimal_pass),
+      );
+      question.conceptGroups = answerModels.flatMap((answerModel) => answerModel.concept_groups);
+      question.contradictions = answerModels.flatMap((answerModel) => answerModel.contradictions);
+      question.promptParts = String(round.prompt || "").split(blankPattern);
+      question.blanks = answerModels.map((answerModel, blankIndex) =>
+        createBlankModel(question, blankIndex, answerModel, {
+          label: `Blank ${blankIndex + 1}`,
+          placeholder: `Blank ${blankIndex + 1}`,
+        }),
+      );
+
+      return question;
+    })
+    .filter(Boolean);
+}
+
+function buildFullReconstructionQuestion(item, fileEntry) {
+  const questionId = `${fileEntry.id}::${item.topic}::${item.id}`;
+  const questionText = item.question || item.prompt || "";
+  const question = createQuestionBase(
+    item,
+    fileEntry,
+    questionId,
+    "reconstruction",
+    questionText,
+    questionText,
+  );
+  const answerModel = createAnswerModel({
+    answer: item.answer,
+    fullAnswer: item.answer,
+    fileId: fileEntry.id,
+    prompt: item.prompt,
+    question: item.question,
+  });
+  const blank = createBlankModel(question, 0, answerModel, {
+    label: "Your full answer",
+    placeholder: "Type your full answer.",
+    multiline: true,
+  });
+
+  question.fullAnswer = answerModel.full_answer;
+  question.minimalPass = answerModel.minimal_pass;
+  question.conceptGroups = answerModel.concept_groups;
+  question.contradictions = answerModel.contradictions;
+  question.blanks = [blank];
+
+  return question;
+}
+
+function buildSessionQuestions(items, fileEntry) {
   const filteredItems =
     fileEntry.id === "core-definitions" && appState.definitionScope !== "all"
       ? items.filter((item) => item.source_scope === appState.definitionScope)
       : items;
 
   if (fileEntry.id === "guided-cloze") {
-    return filteredItems.map((item) => ({
-      ...item,
-      kind: "guided-cloze",
-      unitId: item.id,
-    }));
+    return filteredItems.map((item) => buildGuidedClozeQuestion(item, fileEntry)).filter(Boolean);
   }
 
   if (fileEntry.id === "multi-round-cloze") {
-    return filteredItems
-      .flatMap((item) => {
-        const rounds = Array.isArray(item.rounds) ? item.rounds : [];
-
-        return rounds.map((round, index) => ({
-          ...item,
-          kind: "multi-round-cloze",
-          unitId: `${item.id}::round-${round.round ?? index + 1}`,
-          prompt: round.prompt,
-          answers: Array.isArray(round.answers) ? round.answers.slice() : [],
-          round: Number(round.round ?? index + 1),
-          roundTotal: rounds.length,
-        }));
-      })
-      .filter((unit) => appState.round === "all" || String(unit.round) === appState.round);
+    return filteredItems.flatMap((item) => buildMultiRoundQuestions(item, fileEntry));
   }
 
   if (fileEntry.id === "full-reconstruction") {
-    return filteredItems.map((item) => ({
-      ...item,
-      kind: "full-reconstruction",
-      unitId: item.id,
-    }));
+    return filteredItems.map((item) => buildFullReconstructionQuestion(item, fileEntry));
   }
 
-  return filteredItems.map((item) => ({
-    ...item,
-    kind: "single",
-    unitId: item.id,
-  }));
+  return filteredItems.map((item) => buildSingleQuestion(item, fileEntry));
 }
 
-function setLoadingState(message = "Loading current training file...") {
-  questionLabel.textContent = "Loading";
+function createBlankState(blank) {
+  return {
+    id: blank.id,
+    questionId: blank.questionId,
+    status: "idle",
+    value: "",
+    wrongCount: 0,
+    revealed: false,
+    coveredGroups: [],
+    missingGroups: blank.answerModel.concept_groups
+      .filter((group) => group.required)
+      .map((group) => group.id),
+    contradictionHits: [],
+    reviewPriority: 0,
+    lastReviewSignalAt: 0,
+    matchState: "untouched",
+  };
+}
+
+function buildReviewPriority(blankState) {
+  return (
+    (blankState.revealed ? 1_000_000 : 0) +
+    blankState.wrongCount * 10_000 +
+    (blankState.status === "wrong" ? 1_000 : 0) +
+    blankState.lastReviewSignalAt
+  );
+}
+
+function rebuildSessionRuntime(sessionQuestions) {
+  appState.sessionQuestions = sessionQuestions;
+  appState.sessionQuestionIds = sessionQuestions.map((question) => question.id);
+  appState.sessionQuestionMap = new Map(sessionQuestions.map((question) => [question.id, question]));
+  appState.sessionBlankIds = sessionQuestions.flatMap((question) =>
+    question.blanks.map((blank) => blank.id),
+  );
+  appState.sessionBlankMap = new Map(
+    sessionQuestions.flatMap((question) => question.blanks.map((blank) => [blank.id, blank])),
+  );
+  appState.blankStates = new Map(
+    appState.sessionBlankIds.map((blankId) => [
+      blankId,
+      createBlankState(appState.sessionBlankMap.get(blankId)),
+    ]),
+  );
+  appState.pages = chunkIntoPages(appState.sessionQuestionIds, getPageSizeForCurrentFile());
+  appState.currentPageIndex = 0;
+  appState.reviewQueueBlankIds = [];
+  appState.reviewPages = [];
+  appState.reviewPageIndex = 0;
+  appState.reviewMode = false;
+  appState.currentBlankId = appState.sessionBlankIds[0] || "";
+  appState.pendingFocusBlankId = appState.currentBlankId;
+  appState.revealedQuestionIds = new Set();
+  appState.blankInputRefs = new Map();
+  updateReviewQueue();
+}
+
+function getQuestion(questionId) {
+  return appState.sessionQuestionMap.get(questionId) || null;
+}
+
+function getBlank(blankId) {
+  return appState.sessionBlankMap.get(blankId) || null;
+}
+
+function getBlankState(blankId) {
+  return appState.blankStates.get(blankId) || null;
+}
+
+function isBlankComplete(blankId) {
+  const blankState = getBlankState(blankId);
+  return Boolean(blankState && (blankState.status === "correct" || blankState.status === "revealed"));
+}
+
+function getCompletedBlankCount() {
+  return appState.sessionBlankIds.filter((blankId) => isBlankComplete(blankId)).length;
+}
+
+function getPageSet() {
+  return appState.reviewMode ? appState.reviewPages : appState.pages;
+}
+
+function getCurrentPageIndex() {
+  return appState.reviewMode ? appState.reviewPageIndex : appState.currentPageIndex;
+}
+
+function getCurrentPageEntries() {
+  const pages = getPageSet();
+  return pages[getCurrentPageIndex()] || [];
+}
+
+function updateReviewQueue() {
+  appState.reviewQueueBlankIds = appState.sessionBlankIds
+    .filter((blankId) => {
+      const blankState = getBlankState(blankId);
+
+      return Boolean(
+        blankState &&
+          (blankState.status === "wrong" || blankState.revealed || blankState.wrongCount > 0),
+      );
+    })
+    .sort((leftBlankId, rightBlankId) => {
+      const leftPriority = buildReviewPriority(getBlankState(leftBlankId));
+      const rightPriority = buildReviewPriority(getBlankState(rightBlankId));
+      return rightPriority - leftPriority;
+    });
+
+  appState.reviewPages = chunkIntoPages(appState.reviewQueueBlankIds, reviewPageSize);
+
+  if (appState.reviewPageIndex >= appState.reviewPages.length) {
+    appState.reviewPageIndex = Math.max(0, appState.reviewPages.length - 1);
+  }
+}
+
+function getCurrentModeBlankOrder() {
+  return appState.reviewMode ? appState.reviewQueueBlankIds : appState.sessionBlankIds;
+}
+
+function getCurrentModePageIndexForBlank(blankId) {
+  const pages = getPageSet();
+
+  if (appState.reviewMode) {
+    return pages.findIndex((page) => page.includes(blankId));
+  }
+
+  const questionId = getBlank(blankId)?.questionId;
+  return pages.findIndex((page) => page.includes(questionId));
+}
+
+function findNextIncompleteBlankAfter(blankId = "") {
+  const blankOrder = getCurrentModeBlankOrder();
+
+  if (!blankOrder.length) {
+    return "";
+  }
+
+  const startIndex = Math.max(blankOrder.indexOf(blankId), -1) + 1;
+
+  for (let index = startIndex; index < blankOrder.length; index += 1) {
+    if (!isBlankComplete(blankOrder[index])) {
+      return blankOrder[index];
+    }
+  }
+
+  for (let index = 0; index < startIndex; index += 1) {
+    if (!isBlankComplete(blankOrder[index])) {
+      return blankOrder[index];
+    }
+  }
+
+  return "";
+}
+
+function queueFocusBlank(blankId) {
+  if (!blankId) {
+    return;
+  }
+
+  appState.pendingFocusBlankId = blankId;
+  requestAnimationFrame(() => {
+    if (appState.pendingFocusBlankId !== blankId) {
+      return;
+    }
+
+    const field = appState.blankInputRefs.get(blankId);
+
+    if (!field) {
+      return;
+    }
+
+    field.focus();
+    if (typeof field.select === "function" && field.tagName !== "TEXTAREA") {
+      field.select();
+    }
+
+    appState.currentBlankId = blankId;
+    appState.pendingFocusBlankId = "";
+  });
+}
+
+function focusBlank(blankId) {
+  if (!blankId) {
+    return;
+  }
+
+  const targetPageIndex = getCurrentModePageIndexForBlank(blankId);
+
+  if (targetPageIndex >= 0) {
+    if (appState.reviewMode) {
+      appState.reviewPageIndex = targetPageIndex;
+    } else {
+      appState.currentPageIndex = targetPageIndex;
+    }
+  }
+
+  renderSession({ focusBlankId: blankId });
+}
+
+function moveToNextBlank(blankId = appState.currentBlankId) {
+  const nextBlankId = findNextIncompleteBlankAfter(blankId);
+
+  if (!nextBlankId) {
+    renderSession();
+    return;
+  }
+
+  focusBlank(nextBlankId);
+}
+
+function setBlankValue(blankId, value) {
+  const blankState = getBlankState(blankId);
+
+  if (!blankState) {
+    return;
+  }
+
+  blankState.value = value;
+}
+
+function runLegacyBlankMatcher(blank, userValue) {
+  const canonicalValue = blank.answerModel.minimal_pass || blank.answerModel.full_answer;
+  const matchResult = evaluateMatchResult(
+    userValue,
+    canonicalValue,
+    blank.answerModel.matcherConfig,
+  );
+  const success = isSuccessfulMatchState(matchResult.state);
+  const requiredGroupIds = blank.answerModel.concept_groups
+    .filter((group) => group.required)
+    .map((group) => group.id);
+
+  return {
+    status: success ? "correct" : "wrong",
+    coveredGroups: success ? requiredGroupIds : [],
+    missingGroups: success ? [] : requiredGroupIds,
+    contradictionHits: [],
+    minimumPassSatisfied: success,
+    matchState: matchResult.state,
+  };
+}
+
+function checkBlank(blankId) {
+  const blank = getBlank(blankId);
+  const blankState = getBlankState(blankId);
+
+  if (!blank || !blankState) {
+    return {
+      status: "wrong",
+      coveredGroups: [],
+      missingGroups: [],
+      contradictionHits: [],
+      minimumPassSatisfied: false,
+      matchState: "incorrect",
+    };
+  }
+
+  const result = runLegacyBlankMatcher(blank, blankState.value);
+
+  blankState.coveredGroups = result.coveredGroups;
+  blankState.missingGroups = result.missingGroups;
+  blankState.contradictionHits = result.contradictionHits;
+  blankState.matchState = result.matchState;
+
+  if (result.status === "correct") {
+    blankState.status = "correct";
+  } else {
+    blankState.status = "wrong";
+    blankState.wrongCount += 1;
+    blankState.lastReviewSignalAt = nextInteractionTick();
+  }
+
+  blankState.reviewPriority = buildReviewPriority(blankState);
+  updateReviewQueue();
+  return result;
+}
+
+function revealQuestion(questionId) {
+  const question = getQuestion(questionId);
+
+  if (!question) {
+    return;
+  }
+
+  appState.revealedQuestionIds.add(questionId);
+
+  question.blanks.forEach((blank) => {
+    const blankState = getBlankState(blank.id);
+
+    if (!blankState || blankState.status === "correct") {
+      return;
+    }
+
+    blankState.status = "revealed";
+    blankState.revealed = true;
+    blankState.coveredGroups = [];
+    blankState.missingGroups = blank.answerModel.concept_groups
+      .filter((group) => group.required)
+      .map((group) => group.id);
+    blankState.contradictionHits = [];
+    blankState.lastReviewSignalAt = nextInteractionTick();
+    blankState.reviewPriority = buildReviewPriority(blankState);
+  });
+
+  updateReviewQueue();
+  renderSession({ focusBlankId: appState.currentBlankId });
+}
+
+function onBlankEnter(blankId) {
+  const blankState = getBlankState(blankId);
+
+  if (!blankState) {
+    return;
+  }
+
+  if (blankState.status === "correct") {
+    moveToNextBlank(blankId);
+    return;
+  }
+
+  const result = checkBlank(blankId);
+  renderSession({ focusBlankId: blankId });
+
+  if (result.status === "correct") {
+    return;
+  }
+}
+
+function setReviewMode(reviewMode) {
+  if (reviewMode && appState.reviewQueueBlankIds.length === 0) {
+    return;
+  }
+
+  appState.reviewMode = reviewMode;
+  appState.pendingFocusBlankId = reviewMode
+    ? appState.reviewQueueBlankIds[0] || ""
+    : findNextIncompleteBlankAfter("") || appState.currentBlankId;
+  renderSession({ focusBlankId: appState.pendingFocusBlankId });
+}
+
+function goToPage(nextPageIndex) {
+  const pages = getPageSet();
+  const boundedIndex = Math.min(Math.max(nextPageIndex, 0), Math.max(0, pages.length - 1));
+
+  if (appState.reviewMode) {
+    appState.reviewPageIndex = boundedIndex;
+  } else {
+    appState.currentPageIndex = boundedIndex;
+  }
+
+  const pageEntries = pages[boundedIndex] || [];
+  const firstTargetBlankId = appState.reviewMode
+    ? pageEntries[0] || ""
+    : getQuestion(pageEntries[0])?.blanks[0]?.id || "";
+
+  renderSession({ focusBlankId: firstTargetBlankId });
+}
+
+function getEmptyStateMessage() {
+  const fileEntry = getFileEntry();
+
+  if (!fileEntry) {
+    return "No training file is available for the current selection.";
+  }
+
+  if (fileEntry.id === "core-definitions" && appState.definitionScope !== "all") {
+    return "No definition items match the selected source filter in this session.";
+  }
+
+  if (fileEntry.id === "multi-round-cloze" && appState.round !== "all") {
+    return `No prompts expose ${`Round ${appState.round}`} in this session scope.`;
+  }
+
+  return "No session questions are available for the current selection.";
+}
+
+function setLoadingState(message = "Loading current session...") {
+  questionLabel.textContent = "Loading session";
   questionTitle.textContent = message;
-  questionCopy.textContent = "Reading the selected level, topic, and training file.";
-  promptCard.innerHTML = `<p class="memorisation-empty">${message}</p>`;
-  answerPanel.hidden = true;
-  revealAnswerButton.disabled = true;
-  nextItemButton.disabled = true;
+  questionCopy.textContent = "Flattening the selected training file into one continuous session.";
+  pageCounter.textContent = "Page 0 / 0";
+  completionChip.textContent = "0 / 0 blanks completed";
+  reviewChip.textContent = "0 to review";
+  sessionBanner.hidden = true;
+  sessionBanner.innerHTML = "";
+  sessionPage.innerHTML = `<p class="memorisation-empty">${message}</p>`;
+  prevPageButton.disabled = true;
+  nextBlankButton.disabled = true;
+  nextPageButton.disabled = true;
+  reviewToggleButton.hidden = true;
 }
 
-function renderStatusCard(message, actionLabel = "", actionHandler = null) {
+function renderStatusCard(target, message, actionLabel = "", actionHandler = null) {
   const shell = document.createElement("div");
   shell.className = "memorisation-status-card";
 
@@ -1595,67 +1632,20 @@ function renderStatusCard(message, actionLabel = "", actionHandler = null) {
     shell.append(actions);
   }
 
-  promptCard.replaceChildren(shell);
-}
-
-function getEmptyStateMessage() {
-  const fileEntry = getFileEntry();
-
-  if (!fileEntry) {
-    return "No training file is available for this topic.";
-  }
-
-  if (fileEntry.id === "core-definitions" && appState.definitionScope !== "all") {
-    return "No definition items match the selected source filter in this topic.";
-  }
-
-  if (fileEntry.id === "multi-round-cloze" && appState.round !== "all") {
-    return `No prompts expose ${`Round ${appState.round}`} in this topic.`;
-  }
-
-  return "No items are available in the selected training file.";
+  target.replaceChildren(shell);
 }
 
 function renderStats() {
   const fileEntry = getFileEntry();
-  const counterValue =
-    appState.activePool.length === 0
-      ? "0 / 0"
-      : `${appState.sequenceIndex + 1} / ${appState.activePool.length}`;
+  const totalBlanks = appState.sessionBlankIds.length;
 
   fileManifestCount.textContent = getFileCountLabel(fileEntry);
-  poolCount.textContent = pluralise(appState.activePool.length, "runtime unit");
-  itemCounter.textContent = counterValue;
-  counterChip.textContent = counterValue;
+  poolCount.textContent = pluralise(appState.sessionQuestionIds.length, "session question");
+  itemCounter.textContent = pluralise(totalBlanks, "session blank");
+  counterChip.textContent = appState.reviewMode ? "Review queue" : "Main session";
 }
 
-function buildQuestionMeta(unit) {
-  const parts = [];
-
-  if (unit.subtopic) {
-    parts.push(formatLabel(unit.subtopic));
-  }
-
-  if (unit.source_scope) {
-    parts.push(formatDefinitionScope(unit.source_scope));
-  }
-
-  if (unit.kind === "guided-cloze" || unit.kind === "multi-round-cloze") {
-    parts.push(pluralise(unit.answers.length, "blank"));
-  }
-
-  if (unit.kind === "multi-round-cloze") {
-    parts.push(`Round ${unit.round} of ${unit.roundTotal}`);
-  }
-
-  if (unit.kind === "full-reconstruction") {
-    parts.push("Full canonical reconstruction");
-  }
-
-  return parts.join(" · ");
-}
-
-function updateBadges(unit) {
+function updateBadges() {
   const stageEntry = getStageEntry();
   const levelEntry = getLevelEntry();
   const topicEntry = getTopicEntry();
@@ -1663,7 +1653,7 @@ function updateBadges(unit) {
 
   stageBadge.textContent = stageEntry?.id || "Stage";
   levelBadge.textContent = levelEntry?.label || "Level";
-  topicBadge.textContent = topicEntry?.label || "Topic";
+  topicBadge.textContent = topicEntry?.label || "All topics";
   fileBadge.textContent = fileEntry?.label || "Training file";
 
   if (fileEntry?.id === "core-definitions") {
@@ -1684,358 +1674,581 @@ function updateBadges(unit) {
   }
 }
 
-function updateAnswerPanel(unit) {
-  if (!unit || !appState.revealed) {
-    answerPanel.hidden = true;
-    answerText.textContent = "";
-    answerNote.textContent = "";
+function buildQuestionMeta(question) {
+  const parts = [];
+
+  if (question.topicLabel) {
+    parts.push(question.topicLabel);
+  }
+
+  if (question.subtopic) {
+    parts.push(formatLabel(question.subtopic));
+  }
+
+  if (question.sourceScope) {
+    parts.push(formatDefinitionScope(question.sourceScope));
+  }
+
+  if (question.round) {
+    parts.push(`Round ${question.round} of ${question.roundTotal}`);
+  }
+
+  parts.push(pluralise(question.blanks.length, "blank"));
+  return parts.join(" · ");
+}
+
+function getBlankFeedbackDescriptor(blank, blankState) {
+  if (blankState.status === "correct") {
+    return {
+      label: "correct",
+      tone: "correct",
+      message: "Correct. Press Enter again to move to the next incomplete blank.",
+    };
+  }
+
+  if (blankState.status === "revealed") {
+    return {
+      label: "revealed",
+      tone: "revealed",
+      message: "Revealed. Compare your wording with the minimum pass below.",
+    };
+  }
+
+  if (blankState.status === "wrong") {
+    if (blankState.matchState === "near_miss_preposition") {
+      return {
+        label: "wrong",
+        tone: "wrong",
+        message: "Wrong. You are close, but the remaining issue looks like a preposition.",
+      };
+    }
+
+    return {
+      label: "wrong",
+      tone: "wrong",
+      message: "Wrong. Keep working on this blank before moving on.",
+    };
+  }
+
+  if (blank.multiline) {
+    return {
+      label: "idle",
+      tone: "neutral",
+      message: "Press Enter to check this blank. Use Shift+Enter for a new line.",
+    };
+  }
+
+  return {
+    label: "idle",
+    tone: "neutral",
+    message: "Press Enter to check this blank.",
+  };
+}
+
+function createBlankField(blank) {
+  const blankState = getBlankState(blank.id);
+  const fieldShell = document.createElement("div");
+  fieldShell.className = "memorisation-blank";
+  fieldShell.dataset.status = blankState?.status || "idle";
+  fieldShell.dataset.blankId = blank.id;
+
+  const fieldHeader = document.createElement("div");
+  fieldHeader.className = "memorisation-blank__header";
+
+  const label = document.createElement("label");
+  label.className = "memorisation-field__label";
+  label.textContent = blank.label;
+  label.setAttribute("for", blank.id);
+
+  const status = document.createElement("span");
+  status.className = "memorisation-blank__status";
+
+  const descriptor = getBlankFeedbackDescriptor(blank, blankState);
+  status.textContent = descriptor.label;
+  status.dataset.tone = descriptor.tone;
+
+  fieldHeader.append(label, status);
+
+  const field = document.createElement(blank.multiline ? "textarea" : "input");
+
+  if (!blank.multiline) {
+    field.type = "text";
+  }
+
+  field.id = blank.id;
+  field.className = "memorisation-input";
+  field.spellcheck = false;
+  field.autocomplete = "off";
+  field.autocapitalize = "off";
+  field.placeholder = blank.placeholder;
+  field.value = blankState?.value || "";
+  field.rows = blank.multiline ? 5 : undefined;
+  field.dataset.status = blankState?.status || "idle";
+  field.addEventListener("focus", () => {
+    appState.currentBlankId = blank.id;
+  });
+  field.addEventListener("input", (event) => {
+    setBlankValue(blank.id, event.target.value);
+  });
+  field.addEventListener("keydown", (event) => {
+    const isEnter = event.key === "Enter";
+    const allowNewLine = blank.multiline && event.shiftKey;
+
+    if (!isEnter || allowNewLine || event.isComposing || event.keyCode === 229) {
+      return;
+    }
+
+    event.preventDefault();
+    onBlankEnter(blank.id);
+  });
+
+  const feedback = document.createElement("p");
+  feedback.className = "memorisation-feedback";
+  feedback.dataset.tone = descriptor.tone;
+  feedback.textContent = descriptor.message;
+
+  appState.blankInputRefs.set(blank.id, field);
+  fieldShell.append(fieldHeader, field, feedback);
+  return fieldShell;
+}
+
+function createRevealPanel(question) {
+  const shell = document.createElement("section");
+  shell.className = "memorisation-reveal";
+
+  const fullAnswerBlock = document.createElement("div");
+  fullAnswerBlock.className = "memorisation-reveal__block";
+
+  const fullAnswerLabel = document.createElement("span");
+  fullAnswerLabel.className = "memorisation-answer__label";
+  fullAnswerLabel.textContent = "Full answer";
+
+  const fullAnswerText = document.createElement("p");
+  fullAnswerText.className = "memorisation-answer__text";
+  fullAnswerText.textContent = question.fullAnswer;
+
+  fullAnswerBlock.append(fullAnswerLabel, fullAnswerText);
+
+  const minimumPassBlock = document.createElement("div");
+  minimumPassBlock.className = "memorisation-reveal__block";
+
+  const minimumPassLabel = document.createElement("span");
+  minimumPassLabel.className = "memorisation-answer__label";
+  minimumPassLabel.textContent = "Minimum pass";
+
+  const minimumPassText = document.createElement("p");
+  minimumPassText.className = "memorisation-answer__text";
+  minimumPassText.textContent = question.minimalPass;
+
+  minimumPassBlock.append(minimumPassLabel, minimumPassText);
+  shell.append(fullAnswerBlock, minimumPassBlock);
+  return shell;
+}
+
+function renderQuestionCard(question) {
+  const card = document.createElement("article");
+  card.className = "interactive-subtle-panel memorisation-question-card";
+
+  const header = document.createElement("div");
+  header.className = "memorisation-question-card__header";
+
+  const titleBlock = document.createElement("div");
+  titleBlock.className = "memorisation-question-card__title";
+
+  const metaLabel = document.createElement("p");
+  metaLabel.className = "memorisation-question-label";
+  metaLabel.textContent = question.fileLabel;
+
+  const title = document.createElement("h3");
+  title.textContent = question.question;
+
+  const meta = document.createElement("p");
+  meta.className = "memorisation-question-copy";
+  meta.textContent = buildQuestionMeta(question);
+
+  titleBlock.append(metaLabel, title, meta);
+
+  const actions = document.createElement("div");
+  actions.className = "memorisation-question-card__actions";
+
+  const revealButton = document.createElement("button");
+  revealButton.type = "button";
+  revealButton.className = "secondary-link";
+  revealButton.textContent = appState.revealedQuestionIds.has(question.id)
+    ? "Answer shown"
+    : "Reveal answer";
+  revealButton.disabled = appState.revealedQuestionIds.has(question.id);
+  revealButton.addEventListener("click", () => {
+    revealQuestion(question.id);
+  });
+
+  actions.append(revealButton);
+  header.append(titleBlock, actions);
+  card.append(header);
+
+  if (question.kind === "cloze") {
+    const stem = document.createElement("p");
+    stem.className = "memorisation-question-stem";
+    stem.textContent = question.prompt;
+    card.append(stem);
+  }
+
+  const blankList = document.createElement("div");
+  blankList.className = "memorisation-blank-list";
+  question.blanks.forEach((blank) => {
+    blankList.append(createBlankField(blank));
+  });
+  card.append(blankList);
+
+  if (appState.revealedQuestionIds.has(question.id)) {
+    card.append(createRevealPanel(question));
+  }
+
+  return card;
+}
+
+function renderReviewCard(blankId) {
+  const blank = getBlank(blankId);
+  const question = getQuestion(blank?.questionId || "");
+
+  if (!blank || !question) {
+    return null;
+  }
+
+  const card = document.createElement("article");
+  card.className = "interactive-subtle-panel memorisation-question-card memorisation-question-card--review";
+
+  const header = document.createElement("div");
+  header.className = "memorisation-question-card__header";
+
+  const titleBlock = document.createElement("div");
+  titleBlock.className = "memorisation-question-card__title";
+
+  const metaLabel = document.createElement("p");
+  metaLabel.className = "memorisation-question-label";
+  metaLabel.textContent = "Review blank";
+
+  const title = document.createElement("h3");
+  title.textContent = question.question;
+
+  const meta = document.createElement("p");
+  meta.className = "memorisation-question-copy";
+  meta.textContent = `${buildQuestionMeta(question)} · ${blank.label}`;
+
+  titleBlock.append(metaLabel, title, meta);
+
+  const actions = document.createElement("div");
+  actions.className = "memorisation-question-card__actions";
+
+  const revealButton = document.createElement("button");
+  revealButton.type = "button";
+  revealButton.className = "secondary-link";
+  revealButton.textContent = appState.revealedQuestionIds.has(question.id)
+    ? "Answer shown"
+    : "Reveal answer";
+  revealButton.disabled = appState.revealedQuestionIds.has(question.id);
+  revealButton.addEventListener("click", () => {
+    revealQuestion(question.id);
+  });
+
+  actions.append(revealButton);
+  header.append(titleBlock, actions);
+  card.append(header);
+
+  if (question.kind === "cloze") {
+    const stem = document.createElement("p");
+    stem.className = "memorisation-question-stem";
+    stem.textContent = question.prompt;
+    card.append(stem);
+  }
+
+  const blankList = document.createElement("div");
+  blankList.className = "memorisation-blank-list";
+  blankList.append(createBlankField(blank));
+  card.append(blankList);
+
+  if (appState.revealedQuestionIds.has(question.id)) {
+    card.append(createRevealPanel(question));
+  }
+
+  return card;
+}
+
+function renderProgressHeader() {
+  const pages = getPageSet();
+  const currentPageIndex = getCurrentPageIndex();
+  const totalBlanks = appState.sessionBlankIds.length;
+  const completedBlanks = getCompletedBlankCount();
+  const reviewCount = appState.reviewQueueBlankIds.length;
+  const pageLabel = pages.length ? currentPageIndex + 1 : 0;
+
+  pageCounter.textContent = `Page ${pageLabel} / ${pages.length}`;
+  completionChip.textContent = `${completedBlanks} / ${totalBlanks} blanks completed`;
+  reviewChip.textContent = `${reviewCount} to review`;
+  prevPageButton.disabled = currentPageIndex <= 0;
+  nextPageButton.disabled = currentPageIndex >= pages.length - 1;
+  nextBlankButton.disabled = !findNextIncompleteBlankAfter(appState.currentBlankId);
+
+  reviewToggleButton.hidden = reviewCount === 0;
+  reviewToggleButton.textContent = appState.reviewMode
+    ? "Back to main session"
+    : `Review missed / revealed blanks (${reviewCount})`;
+}
+
+function renderBanner() {
+  const totalBlanks = appState.sessionBlankIds.length;
+  const completedBlanks = getCompletedBlankCount();
+  const reviewCount = appState.reviewQueueBlankIds.length;
+
+  if (!totalBlanks) {
+    sessionBanner.hidden = true;
+    sessionBanner.innerHTML = "";
     return;
   }
 
-  const isFullAnswerUnit =
-    unit.kind === "guided-cloze" ||
-    unit.kind === "multi-round-cloze" ||
-    unit.kind === "full-reconstruction";
+  if (!appState.reviewMode && completedBlanks === totalBlanks) {
+    sessionBanner.hidden = false;
+    sessionBanner.innerHTML = `
+      <div class="memorisation-banner__content">
+        <p class="memorisation-question-label">Session complete</p>
+        <h3>Main pass finished.</h3>
+        <p class="memorisation-question-copy">
+          ${completedBlanks} blanks completed. ${reviewCount} blank${
+            reviewCount === 1 ? "" : "s"
+          } queued for review.
+        </p>
+      </div>
+    `;
+    return;
+  }
 
-  answerPanel.hidden = false;
-  answerLabel.textContent = isFullAnswerUnit ? "Canonical full answer" : "Canonical answer";
-  answerText.textContent = isFullAnswerUnit ? unit.full_answer || unit.answer : unit.answer;
-  answerNote.textContent =
-    unit.kind === "guided-cloze" || unit.kind === "multi-round-cloze"
-      ? "Reveal shows the stored full explanation answer for this prompt. Formatting, spelling, punctuation, and article variants are normalized; prepositions stay strict."
-      : getFileEntry()?.id === "core-equations"
-        ? "Equation matching normalizes spacing, arrow variants, and optional state symbols unless the prompt explicitly requires them."
-        : "Formatting, spelling, quote, punctuation, hyphen, and article variants are normalized during checking. Prepositions stay strict.";
+  if (appState.reviewMode) {
+    sessionBanner.hidden = false;
+    sessionBanner.innerHTML = `
+      <div class="memorisation-banner__content">
+        <p class="memorisation-question-label">Review queue</p>
+        <h3>Focused second pass.</h3>
+        <p class="memorisation-question-copy">
+          ${pluralise(appState.reviewQueueBlankIds.length, "blank")} selected from wrong attempts,
+          reveals, and blanks that were corrected after earlier misses.
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  sessionBanner.hidden = true;
+  sessionBanner.innerHTML = "";
 }
 
-function updateActionButtons(unit) {
-  const revealLabel = unit && unit.kind !== "single" ? "Show full answer" : "Show answer";
+function renderSessionHeaderCopy() {
+  const fileEntry = getFileEntry();
+  const stageEntry = getStageEntry();
+  const levelEntry = getLevelEntry();
+  const topicText = appState.topic ? getTopicEntry()?.label || "Current topic" : "All topics";
 
-  revealAnswerButton.textContent = appState.revealed
-    ? unit && unit.kind !== "single"
-      ? "Full answer shown"
-      : "Answer shown"
-    : revealLabel;
-  revealAnswerButton.disabled = !unit || appState.revealed;
-  nextItemButton.disabled = !unit;
+  if (appState.reviewMode) {
+    questionLabel.textContent = "Session review";
+    questionTitle.textContent = `${fileEntry?.label || "Training file"} review queue`;
+    questionCopy.textContent = `Reviewing flagged blanks from ${stageEntry?.id || "stage"} · ${
+      levelEntry?.label || "level"
+    } · ${topicText}.`;
+    return;
+  }
+
+  questionLabel.textContent = "Continuous session";
+  questionTitle.textContent = `${fileEntry?.label || "Training file"} · ${
+    levelEntry?.label || "Level"
+  }`;
+  questionCopy.textContent = `Flattened across ${topicText}. Use Enter to check the current blank and Next blank to follow session order.`;
+}
+
+function renderPageContent() {
+  sessionPage.replaceChildren();
+  appState.blankInputRefs = new Map();
+
+  const pageEntries = getCurrentPageEntries();
+
+  if (!pageEntries.length) {
+    renderStatusCard(sessionPage, "No page entries are available for the current session.");
+    return;
+  }
+
+  if (appState.reviewMode) {
+    pageEntries.forEach((blankId) => {
+      const reviewCard = renderReviewCard(blankId);
+      if (reviewCard) {
+        sessionPage.append(reviewCard);
+      }
+    });
+  } else {
+    pageEntries.forEach((questionId) => {
+      const question = getQuestion(questionId);
+      if (question) {
+        sessionPage.append(renderQuestionCard(question));
+      }
+    });
+  }
+
+  const focusBlankId =
+    appState.pendingFocusBlankId ||
+    (appState.reviewMode
+      ? pageEntries[0] || ""
+      : getQuestion(pageEntries[0])?.blanks[0]?.id || "");
+
+  queueFocusBlank(focusBlankId);
 }
 
 function renderEmptyState(message) {
   renderStats();
-  updateBadges(null);
-  questionLabel.textContent = "No drill units";
+  updateBadges();
+  questionLabel.textContent = "No session questions";
   questionTitle.textContent = "Nothing matches the current selection.";
   questionCopy.textContent = message;
-  renderStatusCard(message);
-  appState.revealed = false;
-  updateAnswerPanel(null);
-  updateActionButtons(null);
+  pageCounter.textContent = "Page 0 / 0";
+  completionChip.textContent = "0 / 0 blanks completed";
+  reviewChip.textContent = "0 to review";
+  sessionBanner.hidden = true;
+  sessionBanner.innerHTML = "";
+  renderStatusCard(sessionPage, message);
+  prevPageButton.disabled = true;
+  nextBlankButton.disabled = true;
+  nextPageButton.disabled = true;
+  reviewToggleButton.hidden = true;
   updateUrlFromState();
 }
 
 function renderCatalogErrorState(message) {
   appState.catalog = null;
   appState.topicNormalizationMap = {};
-  appState.activePool = [];
-  appState.sequence = [];
-  appState.sequenceIndex = 0;
-  appState.currentUnitId = "";
   appState.fileDataCache.clear();
+  appState.sessionQuestions = [];
+  appState.sessionQuestionIds = [];
+  appState.sessionQuestionMap = new Map();
+  appState.sessionBlankIds = [];
+  appState.sessionBlankMap = new Map();
+  appState.blankStates = new Map();
+  appState.pages = [];
+  appState.reviewQueueBlankIds = [];
+  appState.reviewPages = [];
+  appState.reviewMode = false;
+  appState.revealedQuestionIds = new Set();
   renderControls();
   renderStats();
-  updateBadges(null);
+  updateBadges();
   questionLabel.textContent = "Memorisation bank unavailable";
   questionTitle.textContent = "Could not load memorisation data.";
   questionCopy.textContent =
     "The catalog or its supporting files could not be loaded. Retry this page in a moment.";
-  renderStatusCard(message, "Retry loading", () => {
+  pageCounter.textContent = "Page 0 / 0";
+  completionChip.textContent = "0 / 0 blanks completed";
+  reviewChip.textContent = "0 to review";
+  sessionBanner.hidden = true;
+  sessionBanner.innerHTML = "";
+  renderStatusCard(sessionPage, message, "Retry loading", () => {
     bootRuntime({ preserveSelection: false });
   });
-  appState.revealed = false;
-  updateAnswerPanel(null);
-  updateActionButtons(null);
+  prevPageButton.disabled = true;
+  nextBlankButton.disabled = true;
+  nextPageButton.disabled = true;
+  reviewToggleButton.hidden = true;
 }
 
 function renderFileErrorState(fileEntry, message) {
-  appState.activePool = [];
-  appState.sequence = [];
-  appState.sequenceIndex = 0;
-  appState.currentUnitId = "";
+  appState.sessionQuestions = [];
+  appState.sessionQuestionIds = [];
+  appState.sessionQuestionMap = new Map();
+  appState.sessionBlankIds = [];
+  appState.sessionBlankMap = new Map();
+  appState.blankStates = new Map();
+  appState.pages = [];
+  appState.reviewQueueBlankIds = [];
+  appState.reviewPages = [];
+  appState.reviewMode = false;
+  appState.revealedQuestionIds = new Set();
   renderStats();
-  updateBadges(null);
+  updateBadges();
   questionLabel.textContent = "Loading error";
   questionTitle.textContent = `Could not load ${fileEntry?.label || "the selected training file"}.`;
   questionCopy.textContent = message;
-  renderStatusCard(message, "Retry loading", () => {
-    refreshPool({ resetSequence: true, allowCatalogResync: true });
+  pageCounter.textContent = "Page 0 / 0";
+  completionChip.textContent = "0 / 0 blanks completed";
+  reviewChip.textContent = "0 to review";
+  sessionBanner.hidden = true;
+  sessionBanner.innerHTML = "";
+  renderStatusCard(sessionPage, message, "Retry loading", () => {
+    refreshSession({ allowCatalogResync: true });
   });
-  answerPanel.hidden = true;
-  revealAnswerButton.disabled = true;
-  nextItemButton.disabled = true;
+  prevPageButton.disabled = true;
+  nextBlankButton.disabled = true;
+  nextPageButton.disabled = true;
+  reviewToggleButton.hidden = true;
   updateUrlFromState();
 }
 
-function renderSinglePrompt(unit) {
-  const matcherConfig = getMatcherConfig(unit);
-  const fieldWrapper = document.createElement("label");
-  fieldWrapper.className = "memorisation-field";
-
-  const fieldLabel = document.createElement("span");
-  fieldLabel.className = "memorisation-field__label";
-  fieldLabel.textContent = "Your answer";
-
-  const field = document.createElement("input");
-  field.type = "text";
-  field.className = "memorisation-input memorisation-input--single";
-  field.spellcheck = false;
-  field.autocomplete = "off";
-  field.autocapitalize = "off";
-  field.placeholder = "Type your answer.";
-
-  const feedback = document.createElement("p");
-  feedback.className = "memorisation-feedback";
-  feedback.setAttribute("aria-live", "polite");
-
-  const controller = createMirroredFieldController({
-    field,
-    canonicalValue: unit.answer,
-    matcherConfig,
-    feedbackElement: feedback,
-    interactionLabel: "Check on blur or Enter.",
-    shouldCheckOnKeydown(event) {
-      return event.key === "Enter";
-    },
-  });
-
-  fieldWrapper.append(fieldLabel, controller.shell, feedback);
-  promptCard.replaceChildren(fieldWrapper);
-}
-
-function renderReconstructionPrompt(unit) {
-  const matcherConfig = getMatcherConfig(unit);
-  const fieldWrapper = document.createElement("label");
-  fieldWrapper.className = "memorisation-field";
-
-  const fieldLabel = document.createElement("span");
-  fieldLabel.className = "memorisation-field__label";
-  fieldLabel.textContent = "Your full answer";
-
-  const field = document.createElement("textarea");
-  field.className = "memorisation-input memorisation-input--reconstruction";
-  field.rows = 6;
-  field.spellcheck = false;
-  field.autocomplete = "off";
-  field.autocapitalize = "off";
-  field.placeholder = "Type your full answer.";
-
-  const feedback = document.createElement("p");
-  feedback.className = "memorisation-feedback";
-  feedback.setAttribute("aria-live", "polite");
-
-  const controller = createMirroredFieldController({
-    field,
-    canonicalValue: unit.answer,
-    matcherConfig,
-    feedbackElement: feedback,
-    interactionLabel: "Check on blur or Ctrl/Cmd+Enter.",
-    shouldCheckOnKeydown(event) {
-      return event.key === "Enter" && (event.ctrlKey || event.metaKey);
-    },
-  });
-
-  fieldWrapper.append(fieldLabel, controller.shell, feedback);
-  promptCard.replaceChildren(fieldWrapper);
-}
-
-function updateClozeSummary(summaryElement, inputs) {
-  const correctCount = inputs.filter((input) => isSuccessfulMatchState(input.dataset.state)).length;
-  const nearMissCount = inputs.filter(
-    (input) => input.dataset.state === "near_miss_preposition",
-  ).length;
-  const incorrectCount = inputs.filter((input) => input.dataset.state === "incorrect").length;
-  const untouchedCount = inputs.filter((input) => input.dataset.state === "untouched").length;
-
-  if (correctCount === 0 && nearMissCount === 0 && incorrectCount === 0) {
-    setFeedbackMessage(
-      summaryElement,
-      "Each blank checks independently on blur or Enter. Formatting, spelling, punctuation, and articles are normalized; prepositions stay strict.",
-    );
-    return;
+function renderSession({ focusBlankId = "" } = {}) {
+  if (focusBlankId) {
+    appState.pendingFocusBlankId = focusBlankId;
   }
-
-  setFeedbackMessage(
-    summaryElement,
-    `${pluralise(correctCount, "blank")} correct · ${pluralise(
-      nearMissCount,
-      "blank",
-    )} almost there · ${pluralise(
-      incorrectCount,
-      "blank",
-    )} incorrect · ${pluralise(untouchedCount, "blank")} untouched`,
-    incorrectCount > 0 ? "incorrect" : nearMissCount > 0 ? "warning" : "correct",
-  );
-}
-
-function renderClozePrompt(unit) {
-  const matcherConfig = getMatcherConfig(unit);
-  const shell = document.createElement("div");
-  shell.className = "cloze-shell";
-
-  const intro = document.createElement("p");
-  intro.className = "cloze-intro";
-  intro.textContent = "Fill each blank in prompt order. Each blank checks independently.";
-
-  const summary = document.createElement("p");
-  summary.className = "memorisation-feedback";
-  summary.setAttribute("aria-live", "polite");
-  setFeedbackMessage(
-    summary,
-    "Each blank checks independently on blur or Enter. Formatting, spelling, punctuation, and articles are normalized; prepositions stay strict.",
-  );
-
-  const promptLine = document.createElement("div");
-  promptLine.className = "cloze-prompt-line";
-  const detailList = document.createElement("div");
-  detailList.className = "cloze-detail-list";
-  const blankPattern = /_{4,}/g;
-  const promptText = String(unit.prompt || "");
-  const promptParts = promptText.split(blankPattern);
-  const blankCount = (promptText.match(blankPattern) || []).length;
-
-  if (blankCount !== unit.answers.length) {
-    promptCard.innerHTML = `
-      <p class="memorisation-empty">
-        This cloze prompt could not be rendered because the blank count does not match the stored answers.
-      </p>
-    `;
-    return;
-  }
-
-  const inputs = unit.answers.map((answer, index) => {
-    const blankLabel = `Blank ${index + 1}`;
-    promptLine.append(document.createTextNode(promptParts[index]));
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.className = "cloze-input";
-    input.placeholder = blankLabel;
-    input.spellcheck = false;
-    input.autocomplete = "off";
-    input.autocapitalize = "off";
-
-    const detail = document.createElement("div");
-    detail.className = "cloze-detail";
-
-    const detailLabel = document.createElement("span");
-    detailLabel.className = "cloze-detail__label";
-    detailLabel.textContent = blankLabel;
-
-    const detailFeedback = document.createElement("p");
-    detailFeedback.className = "memorisation-feedback";
-    detailFeedback.setAttribute("aria-live", "polite");
-
-    const controller = createMirroredFieldController({
-      field: input,
-      canonicalValue: answer,
-      matcherConfig,
-      feedbackElement: detailFeedback,
-      interactionLabel: "Check on blur or Enter.",
-      inline: true,
-      shouldCheckOnKeydown(event) {
-        return event.key === "Enter";
-      },
-      onCommit() {
-        const nextInput = inputs[index + 1];
-
-        if (nextInput) {
-          nextInput.focus();
-        }
-      },
-      onStateChange() {
-        updateClozeSummary(summary, inputs);
-      },
-    });
-
-    promptLine.append(controller.shell);
-    detail.append(detailLabel, detailFeedback);
-    detailList.append(detail);
-    return input;
-  });
-
-  promptLine.append(document.createTextNode(promptParts[promptParts.length - 1]));
-  updateClozeSummary(summary, inputs);
-  shell.append(intro, promptLine, summary, detailList);
-  promptCard.replaceChildren(shell);
-}
-
-function renderCurrentUnit() {
-  const currentUnit = getCurrentUnit();
 
   renderStats();
-
-  if (!currentUnit) {
-    renderEmptyState(getEmptyStateMessage());
-    return;
-  }
-
-  updateBadges(currentUnit);
-  questionLabel.textContent = getFileEntry()?.label || "Training file";
-  questionTitle.textContent =
-    currentUnit.kind === "single"
-      ? currentUnit.prompt || currentUnit.question
-      : currentUnit.question || currentUnit.prompt;
-  questionCopy.textContent = buildQuestionMeta(currentUnit);
-
-  if (currentUnit.kind === "guided-cloze" || currentUnit.kind === "multi-round-cloze") {
-    renderClozePrompt(currentUnit);
-  } else if (currentUnit.kind === "full-reconstruction") {
-    renderReconstructionPrompt(currentUnit);
-  } else {
-    renderSinglePrompt(currentUnit);
-  }
-
-  updateAnswerPanel(currentUnit);
-  updateActionButtons(currentUnit);
+  updateBadges();
+  renderSessionHeaderCopy();
+  renderProgressHeader();
+  renderBanner();
+  renderPageContent();
   updateUrlFromState();
 }
 
-async function refreshPool({ resetSequence = true, allowCatalogResync = true } = {}) {
+async function refreshSession({ allowCatalogResync = true } = {}) {
   synchroniseSelection();
   const fileEntry = getFileEntry();
 
   if (!fileEntry) {
-    appState.activePool = [];
+    appState.sessionQuestions = [];
+    appState.sessionQuestionIds = [];
+    appState.sessionQuestionMap = new Map();
+    appState.sessionBlankIds = [];
+    appState.sessionBlankMap = new Map();
+    appState.blankStates = new Map();
+    appState.pages = [];
+    appState.reviewQueueBlankIds = [];
+    appState.reviewPages = [];
+    appState.reviewMode = false;
     renderEmptyState("No training file is available for the current selection.");
     return;
   }
 
-  setLoadingState(`Loading ${fileEntry.label.toLowerCase()}...`);
+  setLoadingState(`Loading ${fileEntry.label.toLowerCase()} session...`);
 
   const renderToken = ++appState.renderToken;
 
   try {
-    const items = await loadCurrentFileItems();
+    const items = await loadSessionSourceItems(fileEntry);
 
     if (renderToken !== appState.renderToken) {
       return;
     }
 
-    appState.activePool = buildActivePool(items, fileEntry);
+    const sessionQuestions = buildSessionQuestions(items, fileEntry);
 
-    if (
-      resetSequence ||
-      !appState.activePool.some((unit) => unit.unitId === appState.currentUnitId)
-    ) {
-      appState.sequence = createShuffledSequence(appState.activePool.map((unit) => unit.unitId));
-      appState.sequenceIndex = 0;
-      appState.currentUnitId = appState.sequence[0] || "";
-    } else {
-      const currentIndex = appState.sequence.indexOf(appState.currentUnitId);
-      appState.sequenceIndex = currentIndex >= 0 ? currentIndex : 0;
+    if (!sessionQuestions.length) {
+      appState.sessionQuestions = [];
+      appState.sessionQuestionIds = [];
+      appState.sessionQuestionMap = new Map();
+      appState.sessionBlankIds = [];
+      appState.sessionBlankMap = new Map();
+      appState.blankStates = new Map();
+      appState.pages = [];
+      appState.reviewQueueBlankIds = [];
+      appState.reviewPages = [];
+      appState.reviewMode = false;
+      renderEmptyState(getEmptyStateMessage());
+      return;
     }
 
-    appState.revealed = false;
-    renderCurrentUnit();
+    rebuildSessionRuntime(sessionQuestions);
+    renderSession({ focusBlankId: appState.currentBlankId });
   } catch (error) {
     if (renderToken !== appState.renderToken) {
       return;
@@ -2051,44 +2264,17 @@ async function refreshPool({ resetSequence = true, allowCatalogResync = true } =
 
         renderControls();
         updateUrlFromState();
-        return refreshPool({ resetSequence, allowCatalogResync: false });
+        await refreshSession({ allowCatalogResync: false });
+        return;
       } catch (catalogError) {
         if (renderToken !== appState.renderToken) {
           return;
         }
-
-        renderFileErrorState(
-          fileEntry,
-          `${error.message} Retry to resync the current selection with the latest catalog.`,
-        );
-        return;
       }
     }
 
     renderFileErrorState(fileEntry, `${error.message} Retry to try the current selection again.`);
   }
-}
-
-function moveToNextUnit() {
-  if (appState.activePool.length === 0) {
-    refreshPool({ resetSequence: true });
-    return;
-  }
-
-  if (appState.sequenceIndex < appState.sequence.length - 1) {
-    appState.sequenceIndex += 1;
-    appState.currentUnitId = appState.sequence[appState.sequenceIndex];
-  } else {
-    appState.sequence = createShuffledSequence(
-      appState.activePool.map((unit) => unit.unitId),
-      appState.currentUnitId,
-    );
-    appState.sequenceIndex = 0;
-    appState.currentUnitId = appState.sequence[0] || "";
-  }
-
-  appState.revealed = false;
-  renderCurrentUnit();
 }
 
 function registerStaticEvents() {
@@ -2107,14 +2293,20 @@ function registerStaticEvents() {
     );
   });
 
-  revealAnswerButton.addEventListener("click", () => {
-    appState.revealed = true;
-    updateAnswerPanel(getCurrentUnit());
-    updateActionButtons(getCurrentUnit());
+  prevPageButton.addEventListener("click", () => {
+    goToPage(getCurrentPageIndex() - 1);
   });
 
-  nextItemButton.addEventListener("click", () => {
-    moveToNextUnit();
+  nextPageButton.addEventListener("click", () => {
+    goToPage(getCurrentPageIndex() + 1);
+  });
+
+  nextBlankButton.addEventListener("click", () => {
+    moveToNextBlank(appState.currentBlankId);
+  });
+
+  reviewToggleButton.addEventListener("click", () => {
+    setReviewMode(!appState.reviewMode);
   });
 
   appState.staticEventsRegistered = true;
@@ -2127,7 +2319,7 @@ async function bootRuntime({ preserveSelection = true } = {}) {
     await loadCatalogResources({ preserveSelection });
     renderControls();
     updateUrlFromState();
-    await refreshPool({ resetSequence: true, allowCatalogResync: false });
+    await refreshSession({ allowCatalogResync: false });
   } catch (error) {
     renderCatalogErrorState(error.message);
   }

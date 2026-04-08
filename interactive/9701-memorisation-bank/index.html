@@ -61,24 +61,19 @@
             </div>
             <h1>9701 Memorisation Bank</h1>
             <p class="interactive-summary">
-              Move through the regenerated knowledge structure in study order: stage, level, topic,
-              then training file. Level 1 stays strict and dictation-first, Levels 2 and 3 keep
-              cloze structure explicit, and Level 4 uses full canonical reconstruction.
+              Build one continuous memorisation session from the current stage, level, file, and
+              topic filter. The session now runs through a flattened question order with multiple
+              prompts per page, blank-first checking, and a review queue at the end.
             </p>
           </div>
           <div class="interactive-meta-group">
             <article class="interactive-meta-card">
               <span>Navigation model</span>
-              <strong
-                >Stage → Level → Topic → Training file, with round control where needed.</strong
-              >
+              <strong>Stage → Level → Training file, with topic filtering and continuous pages.</strong>
             </article>
             <article class="interactive-meta-card">
               <span>Checking model</span>
-              <strong
-                >Controlled normalized matching only, with canonical answer reveal for
-                review.</strong
-              >
+              <strong>Blank-level checking, lightweight inline feedback, and answer reveal for review.</strong>
             </article>
           </div>
         </div>
@@ -97,7 +92,7 @@
           </section>
 
           <label class="memorisation-control" for="topic-filter">
-            <span class="memorisation-control__label">Topic</span>
+            <span class="memorisation-control__label">Topic Filter</span>
             <select id="topic-filter" class="memorisation-select">
               <option value="">Loading topics...</option>
             </select>
@@ -174,27 +169,39 @@
               <span id="source-badge" class="memorisation-badge" hidden>Definition source</span>
               <span id="round-badge" class="memorisation-badge" hidden>Round</span>
             </div>
-            <span id="counter-chip" class="memorisation-counter-chip">0 / 0</span>
+            <span id="counter-chip" class="memorisation-counter-chip">Main session</span>
           </div>
 
-          <p id="question-label" class="memorisation-question-label">Preparing drill unit</p>
+          <p id="question-label" class="memorisation-question-label">Preparing session</p>
           <h2 id="question-title">Loading memorisation data...</h2>
           <p id="question-copy" class="memorisation-question-copy">
-            Reading stage manifests and building runtime units.
+            Reading stage manifests and building a flattened session list.
           </p>
 
-          <section id="prompt-card" class="interactive-subtle-panel memorisation-prompt"></section>
+          <section class="interactive-subtle-panel memorisation-progress">
+            <div class="memorisation-progress__summary">
+              <span id="page-counter" class="memorisation-counter-chip">Page 0 / 0</span>
+              <span id="completion-chip" class="memorisation-counter-chip memorisation-counter-chip--soft"
+                >0 / 0 blanks completed</span
+              >
+              <span id="review-chip" class="memorisation-counter-chip memorisation-counter-chip--soft"
+                >0 to review</span
+              >
+            </div>
 
-          <div class="memorisation-actions">
-            <button id="reveal-answer" class="secondary-link" type="button">Show answer</button>
-            <button id="next-item" class="doc-link" type="button">Next</button>
-          </div>
-
-          <section id="answer-panel" class="interactive-accent-panel memorisation-answer" hidden>
-            <p id="answer-label" class="memorisation-answer__label">Canonical answer</p>
-            <div id="answer-text" class="memorisation-answer__text"></div>
-            <p id="answer-note" class="memorisation-answer__note"></p>
+            <div class="memorisation-progress__actions">
+              <button id="prev-page" class="secondary-link" type="button">Prev page</button>
+              <button id="next-blank" class="doc-link" type="button">Next blank</button>
+              <button id="next-page" class="secondary-link" type="button">Next page</button>
+              <button id="review-toggle" class="doc-link" type="button" hidden>
+                Review missed / revealed blanks
+              </button>
+            </div>
           </section>
+
+          <section id="session-banner" class="interactive-accent-panel memorisation-banner" hidden></section>
+
+          <section id="session-page" class="memorisation-session-page"></section>
         </section>
       </main>
     </div>
