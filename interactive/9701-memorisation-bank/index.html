@@ -61,21 +61,19 @@
             </div>
             <h1>9701 Memorisation Bank</h1>
             <p class="interactive-summary">
-              Filter the final memorisation pack by stage, level, topic, and item type, then
-              practise with strict canonical checking inside the shared student-site shell.
+              Build one continuous memorisation session from the current stage, level, file, and
+              topic filter. The session now runs through a flattened question order with multiple
+              prompts per page, blank-first checking, and a review queue at the end.
             </p>
           </div>
           <div class="interactive-meta-group">
             <article class="interactive-meta-card">
-              <span>Data shape</span>
-              <strong>Eight stage-level JSON files, loaded directly into one integrated route.</strong>
+              <span>Navigation model</span>
+              <strong>Stage → Level → Training file, with topic filtering and continuous pages.</strong>
             </article>
             <article class="interactive-meta-card">
-              <span>Matching model</span>
-              <strong
-                >Trim outer space, optionally collapse repeated spaces, then require an exact
-                answer.</strong
-              >
+              <span>Checking model</span>
+              <strong>Blank-level checking, lightweight inline feedback, and answer reveal for review.</strong>
             </article>
           </div>
         </div>
@@ -123,7 +121,34 @@
             </label>
           </section>
 
-          <article class="interactive-subtle-panel memorisation-stats">
+          <section class="memorisation-control">
+            <p class="memorisation-control__label">Level</p>
+            <div id="level-switcher" class="memorisation-levels"></div>
+          </section>
+
+          <label class="memorisation-control" for="topic-filter">
+            <span class="memorisation-control__label">Topic Filter</span>
+            <select id="topic-filter" class="memorisation-select">
+              <option value="">Loading topics...</option>
+            </select>
+          </label>
+
+          <section class="memorisation-control">
+            <p class="memorisation-control__label">Training File</p>
+            <div id="file-switcher" class="memorisation-files"></div>
+          </section>
+
+          <section id="definition-filter-section" class="memorisation-control" hidden>
+            <p class="memorisation-control__label">Definition Source</p>
+            <div id="definition-filter-grid" class="memorisation-filter-grid"></div>
+          </section>
+
+          <section id="round-switcher-section" class="memorisation-control" hidden>
+            <p class="memorisation-control__label">Round</p>
+            <div id="round-switcher" class="memorisation-filter-grid"></div>
+          </section>
+
+          <div class="interactive-subtle-panel memorisation-stats">
             <div class="memorisation-stat">
               <span>Source files</span>
               <strong id="source-file-count">0</strong>
@@ -188,64 +213,39 @@
               <span id="topic-badge" class="memorisation-badge">Topic</span>
               <span id="type-badge" class="memorisation-badge">Type</span>
             </div>
-            <span id="counter-chip" class="memorisation-counter-chip">0 / 0</span>
+            <span id="counter-chip" class="memorisation-counter-chip">Main session</span>
           </div>
 
-          <div class="memorisation-question-block">
-            <p id="question-eyebrow" class="memorisation-question-eyebrow">Loading pack</p>
-            <h2 id="question-title">Loading memorisation bank...</h2>
-            <p id="question-copy" class="memorisation-question-copy">
-              Reading the stage and level files for this integrated route.
-            </p>
-          </div>
+          <p id="question-label" class="memorisation-question-label">Preparing session</p>
+          <h2 id="question-title">Loading memorisation data...</h2>
+          <p id="question-copy" class="memorisation-question-copy">
+            Reading stage manifests and building a flattened session list.
+          </p>
 
-          <div id="round-switcher" class="memorisation-rounds" hidden></div>
+          <section class="interactive-subtle-panel memorisation-progress">
+            <div class="memorisation-progress__summary">
+              <span id="page-counter" class="memorisation-counter-chip">Page 0 / 0</span>
+              <span id="completion-chip" class="memorisation-counter-chip memorisation-counter-chip--soft"
+                >0 / 0 blanks completed</span
+              >
+              <span id="review-chip" class="memorisation-counter-chip memorisation-counter-chip--soft"
+                >0 to review</span
+              >
+            </div>
 
-          <section id="prompt-card" class="interactive-subtle-panel memorisation-practice-card">
-            <p class="memorisation-placeholder">Loading drill items...</p>
+            <div class="memorisation-progress__actions">
+              <button id="prev-page" class="secondary-link" type="button">Prev page</button>
+              <button id="next-blank" class="doc-link" type="button">Next blank</button>
+              <button id="next-page" class="secondary-link" type="button">Next page</button>
+              <button id="review-toggle" class="doc-link" type="button" hidden>
+                Review missed / revealed blanks
+              </button>
+            </div>
           </section>
 
-          <div class="memorisation-actions">
-            <button
-              id="check-answer"
-              class="memorisation-action-button memorisation-action-button--primary"
-              type="button"
-            >
-              Check answer
-            </button>
-            <button
-              id="show-answer"
-              class="memorisation-action-button memorisation-action-button--secondary"
-              type="button"
-            >
-              Show answer
-            </button>
-            <button
-              id="previous-item"
-              class="memorisation-action-button memorisation-action-button--ghost"
-              type="button"
-            >
-              Previous item
-            </button>
-            <button
-              id="next-item"
-              class="memorisation-action-button memorisation-action-button--ghost"
-              type="button"
-            >
-              Next item
-            </button>
-          </div>
+          <section id="session-banner" class="interactive-accent-panel memorisation-banner" hidden></section>
 
-          <section id="feedback-panel" class="interactive-subtle-panel memorisation-feedback" hidden>
-            <p id="feedback-status" class="memorisation-feedback__status">Feedback</p>
-            <p id="feedback-copy" class="memorisation-feedback__copy"></p>
-          </section>
-
-          <section id="answer-panel" class="interactive-accent-panel memorisation-answer" hidden>
-            <p class="memorisation-answer__label">Canonical answer</p>
-            <div id="answer-text" class="memorisation-answer__text"></div>
-            <p id="answer-note" class="memorisation-answer__note"></p>
-          </section>
+          <section id="session-page" class="memorisation-session-page"></section>
         </section>
       </main>
     </div>
