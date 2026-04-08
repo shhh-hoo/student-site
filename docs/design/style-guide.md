@@ -91,6 +91,28 @@ Viewer should not:
 - become visually louder than the document content
 - use decorative layout that competes with reading
 
+## Interactive page rules
+Interactive pages inside `student-site` are product pages, not external mini-sites.
+
+Interactive pages should:
+- reuse or closely match the site header / top-navigation logic where appropriate
+- follow the existing back-navigation pattern
+- use the same page width, container logic, spacing rhythm, and typography hierarchy
+- use the shared colour system and the existing card / button / input / chip language
+- prefer the shared shell, tokens, and existing UI primitives before adding route-local styles
+- add route-local styles only when page-specific structure or interaction states require them
+- keep local CSS aligned with existing `student-site` tokens
+- promote repeated interactive patterns into shared styles or components rather than duplicating per-page CSS indefinitely
+- preserve useful interaction logic while adapting the presentation layer to the site design system
+- use matching site card language for homepage, library, and hub entries
+
+Interactive pages should not:
+- look like a foreign standalone prototype embedded unchanged
+- invent a separate theme inside `student-site`
+- assume every interactive asset needs its own local stylesheet
+- use the document viewer shell unless the experience is actually document-like
+- rely on iframe-like or bolted-on integration unless absolutely necessary
+
 ## Tokens to preserve
 - outline-driven visual language
 - warm paper palette in light mode
