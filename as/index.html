@@ -4,20 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <script>
-      (() => {
-        const params = new URLSearchParams(window.location.search);
-        const explicitTheme = params.get("theme");
-        const resolvedTheme =
-          explicitTheme === "dark" || explicitTheme === "light"
-            ? explicitTheme
-            : window.matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-
-        document.documentElement.dataset.theme = resolvedTheme;
-      })();
-    </script>
+    <script src="../theme.js"></script>
     <title>AS Chemistry | Student Site</title>
     <link rel="stylesheet" href="../styles/tokens.css" />
     <link rel="stylesheet" href="../styles/base.css" />

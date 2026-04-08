@@ -1211,6 +1211,146 @@ body.page-stage[data-stage="A2"] .stage-hero__spotlight {
   color: var(--stage-muted);
 }
 
+html[data-theme="dark"] body.page-stage {
+  --stage-border: rgba(236, 241, 248, 0.22);
+  --stage-border-soft: rgba(176, 202, 255, 0.12);
+  --stage-surface: rgba(15, 20, 35, 0.98);
+  --stage-surface-strong: rgba(10, 14, 25, 0.95);
+  --stage-surface-tint: rgba(16, 25, 39, 0.94);
+  --stage-surface-alt: rgba(23, 21, 37, 0.94);
+}
+
+html[data-theme="dark"] body.page-stage .stage-hero__poster {
+  border-color: rgba(236, 241, 248, 0.24);
+  background:
+    radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.05), transparent 18%),
+    linear-gradient(160deg, rgba(17, 24, 40, 0.99), rgba(11, 16, 30, 0.95));
+  box-shadow:
+    var(--stage-shadow-lifted),
+    0 0 26px rgba(110, 216, 255, 0.08);
+}
+
+html[data-theme="dark"] body.page-stage .stage-hero__poster::after {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 64%);
+}
+
+html[data-theme="dark"] body.page-stage .stage-hero__panel {
+  background: linear-gradient(180deg, rgba(17, 24, 40, 0.98), rgba(13, 19, 32, 0.95));
+}
+
+html[data-theme="dark"] body.page-stage .stage-note {
+  background: linear-gradient(180deg, rgba(15, 21, 35, 0.98), rgba(11, 16, 28, 0.95));
+}
+
+html[data-theme="dark"] body.page-stage .stage-section--overview {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(110, 216, 255, 0.1), transparent 18%),
+    linear-gradient(180deg, rgba(14, 20, 35, 0.98), rgba(10, 15, 27, 0.95));
+}
+
+html[data-theme="dark"] body.page-stage .stage-section--documents {
+  background:
+    radial-gradient(circle at 84% 18%, rgba(255, 216, 110, 0.08), transparent 18%),
+    linear-gradient(180deg, rgba(15, 19, 34, 0.98), rgba(10, 14, 26, 0.95));
+}
+
+html[data-theme="dark"] body.page-stage .stage-handoff {
+  border-color: rgba(236, 241, 248, 0.2);
+  background:
+    radial-gradient(circle at 84% 26%, rgba(255, 143, 107, 0.1), transparent 18%),
+    linear-gradient(145deg, rgba(18, 24, 40, 0.98), rgba(12, 17, 30, 0.95));
+}
+
+html[data-theme="dark"] body.page-stage .stage-route-card--teal {
+  background: linear-gradient(180deg, rgba(14, 28, 37, 0.98), rgba(11, 18, 29, 0.94));
+}
+
+html[data-theme="dark"] body.page-stage .stage-route-card--gold {
+  background: linear-gradient(180deg, rgba(36, 26, 16, 0.96), rgba(16, 18, 30, 0.94));
+}
+
+html[data-theme="dark"] body.page-stage .stage-route-card--ink {
+  background: linear-gradient(180deg, rgba(20, 20, 30, 0.98), rgba(11, 15, 28, 0.94));
+}
+
+html[data-theme="dark"] body.page-stage .stage-topic-board {
+  border-color: rgba(236, 241, 248, 0.2);
+  background: linear-gradient(160deg, rgba(16, 26, 40, 0.99), rgba(12, 18, 31, 0.95));
+  box-shadow:
+    var(--stage-shadow-lifted),
+    0 0 24px rgba(110, 216, 255, 0.08);
+}
+
+html[data-theme="dark"] body.page-stage .overview-summary__count,
+html[data-theme="dark"] body.page-stage .overview-card__stage,
+html[data-theme="dark"] body.page-stage .overview-filter,
+html[data-theme="dark"] body.page-stage .stage-hero__pill,
+html[data-theme="dark"] body.page-stage .stage-route-card__count,
+html[data-theme="dark"] body.page-stage .stage-stat,
+html[data-theme="dark"] body.page-stage .resource-card__status,
+html[data-theme="dark"] body.page-stage .resource-card__meta {
+  border-color: rgba(236, 241, 248, 0.14);
+  background: rgba(9, 12, 22, 0.78);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] body.page-stage .overview-filter {
+  color: var(--stage-ink);
+}
+
+html[data-theme="dark"] body.page-stage .overview-filter:hover,
+html[data-theme="dark"] body.page-stage .overview-filter:focus-visible {
+  border-color: rgba(110, 216, 255, 0.5);
+  background: rgba(15, 20, 35, 0.94);
+  box-shadow: 0 0 0 4px rgba(110, 216, 255, 0.1);
+}
+
+html[data-theme="dark"] body.page-stage .overview-filter[aria-pressed="true"] {
+  border-color: rgba(110, 216, 255, 0.42);
+  background: linear-gradient(180deg, rgba(21, 38, 58, 0.96), rgba(16, 27, 42, 0.94));
+}
+
+html[data-theme="dark"] body.page-stage .overview-filter__count {
+  background: rgba(236, 241, 248, 0.08);
+}
+
+html[data-theme="dark"] body.page-stage .overview-card {
+  border-color: rgba(236, 241, 248, 0.14);
+  background: linear-gradient(180deg, rgba(16, 22, 37, 0.98), rgba(11, 16, 29, 0.95));
+  box-shadow:
+    var(--stage-shadow-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+html[data-theme="dark"] body.page-stage .overview-summary__label,
+html[data-theme="dark"] body.page-stage .directory-filter-group__label,
+html[data-theme="dark"] body.page-stage .overview-card__eyebrow,
+html[data-theme="dark"] body.page-stage .stage-hero__kicker,
+html[data-theme="dark"] body.page-stage .stage-hero__panel-kicker,
+html[data-theme="dark"] body.page-stage .stage-note__label,
+html[data-theme="dark"] body.page-stage .stage-handoff__kicker,
+html[data-theme="dark"] body.page-stage .stage-route-card__order,
+html[data-theme="dark"] body.page-stage .stage-topic-board__label {
+  color: rgba(226, 234, 243, 0.62);
+}
+
+html[data-theme="dark"] body.page-stage .overview-summary__copy,
+html[data-theme="dark"] body.page-stage .overview-card__copy,
+html[data-theme="dark"] body.page-stage .stage-hero__copy,
+html[data-theme="dark"] body.page-stage .stage-note p,
+html[data-theme="dark"] body.page-stage .stage-route-card__copy,
+html[data-theme="dark"] body.page-stage .stage-topic-board__copy,
+html[data-theme="dark"] body.page-stage .stage-handoff__copy,
+html[data-theme="dark"] body.page-stage .section-title__copy,
+html[data-theme="dark"] body.page-stage .stage-stat span {
+  color: var(--stage-muted);
+}
+
+html[data-theme="dark"] body.page-stage .overview-results__empty {
+  border-color: rgba(236, 241, 248, 0.14);
+  background: linear-gradient(180deg, rgba(15, 20, 35, 0.98), rgba(11, 16, 29, 0.94));
+}
+
 @media (max-width: 1100px) {
   .page-stage .stage-document-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
