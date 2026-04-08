@@ -128,6 +128,53 @@ const questionPageSizeByFile = {
   "multi-round-cloze": 3,
   default: 5,
 };
+const conceptKeywordStopwords = new Set([
+  "a",
+  "an",
+  "and",
+  "are",
+  "as",
+  "at",
+  "be",
+  "because",
+  "between",
+  "by",
+  "each",
+  "for",
+  "from",
+  "has",
+  "have",
+  "in",
+  "into",
+  "is",
+  "it",
+  "its",
+  "of",
+  "on",
+  "or",
+  "that",
+  "the",
+  "their",
+  "therefore",
+  "to",
+  "with",
+]);
+const contradictionPairs = [
+  ["same", "different"],
+  ["different", "same"],
+  ["increase", "decrease"],
+  ["decrease", "increase"],
+  ["higher", "lower"],
+  ["lower", "higher"],
+  ["stronger", "weaker"],
+  ["weaker", "stronger"],
+  ["oxidised", "reduced"],
+  ["reduced", "oxidised"],
+  ["oxidation", "reduction"],
+  ["reduction", "oxidation"],
+  ["positive", "negative"],
+  ["negative", "positive"],
+];
 
 const collator = new Intl.Collator(undefined, {
   numeric: true,
@@ -917,28 +964,254 @@ function fillPromptBlanks(prompt, values) {
   }, "");
 }
 
-function createAnswerModel({ answer, fullAnswer, fileId, prompt, question }) {
-  const canonicalValue = String(answer ?? fullAnswer ?? "").trim();
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function splitConceptPhrases(text) {
+  const normalized = String(text || "").trim();
+
+  if (!normalized) {
+    return [];
+  }
+
+  let phrases = normalized
+    .replace(/;\s+/g, "|")
+    .replace(/\.\s+/g, "|")
+    .replace(/\s+but\s+/gi, "|")
+    .replace(/\s+because\s+/gi, "|because ")
+    .replace(/\s+therefore\s+/gi, "|therefore ")
+    .replace(/\s+to form\s+/gi, "|form ")
+    .replace(/\s+to produce\s+/gi, "|produce ")
+    .split("|")
+    .map((phrase) => phrase.trim())
+    .filter(Boolean);
+
+  if (phrases.length === 1 && phrases[0].split(/\s+/).length > 10) {
+    phrases = phrases[0]
+      .replace(/,\s+(?=(and|which|while)\b)/gi, "|")
+      .split("|")
+      .map((phrase) => phrase.trim())
+      .filter(Boolean);
+  }
+
+  return phrases.length ? phrases : [normalized];
+}
+
+function buildConceptKeywords(text, matcherConfig) {
+  if (matcherConfig.type === "equation") {
+    return [];
+  }
+
+  return buildControlledTextComparable(text).tokens.filter(
+    (token) => token && !conceptKeywordStopwords.has(token) && !prepositionTokens.has(token),
+  );
+}
+
+function buildConceptHint(phrase, keywords) {
+  const lowered = String(phrase || "").toLowerCase();
+
+  if (lowered.includes("electron") && lowered.includes("remove")) {
+    return "Mention the electron-removal step.";
+  }
+
+  if (lowered.includes("ion") && lowered.includes("form")) {
+    return "Mention the ions formed.";
+  }
+
+  if (lowered.includes("proton") && lowered.includes("number")) {
+    return "Mention the proton-number condition.";
+  }
+
+  if (lowered.includes("neutron")) {
+    return "Mention what differs about neutrons.";
+  }
+
+  if (lowered.includes("lone pair")) {
+    return "Mention the lone-pair part of the idea.";
+  }
+
+  if (lowered.includes("electrostatic")) {
+    return "Mention the electrostatic attraction.";
+  }
+
+  if (lowered.includes("gaseous")) {
+    return "Mention the gaseous species involved.";
+  }
+
+  if (keywords.length === 1) {
+    return `Mention ${keywords[0]}.`;
+  }
+
+  if (keywords.length >= 2) {
+    return `Include the ${keywords.slice(0, 2).join(" / ")} idea.`;
+  }
+
+  return "Include the missing chemistry idea.";
+}
+
+function buildContradictionsForPhrase(phrase, matcherConfig, groupId) {
+  if (matcherConfig.type === "equation") {
+    return [];
+  }
+
+  return contradictionPairs
+    .map(([fromToken, toToken]) => {
+      const tokenPattern = new RegExp(`\\b${escapeRegExp(fromToken)}\\b`, "i");
+
+      if (!tokenPattern.test(phrase)) {
+        return null;
+      }
+
+      const contradictionText = phrase.replace(tokenPattern, toToken);
+      const normalizedVariant = buildControlledTextComparable(contradictionText).text;
+
+      if (!normalizedVariant) {
+        return null;
+      }
+
+      return {
+        id: `${groupId}::${fromToken}-vs-${toToken}`,
+        variants: [contradictionText],
+        normalized_variants: [normalizedVariant],
+      };
+    })
+    .filter(Boolean);
+}
+
+function normalizeConceptGroups(conceptGroups, matcherConfig) {
+  return conceptGroups
+    .map((group, groupIndex) => {
+      const variants = Array.isArray(group.variants) ? group.variants.filter(Boolean) : [];
+      const normalizedVariants = variants
+        .map((variant) =>
+          matcherConfig.type === "equation"
+            ? buildEquationComparable(variant, matcherConfig)
+            : buildControlledTextComparable(variant).text,
+        )
+        .filter(Boolean);
+
+      if (!normalizedVariants.length) {
+        return null;
+      }
+
+      const keywords = buildConceptKeywords(variants[0], matcherConfig);
+
+      return {
+        id: group.id || `group-${groupIndex + 1}`,
+        required: group.required !== false,
+        variants,
+        normalized_variants: normalizedVariants,
+        keywords,
+        minimum_keyword_matches: Number(
+          group.minimum_keyword_matches ??
+            (matcherConfig.type === "equation"
+              ? 0
+              : Math.min(4, Math.max(1, Math.ceil(keywords.length * 0.6)))),
+        ),
+        hint: group.hint || buildConceptHint(variants[0], keywords),
+      };
+    })
+    .filter(Boolean);
+}
+
+function normalizeContradictions(contradictions, matcherConfig) {
+  return contradictions
+    .map((contradiction, contradictionIndex) => {
+      const variants = Array.isArray(contradiction.variants)
+        ? contradiction.variants.filter(Boolean)
+        : [];
+      const normalizedVariants = variants
+        .map((variant) =>
+          matcherConfig.type === "equation"
+            ? buildEquationComparable(variant, matcherConfig)
+            : buildControlledTextComparable(variant).text,
+        )
+        .filter(Boolean);
+
+      if (!normalizedVariants.length) {
+        return null;
+      }
+
+      return {
+        id: contradiction.id || `contradiction-${contradictionIndex + 1}`,
+        variants,
+        normalized_variants: normalizedVariants,
+      };
+    })
+    .filter(Boolean);
+}
+
+function deriveConceptGroups(minimalPass, matcherConfig) {
+  if (matcherConfig.type === "equation") {
+    return normalizeConceptGroups(
+      [
+        {
+          id: "equation-match",
+          required: true,
+          variants: [minimalPass],
+          hint: "Match the stored equation.",
+        },
+      ],
+      matcherConfig,
+    );
+  }
+
+  return normalizeConceptGroups(
+    splitConceptPhrases(minimalPass).map((phrase, phraseIndex) => ({
+      id: `group-${phraseIndex + 1}`,
+      required: true,
+      variants: [phrase],
+      hint: buildConceptHint(phrase, buildConceptKeywords(phrase, matcherConfig)),
+    })),
+    matcherConfig,
+  );
+}
+
+function createAnswerModel({
+  answer,
+  fullAnswer,
+  minimalPass,
+  conceptGroups,
+  contradictions,
+  fileId,
+  prompt,
+  question,
+  type,
+  sourceScope,
+}) {
+  const canonicalValue = String(answer ?? fullAnswer ?? minimalPass ?? "").trim();
   const resolvedFullAnswer = String(fullAnswer ?? canonicalValue).trim() || canonicalValue;
-  const resolvedMinimalPass = canonicalValue || resolvedFullAnswer;
+  const resolvedMinimalPass =
+    String(
+      minimalPass ??
+        (type === "definition" && sourceScope && sourceScope !== "paper_only"
+          ? canonicalValue
+          : canonicalValue),
+    ).trim() || resolvedFullAnswer;
+  const matcherConfig = getMatcherConfig({
+    fileId,
+    prompt,
+    question,
+  });
+  const resolvedConceptGroups = normalizeConceptGroups(conceptGroups || [], matcherConfig);
+  const derivedConceptGroups = resolvedConceptGroups.length
+    ? resolvedConceptGroups
+    : deriveConceptGroups(resolvedMinimalPass, matcherConfig);
+  const resolvedContradictions = normalizeContradictions(contradictions || [], matcherConfig);
+  const derivedContradictions =
+    resolvedContradictions.length > 0
+      ? resolvedContradictions
+      : derivedConceptGroups.flatMap((group) =>
+          buildContradictionsForPhrase(group.variants[0], matcherConfig, group.id),
+        );
 
   return {
     full_answer: resolvedFullAnswer,
     minimal_pass: resolvedMinimalPass,
-    concept_groups: [
-      {
-        id: "primary",
-        required: true,
-        variants: [resolvedMinimalPass],
-        hint: "Match the stored chemistry wording.",
-      },
-    ],
-    contradictions: [],
-    matcherConfig: getMatcherConfig({
-      fileId,
-      prompt,
-      question,
-    }),
+    concept_groups: derivedConceptGroups,
+    contradictions: derivedContradictions,
+    matcherConfig,
   };
 }
 
@@ -987,9 +1260,14 @@ function buildSingleQuestion(item, fileEntry) {
   const answerModel = createAnswerModel({
     answer: item.answer,
     fullAnswer: item.full_answer || item.answer,
+    minimalPass: item.minimal_pass,
+    conceptGroups: item.concept_groups,
+    contradictions: item.contradictions,
     fileId: fileEntry.id,
     prompt: item.prompt,
     question: item.question,
+    type: item.type,
+    sourceScope: item.source_scope,
   });
   const blank = createBlankModel(question, 0, answerModel, {
     label: "Your answer",
@@ -1017,13 +1295,16 @@ function buildGuidedClozeQuestion(item, fileEntry) {
     return null;
   }
 
-  const answerModels = answers.map((answer) =>
+  const answerModels = answers.map((answer, answerIndex) =>
     createAnswerModel({
       answer,
       fullAnswer: answer,
+      minimalPass: item.minimal_pass_answers?.[answerIndex],
       fileId: fileEntry.id,
       prompt: item.prompt,
       question: item.question,
+      type: item.type,
+      sourceScope: item.source_scope,
     }),
   );
 
@@ -1073,13 +1354,16 @@ function buildMultiRoundQuestions(item, fileEntry) {
         return null;
       }
 
-      const answerModels = answers.map((answer) =>
+      const answerModels = answers.map((answer, answerIndex) =>
         createAnswerModel({
           answer,
           fullAnswer: answer,
+          minimalPass: item.minimal_pass_answers?.[answerIndex],
           fileId: fileEntry.id,
           prompt: round.prompt,
           question: item.question,
+          type: item.type,
+          sourceScope: item.source_scope,
         }),
       );
 
@@ -1119,9 +1403,14 @@ function buildFullReconstructionQuestion(item, fileEntry) {
   const answerModel = createAnswerModel({
     answer: item.answer,
     fullAnswer: item.answer,
+    minimalPass: item.minimal_pass,
+    conceptGroups: item.concept_groups,
+    contradictions: item.contradictions,
     fileId: fileEntry.id,
     prompt: item.prompt,
     question: item.question,
+    type: item.type,
+    sourceScope: item.source_scope,
   });
   const blank = createBlankModel(question, 0, answerModel, {
     label: "Your full answer",
@@ -1378,25 +1667,82 @@ function setBlankValue(blankId, value) {
   blankState.value = value;
 }
 
-function runLegacyBlankMatcher(blank, userValue) {
-  const canonicalValue = blank.answerModel.minimal_pass || blank.answerModel.full_answer;
-  const matchResult = evaluateMatchResult(
-    userValue,
-    canonicalValue,
-    blank.answerModel.matcherConfig,
-  );
-  const success = isSuccessfulMatchState(matchResult.state);
-  const requiredGroupIds = blank.answerModel.concept_groups
-    .filter((group) => group.required)
-    .map((group) => group.id);
+function buildComparableInput(value, matcherConfig) {
+  if (matcherConfig.type === "equation") {
+    const text = buildEquationComparable(value, matcherConfig);
+
+    return {
+      text,
+      tokens: text ? [text] : [],
+      tokenSet: new Set(text ? [text] : []),
+      ngrams: new Set(text ? [text] : []),
+    };
+  }
+
+  const comparable = buildControlledTextComparable(value);
+  const ngrams = new Set();
+
+  for (let length = Math.min(comparable.tokens.length, 6); length > 0; length -= 1) {
+    for (let startIndex = 0; startIndex <= comparable.tokens.length - length; startIndex += 1) {
+      ngrams.add(comparable.tokens.slice(startIndex, startIndex + length).join(" "));
+    }
+  }
 
   return {
-    status: success ? "correct" : "wrong",
-    coveredGroups: success ? requiredGroupIds : [],
-    missingGroups: success ? [] : requiredGroupIds,
-    contradictionHits: [],
-    minimumPassSatisfied: success,
-    matchState: matchResult.state,
+    text: comparable.text,
+    tokens: comparable.tokens,
+    tokenSet: new Set(comparable.tokens),
+    ngrams,
+  };
+}
+
+function evaluateConceptMatcher(blank, userValue) {
+  const answerModel = blank.answerModel;
+  const comparableInput = buildComparableInput(userValue, answerModel.matcherConfig);
+  const legacyResult = evaluateMatchResult(
+    userValue,
+    answerModel.minimal_pass,
+    answerModel.matcherConfig,
+  );
+  const coveredGroups = [];
+  const missingGroups = [];
+
+  answerModel.concept_groups.forEach((group) => {
+    const phraseCovered = group.normalized_variants.some(
+      (variant) => comparableInput.text === variant || comparableInput.ngrams.has(variant),
+    );
+    const keywordMatches = group.keywords.filter((keyword) => comparableInput.tokenSet.has(keyword));
+    const keywordCovered =
+      answerModel.matcherConfig.type !== "equation" &&
+      group.minimum_keyword_matches > 0 &&
+      keywordMatches.length >= group.minimum_keyword_matches;
+
+    if (phraseCovered || keywordCovered) {
+      coveredGroups.push(group.id);
+      return;
+    }
+
+    if (group.required) {
+      missingGroups.push(group.id);
+    }
+  });
+
+  const contradictionHits = answerModel.contradictions
+    .filter((contradiction) =>
+      contradiction.normalized_variants.some(
+        (variant) => comparableInput.text === variant || comparableInput.ngrams.has(variant),
+      ),
+    )
+    .map((contradiction) => contradiction.id);
+  const minimumPassSatisfied = missingGroups.length === 0 && contradictionHits.length === 0;
+
+  return {
+    status: minimumPassSatisfied ? "correct" : "wrong",
+    coveredGroups,
+    missingGroups,
+    contradictionHits,
+    minimumPassSatisfied,
+    matchState: legacyResult.state,
   };
 }
 
@@ -1415,7 +1761,7 @@ function checkBlank(blankId) {
     };
   }
 
-  const result = runLegacyBlankMatcher(blank, blankState.value);
+  const result = evaluateConceptMatcher(blank, blankState.value);
 
   blankState.coveredGroups = result.coveredGroups;
   blankState.missingGroups = result.missingGroups;
@@ -1656,6 +2002,13 @@ function getBlankFeedbackDescriptor(blank, blankState) {
   }
 
   if (blankState.status === "wrong") {
+    const firstMissingGroup = blank.answerModel.concept_groups.find((group) =>
+      blankState.missingGroups.includes(group.id),
+    );
+    const contradictionWarning = blankState.contradictionHits.length
+      ? " Remove the contradictory idea and try again."
+      : "";
+
     if (blankState.matchState === "near_miss_preposition") {
       return {
         label: "wrong",
@@ -1667,7 +2020,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
     return {
       label: "wrong",
       tone: "wrong",
-      message: "Wrong. Keep working on this blank before moving on.",
+      message: `Wrong. ${firstMissingGroup?.hint || "Add the missing chemistry idea."}${contradictionWarning}`,
     };
   }
 
@@ -1930,7 +2283,8 @@ function renderProgressHeader() {
   nextPageButton.disabled = currentPageIndex >= pages.length - 1;
   nextBlankButton.disabled = !findNextIncompleteBlankAfter(appState.currentBlankId);
 
-  reviewToggleButton.hidden = reviewCount === 0;
+  reviewToggleButton.hidden =
+    reviewCount === 0 || (!appState.reviewMode && completedBlanks !== totalBlanks);
   reviewToggleButton.textContent = appState.reviewMode
     ? "Back to main session"
     : `Review missed / revealed blanks (${reviewCount})`;
