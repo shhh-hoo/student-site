@@ -1,7 +1,7 @@
 {
   "hero": {
     "title": "Choose AS or A2, then move through one chemistry library.",
-    "subtitle": "Start with the stage you need, then use interactive practice when you want quick drills.",
+    "subtitle": "Start with the stage you need, then use the interactive hub when you want quick drills.",
     "primary_cta": {
       "label": "Explore AS",
       "href": "as/"
@@ -21,13 +21,8 @@
       "href": "as/",
       "cta_label": "Start with AS",
       "count_label": "4 documents",
-      "chips": [
-        "AS"
-      ],
-      "supporting_tags": [
-        "Alcohols",
-        "Group 2"
-      ]
+      "chips": ["AS"],
+      "supporting_tags": ["Alcohols", "Group 2"]
     },
     {
       "id": "a2-entry",
@@ -38,13 +33,8 @@
       "href": "a2/",
       "cta_label": "Start with A2",
       "count_label": "5 documents",
-      "chips": [
-        "A2"
-      ],
-      "supporting_tags": [
-        "Arenes",
-        "Electrochemistry"
-      ]
+      "chips": ["A2"],
+      "supporting_tags": ["Arenes", "Electrochemistry"]
     },
     {
       "id": "interactive-entry",
@@ -52,16 +42,11 @@
       "title": "Interactive Practice",
       "kicker": "Interactive practice",
       "description": "Use quick drills and tools when you want short practice between longer revision sessions.",
-      "href": "interactive/ir-past-paper-trainer/",
+      "href": "interactive/",
       "cta_label": "Open interactive",
-      "count_label": "1 tool",
-      "chips": [
-        "AS+A2"
-      ],
-      "supporting_tags": [
-        "IR spectroscopy",
-        "Past paper"
-      ]
+      "count_label": "2 tools",
+      "chips": ["AS+A2"],
+      "supporting_tags": ["IR spectroscopy", "Memorisation"]
     }
   ],
   "featured_documents": [
@@ -73,12 +58,7 @@
     "chemistry/9701-equation-bank-as-alcohols-carbonyls",
     "chemistry/9701-equation-bank-a2-physical-transition-elements"
   ],
-  "quick_search_topics": [
-    "alcohols",
-    "arenes",
-    "electrochemistry",
-    "amines"
-  ],
+  "quick_search_topics": ["alcohols", "arenes", "electrochemistry", "amines"],
   "notes": {
     "editorial_rule": "Keep homepage focused on route choice and top-level featured documents instead of turning it into a mixed library page."
   }

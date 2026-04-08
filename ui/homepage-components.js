@@ -434,7 +434,7 @@ function getResourceMetaItems(resource, layout) {
 }
 
 export function createInteractiveSectionMarkup(section) {
-  if (!section.resource) {
+  if (!Array.isArray(section.resources) || section.resources.length === 0) {
     return "";
   }
 
@@ -444,27 +444,30 @@ export function createInteractiveSectionMarkup(section) {
       id="interactive-lab"
       aria-labelledby="interactive-heading"
     >
-      ${createSectionTitleMarkup({
-        kicker: section.kicker,
-        title: section.title,
-        copy: section.copy,
-        id: "interactive-heading",
-      })}
-      <div class="interactive-shell">
-        <div class="interactive-shell__spotlight">
-          ${createResourceCardMarkup(section.resource, { layout: "spotlight" })}
-        </div>
+      <div class="homepage-section__header homepage-section__header--split">
+        ${createSectionTitleMarkup({
+          kicker: section.kicker,
+          title: section.title,
+          copy: section.copy,
+          id: "interactive-heading",
+        })}
         ${
-          section.noteCard
-            ? `
-            <article class="interactive-note">
-              <span>${escapeHtml(section.noteCard.label)}</span>
-              <strong>${escapeHtml(section.noteCard.title)}</strong>
-              <p>${escapeHtml(section.noteCard.copy)}</p>
-            </article>
-          `
+          section.action
+            ? createCTAButtonMarkup({
+                href: section.action.href,
+                label: section.action.label,
+                variant: section.action.variant || "secondary",
+                compact: true,
+              })
             : ""
         }
+      </div>
+      <div class="overview-results">
+        <div class="overview-results__grid homepage-overview__grid">
+          ${(section.resources || [])
+            .map((resource) => createResourceCardMarkup(resource, { layout: "standard" }))
+            .join("")}
+        </div>
       </div>
     </section>
   `;

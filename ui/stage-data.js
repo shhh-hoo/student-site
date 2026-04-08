@@ -37,7 +37,7 @@ export function buildStagePageViewModel({
         { href: helpers.buildSiteHref("index.html"), label: "Home" },
         { href: helpers.buildSiteHref("as/"), label: "AS" },
         { href: helpers.buildSiteHref("a2/"), label: "A2" },
-        { href: helpers.buildSiteHref("interactive/ir-past-paper-trainer/"), label: "Interactive" },
+        { href: helpers.buildSiteHref("interactive/"), label: "Interactive" },
       ],
       quickAction: {
         href: helpers.buildLibraryHref({ stage: stageKey }, "library-panel"),

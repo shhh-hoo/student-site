@@ -1,0 +1,16 @@
+{
+  "id": "9701-memorisation-bank",
+  "title": "9701 Memorisation Bank",
+  "type": "code",
+  "subject": "Chemistry",
+  "topic": "memorisation-bank",
+  "tags": ["memorisation", "revision", "definitions", "reaction-paths", "equations", "cloze"],
+  "description": "Strict exact-match drill bank for CAIE 9701 memorisation prompts across AS and A2.",
+  "source_kind": "teacher-made",
+  "status": "ready",
+  "stage": "AS+A2",
+  "stage_detail": "AS+A2, memorisation-first",
+  "part": "Cross-stage revision",
+  "content_format": "html",
+  "entry_file": "index.html"
+}

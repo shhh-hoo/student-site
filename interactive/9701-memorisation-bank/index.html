@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (() => {
+        const params = new URLSearchParams(window.location.search);
+        const explicitTheme = params.get("theme");
+        const resolvedTheme =
+          explicitTheme === "dark" || explicitTheme === "light"
+            ? explicitTheme
+            : window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+
+        document.documentElement.dataset.theme = resolvedTheme;
+      })();
+    </script>
+    <title>9701 Memorisation Bank | Student Site</title>
+    <link rel="stylesheet" href="../../styles/tokens.css" />
+    <link rel="stylesheet" href="../../styles/base.css" />
+    <link rel="stylesheet" href="../../styles/brand.css" />
+    <link rel="stylesheet" href="../../styles/interactive-shell.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="interactive-shell-page">
+    <div class="page-shell interactive-site-shell">
+      <header class="interactive-hero">
+        <a class="interactive-return" href="../index.html">Back to Interactive</a>
+        <p class="interactive-kicker">Student Site · Interactive Chemistry</p>
+        <div class="interactive-hero-grid">
+          <div class="interactive-title-block">
+            <div class="interactive-meta-row">
+              <span class="interactive-meta-chip">CAIE 9701</span>
+              <span class="interactive-meta-chip">AS + A2</span>
+              <span class="interactive-meta-chip">Strict recall</span>
+            </div>
+            <h1>9701 Memorisation Bank</h1>
+            <p class="interactive-summary">
+              Drill one memorisation prompt at a time with exact-match-lite checking, quick reveal,
+              and stage-first switching across definitions, reagents and conditions, reaction paths,
+              equations, and explanation cloze rounds.
+            </p>
+          </div>
+          <div class="interactive-meta-group">
+            <article class="interactive-meta-card">
+              <span>Checking model</span>
+              <strong>Trim, repeated-space collapse, and case-insensitive comparison only.</strong>
+            </article>
+            <article class="interactive-meta-card">
+              <span>Focus</span>
+              <strong
+                >Strict recall practice first, not scoring, persistence, or mastery
+                tracking.</strong
+              >
+            </article>
+          </div>
+        </div>
+      </header>
+
+      <main class="interactive-app-shell memorisation-layout">
+        <aside class="interactive-panel memorisation-sidebar">
+          <section class="memorisation-control">
+            <p class="memorisation-control__label">Stage</p>
+            <div id="stage-switcher" class="memorisation-switcher"></div>
+          </section>
+
+          <section class="memorisation-control">
+            <p class="memorisation-control__label">Mode</p>
+            <div id="mode-tabs" class="memorisation-modes"></div>
+          </section>
+
+          <label class="memorisation-control" for="topic-filter">
+            <span class="memorisation-control__label">Topic</span>
+            <select id="topic-filter" class="memorisation-select">
+              <option value="">Loading topics...</option>
+            </select>
+          </label>
+
+          <div class="interactive-subtle-panel memorisation-stats">
+            <div class="memorisation-stat">
+              <span>Mode file</span>
+              <strong id="mode-manifest-count">0 source items</strong>
+            </div>
+            <div class="memorisation-stat">
+              <span>Active pool</span>
+              <strong id="pool-count">0 runtime units</strong>
+            </div>
+            <div class="memorisation-stat">
+              <span>Counter</span>
+              <strong id="item-counter">0 / 0</strong>
+            </div>
+          </div>
+
+          <details class="interactive-help">
+            <summary>
+              Drill rules
+              <span class="interactive-help-summary-copy">
+                Exact-match-lite only. No paraphrase acceptance.
+              </span>
+            </summary>
+            <div class="interactive-help-body">
+              <div class="interactive-help-grid">
+                <article class="interactive-note-card">
+                  <span>Single-answer modes</span>
+                  <strong>Checked on blur or Enter</strong>
+                  <p>
+                    Definitions, reagents and conditions, reaction paths, and equations all use one
+                    answer box with strict stored-answer comparison.
+                  </p>
+                </article>
+                <article class="interactive-note-card">
+                  <span>Cloze mode</span>
+                  <strong>One input per blank</strong>
+                  <p>
+                    Each round is flattened into its own runtime unit and each blank is checked
+                    independently before reveal.
+                  </p>
+                </article>
+              </div>
+            </div>
+          </details>
+        </aside>
+
+        <section class="interactive-panel memorisation-workspace">
+          <div class="memorisation-workspace__header">
+            <div class="memorisation-badges">
+              <span id="stage-badge" class="memorisation-badge">Stage</span>
+              <span id="mode-badge" class="memorisation-badge">Mode</span>
+              <span id="topic-badge" class="memorisation-badge">Topic</span>
+              <span id="round-badge" class="memorisation-badge" hidden>Round</span>
+            </div>
+            <span id="counter-chip" class="memorisation-counter-chip">0 / 0</span>
+          </div>
+
+          <p id="question-label" class="memorisation-question-label">Preparing drill unit</p>
+          <h2 id="question-title">Loading memorisation data...</h2>
+          <p id="question-copy" class="memorisation-question-copy">
+            Reading stage manifests and building runtime units.
+          </p>
+
+          <section id="prompt-card" class="interactive-subtle-panel memorisation-prompt"></section>
+
+          <div class="memorisation-actions">
+            <button id="reveal-answer" class="secondary-link" type="button">Show answer</button>
+            <button id="next-item" class="doc-link" type="button">Next</button>
+          </div>
+
+          <section id="answer-panel" class="interactive-accent-panel memorisation-answer" hidden>
+            <p id="answer-label" class="memorisation-answer__label">Canonical answer</p>
+            <div id="answer-text" class="memorisation-answer__text"></div>
+            <p id="answer-note" class="memorisation-answer__note"></p>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

@@ -8,10 +8,16 @@ import {
   getTagDisplayLabel,
 } from "./site-helpers.js";
 
-const manualInteractiveEntries = [
+const fallbackInteractiveEntries = [
   {
+    asset_id: "ir-past-paper-trainer",
     href: "interactive/ir-past-paper-trainer/",
     metaPath: "interactive/ir-past-paper-trainer/meta.json",
+  },
+  {
+    asset_id: "9701-memorisation-bank",
+    href: "interactive/9701-memorisation-bank/",
+    metaPath: "interactive/9701-memorisation-bank/meta.json",
   },
 ];
 
@@ -46,12 +52,32 @@ export async function loadCurationBundle(sitePrefix = "./") {
 }
 
 export async function loadInteractiveResources(sitePrefix = "./") {
+  let interactiveEntries = fallbackInteractiveEntries;
+
+  try {
+    const registry = await fetchJson("public/data/curation/interactive.json", sitePrefix);
+
+    if (Array.isArray(registry?.resources) && registry.resources.length > 0) {
+      interactiveEntries = registry.resources;
+    }
+  } catch (error) {
+    console.warn("Could not load interactive registry.", error);
+  }
+
   const resources = await Promise.all(
-    manualInteractiveEntries.map(async (entry) => {
+    interactiveEntries.map(async (entry) => {
       try {
-        const meta = await fetchJson(entry.metaPath, sitePrefix);
+        const metaPath = entry.metaPath || entry.meta_path;
+
+        if (!metaPath || !entry.href) {
+          return null;
+        }
+
+        const meta = await fetchJson(metaPath, sitePrefix);
+
         return {
           ...meta,
+          ...entry,
           href: buildSiteHref(entry.href, sitePrefix),
           kind: "interactive",
         };
@@ -104,10 +130,14 @@ export function createDocumentResourceModel(documentItem, helpers, overrides = {
 export function createInteractiveResourceModel(resource, helpers, overrides = {}) {
   const tags = Array.isArray(resource.tags) ? resource.tags : [];
   const defaultChips = [resource.stage, resource.part, "Interactive tool"].filter(Boolean);
-  const defaultTags = tags.slice(0, overrides.tagLimit ?? 4).map((tag) => helpers.getTagDisplayLabel(tag));
+  const defaultTags = tags
+    .slice(0, overrides.tagLimit ?? 4)
+    .map((tag) => helpers.getTagDisplayLabel(tag));
   const defaultMetaLine = [
     helpers.getSourceKindLabel(resource.source_kind),
-    resource.content_format ? helpers.getContentFormatLabel(resource.content_format) : "Interactive",
+    resource.content_format
+      ? helpers.getContentFormatLabel(resource.content_format)
+      : "Interactive",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -116,7 +146,8 @@ export function createInteractiveResourceModel(resource, helpers, overrides = {}
     kind: "interactive",
     eyebrow: overrides.eyebrow || resource.kicker || "Interactive practice",
     title: overrides.title || resource.display_title || resource.title || "Interactive practice",
-    description: overrides.description || resource.description || "Interactive practice for quick revision.",
+    description:
+      overrides.description || resource.description || "Interactive practice for quick revision.",
     href: overrides.href || resource.href,
     ctaLabel: overrides.ctaLabel || "Open interactive",
     status: overrides.status || helpers.getReadableLabel(resource.status || "ready"),
@@ -127,10 +158,7 @@ export function createInteractiveResourceModel(resource, helpers, overrides = {}
   };
 }
 
-export function createViewModelHelpers({
-  buildDocumentLinkHref,
-  buildLibraryHref,
-}) {
+export function createViewModelHelpers({ buildDocumentLinkHref, buildLibraryHref }) {
   return {
     buildDocumentLinkHref,
     buildLibraryHref,

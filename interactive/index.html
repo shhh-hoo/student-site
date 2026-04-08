@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (() => {
+        const params = new URLSearchParams(window.location.search);
+        const explicitTheme = params.get("theme");
+        const resolvedTheme =
+          explicitTheme === "dark" || explicitTheme === "light"
+            ? explicitTheme
+            : window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+
+        document.documentElement.dataset.theme = resolvedTheme;
+      })();
+    </script>
+    <title>Interactive Chemistry | Student Site</title>
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/brand.css" />
+    <link rel="stylesheet" href="../styles/interactive-shell.css" />
+    <link rel="stylesheet" href="./hub.css" />
+  </head>
+  <body class="interactive-shell-page">
+    <div class="page-shell interactive-site-shell">
+      <header class="interactive-hero">
+        <a class="interactive-return" href="../index.html">Back to Student Site</a>
+        <p class="interactive-kicker">Student Site · Interactive Chemistry</p>
+        <div class="interactive-hero-grid">
+          <div class="interactive-title-block">
+            <div class="interactive-meta-row">
+              <span class="interactive-meta-chip">CAIE 9701</span>
+              <span class="interactive-meta-chip" id="interactive-count-chip">Loading tools</span>
+              <span class="interactive-meta-chip">Hub route</span>
+            </div>
+            <h1>Interactive practice</h1>
+            <p class="interactive-summary">
+              Choose between the IR trainer and the memorisation bank without jumping back through
+              the document directory. Each tool stays focused on short, deliberate drill work.
+            </p>
+          </div>
+          <div class="interactive-meta-group">
+            <article class="interactive-meta-card">
+              <span>Use this page for</span>
+              <strong>Quick route selection between standalone practice tools.</strong>
+            </article>
+            <article class="interactive-meta-card">
+              <span>Why separate?</span>
+              <strong
+                >Interactive drills stay lightweight while AS, A2, and library browse stay
+                calm.</strong
+              >
+            </article>
+          </div>
+        </div>
+      </header>
+
+      <main class="interactive-app-shell interactive-hub-layout">
+        <section class="interactive-panel interactive-hub-panel">
+          <div class="interactive-hub-panel__header">
+            <div>
+              <p class="interactive-hub-panel__kicker">Tool list</p>
+              <h2>Choose a focused drill</h2>
+              <p class="interactive-hub-panel__copy">
+                Open the tool that matches the kind of chemistry recall you want to practise now.
+              </p>
+            </div>
+          </div>
+
+          <div id="interactive-list" class="interactive-hub-grid" aria-live="polite">
+            <article class="interactive-hub-card interactive-hub-card--placeholder">
+              <p class="interactive-hub-card__eyebrow">Loading</p>
+              <h3>Reading interactive registry...</h3>
+              <p>Preparing the current list of standalone chemistry tools.</p>
+            </article>
+          </div>
+        </section>
+
+        <aside class="interactive-subtle-panel interactive-hub-note">
+          <p class="interactive-hub-note__kicker">Study pattern</p>
+          <h2>Short drill, then longer notes</h2>
+          <p>
+            Use the memorisation bank for strict wording recall and the IR trainer for analysis
+            patterns, then return to AS, A2, or the full library when you want the broader notes.
+          </p>
+        </aside>
+      </main>
+    </div>
+
+    <script type="module" src="./hub.js"></script>
+  </body>
+</html>
