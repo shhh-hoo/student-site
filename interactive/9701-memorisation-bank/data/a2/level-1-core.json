@@ -1,0 +1,517 @@
+[
+  {
+    "id": "a2-core-001",
+    "stage": "A2",
+    "level": 1,
+    "topic": "thermodynamics",
+    "subtopic": "entropy",
+    "type": "definition",
+    "prompt": "Define the term entropy, S.",
+    "answer": "the number of possible arrangements of the particles and their energy in a given system",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "a2-core-002",
+    "stage": "A2",
+    "level": 1,
+    "topic": "buffers",
+    "subtopic": "buffer-solution",
+    "type": "definition",
+    "prompt": "Define a buffer solution.",
+    "answer": "a solution that resists change in pH when small amounts of acid or alkali are added",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "a2-core-003",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "ligand",
+    "type": "definition",
+    "prompt": "Define ligand.",
+    "answer": "an ion or molecule that donates a lone pair of electrons to a central metal ion or atom to form a dative bond",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-004",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "bidentate-ligand",
+    "type": "definition",
+    "prompt": "Explain what is meant by a bidentate ligand.",
+    "answer": "a ligand that forms two coordinate bonds to the same central metal ion or atom",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "a2-core-005",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "transition-element",
+    "type": "definition",
+    "prompt": "Define transition element.",
+    "answer": "an element that forms at least one stable ion with an incomplete d sub-shell",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-006",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "complex-ion",
+    "type": "definition",
+    "prompt": "Define complex ion.",
+    "answer": "an ion containing a central metal ion or atom bonded to one or more ligands by coordinate bonds",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-007",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "partition-coefficient",
+    "type": "definition",
+    "prompt": "Define partition coefficient.",
+    "answer": "the ratio of the concentration of a substance in two immiscible solvents at equilibrium",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-008",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "standard-electrode-potential",
+    "type": "definition",
+    "prompt": "Define standard electrode potential.",
+    "answer": "the e.m.f. of a cell formed by connecting the half-cell to a standard hydrogen electrode under standard conditions",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-009",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "rate-determining-step",
+    "type": "definition",
+    "prompt": "Define rate-determining step.",
+    "answer": "the slowest step in a reaction mechanism which determines the overall rate of reaction",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-010",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "order",
+    "type": "definition",
+    "prompt": "Define order of reaction with respect to a reactant.",
+    "answer": "the power to which the concentration of that reactant is raised in the rate equation",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-011",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "electrophile",
+    "type": "definition",
+    "prompt": "Define electrophile.",
+    "answer": "a species that accepts a pair of electrons",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-012",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "nucleophile",
+    "type": "definition",
+    "prompt": "Define nucleophile.",
+    "answer": "a species that donates a pair of electrons",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-013",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "electrophilic-substitution",
+    "type": "definition",
+    "prompt": "Define electrophilic substitution.",
+    "answer": "a reaction in which an electrophile replaces an atom or group of atoms in a molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-014",
+    "stage": "A2",
+    "level": 1,
+    "topic": "polymers",
+    "subtopic": "condensation-polymerisation",
+    "type": "definition",
+    "prompt": "Define condensation polymerisation.",
+    "answer": "polymerisation in which monomers join together with the elimination of a small molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-015",
+    "stage": "A2",
+    "level": 1,
+    "topic": "amino-acids",
+    "subtopic": "zwitterion",
+    "type": "definition",
+    "prompt": "Define zwitterion.",
+    "answer": "an ion that contains both a positive charge and a negative charge",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-016",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "nitration",
+    "type": "reagent_condition",
+    "prompt": "benzene -> nitrobenzene : reagent and conditions",
+    "answer": "concentrated HNO3 and concentrated H2SO4, 55C"
+  },
+  {
+    "id": "a2-core-017",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "reduction",
+    "type": "reagent_condition",
+    "prompt": "nitrobenzene -> phenylamine : reagent and conditions",
+    "answer": "Sn and concentrated HCl, heat, then NaOH"
+  },
+  {
+    "id": "a2-core-018",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "bromination",
+    "type": "reagent_condition",
+    "prompt": "benzene -> bromobenzene : reagent and conditions",
+    "answer": "Br2, FeBr3 catalyst"
+  },
+  {
+    "id": "a2-core-019",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "bromination",
+    "type": "reagent_condition",
+    "prompt": "phenol -> 2,4,6-tribromophenol : reagent and conditions",
+    "answer": "Br2(aq), room temperature"
+  },
+  {
+    "id": "a2-core-020",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "acyl-chloride-to-amide",
+    "type": "reagent_condition",
+    "prompt": "ethanoyl chloride -> ethanamide : reagent and conditions",
+    "answer": "NH3, room temperature"
+  },
+  {
+    "id": "a2-core-021",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "acyl-chloride-to-ester",
+    "type": "reagent_condition",
+    "prompt": "ethanoyl chloride -> ethyl ethanoate : reagent and conditions",
+    "answer": "ethanol, room temperature"
+  },
+  {
+    "id": "a2-core-022",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "nitrile-hydrolysis",
+    "type": "reagent_condition",
+    "prompt": "ethanenitrile -> ethanoic acid : reagent and conditions",
+    "answer": "dilute HCl, heat"
+  },
+  {
+    "id": "a2-core-023",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "nitrile-reduction",
+    "type": "reagent_condition",
+    "prompt": "ethanenitrile -> ethylamine : reagent and conditions",
+    "answer": "LiAlH4 in dry ether"
+  },
+  {
+    "id": "a2-core-024",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "d2o-test",
+    "type": "reagent_condition",
+    "prompt": "Identify O-H or N-H proton in 1H NMR : reagent",
+    "answer": "D2O"
+  },
+  {
+    "id": "a2-core-025",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "ammonia-ligand-substitution",
+    "type": "reagent_condition",
+    "prompt": "[Cu(H2O)6]2+ -> [Cu(NH3)4(H2O)2]2+ : reagent",
+    "answer": "excess NH3(aq)"
+  },
+  {
+    "id": "a2-core-026",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "diazotisation",
+    "type": "reaction_path",
+    "prompt": "phenylamine -> benzenediazonium chloride",
+    "answer": "NaNO2 and HCl, below 10C"
+  },
+  {
+    "id": "a2-core-027",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "diazonium-hydrolysis",
+    "type": "reaction_path",
+    "prompt": "benzenediazonium chloride -> phenol",
+    "answer": "warm water"
+  },
+  {
+    "id": "a2-core-028",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "alkaline-hydrolysis",
+    "type": "reaction_path",
+    "prompt": "ethyl ethanoate -> ethanol + ethanoate ion",
+    "answer": "aqueous NaOH, heat"
+  },
+  {
+    "id": "a2-core-029",
+    "stage": "A2",
+    "level": 1,
+    "topic": "buffers",
+    "subtopic": "acidic-buffer-action",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanoic acid with hydroxide ions.",
+    "answer": "CH3COOH + OH- -> CH3COO- + H2O"
+  },
+  {
+    "id": "a2-core-030",
+    "stage": "A2",
+    "level": 1,
+    "topic": "buffers",
+    "subtopic": "alkaline-buffer-action",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ammonia with hydrogen ions.",
+    "answer": "NH3 + H+ -> NH4+"
+  },
+  {
+    "id": "a2-core-031",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "she",
+    "type": "equation",
+    "prompt": "Write the half-equation for the standard hydrogen electrode.",
+    "answer": "2H+ + 2e- -> H2"
+  },
+  {
+    "id": "a2-core-032",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "permanganate-ironii",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of acidified manganate(VII) ions with iron(II) ions.",
+    "answer": "MnO4- + 8H+ + 5Fe2+ -> Mn2+ + 4H2O + 5Fe3+"
+  },
+  {
+    "id": "a2-core-033",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "ammine-complex",
+    "type": "equation",
+    "prompt": "Write the equation for the formation of [Cu(NH3)4(H2O)2]2+ from [Cu(H2O)6]2+ and NH3.",
+    "answer": "[Cu(H2O)6]2+ + 4NH3 <-> [Cu(NH3)4(H2O)2]2+ + 4H2O"
+  },
+  {
+    "id": "a2-core-034",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "chloro-complex",
+    "type": "equation",
+    "prompt": "Write the equation for the formation of [CuCl4]2- from [Cu(H2O)6]2+ and chloride ions.",
+    "answer": "[Cu(H2O)6]2+ + 4Cl- <-> [CuCl4]2- + 6H2O"
+  },
+  {
+    "id": "a2-core-035",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "nitration-equation",
+    "type": "equation",
+    "prompt": "Write the equation for the nitration of benzene.",
+    "answer": "C6H6 + HNO3 -> C6H5NO2 + H2O"
+  },
+  {
+    "id": "a2-core-036",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "bromination-equation",
+    "type": "equation",
+    "prompt": "Write the equation for the bromination of phenol with excess bromine water.",
+    "answer": "C6H5OH + 3Br2 -> C6H2Br3OH + 3HBr"
+  },
+  {
+    "id": "a2-core-037",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "hydrolysis-equation",
+    "type": "equation",
+    "prompt": "Write the equation for the hydrolysis of ethanoyl chloride.",
+    "answer": "CH3COCl + H2O -> CH3COOH + HCl"
+  },
+  {
+    "id": "a2-core-038",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "alkaline-hydrolysis-equation",
+    "type": "equation",
+    "prompt": "Write the equation for the alkaline hydrolysis of ethyl ethanoate.",
+    "answer": "CH3COOCH2CH3 + OH- -> CH3COO- + CH3CH2OH"
+  },
+  {
+    "id": "a2-core-039",
+    "stage": "A2",
+    "level": 1,
+    "topic": "amino-acids",
+    "subtopic": "zwitterion-formula",
+    "type": "fixed_conclusion",
+    "prompt": "Write the formula of the zwitterion of glycine.",
+    "answer": "H3N+CH2COO-"
+  },
+  {
+    "id": "a2-core-040",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "copper-ammonia",
+    "type": "test_outcome",
+    "prompt": "State the observation when excess aqueous ammonia is added to aqueous copper(II) ions.",
+    "answer": "pale blue precipitate dissolves in excess to give a dark blue solution"
+  },
+  {
+    "id": "a2-core-041",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "chromate",
+    "type": "standard_observation",
+    "prompt": "State the colour of chromate(VI) ions in aqueous solution.",
+    "answer": "yellow"
+  },
+  {
+    "id": "a2-core-042",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "dichromate",
+    "type": "standard_observation",
+    "prompt": "State the colour of dichromate(VI) ions in aqueous solution.",
+    "answer": "orange"
+  },
+  {
+    "id": "a2-core-043",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "d2o",
+    "type": "test_outcome",
+    "prompt": "State the effect of D2O on an O-H proton signal in proton NMR.",
+    "answer": "the signal disappears"
+  },
+  {
+    "id": "a2-core-044",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "bromine-water",
+    "type": "test_outcome",
+    "prompt": "State the observation when phenol reacts with bromine water.",
+    "answer": "orange to colourless and a white precipitate forms"
+  },
+  {
+    "id": "a2-core-045",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "acyl-chloride-water",
+    "type": "standard_observation",
+    "prompt": "State the observation when an acyl chloride is added to water.",
+    "answer": "steamy fumes"
+  },
+  {
+    "id": "a2-core-046",
+    "stage": "A2",
+    "level": 1,
+    "topic": "thermodynamics",
+    "subtopic": "gibbs-equation",
+    "type": "fixed_conclusion",
+    "prompt": "State the equation linking Gibbs free energy change, enthalpy change and entropy change.",
+    "answer": "ΔG = ΔH - TΔS"
+  },
+  {
+    "id": "a2-core-047",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "n-plus-one",
+    "type": "fixed_conclusion",
+    "prompt": "State the n + 1 rule.",
+    "answer": "a proton peak is split into n + 1 peaks by n equivalent protons on an adjacent carbon atom"
+  },
+  {
+    "id": "a2-core-048",
+    "stage": "A2",
+    "level": 1,
+    "topic": "thermodynamics",
+    "subtopic": "entropy-gases",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: more gaseous molecules means greater ____. ",
+    "answer": "entropy"
+  },
+  {
+    "id": "a2-core-049",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "variable-oxidation-states",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: transition elements have variable oxidation states because the 3d and 4s subshells are close in ____. ",
+    "answer": "energy"
+  },
+  {
+    "id": "a2-core-050",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "colour",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: colour in transition-metal complexes arises because different wavelengths of visible light are ____. ",
+    "answer": "absorbed"
+  }
+]

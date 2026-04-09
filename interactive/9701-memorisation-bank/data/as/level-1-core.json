@@ -1,0 +1,519 @@
+[
+  {
+    "id": "as-core-001",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "electronegativity",
+    "type": "definition",
+    "prompt": "Define electronegativity.",
+    "answer": "the ability of an atom in a molecule to attract the bonding pair of electrons in a covalent bond",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-core-002",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "relative-molecular-mass",
+    "type": "definition",
+    "prompt": "Define relative molecular mass.",
+    "answer": "the weighted average mass of a molecule compared with one twelfth of the mass of an atom of carbon-12",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-core-003",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "empirical-formula",
+    "type": "definition",
+    "prompt": "Define empirical formula.",
+    "answer": "the simplest whole-number ratio of the different atoms in a compound",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-core-004",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "isotopes",
+    "type": "definition",
+    "prompt": "Define isotopes.",
+    "answer": "atoms of the same element with the same number of protons but different numbers of neutrons",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-core-005",
+    "stage": "AS",
+    "level": 1,
+    "topic": "bonding",
+    "subtopic": "metallic-bonding",
+    "type": "definition",
+    "prompt": "Define metallic bonding.",
+    "answer": "the electrostatic attraction between positive metal ions and delocalised electrons",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-006",
+    "stage": "AS",
+    "level": 1,
+    "topic": "bonding",
+    "subtopic": "covalent-bond",
+    "type": "definition",
+    "prompt": "Define covalent bond.",
+    "answer": "the electrostatic attraction between a shared pair of electrons and the nuclei of the bonded atoms",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-007",
+    "stage": "AS",
+    "level": 1,
+    "topic": "bonding",
+    "subtopic": "coordinate-bond",
+    "type": "definition",
+    "prompt": "Define coordinate bond.",
+    "answer": "a covalent bond in which the shared pair of electrons is provided by one atom only",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-008",
+    "stage": "AS",
+    "level": 1,
+    "topic": "bonding",
+    "subtopic": "hydrogen-bond",
+    "type": "definition",
+    "prompt": "Define hydrogen bond.",
+    "answer": "the electrostatic attraction between a delta positive hydrogen atom bonded to N, O or F and a lone pair of electrons on an N, O or F atom in another molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-009",
+    "stage": "AS",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "le-chatelier",
+    "type": "definition",
+    "prompt": "Define Le Chatelier’s principle.",
+    "answer": "when a system at equilibrium is subjected to a change, the position of equilibrium moves to oppose the change",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-core-010",
+    "stage": "AS",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "dynamic-equilibrium",
+    "type": "definition",
+    "prompt": "Define dynamic equilibrium.",
+    "answer": "a state in which the forward and reverse reactions occur at equal rates in a closed system",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-011",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "activation-energy",
+    "type": "definition",
+    "prompt": "Define activation energy.",
+    "answer": "the minimum energy that colliding particles must have in order to react",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-012",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "catalyst",
+    "type": "definition",
+    "prompt": "Define catalyst.",
+    "answer": "a substance that increases the rate of a reaction without being used up in the reaction",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-013",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "addition-reaction",
+    "type": "definition",
+    "prompt": "Define addition reaction.",
+    "answer": "a reaction in which two molecules combine to form one product only",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-core-014",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "structural-isomerism",
+    "type": "definition",
+    "prompt": "Define structural isomerism.",
+    "answer": "the existence of compounds with the same molecular formula but different structural formulae",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-015",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "stereoisomerism",
+    "type": "definition",
+    "prompt": "Define stereoisomerism.",
+    "answer": "the existence of compounds with the same structural formula but with atoms arranged differently in space",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-core-016",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "hydrocarbon",
+    "type": "definition",
+    "prompt": "Define hydrocarbon.",
+    "answer": "a compound containing carbon and hydrogen only",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-017",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "homologous-series",
+    "type": "definition",
+    "prompt": "Define homologous series.",
+    "answer": "a family of compounds with the same functional group and the same general formula in which successive members differ by CH2",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-core-018",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "hydration",
+    "type": "reagent_condition",
+    "prompt": "ethene -> ethanol : reagent and conditions",
+    "answer": "steam, H3PO4 catalyst, 300C, 60 atm"
+  },
+  {
+    "id": "as-core-019",
+    "stage": "AS",
+    "level": 1,
+    "topic": "halogenoalkanes",
+    "subtopic": "hydrolysis",
+    "type": "reagent_condition",
+    "prompt": "bromoethane -> ethanol : reagent and conditions",
+    "answer": "aqueous NaOH, heat"
+  },
+  {
+    "id": "as-core-020",
+    "stage": "AS",
+    "level": 1,
+    "topic": "halogenoalkanes",
+    "subtopic": "elimination",
+    "type": "reagent_condition",
+    "prompt": "bromoethane -> ethene : reagent and conditions",
+    "answer": "ethanolic KOH, heat"
+  },
+  {
+    "id": "as-core-021",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "oxidation-to-aldehyde",
+    "type": "reagent_condition",
+    "prompt": "ethanol -> ethanal : reagent and conditions",
+    "answer": "K2Cr2O7/H+, distil"
+  },
+  {
+    "id": "as-core-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "oxidation-to-acid",
+    "type": "reagent_condition",
+    "prompt": "ethanol -> ethanoic acid : reagent and conditions",
+    "answer": "K2Cr2O7/H+, reflux"
+  },
+  {
+    "id": "as-core-023",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "alkene-test",
+    "type": "reagent_condition",
+    "prompt": "Test for C=C bond : reagent and conditions",
+    "answer": "Br2(aq), room temperature"
+  },
+  {
+    "id": "as-core-024",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "aldehyde-test",
+    "type": "reagent_condition",
+    "prompt": "Test for aldehyde with silver mirror : reagent and conditions",
+    "answer": "Tollens reagent, warm"
+  },
+  {
+    "id": "as-core-025",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "halogenation",
+    "type": "reaction_path",
+    "prompt": "methane -> chloromethane",
+    "answer": "Cl2, UV light"
+  },
+  {
+    "id": "as-core-026",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "halogen-addition",
+    "type": "reaction_path",
+    "prompt": "ethene -> 1,2-dibromoethane",
+    "answer": "Br2, room temperature"
+  },
+  {
+    "id": "as-core-027",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "dehydration",
+    "type": "reaction_path",
+    "prompt": "ethanol -> ethene",
+    "answer": "concentrated H2SO4, heat"
+  },
+  {
+    "id": "as-core-028",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "oxidation",
+    "type": "reaction_path",
+    "prompt": "ethanal -> ethanoic acid",
+    "answer": "K2Cr2O7/H+, reflux"
+  },
+  {
+    "id": "as-core-029",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-2",
+    "subtopic": "mg-with-water",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of magnesium with cold water.",
+    "answer": "Mg + 2H2O -> Mg(OH)2 + H2"
+  },
+  {
+    "id": "as-core-030",
+    "stage": "AS",
+    "level": 1,
+    "topic": "nitrogen-and-sulfur",
+    "subtopic": "so2-with-water",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of sulfur dioxide with water.",
+    "answer": "SO2 + H2O -> H2SO3"
+  },
+  {
+    "id": "as-core-031",
+    "stage": "AS",
+    "level": 1,
+    "topic": "nitrogen-and-sulfur",
+    "subtopic": "so2-with-naoh",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of sulfur dioxide with sodium hydroxide.",
+    "answer": "SO2 + 2NaOH -> Na2SO3 + H2O"
+  },
+  {
+    "id": "as-core-032",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "chlorine-with-iodide",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of chlorine with iodide ions.",
+    "answer": "Cl2 + 2I- -> 2Cl- + I2"
+  },
+  {
+    "id": "as-core-033",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "bromide-with-sulfuric-acid",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of bromide ions with concentrated sulfuric acid.",
+    "answer": "2Br- + 2H+ + H2SO4 -> Br2 + SO2 + 2H2O"
+  },
+  {
+    "id": "as-core-034",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydrocarbons",
+    "subtopic": "hydration-equation",
+    "type": "equation",
+    "prompt": "Write the equation for the hydration of ethene.",
+    "answer": "CH2=CH2 + H2O -> CH3CH2OH"
+  },
+  {
+    "id": "as-core-035",
+    "stage": "AS",
+    "level": 1,
+    "topic": "halogenoalkanes",
+    "subtopic": "hydrolysis-equation",
+    "type": "equation",
+    "prompt": "Write the equation for the hydrolysis of bromoethane with aqueous hydroxide ions.",
+    "answer": "CH3CH2Br + OH- -> CH3CH2OH + Br-"
+  },
+  {
+    "id": "as-core-036",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "dehydration-equation",
+    "type": "equation",
+    "prompt": "Write the equation for the dehydration of ethanol.",
+    "answer": "CH3CH2OH -> CH2=CH2 + H2O"
+  },
+  {
+    "id": "as-core-037",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "oxidation-equation",
+    "type": "equation",
+    "prompt": "Write the equation for the oxidation of ethanal using [O].",
+    "answer": "CH3CHO + [O] -> CH3COOH"
+  },
+  {
+    "id": "as-core-038",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "silver-halides",
+    "type": "standard_observation",
+    "prompt": "State the observation when chloride ions react with aqueous silver nitrate.",
+    "answer": "white precipitate"
+  },
+  {
+    "id": "as-core-039",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "silver-halides",
+    "type": "standard_observation",
+    "prompt": "State the observation when bromide ions react with aqueous silver nitrate.",
+    "answer": "cream precipitate"
+  },
+  {
+    "id": "as-core-040",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "silver-halides",
+    "type": "standard_observation",
+    "prompt": "State the observation when iodide ions react with aqueous silver nitrate.",
+    "answer": "yellow precipitate"
+  },
+  {
+    "id": "as-core-041",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "alkene-test",
+    "type": "test_outcome",
+    "prompt": "State the observation when bromine water reacts with an alkene.",
+    "answer": "orange to colourless"
+  },
+  {
+    "id": "as-core-042",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "dichromate",
+    "type": "test_outcome",
+    "prompt": "State the observation when acidified potassium dichromate(VI) reacts with a primary or secondary alcohol.",
+    "answer": "orange to green"
+  },
+  {
+    "id": "as-core-043",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "fehlings",
+    "type": "test_outcome",
+    "prompt": "State the positive observation with Fehling’s solution for an aldehyde.",
+    "answer": "brick-red precipitate"
+  },
+  {
+    "id": "as-core-044",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "tollens",
+    "type": "test_outcome",
+    "prompt": "State the positive observation with Tollens’ reagent for an aldehyde.",
+    "answer": "silver mirror"
+  },
+  {
+    "id": "as-core-045",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "carbonate",
+    "type": "test_outcome",
+    "prompt": "State the observation when a carbonate reacts with a dilute acid.",
+    "answer": "effervescence"
+  },
+  {
+    "id": "as-core-046",
+    "stage": "AS",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "pressure",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: increasing pressure shifts the equilibrium to the side with ____ moles of gas.",
+    "answer": "fewer"
+  },
+  {
+    "id": "as-core-047",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "temperature",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: increasing temperature means a greater proportion of particles have energy greater than or equal to ____. ",
+    "answer": "Ea"
+  },
+  {
+    "id": "as-core-048",
+    "stage": "AS",
+    "level": 1,
+    "topic": "bonding",
+    "subtopic": "metallic-conductivity",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: electrical conductivity in metals is due to ____ electrons.",
+    "answer": "delocalised"
+  },
+  {
+    "id": "as-core-049",
+    "stage": "AS",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "infrared",
+    "type": "fixed_conclusion",
+    "prompt": "State the characteristic infrared absorption range for a C=O bond.",
+    "answer": "around 1700 cm-1"
+  },
+  {
+    "id": "as-core-050",
+    "stage": "AS",
+    "level": 1,
+    "topic": "states-of-matter",
+    "subtopic": "ideal-gas",
+    "type": "fixed_conclusion",
+    "prompt": "State one assumption of an ideal gas.",
+    "answer": "there are no intermolecular forces between the gas molecules"
+  }
+]

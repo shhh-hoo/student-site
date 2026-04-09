@@ -1,0 +1,114 @@
+[
+  {
+    "id": "a2-guided-001",
+    "stage": "A2",
+    "level": 2,
+    "topic": "group-2",
+    "subtopic": "thermal-stability",
+    "type": "guided_cloze",
+    "question": "Explain the trend in the thermal stabilities of the carbonates of the Group 2 elements.",
+    "prompt": "Down the group the M2+ ion has lower ____ density, so it polarises the carbonate ion less.",
+    "answers": [
+      "charge"
+    ],
+    "full_answer": "The thermal stability of the Group 2 carbonates increases down the group because the M2+ ion has lower charge density. It polarises the carbonate ion less, so the carbonate ion is less distorted and less likely to decompose."
+  },
+  {
+    "id": "a2-guided-002",
+    "stage": "A2",
+    "level": 2,
+    "topic": "transition-elements",
+    "subtopic": "variable-oxidation-states",
+    "type": "guided_cloze",
+    "question": "Explain why transition elements have variable oxidation states.",
+    "prompt": "The 3d and 4s subshells are close in ____. ",
+    "answers": [
+      "energy"
+    ],
+    "full_answer": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy, so electrons can be removed from both subshells."
+  },
+  {
+    "id": "a2-guided-003",
+    "stage": "A2",
+    "level": 2,
+    "topic": "transition-elements",
+    "subtopic": "bidentate-ligand",
+    "type": "guided_cloze",
+    "question": "Explain what is meant by a bidentate ligand.",
+    "prompt": "A bidentate ligand forms ____ coordinate bonds to the same central metal ion.",
+    "answers": [
+      "two"
+    ],
+    "full_answer": "A bidentate ligand forms two coordinate bonds to the same central metal ion."
+  },
+  {
+    "id": "a2-guided-004",
+    "stage": "A2",
+    "level": 2,
+    "topic": "stereochemistry",
+    "subtopic": "polar-isomer",
+    "type": "guided_cloze",
+    "question": "Explain why one stereoisomer is polar.",
+    "prompt": "The bond dipoles do not ____ because the ligands are arranged asymmetrically in space.",
+    "answers": [
+      "cancel"
+    ],
+    "full_answer": "The bond dipoles do not cancel because the ligands are arranged asymmetrically in space. So the molecule has an overall dipole moment."
+  },
+  {
+    "id": "a2-guided-005",
+    "stage": "A2",
+    "level": 2,
+    "topic": "thermodynamics",
+    "subtopic": "large-positive-entropy",
+    "type": "guided_cloze",
+    "question": "Explain why ΔS is large and positive when several gaseous molecules are formed.",
+    "prompt": "The number of ____ molecules increases.",
+    "answers": [
+      "gaseous"
+    ],
+    "full_answer": "The number of gaseous molecules increases. Gases have greater freedom of movement and are more disordered than liquids or solids. Therefore the entropy increases and is positive."
+  },
+  {
+    "id": "a2-guided-006",
+    "stage": "A2",
+    "level": 2,
+    "topic": "electrochemistry",
+    "subtopic": "non-standard-ecell",
+    "type": "guided_cloze",
+    "question": "Explain why a measured Ecell may be less positive than E°cell.",
+    "prompt": "E°cell is defined under ____ conditions.",
+    "answers": [
+      "standard"
+    ],
+    "full_answer": "E°cell is defined under standard conditions. If the concentrations are not 1.0 mol dm-3, the electrode potentials change, so the measured Ecell can be less positive than E°cell."
+  },
+  {
+    "id": "a2-guided-007",
+    "stage": "A2",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "d2o",
+    "type": "guided_cloze",
+    "question": "Explain why an O-H proton signal disappears after shaking with D2O.",
+    "prompt": "The O-H proton is replaced by ____ from D2O.",
+    "answers": [
+      "deuterium"
+    ],
+    "full_answer": "The O-H proton is replaced by deuterium from D2O. Deuterium is not detected in the proton NMR spectrum in the same way, so the signal disappears."
+  },
+  {
+    "id": "a2-guided-008",
+    "stage": "A2",
+    "level": 2,
+    "topic": "stereochemistry",
+    "subtopic": "drug-chirality",
+    "type": "guided_cloze",
+    "question": "Explain why enantiomers of a drug may have different biological effects.",
+    "prompt": "Biological receptors are ____ so different enantiomers may interact with them differently.",
+    "answers": [
+      "chiral"
+    ],
+    "full_answer": "Biological receptors are chiral so different enantiomers may interact with them differently."
+  }
+]

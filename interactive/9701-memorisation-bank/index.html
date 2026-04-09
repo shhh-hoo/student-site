@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="../../styles/interactive-shell.css" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="interactive-shell-page">
-    <div class="page-shell interactive-site-shell">
+  <body class="interactive-shell-page memorisation-page">
+    <div class="page-shell interactive-site-shell memorisation-shell">
       <header class="site-header" aria-label="Site header">
         <div class="site-header__brand">
           <span class="site-header__mark" aria-hidden="true">J2</span>
@@ -47,7 +47,7 @@
         </div>
       </header>
 
-      <header class="interactive-hero">
+      <header class="interactive-hero memorisation-hero">
         <a class="interactive-return" href="../index.html" data-preserve-theme
           >Back to Interactive</a
         >
@@ -57,27 +57,24 @@
             <div class="interactive-meta-row">
               <span class="interactive-meta-chip">CAIE 9701</span>
               <span class="interactive-meta-chip">AS + A2</span>
-              <span class="interactive-meta-chip">Levelled pack</span>
+              <span class="interactive-meta-chip">Exact-match drill</span>
             </div>
             <h1>9701 Memorisation Bank</h1>
             <p class="interactive-summary">
-              Move through the regenerated knowledge structure in study order: stage, level, topic,
-              then training file. Level 1 stays strict and dictation-first, Levels 2 and 3 keep
-              cloze structure explicit, and Level 4 uses full canonical reconstruction.
+              Filter the final memorisation pack by stage, level, topic, and item type, then
+              practise with strict canonical checking inside the shared student-site shell.
             </p>
           </div>
           <div class="interactive-meta-group">
             <article class="interactive-meta-card">
-              <span>Navigation model</span>
-              <strong
-                >Stage → Level → Topic → Training file, with round control where needed.</strong
-              >
+              <span>Data shape</span>
+              <strong>Eight stage-level JSON files, loaded directly into one integrated route.</strong>
             </article>
             <article class="interactive-meta-card">
-              <span>Checking model</span>
+              <span>Matching model</span>
               <strong
-                >Controlled normalized matching only, with canonical answer reveal for
-                review.</strong
+                >Trim outer space, optionally collapse repeated spaces, then require an exact
+                answer.</strong
               >
             </article>
           </div>
@@ -86,77 +83,96 @@
 
       <main class="interactive-app-shell memorisation-layout">
         <aside class="interactive-panel memorisation-sidebar">
-          <section class="memorisation-control">
-            <p class="memorisation-control__label">Stage</p>
-            <div id="stage-switcher" class="memorisation-switcher"></div>
+          <section class="memorisation-panel-block">
+            <div class="memorisation-panel-heading">
+              <p class="memorisation-panel-heading__kicker">Filters</p>
+              <h2>Choose a drill slice</h2>
+              <p class="memorisation-panel-heading__copy">
+                Move by stage, level, topic, and type without leaving the route.
+              </p>
+            </div>
+
+            <section class="memorisation-control">
+              <p class="memorisation-control__label">Stage</p>
+              <div
+                id="stage-switcher"
+                class="memorisation-segmented memorisation-segmented--stage"
+                role="tablist"
+                aria-label="Stage"
+              ></div>
+            </section>
+
+            <section class="memorisation-control">
+              <p class="memorisation-control__label">Level</p>
+              <div
+                id="level-switcher"
+                class="memorisation-segmented memorisation-segmented--level"
+                role="tablist"
+                aria-label="Level"
+              ></div>
+            </section>
+
+            <label class="memorisation-control" for="topic-filter">
+              <span class="memorisation-control__label">Topic</span>
+              <select id="topic-filter" class="memorisation-select"></select>
+            </label>
+
+            <label class="memorisation-control" for="type-filter">
+              <span class="memorisation-control__label">Type</span>
+              <select id="type-filter" class="memorisation-select"></select>
+            </label>
           </section>
 
-          <section class="memorisation-control">
-            <p class="memorisation-control__label">Level</p>
-            <div id="level-switcher" class="memorisation-levels"></div>
-          </section>
-
-          <label class="memorisation-control" for="topic-filter">
-            <span class="memorisation-control__label">Topic</span>
-            <select id="topic-filter" class="memorisation-select">
-              <option value="">Loading topics...</option>
-            </select>
-          </label>
-
-          <section class="memorisation-control">
-            <p class="memorisation-control__label">Training File</p>
-            <div id="file-switcher" class="memorisation-files"></div>
-          </section>
-
-          <section id="definition-filter-section" class="memorisation-control" hidden>
-            <p class="memorisation-control__label">Definition Source</p>
-            <div id="definition-filter-grid" class="memorisation-filter-grid"></div>
-          </section>
-
-          <section id="round-switcher-section" class="memorisation-control" hidden>
-            <p class="memorisation-control__label">Round</p>
-            <div id="round-switcher" class="memorisation-filter-grid"></div>
-          </section>
-
-          <div class="interactive-subtle-panel memorisation-stats">
+          <article class="interactive-subtle-panel memorisation-stats">
             <div class="memorisation-stat">
-              <span>Training file</span>
-              <strong id="file-manifest-count">0 source items</strong>
+              <span>Source files</span>
+              <strong id="source-file-count">0</strong>
             </div>
             <div class="memorisation-stat">
-              <span>Active pool</span>
-              <strong id="pool-count">0 runtime units</strong>
+              <span>Active items</span>
+              <strong id="active-item-count">0</strong>
             </div>
             <div class="memorisation-stat">
-              <span>Counter</span>
-              <strong id="item-counter">0 / 0</strong>
+              <span>Topics in slice</span>
+              <strong id="topic-count">0</strong>
             </div>
-          </div>
+            <div class="memorisation-stat">
+              <span>Current card</span>
+              <strong id="card-counter">0 / 0</strong>
+            </div>
+          </article>
 
           <details class="interactive-help">
             <summary>
-              Drill rules
-              <span class="interactive-help-summary-copy">
-                Controlled normalized matching only. No paraphrase acceptance.
-              </span>
+              <span>Levels and matching</span>
+              <span class="interactive-help-summary-copy"
+                >Open the drill rules used on this page.</span
+              >
             </summary>
             <div class="interactive-help-body">
               <div class="interactive-help-grid">
                 <article class="interactive-note-card">
                   <span>Level 1</span>
-                  <strong>Strict canonical dictation</strong>
+                  <h3>Core AO1 dictation</h3>
                   <p>
                     Definitions, reagents and conditions, reaction paths, equations, observations,
-                    and fixed conclusions all use canonical stored answers with no relaxed chemistry
-                    matching.
+                    test outcomes, and fixed conclusions all use one stored answer.
                   </p>
                 </article>
                 <article class="interactive-note-card">
                   <span>Levels 2 to 4</span>
-                  <strong>Guided, multi-round, then full reconstruction</strong>
+                  <h3>Guided, multi-round, then full reconstruction</h3>
                   <p>
-                    Guided cloze stays fixed, multi-round keeps round structure visible, and Level 4
-                    checks the full canonical answer before reveal.
+                    Guided cloze checks each gap, multi-round cloze keeps the round structure
+                    visible, and full reconstruction checks the whole canonical sentence.
+                  </p>
+                </article>
+                <article class="interactive-note-card">
+                  <span>Matching</span>
+                  <h3>Strict wording stays strict</h3>
+                  <p>
+                    The checker trims the ends, optionally collapses repeated spaces, and then
+                    requires an exact answer. It does not accept paraphrases.
                   </p>
                 </article>
               </div>
@@ -170,28 +186,56 @@
               <span id="stage-badge" class="memorisation-badge">Stage</span>
               <span id="level-badge" class="memorisation-badge">Level</span>
               <span id="topic-badge" class="memorisation-badge">Topic</span>
-              <span id="file-badge" class="memorisation-badge">Training file</span>
-              <span id="source-badge" class="memorisation-badge" hidden>Definition source</span>
-              <span id="round-badge" class="memorisation-badge" hidden>Round</span>
+              <span id="type-badge" class="memorisation-badge">Type</span>
             </div>
             <span id="counter-chip" class="memorisation-counter-chip">0 / 0</span>
           </div>
 
-          <p id="question-label" class="memorisation-question-label">Preparing drill unit</p>
-          <h2 id="question-title">Loading memorisation data...</h2>
-          <p id="question-copy" class="memorisation-question-copy">
-            Reading stage manifests and building runtime units.
-          </p>
-
-          <section id="prompt-card" class="interactive-subtle-panel memorisation-prompt"></section>
-
-          <div class="memorisation-actions">
-            <button id="reveal-answer" class="secondary-link" type="button">Show answer</button>
-            <button id="next-item" class="doc-link" type="button">Next</button>
+          <div class="memorisation-question-block">
+            <p id="question-eyebrow" class="memorisation-question-eyebrow">Loading pack</p>
+            <h2 id="question-title">Loading memorisation bank...</h2>
+            <p id="question-copy" class="memorisation-question-copy">
+              Reading the stage and level files for this integrated route.
+            </p>
           </div>
 
+          <div id="round-switcher" class="memorisation-rounds" hidden></div>
+
+          <section id="prompt-card" class="interactive-subtle-panel memorisation-practice-card">
+            <p class="memorisation-placeholder">Loading drill items...</p>
+          </section>
+
+          <div class="memorisation-actions">
+            <button
+              id="check-answer"
+              class="memorisation-action-button memorisation-action-button--primary"
+              type="button"
+            >
+              Check answer
+            </button>
+            <button
+              id="show-answer"
+              class="memorisation-action-button memorisation-action-button--secondary"
+              type="button"
+            >
+              Show answer
+            </button>
+            <button
+              id="next-item"
+              class="memorisation-action-button memorisation-action-button--ghost"
+              type="button"
+            >
+              Next item
+            </button>
+          </div>
+
+          <section id="feedback-panel" class="interactive-subtle-panel memorisation-feedback" hidden>
+            <p id="feedback-status" class="memorisation-feedback__status">Feedback</p>
+            <p id="feedback-copy" class="memorisation-feedback__copy"></p>
+          </section>
+
           <section id="answer-panel" class="interactive-accent-panel memorisation-answer" hidden>
-            <p id="answer-label" class="memorisation-answer__label">Canonical answer</p>
+            <p class="memorisation-answer__label">Canonical answer</p>
             <div id="answer-text" class="memorisation-answer__text"></div>
             <p id="answer-note" class="memorisation-answer__note"></p>
           </section>

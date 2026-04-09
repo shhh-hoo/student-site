@@ -1,0 +1,62 @@
+[
+  {
+    "id": "a2-full-001",
+    "stage": "A2",
+    "level": 4,
+    "topic": "group-2",
+    "subtopic": "thermal-stability",
+    "type": "full_reconstruction",
+    "question": "Explain the trend in the thermal stabilities of the carbonates of the Group 2 elements.",
+    "answer": "The thermal stability of the Group 2 carbonates increases down the group because the M2+ ion has lower charge density. It polarises the carbonate ion less, so the carbonate ion is less distorted and less likely to decompose."
+  },
+  {
+    "id": "a2-full-002",
+    "stage": "A2",
+    "level": 4,
+    "topic": "transition-elements",
+    "subtopic": "variable-oxidation-states",
+    "type": "full_reconstruction",
+    "question": "Explain why transition elements have variable oxidation states.",
+    "answer": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy, so electrons can be removed from both subshells."
+  },
+  {
+    "id": "a2-full-003",
+    "stage": "A2",
+    "level": 4,
+    "topic": "thermodynamics",
+    "subtopic": "large-positive-entropy",
+    "type": "full_reconstruction",
+    "question": "Explain why ΔS is large and positive when several gaseous molecules are formed.",
+    "answer": "The number of gaseous molecules increases. Gases have greater freedom of movement and are more disordered than liquids or solids. Therefore the entropy increases and is positive."
+  },
+  {
+    "id": "a2-full-004",
+    "stage": "A2",
+    "level": 4,
+    "topic": "electrochemistry",
+    "subtopic": "non-standard-ecell",
+    "type": "full_reconstruction",
+    "question": "Explain why a measured Ecell may be less positive than E°cell.",
+    "answer": "E°cell is defined under standard conditions. If the concentrations are not 1.0 mol dm-3, the electrode potentials change, so the measured Ecell can be less positive than E°cell."
+  },
+  {
+    "id": "a2-full-005",
+    "stage": "A2",
+    "level": 4,
+    "topic": "analytical-techniques",
+    "subtopic": "d2o",
+    "type": "full_reconstruction",
+    "question": "Explain why an O-H proton signal disappears after shaking with D2O.",
+    "answer": "The O-H proton is replaced by deuterium from D2O. Deuterium is not detected in the proton NMR spectrum in the same way, so the signal disappears."
+  },
+  {
+    "id": "a2-full-006",
+    "stage": "A2",
+    "level": 4,
+    "topic": "stereochemistry",
+    "subtopic": "drug-chirality",
+    "type": "full_reconstruction",
+    "question": "Explain why enantiomers of a drug may have different biological effects.",
+    "answer": "Biological receptors are chiral so different enantiomers may interact with them differently."
+  }
+]

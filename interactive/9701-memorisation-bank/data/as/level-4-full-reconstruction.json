@@ -1,0 +1,62 @@
+[
+  {
+    "id": "as-full-001",
+    "stage": "AS",
+    "level": 4,
+    "topic": "periodicity",
+    "subtopic": "electronegativity",
+    "type": "full_reconstruction",
+    "question": "Explain the difference in the electronegativity values of O and S.",
+    "answer": "O has fewer occupied shells than S. There is less shielding and a smaller atomic radius, so the bonding pair is attracted more strongly to the nucleus."
+  },
+  {
+    "id": "as-full-002",
+    "stage": "AS",
+    "level": 4,
+    "topic": "bonding",
+    "subtopic": "metallic-conductivity",
+    "type": "full_reconstruction",
+    "question": "Explain why Mg has a higher electrical conductivity than Na.",
+    "answer": "Each Mg atom contributes two delocalised electrons whereas each Na atom contributes one. So Mg has more mobile charge carriers."
+  },
+  {
+    "id": "as-full-003",
+    "stage": "AS",
+    "level": 4,
+    "topic": "states-of-matter",
+    "subtopic": "co-vs-n2",
+    "type": "full_reconstruction",
+    "question": "Explain why CO has a higher boiling point than N2.",
+    "answer": "CO is a polar molecule so it has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces, so the intermolecular forces in CO are stronger."
+  },
+  {
+    "id": "as-full-004",
+    "stage": "AS",
+    "level": 4,
+    "topic": "equilibrium",
+    "subtopic": "pressure-and-yield",
+    "type": "full_reconstruction",
+    "question": "Explain why the yield of the gaseous product increases when pressure is increased.",
+    "answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas."
+  },
+  {
+    "id": "as-full-005",
+    "stage": "AS",
+    "level": 4,
+    "topic": "kinetics",
+    "subtopic": "temperature",
+    "type": "full_reconstruction",
+    "question": "Explain why increasing temperature increases the rate of reaction.",
+    "answer": "At higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases."
+  },
+  {
+    "id": "as-full-006",
+    "stage": "AS",
+    "level": 4,
+    "topic": "nitrogen-and-sulfur",
+    "subtopic": "hi-yield",
+    "type": "full_reconstruction",
+    "question": "Explain why sodium iodide gives a smaller percentage yield of hydrogen halide than sodium chloride when reacted with concentrated sulfuric acid.",
+    "answer": "Iodide ions are stronger reducing agents than chloride ions. The hydrogen iodide formed is oxidised by concentrated sulfuric acid. Therefore some HI is used up and the percentage yield is lower."
+  }
+]

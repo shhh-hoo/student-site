@@ -1,98 +1,71 @@
-const definitionScopeOptions = [
-  { id: "all", label: "All" },
-  { id: "paper_only", label: "Past paper only" },
-  { id: "syllabus_only", label: "Syllabus only" },
-  { id: "paper_and_syllabus", label: "Paper + syllabus" },
+const stageOrder = ["AS", "A2"];
+const levelDefinitions = [
+  {
+    value: 1,
+    key: "level-1-core",
+    label: "Level 1",
+    shortLabel: "1",
+    summary: "Core AO1 dictation",
+  },
+  {
+    value: 2,
+    key: "level-2-guided-cloze",
+    label: "Level 2",
+    shortLabel: "2",
+    summary: "Guided cloze",
+  },
+  {
+    value: 3,
+    key: "level-3-multi-round-cloze",
+    label: "Level 3",
+    shortLabel: "3",
+    summary: "Multi-round cloze",
+  },
+  {
+    value: 4,
+    key: "level-4-full-reconstruction",
+    label: "Level 4",
+    shortLabel: "4",
+    summary: "Full reconstruction",
+  },
 ];
-
-const levelOrder = [
-  "level-1-core",
-  "level-2-guided-cloze",
-  "level-3-multi-round-cloze",
-  "level-4-full-reconstruction",
+const typeOrder = [
+  "definition",
+  "reagent_condition",
+  "reaction_path",
+  "equation",
+  "standard_observation",
+  "test_outcome",
+  "fixed_conclusion",
+  "guided_cloze",
+  "multi_round_cloze",
+  "full_reconstruction",
 ];
-
-const fileOrder = [
-  "core-definitions",
-  "core-reagents-conditions",
-  "core-reaction-paths",
-  "core-equations",
-  "core-observations",
-  "core-fixed-conclusions",
-  "guided-cloze",
-  "multi-round-cloze",
-  "full-reconstruction",
-];
-
-const articleTokens = new Set(["a", "an", "the"]);
-const prepositionTokens = new Set([
-  "in",
-  "on",
-  "at",
-  "of",
-  "to",
-  "from",
-  "with",
-  "by",
-  "for",
-  "into",
-  "between",
-  "under",
-  "through",
-  "over",
-  "within",
-  "without",
-  "across",
-  "after",
-  "before",
-  "around",
-  "against",
-  "among",
-  "along",
-  "during",
-  "inside",
-  "outside",
-  "onto",
-  "upon",
-]);
-const exactSuccessStates = new Set(["exact", "normalized_match"]);
-const britishAmericanVariantMap = new Map([
-  ["sulphur", "sulfur"],
-  ["sulphate", "sulfate"],
-  ["sulphates", "sulfates"],
-  ["sulphite", "sulfite"],
-  ["sulphites", "sulfites"],
-  ["aluminium", "aluminum"],
-  ["ionisation", "ionization"],
-  ["ionisations", "ionizations"],
-  ["ionise", "ionize"],
-  ["ionised", "ionized"],
-  ["ionises", "ionizes"],
-  ["ionising", "ionizing"],
-  ["oxidise", "oxidize"],
-  ["oxidised", "oxidized"],
-  ["oxidises", "oxidizes"],
-  ["oxidising", "oxidizing"],
-  ["polymerisation", "polymerization"],
-  ["polymerisations", "polymerizations"],
-  ["polymerise", "polymerize"],
-  ["polymerised", "polymerized"],
-  ["polymerises", "polymerizes"],
-  ["polymerising", "polymerizing"],
-]);
-const bracketCharacters = new Set(["(", ")", "[", "]", "{", "}"]);
-const punctuationSeparatorCharacters = new Set([",", ".", ";", ":", "!", "?"]);
-const quoteCharacters = new Set(["'", '"']);
-const hyphenLikePattern = /[‐‑‒–—−]/g;
-const singleQuotePattern = /[‘’‚‛`´]/g;
-const doubleQuotePattern = /[“”„‟]/g;
-const punctuationSpacingPattern = /\s*([,.;:!?])\s*/g;
-const bracketSpacingPattern = /\s*([()[\]{}])\s*/g;
-const quoteCharacterPattern = /["']/g;
-const stateSymbolPattern = /\(\s*(aq|s|l|g)\s*\)/gi;
-const reversibleArrowPattern = /(?:⇌|↔|⟷|<=>)/g;
-const forwardArrowPattern = /(?:⟶|⟹|→|=>)/g;
-
+const typeLabelMap = {
+  definition: "Definition",
+  reagent_condition: "Reagent / condition",
+  reaction_path: "Reaction path",
+  equation: "Equation",
+  standard_observation: "Standard observation",
+  test_outcome: "Test outcome",
+  fixed_conclusion: "Fixed conclusion",
+  guided_cloze: "Guided cloze",
+  multi_round_cloze: "Multi-round cloze",
+  full_reconstruction: "Full reconstruction",
+};
+const sourceScopeLabelMap = {
+  paper_only: "Past paper only",
+  syllabus_only: "Syllabus only",
+  paper_and_syllabus: "Past paper + syllabus",
+};
+const dataFiles = stageOrder.flatMap((stage) =>
+  levelDefinitions.map((levelDefinition) => ({
+    stage,
+    level: levelDefinition.value,
+    levelKey: levelDefinition.key,
+    path: `./data/${stage.toLowerCase()}/${levelDefinition.key}.json`,
+  })),
+);
 const collator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: "base",
@@ -101,49 +74,44 @@ const collator = new Intl.Collator(undefined, {
 const stageSwitcher = document.getElementById("stage-switcher");
 const levelSwitcher = document.getElementById("level-switcher");
 const topicFilter = document.getElementById("topic-filter");
-const fileSwitcher = document.getElementById("file-switcher");
-const definitionFilterSection = document.getElementById("definition-filter-section");
-const definitionFilterGrid = document.getElementById("definition-filter-grid");
-const roundSwitcherSection = document.getElementById("round-switcher-section");
-const roundSwitcher = document.getElementById("round-switcher");
-const fileManifestCount = document.getElementById("file-manifest-count");
-const poolCount = document.getElementById("pool-count");
-const itemCounter = document.getElementById("item-counter");
-const counterChip = document.getElementById("counter-chip");
+const typeFilter = document.getElementById("type-filter");
+const sourceFileCount = document.getElementById("source-file-count");
+const activeItemCount = document.getElementById("active-item-count");
+const topicCount = document.getElementById("topic-count");
+const cardCounter = document.getElementById("card-counter");
 const stageBadge = document.getElementById("stage-badge");
 const levelBadge = document.getElementById("level-badge");
 const topicBadge = document.getElementById("topic-badge");
-const fileBadge = document.getElementById("file-badge");
-const sourceBadge = document.getElementById("source-badge");
-const roundBadge = document.getElementById("round-badge");
-const questionLabel = document.getElementById("question-label");
+const typeBadge = document.getElementById("type-badge");
+const counterChip = document.getElementById("counter-chip");
+const questionEyebrow = document.getElementById("question-eyebrow");
 const questionTitle = document.getElementById("question-title");
 const questionCopy = document.getElementById("question-copy");
+const roundSwitcher = document.getElementById("round-switcher");
 const promptCard = document.getElementById("prompt-card");
-const revealAnswerButton = document.getElementById("reveal-answer");
+const checkAnswerButton = document.getElementById("check-answer");
+const showAnswerButton = document.getElementById("show-answer");
 const nextItemButton = document.getElementById("next-item");
+const feedbackPanel = document.getElementById("feedback-panel");
+const feedbackStatus = document.getElementById("feedback-status");
+const feedbackCopy = document.getElementById("feedback-copy");
 const answerPanel = document.getElementById("answer-panel");
-const answerLabel = document.getElementById("answer-label");
 const answerText = document.getElementById("answer-text");
 const answerNote = document.getElementById("answer-note");
 
-const appState = {
-  catalog: null,
-  topicNormalizationMap: {},
-  stage: "",
-  level: "",
+const state = {
+  items: [],
+  stage: "AS",
+  level: 1,
   topic: "",
-  file: "",
-  definitionScope: "all",
-  round: "all",
-  activePool: [],
-  sequence: [],
-  sequenceIndex: 0,
-  currentUnitId: "",
-  revealed: false,
-  renderToken: 0,
-  fileDataCache: new Map(),
-  staticEventsRegistered: false,
+  type: "",
+  currentIndex: 0,
+  currentRoundIndex: 0,
+  responses: {},
+  checked: false,
+  showAnswer: false,
+  loading: true,
+  error: "",
 };
 
 function fetchJson(path) {
@@ -156,7 +124,11 @@ function fetchJson(path) {
   });
 }
 
-function formatLabel(value) {
+function getLevelDefinition(level) {
+  return levelDefinitions.find((entry) => entry.value === level) || levelDefinitions[0];
+}
+
+function formatLooseLabel(value) {
   return String(value || "")
     .trim()
     .split(/[-\s]+/)
@@ -165,1977 +137,770 @@ function formatLabel(value) {
     .join(" ");
 }
 
-function formatDefinitionScope(scope) {
-  return definitionScopeOptions.find((option) => option.id === scope)?.label || formatLabel(scope);
+function formatTypeLabel(type) {
+  if (!type) {
+    return "All types";
+  }
+
+  return typeLabelMap[type] || formatLooseLabel(type);
 }
 
-function normaliseUnicodeText(value) {
+function formatTopicLabel(topic) {
+  if (!topic) {
+    return "All topics";
+  }
+
+  return formatLooseLabel(topic);
+}
+
+function formatSourceScope(sourceScope) {
+  return sourceScopeLabelMap[sourceScope] || formatLooseLabel(sourceScope);
+}
+
+function normaliseAnswer(value) {
   return String(value ?? "")
-    .normalize("NFC")
-    .replace(hyphenLikePattern, "-")
-    .replace(singleQuotePattern, "'")
-    .replace(doubleQuotePattern, '"')
-    .replace(/\u00a0/g, " ");
-}
-
-function normaliseVariantToken(token) {
-  return token
-    .split("-")
-    .map((segment) => britishAmericanVariantMap.get(segment) || segment)
-    .join("-");
-}
-
-function buildControlledTextComparable(value, { ignorePrepositions = false } = {}) {
-  const normalizedText = normaliseUnicodeText(value)
     .trim()
-    .replace(bracketSpacingPattern, "$1")
-    .replace(punctuationSpacingPattern, " ")
-    .replace(quoteCharacterPattern, "")
-    .replace(/\s+/g, " ")
-    .toLowerCase();
+    .replace(/\s+/g, " ");
+}
 
-  if (!normalizedText) {
-    return { text: "", tokens: [] };
+function compareText(left, right) {
+  return collator.compare(left, right);
+}
+
+function sortByDefinedOrder(values, order) {
+  const orderLookup = new Map(order.map((value, index) => [value, index]));
+
+  return [...values].sort((left, right) => {
+    const leftOrder = orderLookup.has(left) ? orderLookup.get(left) : Number.POSITIVE_INFINITY;
+    const rightOrder = orderLookup.has(right)
+      ? orderLookup.get(right)
+      : Number.POSITIVE_INFINITY;
+
+    if (leftOrder !== rightOrder) {
+      return leftOrder - rightOrder;
+    }
+
+    return compareText(left, right);
+  });
+}
+
+function getStageItems(stage) {
+  return state.items.filter((item) => item.stage === stage);
+}
+
+function getStageLevelItems(stage, level) {
+  return state.items.filter((item) => item.stage === stage && item.level === level);
+}
+
+function getAvailableTopics(items) {
+  const uniqueTopics = [...new Set(items.map((item) => item.topic).filter(Boolean))];
+  return uniqueTopics.sort((left, right) => compareText(formatTopicLabel(left), formatTopicLabel(right)));
+}
+
+function getAvailableTypes(items) {
+  const uniqueTypes = [...new Set(items.map((item) => item.type).filter(Boolean))];
+  return sortByDefinedOrder(uniqueTypes, typeOrder);
+}
+
+function resetInteraction({ resetIndex = false, resetRound = true } = {}) {
+  if (resetIndex) {
+    state.currentIndex = 0;
   }
 
-  const tokens = normalizedText
-    .split(" ")
-    .filter(Boolean)
-    .map(normaliseVariantToken)
-    .filter((token) => !articleTokens.has(token))
-    .filter((token) => !(ignorePrepositions && prepositionTokens.has(token)));
+  if (resetRound) {
+    state.currentRoundIndex = 0;
+  }
+
+  state.responses = {};
+  state.checked = false;
+  state.showAnswer = false;
+}
+
+function clearCheckStateForEditing() {
+  if (!state.checked) {
+    return;
+  }
+
+  state.checked = false;
+  feedbackPanel.hidden = true;
+  feedbackPanel.dataset.tone = "";
+
+  promptCard
+    .querySelectorAll(".memorisation-response, .memorisation-cloze__input")
+    .forEach((field) => {
+      field.dataset.state = "";
+    });
+}
+
+function buildFilterModel() {
+  const stageLevelItems = getStageLevelItems(state.stage, state.level);
+  const availableTopics = getAvailableTopics(stageLevelItems);
+
+  if (state.topic && !availableTopics.includes(state.topic)) {
+    state.topic = "";
+  }
+
+  const topicItems = state.topic
+    ? stageLevelItems.filter((item) => item.topic === state.topic)
+    : stageLevelItems;
+  const availableTypes = getAvailableTypes(topicItems);
+
+  if (state.type && !availableTypes.includes(state.type)) {
+    state.type = "";
+  }
+
+  const filteredItems = state.type
+    ? topicItems.filter((item) => item.type === state.type)
+    : topicItems;
+
+  if (!filteredItems.length) {
+    state.currentIndex = 0;
+  } else if (state.currentIndex >= filteredItems.length) {
+    state.currentIndex = 0;
+  }
 
   return {
-    text: tokens.join(" "),
-    tokens,
+    stageLevelItems,
+    availableTopics,
+    availableTypes,
+    filteredItems,
   };
 }
 
-function buildEquationComparable(value, { ignoreStateSymbols = true } = {}) {
-  let normalizedText = normaliseUnicodeText(value)
-    .trim()
-    .replace(reversibleArrowPattern, "<->")
-    .replace(forwardArrowPattern, "->");
-
-  if (ignoreStateSymbols) {
-    normalizedText = normalizedText.replace(stateSymbolPattern, "");
+function getPromptModel(item) {
+  if (!item) {
+    return {
+      kind: "empty",
+      promptText: "",
+      answers: [],
+      canonicalAnswer: "",
+      rounds: [],
+    };
   }
 
-  return normalizedText
-    .replace(/\s*<->\s*/g, "<->")
-    .replace(/\s*->\s*/g, "->")
-    .replace(/\s+/g, "")
-    .toLowerCase();
-}
+  if (item.level === 2) {
+    return {
+      kind: "guided_cloze",
+      promptText: item.prompt || "",
+      answers: Array.isArray(item.answers) ? item.answers : [],
+      canonicalAnswer: item.full_answer || "",
+      rounds: [],
+    };
+  }
 
-function getMatcherConfig(unit) {
-  const fileId = getFileEntry()?.id;
+  if (item.level === 3) {
+    const rounds = Array.isArray(item.rounds) ? item.rounds : [];
 
-  if (fileId === "core-equations") {
-    const sourceText = `${unit?.prompt || ""} ${unit?.question || ""}`;
+    if (state.currentRoundIndex >= rounds.length) {
+      state.currentRoundIndex = 0;
+    }
+
+    const currentRound = rounds[state.currentRoundIndex] || rounds[0] || {
+      prompt: "",
+      answers: [],
+    };
 
     return {
-      type: "equation",
-      ignoreStateSymbols: !/state symbols?/i.test(sourceText),
+      kind: "multi_round_cloze",
+      promptText: currentRound.prompt || "",
+      answers: Array.isArray(currentRound.answers) ? currentRound.answers : [],
+      canonicalAnswer: item.full_answer || "",
+      rounds,
+    };
+  }
+
+  if (item.level === 4) {
+    return {
+      kind: "full_reconstruction",
+      promptText: "",
+      answers: [],
+      canonicalAnswer: item.answer || "",
+      rounds: [],
     };
   }
 
   return {
-    type: "controlled-text",
+    kind: "core",
+    promptText: "",
+    answers: [],
+    canonicalAnswer: item.answer || "",
+    rounds: [],
   };
 }
 
-function buildComparablePair(userValue, canonicalValue, matcherConfig) {
-  if (matcherConfig.type === "equation") {
-    return {
-      canonicalText: buildEquationComparable(canonicalValue, matcherConfig),
-      userText: buildEquationComparable(userValue, matcherConfig),
-    };
+function evaluateCurrentItem(item, promptModel) {
+  if (!item) {
+    return null;
   }
 
-  return {
-    canonicalText: buildControlledTextComparable(canonicalValue).text,
-    userText: buildControlledTextComparable(userValue).text,
-  };
-}
+  if (item.level === 2 || item.level === 3) {
+    const comparisons = promptModel.answers.map((expectedAnswer, index) => {
+      const fieldKey = `gap-${index}`;
+      const rawValue = state.responses[fieldKey] || "";
 
-function evaluateMatchResult(userValue, canonicalValue, matcherConfig) {
-  const rawUserText = String(userValue ?? "");
-  const comparablePair = buildComparablePair(rawUserText, canonicalValue, matcherConfig);
-
-  if (!rawUserText.trim()) {
-    return {
-      state: "untouched",
-      ...comparablePair,
-    };
-  }
-
-  if (rawUserText === String(canonicalValue ?? "")) {
-    return {
-      state: "exact",
-      ...comparablePair,
-    };
-  }
-
-  if (comparablePair.userText === comparablePair.canonicalText) {
-    return {
-      state: "normalized_match",
-      ...comparablePair,
-    };
-  }
-
-  if (matcherConfig.type !== "equation") {
-    const canonicalWithoutPrepositions = buildControlledTextComparable(canonicalValue, {
-      ignorePrepositions: true,
-    }).text;
-    const userWithoutPrepositions = buildControlledTextComparable(rawUserText, {
-      ignorePrepositions: true,
-    }).text;
-
-    if (
-      canonicalWithoutPrepositions &&
-      userWithoutPrepositions &&
-      canonicalWithoutPrepositions === userWithoutPrepositions
-    ) {
       return {
-        state: "near_miss_preposition",
-        ...comparablePair,
+        fieldKey,
+        rawValue,
+        expectedAnswer,
+        matched:
+          normaliseAnswer(rawValue) !== "" &&
+          normaliseAnswer(rawValue) === normaliseAnswer(expectedAnswer),
+      };
+    });
+    const matchedCount = comparisons.filter((comparison) => comparison.matched).length;
+    const answeredCount = comparisons.filter(
+      (comparison) => normaliseAnswer(comparison.rawValue) !== "",
+    ).length;
+
+    return {
+      kind: "cloze",
+      comparisons,
+      matchedCount,
+      answeredCount,
+      total: comparisons.length,
+      hasValue: answeredCount > 0,
+      isCorrect: comparisons.length > 0 && matchedCount === comparisons.length,
+    };
+  }
+
+  const rawValue = state.responses.main || "";
+
+  return {
+    kind: "free-text",
+    rawValue,
+    hasValue: normaliseAnswer(rawValue) !== "",
+    isCorrect:
+      normaliseAnswer(rawValue) !== "" &&
+      normaliseAnswer(rawValue) === normaliseAnswer(promptModel.canonicalAnswer),
+  };
+}
+
+function buildQuestionCopy(item, promptModel) {
+  const details = [formatTopicLabel(item.topic)];
+
+  if (item.subtopic) {
+    details.push(formatLooseLabel(item.subtopic));
+  }
+
+  if (item.level === 3 && promptModel.rounds.length > 1) {
+    details.push(`Round ${state.currentRoundIndex + 1} of ${promptModel.rounds.length}`);
+  }
+
+  return details.join(" · ");
+}
+
+function buildAnswerNote(item, promptModel) {
+  const notes = [];
+
+  if (item.type === "definition" && item.source_scope) {
+    notes.push(`Definition source: ${formatSourceScope(item.source_scope)}.`);
+  }
+
+  if (item.level === 2) {
+    notes.push("Guided cloze accepts only the stored gap answers.");
+  } else if (item.level === 3) {
+    notes.push("Every round points back to the same full canonical answer.");
+  } else if (item.level === 4) {
+    notes.push("Full reconstruction accepts only the stored canonical sentence.");
+  } else {
+    notes.push("Level 1 keeps the stored wording strict.");
+  }
+
+  if ((item.level === 2 || item.level === 3) && promptModel.answers.length) {
+    notes.push(`Gap answers: ${promptModel.answers.join(" · ")}.`);
+  }
+
+  return notes.join(" ");
+}
+
+function buildFeedbackModel(evaluation) {
+  if (!evaluation) {
+    return null;
+  }
+
+  if (!evaluation.hasValue) {
+    return {
+      tone: "warning",
+      status: "Add an answer first.",
+      copy: "The checker only runs once you have entered something to compare.",
+    };
+  }
+
+  if (evaluation.kind === "free-text") {
+    if (evaluation.isCorrect) {
+      return {
+        tone: "success",
+        status: "Correct.",
+        copy:
+          "The answer matches the canonical wording after trimming the ends and collapsing repeated spaces.",
       };
     }
-  }
-
-  return {
-    state: "incorrect",
-    ...comparablePair,
-  };
-}
-
-function getTextCharacterRanges(value) {
-  const text = String(value ?? "");
-  let offset = 0;
-
-  return Array.from(text).map((char) => {
-    const start = offset;
-    offset += char.length;
-    return {
-      char,
-      start,
-      end: offset,
-    };
-  });
-}
-
-function normalizeFeedbackCharacter(char) {
-  if ("‐‑‒–—−".includes(char)) {
-    return "-";
-  }
-
-  if ("‘’‚‛`´".includes(char)) {
-    return "'";
-  }
-
-  if ('“”„‟'.includes(char)) {
-    return '"';
-  }
-
-  if (char === "\u00a0") {
-    return " ";
-  }
-
-  return char;
-}
-
-function projectComparableTokenCharacters(tokenNodes, comparableToken) {
-  const comparableCharacters = Array.from(comparableToken);
-
-  if (!tokenNodes.length || !comparableCharacters.length) {
-    return [];
-  }
-
-  if (
-    comparableCharacters.length === tokenNodes.length &&
-    comparableCharacters.every((char, index) => char === tokenNodes[index].char)
-  ) {
-    return tokenNodes.map((node) => ({
-      char: node.char,
-      rawEnd: node.end,
-    }));
-  }
-
-  return comparableCharacters.map((char, index) => {
-    const sourceIndex = Math.min(
-      tokenNodes.length - 1,
-      Math.floor((((index + 1) * tokenNodes.length) - 1) / comparableCharacters.length),
-    );
 
     return {
-      char,
-      rawEnd: tokenNodes[sourceIndex].end,
-    };
-  });
-}
-
-function buildControlledTextComparableWithMap(value) {
-  const sourceCharacters = getTextCharacterRanges(value).map((segment) => ({
-    ...segment,
-    char: normalizeFeedbackCharacter(segment.char),
-  }));
-  const surfaceCharacters = [];
-  let pendingSpaceStart = -1;
-  let pendingSpaceEnd = -1;
-
-  function queuePendingSpace(start, end) {
-    if (!surfaceCharacters.length) {
-      return;
-    }
-
-    if (pendingSpaceStart < 0) {
-      pendingSpaceStart = start;
-    }
-
-    pendingSpaceEnd = end;
-  }
-
-  function flushPendingSpace() {
-    if (pendingSpaceStart < 0 || !surfaceCharacters.length) {
-      return;
-    }
-
-    const lastCharacter = surfaceCharacters[surfaceCharacters.length - 1];
-
-    if (lastCharacter.char !== " " && !bracketCharacters.has(lastCharacter.char)) {
-      surfaceCharacters.push({
-        char: " ",
-        start: pendingSpaceStart,
-        end: pendingSpaceEnd,
-      });
-    }
-
-    pendingSpaceStart = -1;
-    pendingSpaceEnd = -1;
-  }
-
-  sourceCharacters.forEach((segment) => {
-    const character = segment.char;
-
-    if (quoteCharacters.has(character)) {
-      return;
-    }
-
-    if (/\s/u.test(character) || punctuationSeparatorCharacters.has(character)) {
-      queuePendingSpace(segment.start, segment.end);
-      return;
-    }
-
-    if (bracketCharacters.has(character)) {
-      if (surfaceCharacters[surfaceCharacters.length - 1]?.char === " ") {
-        surfaceCharacters.pop();
-      }
-
-      pendingSpaceStart = -1;
-      pendingSpaceEnd = -1;
-      surfaceCharacters.push({
-        char: character,
-        start: segment.start,
-        end: segment.end,
-      });
-      return;
-    }
-
-    flushPendingSpace();
-    surfaceCharacters.push({
-      char: character.toLowerCase(),
-      start: segment.start,
-      end: segment.end,
-    });
-  });
-
-  if (surfaceCharacters[surfaceCharacters.length - 1]?.char === " ") {
-    surfaceCharacters.pop();
-  }
-
-  const tokenNodes = [];
-  let currentTokenNodes = [];
-
-  surfaceCharacters.forEach((character) => {
-    if (character.char === " ") {
-      if (currentTokenNodes.length) {
-        tokenNodes.push(currentTokenNodes);
-        currentTokenNodes = [];
-      }
-      return;
-    }
-
-    currentTokenNodes.push(character);
-  });
-
-  if (currentTokenNodes.length) {
-    tokenNodes.push(currentTokenNodes);
-  }
-
-  const comparableCharacters = [];
-  let hasVisibleToken = false;
-
-  tokenNodes.forEach((token) => {
-    const comparableToken = normaliseVariantToken(token.map((node) => node.char).join(""));
-
-    if (!comparableToken || articleTokens.has(comparableToken)) {
-      return;
-    }
-
-    if (hasVisibleToken) {
-      comparableCharacters.push({
-        char: " ",
-        rawEnd: token[0].start,
-      });
-    }
-
-    projectComparableTokenCharacters(token, comparableToken).forEach((character) => {
-      comparableCharacters.push(character);
-    });
-    hasVisibleToken = true;
-  });
-
-  return {
-    text: comparableCharacters.map((character) => character.char).join(""),
-    characters: comparableCharacters,
-  };
-}
-
-function buildEquationComparableWithMap(value, matcherConfig) {
-  const sourceCharacters = getTextCharacterRanges(value).map((segment) => ({
-    ...segment,
-    char: normalizeFeedbackCharacter(segment.char),
-  }));
-  const comparableCharacters = [];
-  let index = 0;
-
-  while (index < sourceCharacters.length) {
-    const remainingText = sourceCharacters.slice(index).map((segment) => segment.char).join("");
-
-    if (matcherConfig.ignoreStateSymbols) {
-      const stateSymbolMatch = remainingText.match(/^\(\s*(aq|s|l|g)\s*\)/i);
-
-      if (stateSymbolMatch) {
-        index += Array.from(stateSymbolMatch[0]).length;
-        continue;
-      }
-    }
-
-    const reversibleArrow = ["<=>", "⇌", "↔", "⟷"].find((token) =>
-      remainingText.startsWith(token),
-    );
-
-    if (reversibleArrow) {
-      const matchLength = Array.from(reversibleArrow).length;
-      const rawEnd = sourceCharacters[index + matchLength - 1].end;
-      comparableCharacters.push(
-        { char: "<", rawEnd },
-        { char: "-", rawEnd },
-        { char: ">", rawEnd },
-      );
-      index += matchLength;
-      continue;
-    }
-
-    const forwardArrow = ["=>", "⟶", "⟹", "→"].find((token) => remainingText.startsWith(token));
-
-    if (forwardArrow) {
-      const matchLength = Array.from(forwardArrow).length;
-      const rawEnd = sourceCharacters[index + matchLength - 1].end;
-      comparableCharacters.push({ char: "-", rawEnd }, { char: ">", rawEnd });
-      index += matchLength;
-      continue;
-    }
-
-    const currentCharacter = sourceCharacters[index];
-
-    if (/\s/u.test(currentCharacter.char)) {
-      index += 1;
-      continue;
-    }
-
-    comparableCharacters.push({
-      char: currentCharacter.char.toLowerCase(),
-      rawEnd: currentCharacter.end,
-    });
-    index += 1;
-  }
-
-  return {
-    text: comparableCharacters.map((character) => character.char).join(""),
-    characters: comparableCharacters,
-  };
-}
-
-function buildComparableWithMap(value, matcherConfig) {
-  if (matcherConfig.type === "equation") {
-    return buildEquationComparableWithMap(value, matcherConfig);
-  }
-
-  return buildControlledTextComparableWithMap(value);
-}
-
-function getMatchedPrefixLength(leftText, rightText) {
-  const leftCharacters = Array.from(leftText);
-  const rightCharacters = Array.from(rightText);
-  let matchedLength = 0;
-
-  while (
-    matchedLength < leftCharacters.length &&
-    matchedLength < rightCharacters.length &&
-    leftCharacters[matchedLength] === rightCharacters[matchedLength]
-  ) {
-    matchedLength += 1;
-  }
-
-  return matchedLength;
-}
-
-function appendHighlightSegment(segments, text, tone) {
-  if (!text) {
-    return;
-  }
-
-  const previousSegment = segments[segments.length - 1];
-
-  if (previousSegment?.tone === tone) {
-    previousSegment.text += text;
-    return;
-  }
-
-  segments.push({ text, tone });
-}
-
-function buildUserHighlightModel(userValue, canonicalValue, matcherConfig, checked) {
-  const rawText = String(userValue ?? "");
-  const result = evaluateMatchResult(rawText, canonicalValue, matcherConfig);
-
-  if (!rawText) {
-    return {
-      checked,
-      state: checked ? result.state : "untouched",
-      issueType: "empty",
-      segments: [],
+      tone: "danger",
+      status: "Not yet.",
+      copy:
+        "The wording still has to match the stored answer exactly after the route's space normalization.",
     };
   }
 
-  if (!checked) {
+  if (evaluation.isCorrect) {
     return {
-      checked,
-      state: "untouched",
-      issueType: "draft",
-      segments: [{ text: rawText, tone: "neutral" }],
+      tone: "success",
+      status: "Correct.",
+      copy: `All ${evaluation.total} gap${evaluation.total === 1 ? "" : "s"} match the stored answers.`,
     };
   }
 
-  if (result.state === "untouched") {
+  if (evaluation.matchedCount > 0) {
     return {
-      checked,
-      state: result.state,
-      issueType: "empty",
-      segments: [{ text: rawText, tone: "neutral" }],
-    };
-  }
-
-  if (isSuccessfulMatchState(result.state)) {
-    return {
-      checked,
-      state: result.state,
-      issueType: "success",
-      segments: [{ text: rawText, tone: "matched" }],
-    };
-  }
-
-  const userComparable = buildComparableWithMap(rawText, matcherConfig);
-  const canonicalText = buildComparablePair(rawText, canonicalValue, matcherConfig).canonicalText;
-
-  if (!userComparable.text) {
-    return {
-      checked,
-      state: result.state,
-      issueType: "first_divergence",
-      segments: [{ text: rawText, tone: "mismatch" }],
-    };
-  }
-
-  const matchedPrefixLength = getMatchedPrefixLength(userComparable.text, canonicalText);
-  const matchedRawEnd =
-    matchedPrefixLength > 0 ? userComparable.characters[matchedPrefixLength - 1].rawEnd : 0;
-  const segments = [];
-
-  if (matchedRawEnd > 0) {
-    appendHighlightSegment(segments, rawText.slice(0, matchedRawEnd), "matched");
-  }
-
-  if (matchedPrefixLength >= userComparable.text.length && userComparable.text.length < canonicalText.length) {
-    appendHighlightSegment(segments, rawText.slice(matchedRawEnd), "neutral");
-    return {
-      checked,
-      state: result.state,
-      issueType: "missing_suffix",
-      segments,
-    };
-  }
-
-  if (matchedPrefixLength >= canonicalText.length) {
-    appendHighlightSegment(segments, rawText.slice(matchedRawEnd), "extra");
-    return {
-      checked,
-      state: result.state,
-      issueType: "extra_suffix",
-      segments,
-    };
-  }
-
-  const mismatchRawEnd = userComparable.characters[matchedPrefixLength]?.rawEnd ?? rawText.length;
-  const mismatchStart = Math.min(matchedRawEnd, rawText.length);
-  const mismatchEnd = Math.max(mismatchStart, mismatchRawEnd);
-
-  appendHighlightSegment(segments, rawText.slice(mismatchStart, mismatchEnd), "mismatch");
-  appendHighlightSegment(segments, rawText.slice(mismatchEnd), "neutral");
-
-  if (!segments.length) {
-    appendHighlightSegment(segments, rawText, "mismatch");
-  }
-
-  return {
-    checked,
-    state: result.state,
-    issueType: "first_divergence",
-    segments,
-  };
-}
-
-function renderUserHighlightModel(mirrorContent, model) {
-  mirrorContent.replaceChildren();
-
-  model.segments.forEach((segment) => {
-    const segmentElement = document.createElement("span");
-    segmentElement.className = `memorisation-mirror-field__segment memorisation-mirror-field__segment--${segment.tone}`;
-    segmentElement.append(document.createTextNode(segment.text));
-    mirrorContent.append(segmentElement);
-  });
-}
-
-function isSuccessfulMatchState(state) {
-  return exactSuccessStates.has(state);
-}
-
-function getUntouchedMessage(matcherConfig, interactionLabel) {
-  if (matcherConfig.type === "equation") {
-    return `${interactionLabel} Equation matching normalizes spacing, arrow variants, and optional state symbols only.`;
-  }
-
-  return `${interactionLabel} Formatting, spelling, quote, punctuation, and article variants are normalized. Prepositions stay strict.`;
-}
-
-function getMatchMessage(state, matcherConfig, highlightModel) {
-  if (state === "exact") {
-    return {
-      text: "Exact match.",
-      tone: "correct",
-    };
-  }
-
-  if (state === "normalized_match") {
-    return {
-      text:
-        matcherConfig.type === "equation"
-          ? "Accepted equation formatting variant."
-          : "Accepted formatting / spelling / article variant.",
-      tone: "correct",
-    };
-  }
-
-  if (state === "near_miss_preposition") {
-    return {
-      text: "Almost there. The remaining issue looks like a preposition.",
       tone: "warning",
-    };
-  }
-
-  if (highlightModel?.issueType === "extra_suffix") {
-    return {
-      text: "Extra text appears at the end.",
-      tone: "incorrect",
-    };
-  }
-
-  if (highlightModel?.issueType === "missing_suffix") {
-    return {
-      text: "Your answer stops too early.",
-      tone: "incorrect",
+      status: "Partly correct.",
+      copy: `${evaluation.matchedCount} of ${evaluation.total} gaps match exactly. The remaining gaps still need the stored wording.`,
     };
   }
 
   return {
-    text:
-      matcherConfig.type === "equation" ? "Your equation diverges here." : "Your answer diverges here.",
-    tone: "incorrect",
+    tone: "danger",
+    status: "Not yet.",
+    copy: "None of the current gap answers match the stored wording exactly.",
   };
 }
 
-function syncMirroredFieldScroll(field, mirrorElement) {
-  mirrorElement.scrollTop = field.scrollTop;
-  mirrorElement.scrollLeft = field.scrollLeft;
+function createFilterButton({ value, label, meta, active, dataKey }) {
+  const button = document.createElement("button");
+  const labelSpan = document.createElement("span");
+  const metaSpan = document.createElement("span");
+
+  button.type = "button";
+  button.className = "memorisation-filter-button";
+  button.dataset[dataKey] = value;
+  button.dataset.active = String(active);
+  button.setAttribute("aria-pressed", String(active));
+
+  labelSpan.className = "memorisation-filter-button__label";
+  labelSpan.textContent = label;
+  metaSpan.className = "memorisation-filter-button__meta";
+  metaSpan.textContent = meta;
+
+  button.append(labelSpan, metaSpan);
+  return button;
 }
 
-function isFieldCompositionActive(event, isComposing) {
-  return Boolean(isComposing || event?.isComposing || event?.keyCode === 229);
-}
+function renderStageButtons() {
+  stageSwitcher.replaceChildren();
 
-function createMirroredFieldController({
-  field,
-  canonicalValue,
-  matcherConfig,
-  feedbackElement,
-  interactionLabel,
-  inline = false,
-  shouldCheckOnKeydown = null,
-  onCommit = null,
-  onStateChange = null,
-}) {
-  const shell = document.createElement(inline ? "span" : "div");
-  shell.className = [
-    "memorisation-mirror-field",
-    inline ? "memorisation-mirror-field--inline" : "",
-    field.tagName === "TEXTAREA"
-      ? "memorisation-mirror-field--textarea"
-      : "memorisation-mirror-field--single-line",
-  ]
-    .filter(Boolean)
-    .join(" ");
-  shell.dataset.focused = "false";
-
-  const mirror = document.createElement("div");
-  mirror.className = "memorisation-mirror-field__mirror";
-  mirror.setAttribute("aria-hidden", "true");
-
-  const mirrorContent = document.createElement("div");
-  mirrorContent.className = "memorisation-mirror-field__content";
-  mirror.append(mirrorContent);
-
-  field.classList.add("memorisation-mirror-field__control");
-  shell.append(mirror, field);
-
-  let checked = false;
-  let isComposing = false;
-  let pendingCheckAfterComposition = false;
-  let readyForStateCallbacks = false;
-  let syncFrameId = 0;
-
-  function queueMirrorSync() {
-    if (syncFrameId) {
-      cancelAnimationFrame(syncFrameId);
-    }
-
-    syncFrameId = requestAnimationFrame(() => {
-      syncFrameId = 0;
-      syncMirroredFieldScroll(field, mirror);
-    });
-  }
-
-  function updateSelectionState() {
-    shell.dataset.empty = field.value ? "false" : "true";
-  }
-
-  function updatePresentation() {
-    const result = checked
-      ? evaluateMatchResult(field.value, canonicalValue, matcherConfig)
-      : { state: "untouched" };
-    const highlightModel = buildUserHighlightModel(
-      field.value,
-      canonicalValue,
-      matcherConfig,
-      checked,
+  stageOrder.forEach((stage) => {
+    const stageItems = getStageItems(stage);
+    stageSwitcher.append(
+      createFilterButton({
+        value: stage,
+        label: stage,
+        meta: `${stageItems.length} item${stageItems.length === 1 ? "" : "s"}`,
+        active: state.stage === stage,
+        dataKey: "stage",
+      }),
     );
-
-    applyFieldState(field, checked ? result.state : "untouched");
-    renderUserHighlightModel(mirrorContent, highlightModel);
-    updateSelectionState();
-    queueMirrorSync();
-
-    if (!checked || result.state === "untouched") {
-      setFeedbackMessage(feedbackElement, getUntouchedMessage(matcherConfig, interactionLabel));
-    } else {
-      const message = getMatchMessage(result.state, matcherConfig, highlightModel);
-      setFeedbackMessage(feedbackElement, message.text, message.tone);
-    }
-
-    if (readyForStateCallbacks && typeof onStateChange === "function") {
-      onStateChange({
-        checked,
-        field,
-        highlightModel,
-        result: checked ? result : { state: "untouched" },
-      });
-    }
-  }
-
-  function checkField() {
-    pendingCheckAfterComposition = false;
-    checked = true;
-    updatePresentation();
-  }
-
-  function handleSelectionChange() {
-    updateSelectionState();
-    queueMirrorSync();
-  }
-
-  field.addEventListener("input", () => {
-    updatePresentation();
-  });
-
-  field.addEventListener("scroll", () => {
-    queueMirrorSync();
-  });
-
-  field.addEventListener("focus", () => {
-    shell.dataset.focused = "true";
-    handleSelectionChange();
-  });
-
-  field.addEventListener("keyup", () => {
-    handleSelectionChange();
-  });
-
-  field.addEventListener("mouseup", () => {
-    handleSelectionChange();
-  });
-
-  field.addEventListener("select", () => {
-    handleSelectionChange();
-  });
-
-  field.addEventListener("compositionstart", () => {
-    isComposing = true;
-  });
-
-  field.addEventListener("compositionend", () => {
-    isComposing = false;
-    updatePresentation();
-
-    if (pendingCheckAfterComposition) {
-      checkField();
-    }
-  });
-
-  field.addEventListener("blur", (event) => {
-    shell.dataset.focused = "false";
-    updateSelectionState();
-
-    if (isFieldCompositionActive(event, isComposing)) {
-      pendingCheckAfterComposition = true;
-      return;
-    }
-
-    checkField();
-  });
-
-  if (typeof shouldCheckOnKeydown === "function") {
-    field.addEventListener("keydown", (event) => {
-      if (isFieldCompositionActive(event, isComposing)) {
-        return;
-      }
-
-      if (!shouldCheckOnKeydown(event)) {
-        return;
-      }
-
-      event.preventDefault();
-      checkField();
-
-      if (typeof onCommit === "function") {
-        onCommit(event);
-      }
-    });
-  }
-
-  updatePresentation();
-  readyForStateCallbacks = true;
-
-  return {
-    shell,
-    field,
-    check: checkField,
-    update: updatePresentation,
-    isChecked() {
-      return checked;
-    },
-  };
-}
-
-function normalizeTopicKeyWithMap(topicValue, topicNormalizationMap = appState.topicNormalizationMap) {
-  const rawTopic = String(topicValue || "").trim();
-
-  if (!rawTopic) {
-    return "";
-  }
-
-  const hyphenatedTopic = rawTopic.toLowerCase().replace(/_/g, "-").replace(/\s+/g, "-");
-  const spacedTopic = rawTopic.toLowerCase().replace(/[-_]+/g, " ").trim();
-
-  return (
-    topicNormalizationMap[rawTopic] ||
-    topicNormalizationMap[hyphenatedTopic] ||
-    topicNormalizationMap[spacedTopic] ||
-    hyphenatedTopic
-  );
-}
-
-function normalizeTopicKey(topicValue) {
-  return normalizeTopicKeyWithMap(topicValue, appState.topicNormalizationMap);
-}
-
-function pluralise(count, singular, plural = `${singular}s`) {
-  return `${count} ${count === 1 ? singular : plural}`;
-}
-
-function setFeedbackMessage(element, message, tone = "neutral") {
-  element.textContent = message;
-  element.dataset.tone = tone;
-}
-
-function applyFieldState(field, state) {
-  field.dataset.state = state;
-
-  const shell = field.closest(".memorisation-mirror-field");
-
-  if (shell) {
-    shell.dataset.state = state;
-  }
-}
-
-function getStageEntries() {
-  return Array.isArray(appState.catalog?.stages) ? appState.catalog.stages : [];
-}
-
-function getStageEntry(stageId = appState.stage) {
-  return getStageEntries().find((stage) => stage.id === stageId) || null;
-}
-
-function getLevelEntries(stageId = appState.stage) {
-  return getStageEntry(stageId)?.levels || [];
-}
-
-function getLevelEntry(stageId = appState.stage, levelId = appState.level) {
-  return getLevelEntries(stageId).find((level) => level.id === levelId) || null;
-}
-
-function getTopicEntries(stageId = appState.stage, levelId = appState.level) {
-  return getLevelEntry(stageId, levelId)?.topics || [];
-}
-
-function getTopicEntry(
-  stageId = appState.stage,
-  levelId = appState.level,
-  topicId = appState.topic,
-) {
-  return getTopicEntries(stageId, levelId).find((topic) => topic.id === topicId) || null;
-}
-
-function getFileEntries(
-  stageId = appState.stage,
-  levelId = appState.level,
-  topicId = appState.topic,
-) {
-  return getTopicEntry(stageId, levelId, topicId)?.files || [];
-}
-
-function getFileEntry(
-  stageId = appState.stage,
-  levelId = appState.level,
-  topicId = appState.topic,
-  fileId = appState.file,
-) {
-  return getFileEntries(stageId, levelId, topicId).find((file) => file.id === fileId) || null;
-}
-
-function getStageSourceTotal(stageEntry) {
-  return Object.values(stageEntry?.counts || {}).reduce(
-    (sum, count) => sum + Number(count || 0),
-    0,
-  );
-}
-
-function getDefaultLevelId(stageId) {
-  return (
-    getLevelEntries(stageId).find((level) => (level.topics || []).length > 0)?.id ||
-    getLevelEntries(stageId)[0]?.id ||
-    ""
-  );
-}
-
-function getDefaultTopicId(stageId, levelId) {
-  return getTopicEntries(stageId, levelId)[0]?.id || "";
-}
-
-function getDefaultFileId(stageId, levelId, topicId) {
-  return getFileEntries(stageId, levelId, topicId)[0]?.id || "";
-}
-
-function getSelectionSnapshot(overrides = {}) {
-  return {
-    stage: appState.stage,
-    level: appState.level,
-    topic: appState.topic,
-    file: appState.file,
-    definitionScope: appState.definitionScope,
-    round: appState.round,
-    ...overrides,
-  };
-}
-
-function getInitialSelectionFromUrl() {
-  const searchParams = new URLSearchParams(window.location.search);
-  const requestedRound = searchParams.get("round");
-
-  return {
-    stage: String(searchParams.get("stage") || "")
-      .trim()
-      .toUpperCase(),
-    level: String(searchParams.get("level") || "").trim(),
-    topic: String(searchParams.get("topic") || "").trim(),
-    file: String(searchParams.get("file") || "").trim(),
-    definitionScope: String(searchParams.get("definition_scope") || "all").trim(),
-    round: requestedRound && requestedRound !== "all" ? String(Number(requestedRound)) : "all",
-  };
-}
-
-function synchroniseSelection(requestedSelection = getSelectionSnapshot()) {
-  const stageEntries = getStageEntries();
-  const stageId = stageEntries.some((stage) => stage.id === requestedSelection.stage)
-    ? requestedSelection.stage
-    : stageEntries[0]?.id || "";
-  const levelEntries = getLevelEntries(stageId);
-  const levelId = levelEntries.some((level) => level.id === requestedSelection.level)
-    ? requestedSelection.level
-    : getDefaultLevelId(stageId);
-  const topicEntries = getTopicEntries(stageId, levelId);
-  const topicId = topicEntries.some((topic) => topic.id === requestedSelection.topic)
-    ? requestedSelection.topic
-    : getDefaultTopicId(stageId, levelId);
-  const fileEntries = getFileEntries(stageId, levelId, topicId);
-  const fileId = fileEntries.some((file) => file.id === requestedSelection.file)
-    ? requestedSelection.file
-    : getDefaultFileId(stageId, levelId, topicId);
-  const fileEntry = getFileEntry(stageId, levelId, topicId, fileId);
-  const definitionScope =
-    fileId === "core-definitions" &&
-    definitionScopeOptions.some((option) => option.id === requestedSelection.definitionScope)
-      ? requestedSelection.definitionScope
-      : "all";
-  const round =
-    fileId === "multi-round-cloze" &&
-    fileEntry?.rounds?.some((roundNumber) => String(roundNumber) === requestedSelection.round)
-      ? requestedSelection.round
-      : "all";
-
-  appState.stage = stageId;
-  appState.level = levelId;
-  appState.topic = topicId;
-  appState.file = fileId;
-  appState.definitionScope = definitionScope;
-  appState.round = round;
-
-  return getFileEntry(stageId, levelId, topicId, fileId);
-}
-
-function applySelection(nextSelection, { resetSequence = true } = {}) {
-  synchroniseSelection(nextSelection);
-  renderControls();
-  updateUrlFromState();
-  refreshPool({ resetSequence });
-}
-
-function updateUrlFromState() {
-  const searchParams = new URLSearchParams(window.location.search);
-
-  searchParams.set("stage", appState.stage);
-  searchParams.set("level", appState.level);
-  searchParams.set("topic", appState.topic);
-  searchParams.set("file", appState.file);
-
-  if (appState.definitionScope !== "all" && appState.file === "core-definitions") {
-    searchParams.set("definition_scope", appState.definitionScope);
-  } else {
-    searchParams.delete("definition_scope");
-  }
-
-  if (appState.round !== "all" && appState.file === "multi-round-cloze") {
-    searchParams.set("round", appState.round);
-  } else {
-    searchParams.delete("round");
-  }
-
-  const nextSearch = searchParams.toString();
-  const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`;
-
-  window.history.replaceState(null, "", nextUrl);
-}
-
-function createShuffledSequence(unitIds, avoidUnitId = "") {
-  const shuffled = unitIds.slice();
-
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
-  }
-
-  if (avoidUnitId && shuffled.length > 1 && shuffled[0] === avoidUnitId) {
-    const replacementIndex = shuffled.findIndex((unitId) => unitId !== avoidUnitId);
-
-    if (replacementIndex > 0) {
-      [shuffled[0], shuffled[replacementIndex]] = [shuffled[replacementIndex], shuffled[0]];
-    }
-  }
-
-  return shuffled;
-}
-
-function getCurrentUnit() {
-  return (
-    appState.activePool.find((unit) => unit.unitId === appState.currentUnitId) ||
-    appState.activePool[0] ||
-    null
-  );
-}
-
-function getFileCountLabel(fileEntry) {
-  if (!fileEntry) {
-    return "0 items";
-  }
-
-  if (fileEntry.id === "multi-round-cloze") {
-    return `${pluralise(fileEntry.count, "prompt")} · ${pluralise(
-      fileEntry.runtime_unit_count,
-      "round",
-    )}`;
-  }
-
-  return pluralise(fileEntry.count, "item");
-}
-
-function renderStageSwitcher() {
-  stageSwitcher.innerHTML = getStageEntries()
-    .map((stageEntry) => {
-      const countLabel = pluralise(getStageSourceTotal(stageEntry), "source item");
-
-      return `
-        <button
-          class="memorisation-toggle"
-          type="button"
-          data-stage-id="${stageEntry.id}"
-          data-active="${stageEntry.id === appState.stage ? "true" : "false"}"
-        >
-          <span class="memorisation-toggle__label">${stageEntry.id}</span>
-          <span class="memorisation-toggle__count">${countLabel}</span>
-        </button>
-      `;
-    })
-    .join("");
-
-  stageSwitcher.querySelectorAll("[data-stage-id]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nextStage = button.dataset.stageId;
-
-      if (!nextStage || nextStage === appState.stage) {
-        return;
-      }
-
-      applySelection(
-        getSelectionSnapshot({
-          stage: nextStage,
-          level: "",
-          topic: "",
-          file: "",
-          definitionScope: "all",
-          round: "all",
-        }),
-      );
-    });
   });
 }
 
-function renderLevelSwitcher() {
-  levelSwitcher.innerHTML = getLevelEntries()
-    .sort((left, right) => levelOrder.indexOf(left.id) - levelOrder.indexOf(right.id))
-    .map(
-      (levelEntry) => `
-        <button
-          class="memorisation-toggle"
-          type="button"
-          data-level-id="${levelEntry.id}"
-          data-active="${levelEntry.id === appState.level ? "true" : "false"}"
-        >
-          <span class="memorisation-toggle__label">${levelEntry.label}</span>
-          <span class="memorisation-toggle__count">${pluralise(
-            levelEntry.count,
-            "source item",
-          )}</span>
-        </button>
-      `,
-    )
-    .join("");
+function renderLevelButtons() {
+  levelSwitcher.replaceChildren();
 
-  levelSwitcher.querySelectorAll("[data-level-id]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nextLevel = button.dataset.levelId;
-
-      if (!nextLevel || nextLevel === appState.level) {
-        return;
-      }
-
-      applySelection(
-        getSelectionSnapshot({
-          level: nextLevel,
-          topic: "",
-          file: "",
-          definitionScope: "all",
-          round: "all",
-        }),
-      );
-    });
+  levelDefinitions.forEach((levelDefinition) => {
+    const levelItems = getStageLevelItems(state.stage, levelDefinition.value);
+    levelSwitcher.append(
+      createFilterButton({
+        value: String(levelDefinition.value),
+        label: levelDefinition.shortLabel,
+        meta: `${levelItems.length} item${levelItems.length === 1 ? "" : "s"}`,
+        active: state.level === levelDefinition.value,
+        dataKey: "level",
+      }),
+    );
   });
 }
 
-function renderTopicFilter() {
-  const topics = getTopicEntries()
-    .slice()
-    .sort((left, right) => collator.compare(left.label, right.label));
+function renderSelect(selectElement, { options, currentValue, allLabel }) {
+  selectElement.replaceChildren();
 
-  topicFilter.disabled = topics.length === 0;
-  topicFilter.innerHTML = topics.length
-    ? topics.map((topic) => `<option value="${topic.id}">${topic.label}</option>`).join("")
-    : '<option value="">No topics available</option>';
+  const allOption = document.createElement("option");
+  allOption.value = "";
+  allOption.textContent = allLabel;
+  selectElement.append(allOption);
 
-  if (!topics.some((topic) => topic.id === appState.topic)) {
-    appState.topic = topics[0]?.id || "";
-  }
-
-  topicFilter.value = appState.topic;
-}
-
-function renderFileSwitcher() {
-  fileSwitcher.innerHTML = getFileEntries()
-    .slice()
-    .sort((left, right) => fileOrder.indexOf(left.id) - fileOrder.indexOf(right.id))
-    .map(
-      (fileEntry) => `
-        <button
-          class="memorisation-toggle memorisation-toggle--compact"
-          type="button"
-          data-file-id="${fileEntry.id}"
-          data-active="${fileEntry.id === appState.file ? "true" : "false"}"
-        >
-          <span class="memorisation-toggle__label">${fileEntry.label}</span>
-          <span class="memorisation-toggle__count">${getFileCountLabel(fileEntry)}</span>
-        </button>
-      `,
-    )
-    .join("");
-
-  fileSwitcher.querySelectorAll("[data-file-id]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nextFile = button.dataset.fileId;
-
-      if (!nextFile || nextFile === appState.file) {
-        return;
-      }
-
-      applySelection(
-        getSelectionSnapshot({
-          file: nextFile,
-          definitionScope: "all",
-          round: "all",
-        }),
-      );
-    });
+  options.forEach((optionValue) => {
+    const option = document.createElement("option");
+    option.value = optionValue;
+    option.textContent =
+      selectElement === topicFilter ? formatTopicLabel(optionValue) : formatTypeLabel(optionValue);
+    selectElement.append(option);
   });
+
+  selectElement.value = currentValue;
 }
 
-function renderDefinitionFilter() {
-  const fileEntry = getFileEntry();
+function renderRoundButtons(promptModel) {
+  roundSwitcher.replaceChildren();
 
-  if (fileEntry?.id !== "core-definitions") {
-    definitionFilterSection.hidden = true;
-    definitionFilterGrid.innerHTML = "";
-    appState.definitionScope = "all";
+  if (promptModel.kind !== "multi_round_cloze" || promptModel.rounds.length < 2) {
+    roundSwitcher.hidden = true;
     return;
   }
 
-  definitionFilterSection.hidden = false;
+  roundSwitcher.hidden = false;
 
-  const definitionSourceCounts = fileEntry.definition_source_counts || {};
-  definitionFilterGrid.innerHTML = definitionScopeOptions
-    .map((option) => {
-      const count =
-        option.id === "all" ? fileEntry.count : Number(definitionSourceCounts[option.id] || 0);
-
-      return `
-        <button
-          class="memorisation-toggle memorisation-toggle--compact"
-          type="button"
-          data-definition-scope="${option.id}"
-          data-active="${option.id === appState.definitionScope ? "true" : "false"}"
-        >
-          <span class="memorisation-toggle__label">${option.label}</span>
-          <span class="memorisation-toggle__count">${pluralise(count, "item")}</span>
-        </button>
-      `;
-    })
-    .join("");
-
-  definitionFilterGrid.querySelectorAll("[data-definition-scope]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nextScope = button.dataset.definitionScope;
-
-      if (!nextScope || nextScope === appState.definitionScope) {
-        return;
-      }
-
-      appState.definitionScope = nextScope;
-      renderDefinitionFilter();
-      updateUrlFromState();
-      refreshPool({ resetSequence: true });
-    });
-  });
-}
-
-function renderRoundSwitcher() {
-  const fileEntry = getFileEntry();
-
-  if (fileEntry?.id !== "multi-round-cloze") {
-    roundSwitcherSection.hidden = true;
-    roundSwitcher.innerHTML = "";
-    appState.round = "all";
-    return;
-  }
-
-  roundSwitcherSection.hidden = false;
-  const roundOptions = ["all", ...fileEntry.rounds.map((round) => String(round))];
-
-  if (!roundOptions.includes(appState.round)) {
-    appState.round = "all";
-  }
-
-  roundSwitcher.innerHTML = roundOptions
-    .map((option) => {
-      const label = option === "all" ? "All rounds" : `Round ${option}`;
-
-      return `
-        <button
-          class="memorisation-toggle memorisation-toggle--compact"
-          type="button"
-          data-round-value="${option}"
-          data-active="${option === appState.round ? "true" : "false"}"
-        >
-          <span class="memorisation-toggle__label">${label}</span>
-        </button>
-      `;
-    })
-    .join("");
-
-  roundSwitcher.querySelectorAll("[data-round-value]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nextRound = button.dataset.roundValue;
-
-      if (!nextRound || nextRound === appState.round) {
-        return;
-      }
-
-      appState.round = nextRound;
-      renderRoundSwitcher();
-      updateUrlFromState();
-      refreshPool({ resetSequence: true });
-    });
-  });
-}
-
-function renderControls() {
-  renderStageSwitcher();
-  renderLevelSwitcher();
-  renderTopicFilter();
-  renderFileSwitcher();
-  renderDefinitionFilter();
-  renderRoundSwitcher();
-}
-
-async function loadCurrentFileItems() {
-  const fileEntry = getFileEntry();
-
-  if (!fileEntry) {
-    return [];
-  }
-
-  if (appState.fileDataCache.has(fileEntry.path)) {
-    return appState.fileDataCache.get(fileEntry.path);
-  }
-
-  const items = await fetchJson(`./data/${fileEntry.path}`);
-  const normalizedItems = Array.isArray(items)
-    ? items.map((item) => ({
-        ...item,
-        topic: normalizeTopicKey(item.topic || appState.topic),
-      }))
-    : [];
-
-  appState.fileDataCache.set(fileEntry.path, normalizedItems);
-  return normalizedItems;
-}
-
-async function loadCatalogResources({ preserveSelection = true } = {}) {
-  const fallbackSelection = preserveSelection
-    ? getSelectionSnapshot()
-    : getInitialSelectionFromUrl();
-  const catalog = await fetchJson("./data/catalog.json");
-
-  if (!Array.isArray(catalog?.stages) || catalog.stages.length === 0) {
-    throw new Error("The memorisation catalog is empty or malformed.");
-  }
-
-  let topicNormalizationMap = appState.topicNormalizationMap;
-
-  try {
-    const loadedMap = await fetchJson("./data/context/topic_normalization_map.json");
-    topicNormalizationMap =
-      loadedMap && typeof loadedMap === "object" && !Array.isArray(loadedMap) ? loadedMap : {};
-  } catch (error) {
-    topicNormalizationMap = preserveSelection ? appState.topicNormalizationMap : {};
-  }
-
-  appState.catalog = catalog;
-  appState.topicNormalizationMap = topicNormalizationMap;
-  appState.fileDataCache.clear();
-  synchroniseSelection({
-    ...fallbackSelection,
-    topic: normalizeTopicKeyWithMap(fallbackSelection.topic, topicNormalizationMap),
-  });
-}
-
-function buildActivePool(items, fileEntry) {
-  const filteredItems =
-    fileEntry.id === "core-definitions" && appState.definitionScope !== "all"
-      ? items.filter((item) => item.source_scope === appState.definitionScope)
-      : items;
-
-  if (fileEntry.id === "guided-cloze") {
-    return filteredItems.map((item) => ({
-      ...item,
-      kind: "guided-cloze",
-      unitId: item.id,
-    }));
-  }
-
-  if (fileEntry.id === "multi-round-cloze") {
-    return filteredItems
-      .flatMap((item) => {
-        const rounds = Array.isArray(item.rounds) ? item.rounds : [];
-
-        return rounds.map((round, index) => ({
-          ...item,
-          kind: "multi-round-cloze",
-          unitId: `${item.id}::round-${round.round ?? index + 1}`,
-          prompt: round.prompt,
-          answers: Array.isArray(round.answers) ? round.answers.slice() : [],
-          round: Number(round.round ?? index + 1),
-          roundTotal: rounds.length,
-        }));
-      })
-      .filter((unit) => appState.round === "all" || String(unit.round) === appState.round);
-  }
-
-  if (fileEntry.id === "full-reconstruction") {
-    return filteredItems.map((item) => ({
-      ...item,
-      kind: "full-reconstruction",
-      unitId: item.id,
-    }));
-  }
-
-  return filteredItems.map((item) => ({
-    ...item,
-    kind: "single",
-    unitId: item.id,
-  }));
-}
-
-function setLoadingState(message = "Loading current training file...") {
-  questionLabel.textContent = "Loading";
-  questionTitle.textContent = message;
-  questionCopy.textContent = "Reading the selected level, topic, and training file.";
-  promptCard.innerHTML = `<p class="memorisation-empty">${message}</p>`;
-  answerPanel.hidden = true;
-  revealAnswerButton.disabled = true;
-  nextItemButton.disabled = true;
-}
-
-function renderStatusCard(message, actionLabel = "", actionHandler = null) {
-  const shell = document.createElement("div");
-  shell.className = "memorisation-status-card";
-
-  const copy = document.createElement("p");
-  copy.className = "memorisation-empty";
-  copy.textContent = message;
-  shell.append(copy);
-
-  if (actionLabel && typeof actionHandler === "function") {
-    const actions = document.createElement("div");
-    actions.className = "memorisation-status-actions";
-
+  promptModel.rounds.forEach((round, index) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "secondary-link";
-    button.textContent = actionLabel;
-    button.addEventListener("click", actionHandler);
-
-    actions.append(button);
-    shell.append(actions);
-  }
-
-  promptCard.replaceChildren(shell);
+    button.className = "memorisation-round-button";
+    button.dataset.round = String(index);
+    button.dataset.active = String(index === state.currentRoundIndex);
+    button.textContent = `Round ${round.round || index + 1}`;
+    roundSwitcher.append(button);
+  });
 }
 
-function getEmptyStateMessage() {
-  const fileEntry = getFileEntry();
+function renderPromptCard(item, promptModel, evaluation) {
+  promptCard.replaceChildren();
 
-  if (!fileEntry) {
-    return "No training file is available for this topic.";
+  if (state.loading) {
+    const placeholder = document.createElement("p");
+    placeholder.className = "memorisation-placeholder";
+    placeholder.textContent = "Loading the eight source files for this route...";
+    promptCard.append(placeholder);
+    return;
   }
 
-  if (fileEntry.id === "core-definitions" && appState.definitionScope !== "all") {
-    return "No definition items match the selected source filter in this topic.";
+  if (state.error) {
+    const placeholder = document.createElement("p");
+    placeholder.className = "memorisation-placeholder";
+    placeholder.textContent = state.error;
+    promptCard.append(placeholder);
+    return;
   }
 
-  if (fileEntry.id === "multi-round-cloze" && appState.round !== "all") {
-    return `No prompts expose ${`Round ${appState.round}`} in this topic.`;
+  if (!item) {
+    const placeholder = document.createElement("p");
+    placeholder.className = "memorisation-placeholder";
+    placeholder.textContent = "No items match the current filters.";
+    promptCard.append(placeholder);
+    return;
   }
 
-  return "No items are available in the selected training file.";
-}
+  const header = document.createElement("div");
+  const label = document.createElement("p");
+  const copy = document.createElement("p");
 
-function renderStats() {
-  const fileEntry = getFileEntry();
-  const counterValue =
-    appState.activePool.length === 0
-      ? "0 / 0"
-      : `${appState.sequenceIndex + 1} / ${appState.activePool.length}`;
+  header.className = "memorisation-practice-card__header";
+  label.className = "memorisation-practice-card__label";
+  copy.className = "memorisation-practice-card__copy";
 
-  fileManifestCount.textContent = getFileCountLabel(fileEntry);
-  poolCount.textContent = pluralise(appState.activePool.length, "runtime unit");
-  itemCounter.textContent = counterValue;
-  counterChip.textContent = counterValue;
-}
-
-function buildQuestionMeta(unit) {
-  const parts = [];
-
-  if (unit.subtopic) {
-    parts.push(formatLabel(unit.subtopic));
-  }
-
-  if (unit.source_scope) {
-    parts.push(formatDefinitionScope(unit.source_scope));
-  }
-
-  if (unit.kind === "guided-cloze" || unit.kind === "multi-round-cloze") {
-    parts.push(pluralise(unit.answers.length, "blank"));
-  }
-
-  if (unit.kind === "multi-round-cloze") {
-    parts.push(`Round ${unit.round} of ${unit.roundTotal}`);
-  }
-
-  if (unit.kind === "full-reconstruction") {
-    parts.push("Full canonical reconstruction");
-  }
-
-  return parts.join(" · ");
-}
-
-function updateBadges(unit) {
-  const stageEntry = getStageEntry();
-  const levelEntry = getLevelEntry();
-  const topicEntry = getTopicEntry();
-  const fileEntry = getFileEntry();
-
-  stageBadge.textContent = stageEntry?.id || "Stage";
-  levelBadge.textContent = levelEntry?.label || "Level";
-  topicBadge.textContent = topicEntry?.label || "Topic";
-  fileBadge.textContent = fileEntry?.label || "Training file";
-
-  if (fileEntry?.id === "core-definitions") {
-    sourceBadge.hidden = false;
-    sourceBadge.textContent =
-      appState.definitionScope === "all"
-        ? "All definition sources"
-        : formatDefinitionScope(appState.definitionScope);
+  if (item.level === 1) {
+    label.textContent = "Type the stored answer exactly.";
+    copy.textContent = "Level 1 checks one canonical answer for each prompt.";
+  } else if (item.level === 2) {
+    label.textContent = "Fill each guided gap exactly.";
+    copy.textContent = "Each blank must match the stored gap answer.";
+  } else if (item.level === 3) {
+    label.textContent = "Work through the current cloze round.";
+    copy.textContent = "Switch rounds without leaving the same question.";
   } else {
-    sourceBadge.hidden = true;
+    label.textContent = "Write the full canonical answer.";
+    copy.textContent = "Level 4 checks the whole stored reconstruction.";
   }
 
-  if (fileEntry?.id === "multi-round-cloze") {
-    roundBadge.hidden = false;
-    roundBadge.textContent = appState.round === "all" ? "All rounds" : `Round ${appState.round}`;
-  } else {
-    roundBadge.hidden = true;
+  header.append(label, copy);
+  promptCard.append(header);
+
+  if (item.level === 1 || item.level === 4) {
+    const response = document.createElement("textarea");
+
+    response.className = "memorisation-response";
+    response.classList.toggle("memorisation-response--compact", item.level === 1);
+    response.rows = item.level === 1 ? 4 : 6;
+    response.placeholder =
+      item.level === 1
+        ? "Type the exact stored answer."
+        : "Write the full canonical sentence.";
+    response.value = state.responses.main || "";
+    response.dataset.state =
+      state.checked && evaluation?.kind === "free-text"
+        ? evaluation.isCorrect
+          ? "correct"
+          : "incorrect"
+        : "";
+    response.addEventListener("input", () => {
+      state.responses.main = response.value;
+      clearCheckStateForEditing();
+    });
+
+    promptCard.append(response);
+    return;
   }
+
+  const clozePrompt = document.createElement("p");
+  const promptParts = promptModel.promptText.split("____");
+
+  clozePrompt.className = "memorisation-cloze";
+
+  promptParts.forEach((part, index) => {
+    clozePrompt.append(document.createTextNode(part));
+
+    if (index >= promptModel.answers.length) {
+      return;
+    }
+
+    const input = document.createElement("input");
+    const fieldKey = `gap-${index}`;
+    const comparison = evaluation?.kind === "cloze" ? evaluation.comparisons[index] : null;
+
+    input.type = "text";
+    input.className = "memorisation-cloze__input";
+    input.size = Math.max(8, Math.min(20, promptModel.answers[index].length + 2));
+    input.placeholder = `Gap ${index + 1}`;
+    input.value = state.responses[fieldKey] || "";
+    input.dataset.state =
+      state.checked && comparison ? (comparison.matched ? "correct" : "incorrect") : "";
+    input.setAttribute("aria-label", `Gap ${index + 1}`);
+    input.addEventListener("input", () => {
+      state.responses[fieldKey] = input.value;
+      clearCheckStateForEditing();
+    });
+
+    clozePrompt.append(input);
+  });
+
+  promptCard.append(clozePrompt);
 }
 
-function updateAnswerPanel(unit) {
-  if (!unit || !appState.revealed) {
+function renderFeedback(evaluation) {
+  if (!state.checked || !evaluation) {
+    feedbackPanel.hidden = true;
+    feedbackPanel.dataset.tone = "";
+    return;
+  }
+
+  const feedback = buildFeedbackModel(evaluation);
+
+  if (!feedback) {
+    feedbackPanel.hidden = true;
+    feedbackPanel.dataset.tone = "";
+    return;
+  }
+
+  feedbackPanel.hidden = false;
+  feedbackPanel.dataset.tone = feedback.tone;
+  feedbackStatus.textContent = feedback.status;
+  feedbackCopy.textContent = feedback.copy;
+}
+
+function renderAnswer(item, promptModel) {
+  if (!state.showAnswer || !item) {
     answerPanel.hidden = true;
     answerText.textContent = "";
     answerNote.textContent = "";
     return;
   }
 
-  const isFullAnswerUnit =
-    unit.kind === "guided-cloze" ||
-    unit.kind === "multi-round-cloze" ||
-    unit.kind === "full-reconstruction";
-
   answerPanel.hidden = false;
-  answerLabel.textContent = isFullAnswerUnit ? "Canonical full answer" : "Canonical answer";
-  answerText.textContent = isFullAnswerUnit ? unit.full_answer || unit.answer : unit.answer;
-  answerNote.textContent =
-    unit.kind === "guided-cloze" || unit.kind === "multi-round-cloze"
-      ? "Reveal shows the stored full explanation answer for this prompt. Formatting, spelling, punctuation, and article variants are normalized; prepositions stay strict."
-      : getFileEntry()?.id === "core-equations"
-        ? "Equation matching normalizes spacing, arrow variants, and optional state symbols unless the prompt explicitly requires them."
-        : "Formatting, spelling, quote, punctuation, hyphen, and article variants are normalized during checking. Prepositions stay strict.";
+  answerText.textContent = promptModel.canonicalAnswer;
+  answerNote.textContent = buildAnswerNote(item, promptModel);
 }
 
-function updateActionButtons(unit) {
-  const revealLabel = unit && unit.kind !== "single" ? "Show full answer" : "Show answer";
+function renderWorkspace(filterModel) {
+  const currentItem = filterModel.filteredItems[state.currentIndex] || null;
+  const levelDefinition = getLevelDefinition(state.level);
 
-  revealAnswerButton.textContent = appState.revealed
-    ? unit && unit.kind !== "single"
-      ? "Full answer shown"
-      : "Answer shown"
-    : revealLabel;
-  revealAnswerButton.disabled = !unit || appState.revealed;
-  nextItemButton.disabled = !unit;
-}
-
-function renderEmptyState(message) {
-  renderStats();
-  updateBadges(null);
-  questionLabel.textContent = "No drill units";
-  questionTitle.textContent = "Nothing matches the current selection.";
-  questionCopy.textContent = message;
-  renderStatusCard(message);
-  appState.revealed = false;
-  updateAnswerPanel(null);
-  updateActionButtons(null);
-  updateUrlFromState();
-}
-
-function renderCatalogErrorState(message) {
-  appState.catalog = null;
-  appState.topicNormalizationMap = {};
-  appState.activePool = [];
-  appState.sequence = [];
-  appState.sequenceIndex = 0;
-  appState.currentUnitId = "";
-  appState.fileDataCache.clear();
-  renderControls();
-  renderStats();
-  updateBadges(null);
-  questionLabel.textContent = "Memorisation bank unavailable";
-  questionTitle.textContent = "Could not load memorisation data.";
-  questionCopy.textContent =
-    "The catalog or its supporting files could not be loaded. Retry this page in a moment.";
-  renderStatusCard(message, "Retry loading", () => {
-    bootRuntime({ preserveSelection: false });
-  });
-  appState.revealed = false;
-  updateAnswerPanel(null);
-  updateActionButtons(null);
-}
-
-function renderFileErrorState(fileEntry, message) {
-  appState.activePool = [];
-  appState.sequence = [];
-  appState.sequenceIndex = 0;
-  appState.currentUnitId = "";
-  renderStats();
-  updateBadges(null);
-  questionLabel.textContent = "Loading error";
-  questionTitle.textContent = `Could not load ${fileEntry?.label || "the selected training file"}.`;
-  questionCopy.textContent = message;
-  renderStatusCard(message, "Retry loading", () => {
-    refreshPool({ resetSequence: true, allowCatalogResync: true });
-  });
-  answerPanel.hidden = true;
-  revealAnswerButton.disabled = true;
-  nextItemButton.disabled = true;
-  updateUrlFromState();
-}
-
-function renderSinglePrompt(unit) {
-  const matcherConfig = getMatcherConfig(unit);
-  const fieldWrapper = document.createElement("label");
-  fieldWrapper.className = "memorisation-field";
-
-  const fieldLabel = document.createElement("span");
-  fieldLabel.className = "memorisation-field__label";
-  fieldLabel.textContent = "Your answer";
-
-  const field = document.createElement("input");
-  field.type = "text";
-  field.className = "memorisation-input memorisation-input--single";
-  field.spellcheck = false;
-  field.autocomplete = "off";
-  field.autocapitalize = "off";
-  field.placeholder = "Type your answer.";
-
-  const feedback = document.createElement("p");
-  feedback.className = "memorisation-feedback";
-  feedback.setAttribute("aria-live", "polite");
-
-  const controller = createMirroredFieldController({
-    field,
-    canonicalValue: unit.answer,
-    matcherConfig,
-    feedbackElement: feedback,
-    interactionLabel: "Check on blur or Enter.",
-    shouldCheckOnKeydown(event) {
-      return event.key === "Enter";
-    },
-  });
-
-  fieldWrapper.append(fieldLabel, controller.shell, feedback);
-  promptCard.replaceChildren(fieldWrapper);
-}
-
-function renderReconstructionPrompt(unit) {
-  const matcherConfig = getMatcherConfig(unit);
-  const fieldWrapper = document.createElement("label");
-  fieldWrapper.className = "memorisation-field";
-
-  const fieldLabel = document.createElement("span");
-  fieldLabel.className = "memorisation-field__label";
-  fieldLabel.textContent = "Your full answer";
-
-  const field = document.createElement("textarea");
-  field.className = "memorisation-input memorisation-input--reconstruction";
-  field.rows = 6;
-  field.spellcheck = false;
-  field.autocomplete = "off";
-  field.autocapitalize = "off";
-  field.placeholder = "Type your full answer.";
-
-  const feedback = document.createElement("p");
-  feedback.className = "memorisation-feedback";
-  feedback.setAttribute("aria-live", "polite");
-
-  const controller = createMirroredFieldController({
-    field,
-    canonicalValue: unit.answer,
-    matcherConfig,
-    feedbackElement: feedback,
-    interactionLabel: "Check on blur or Ctrl/Cmd+Enter.",
-    shouldCheckOnKeydown(event) {
-      return event.key === "Enter" && (event.ctrlKey || event.metaKey);
-    },
-  });
-
-  fieldWrapper.append(fieldLabel, controller.shell, feedback);
-  promptCard.replaceChildren(fieldWrapper);
-}
-
-function updateClozeSummary(summaryElement, inputs) {
-  const correctCount = inputs.filter((input) => isSuccessfulMatchState(input.dataset.state)).length;
-  const nearMissCount = inputs.filter(
-    (input) => input.dataset.state === "near_miss_preposition",
-  ).length;
-  const incorrectCount = inputs.filter((input) => input.dataset.state === "incorrect").length;
-  const untouchedCount = inputs.filter((input) => input.dataset.state === "untouched").length;
-
-  if (correctCount === 0 && nearMissCount === 0 && incorrectCount === 0) {
-    setFeedbackMessage(
-      summaryElement,
-      "Each blank checks independently on blur or Enter. Formatting, spelling, punctuation, and articles are normalized; prepositions stay strict.",
-    );
-    return;
+  if (!currentItem) {
+    state.currentRoundIndex = 0;
   }
 
-  setFeedbackMessage(
-    summaryElement,
-    `${pluralise(correctCount, "blank")} correct · ${pluralise(
-      nearMissCount,
-      "blank",
-    )} almost there · ${pluralise(
-      incorrectCount,
-      "blank",
-    )} incorrect · ${pluralise(untouchedCount, "blank")} untouched`,
-    incorrectCount > 0 ? "incorrect" : nearMissCount > 0 ? "warning" : "correct",
-  );
-}
+  const promptModel = getPromptModel(currentItem);
+  const evaluation = state.checked ? evaluateCurrentItem(currentItem, promptModel) : null;
 
-function renderClozePrompt(unit) {
-  const matcherConfig = getMatcherConfig(unit);
-  const shell = document.createElement("div");
-  shell.className = "cloze-shell";
+  stageBadge.textContent = currentItem?.stage || state.stage;
+  levelBadge.textContent = levelDefinition.label;
+  topicBadge.textContent = currentItem ? formatTopicLabel(currentItem.topic) : formatTopicLabel(state.topic);
+  typeBadge.textContent = currentItem ? formatTypeLabel(currentItem.type) : formatTypeLabel(state.type);
+  counterChip.textContent = filterModel.filteredItems.length
+    ? `${state.currentIndex + 1} / ${filterModel.filteredItems.length}`
+    : "0 / 0";
 
-  const intro = document.createElement("p");
-  intro.className = "cloze-intro";
-  intro.textContent = "Fill each blank in prompt order. Each blank checks independently.";
-
-  const summary = document.createElement("p");
-  summary.className = "memorisation-feedback";
-  summary.setAttribute("aria-live", "polite");
-  setFeedbackMessage(
-    summary,
-    "Each blank checks independently on blur or Enter. Formatting, spelling, punctuation, and articles are normalized; prepositions stay strict.",
-  );
-
-  const promptLine = document.createElement("div");
-  promptLine.className = "cloze-prompt-line";
-  const detailList = document.createElement("div");
-  detailList.className = "cloze-detail-list";
-  const blankPattern = /_{4,}/g;
-  const promptText = String(unit.prompt || "");
-  const promptParts = promptText.split(blankPattern);
-  const blankCount = (promptText.match(blankPattern) || []).length;
-
-  if (blankCount !== unit.answers.length) {
-    promptCard.innerHTML = `
-      <p class="memorisation-empty">
-        This cloze prompt could not be rendered because the blank count does not match the stored answers.
-      </p>
-    `;
-    return;
-  }
-
-  const inputs = unit.answers.map((answer, index) => {
-    const blankLabel = `Blank ${index + 1}`;
-    promptLine.append(document.createTextNode(promptParts[index]));
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.className = "cloze-input";
-    input.placeholder = blankLabel;
-    input.spellcheck = false;
-    input.autocomplete = "off";
-    input.autocapitalize = "off";
-
-    const detail = document.createElement("div");
-    detail.className = "cloze-detail";
-
-    const detailLabel = document.createElement("span");
-    detailLabel.className = "cloze-detail__label";
-    detailLabel.textContent = blankLabel;
-
-    const detailFeedback = document.createElement("p");
-    detailFeedback.className = "memorisation-feedback";
-    detailFeedback.setAttribute("aria-live", "polite");
-
-    const controller = createMirroredFieldController({
-      field: input,
-      canonicalValue: answer,
-      matcherConfig,
-      feedbackElement: detailFeedback,
-      interactionLabel: "Check on blur or Enter.",
-      inline: true,
-      shouldCheckOnKeydown(event) {
-        return event.key === "Enter";
-      },
-      onCommit() {
-        const nextInput = inputs[index + 1];
-
-        if (nextInput) {
-          nextInput.focus();
-        }
-      },
-      onStateChange() {
-        updateClozeSummary(summary, inputs);
-      },
-    });
-
-    promptLine.append(controller.shell);
-    detail.append(detailLabel, detailFeedback);
-    detailList.append(detail);
-    return input;
-  });
-
-  promptLine.append(document.createTextNode(promptParts[promptParts.length - 1]));
-  updateClozeSummary(summary, inputs);
-  shell.append(intro, promptLine, summary, detailList);
-  promptCard.replaceChildren(shell);
-}
-
-function renderCurrentUnit() {
-  const currentUnit = getCurrentUnit();
-
-  renderStats();
-
-  if (!currentUnit) {
-    renderEmptyState(getEmptyStateMessage());
-    return;
-  }
-
-  updateBadges(currentUnit);
-  questionLabel.textContent = getFileEntry()?.label || "Training file";
-  questionTitle.textContent =
-    currentUnit.kind === "single"
-      ? currentUnit.prompt || currentUnit.question
-      : currentUnit.question || currentUnit.prompt;
-  questionCopy.textContent = buildQuestionMeta(currentUnit);
-
-  if (currentUnit.kind === "guided-cloze" || currentUnit.kind === "multi-round-cloze") {
-    renderClozePrompt(currentUnit);
-  } else if (currentUnit.kind === "full-reconstruction") {
-    renderReconstructionPrompt(currentUnit);
+  if (state.loading) {
+    questionEyebrow.textContent = "Loading pack";
+    questionTitle.textContent = "Loading memorisation bank...";
+    questionCopy.textContent = "Reading the stage and level files for this integrated route.";
+  } else if (state.error) {
+    questionEyebrow.textContent = "Route unavailable";
+    questionTitle.textContent = "Could not load the memorisation bank.";
+    questionCopy.textContent = state.error;
+  } else if (!currentItem) {
+    questionEyebrow.textContent = `${levelDefinition.label} · ${levelDefinition.summary}`;
+    questionTitle.textContent = "No drill items match the current filters.";
+    questionCopy.textContent = "Try another topic or reset the type filter.";
   } else {
-    renderSinglePrompt(currentUnit);
+    questionEyebrow.textContent = `${levelDefinition.label} · ${levelDefinition.summary}`;
+    questionTitle.textContent = currentItem.question || currentItem.prompt || "Untitled drill item";
+    questionCopy.textContent = buildQuestionCopy(currentItem, promptModel);
   }
 
-  updateAnswerPanel(currentUnit);
-  updateActionButtons(currentUnit);
-  updateUrlFromState();
+  renderRoundButtons(promptModel);
+  renderPromptCard(currentItem, promptModel, evaluation);
+  renderFeedback(evaluation);
+  renderAnswer(currentItem, promptModel);
+
+  const routeReady = !state.loading && !state.error && Boolean(currentItem);
+
+  checkAnswerButton.disabled = !routeReady;
+  showAnswerButton.disabled = !routeReady;
+  nextItemButton.disabled = !routeReady;
+  showAnswerButton.textContent = state.showAnswer ? "Hide answer" : "Show answer";
 }
 
-async function refreshPool({ resetSequence = true, allowCatalogResync = true } = {}) {
-  synchroniseSelection();
-  const fileEntry = getFileEntry();
+function renderStats(filterModel) {
+  sourceFileCount.textContent = String(dataFiles.length);
+  activeItemCount.textContent = String(filterModel.filteredItems.length);
+  topicCount.textContent = String(filterModel.availableTopics.length);
+  cardCounter.textContent = filterModel.filteredItems.length
+    ? `${state.currentIndex + 1} / ${filterModel.filteredItems.length}`
+    : "0 / 0";
+}
 
-  if (!fileEntry) {
-    appState.activePool = [];
-    renderEmptyState("No training file is available for the current selection.");
+function render() {
+  const filterModel = buildFilterModel();
+
+  renderStageButtons();
+  renderLevelButtons();
+  renderSelect(topicFilter, {
+    options: filterModel.availableTopics,
+    currentValue: state.topic,
+    allLabel: "All topics",
+  });
+  renderSelect(typeFilter, {
+    options: filterModel.availableTypes,
+    currentValue: state.type,
+    allLabel: "All types",
+  });
+  renderStats(filterModel);
+  renderWorkspace(filterModel);
+}
+
+function getCurrentFilteredItems() {
+  return buildFilterModel().filteredItems;
+}
+
+function handleCheckAnswer() {
+  state.checked = true;
+  render();
+}
+
+function handleShowAnswer() {
+  state.showAnswer = !state.showAnswer;
+  render();
+}
+
+function handleNextItem() {
+  const filteredItems = getCurrentFilteredItems();
+
+  if (!filteredItems.length) {
     return;
   }
 
-  setLoadingState(`Loading ${fileEntry.label.toLowerCase()}...`);
+  state.currentIndex = (state.currentIndex + 1) % filteredItems.length;
+  resetInteraction({ resetRound: true });
+  render();
+}
 
-  const renderToken = ++appState.renderToken;
+function attachEventListeners() {
+  stageSwitcher.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-stage]");
+
+    if (!button || state.stage === button.dataset.stage) {
+      return;
+    }
+
+    state.stage = button.dataset.stage;
+    state.topic = "";
+    state.type = "";
+    resetInteraction({ resetIndex: true, resetRound: true });
+    render();
+  });
+
+  levelSwitcher.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-level]");
+    const nextLevel = Number(button?.dataset.level || 0);
+
+    if (!button || !nextLevel || state.level === nextLevel) {
+      return;
+    }
+
+    state.level = nextLevel;
+    state.topic = "";
+    state.type = "";
+    resetInteraction({ resetIndex: true, resetRound: true });
+    render();
+  });
+
+  topicFilter.addEventListener("change", () => {
+    state.topic = topicFilter.value;
+    state.type = "";
+    resetInteraction({ resetIndex: true, resetRound: true });
+    render();
+  });
+
+  typeFilter.addEventListener("change", () => {
+    state.type = typeFilter.value;
+    resetInteraction({ resetIndex: true, resetRound: true });
+    render();
+  });
+
+  roundSwitcher.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-round]");
+    const nextRoundIndex = Number(button?.dataset.round || 0);
+
+    if (!button || state.currentRoundIndex === nextRoundIndex) {
+      return;
+    }
+
+    state.currentRoundIndex = nextRoundIndex;
+    resetInteraction({ resetRound: false });
+    render();
+  });
+
+  checkAnswerButton.addEventListener("click", handleCheckAnswer);
+  showAnswerButton.addEventListener("click", handleShowAnswer);
+  nextItemButton.addEventListener("click", handleNextItem);
+}
+
+async function loadPack() {
+  state.loading = true;
+  state.error = "";
+  render();
 
   try {
-    const items = await loadCurrentFileItems();
-
-    if (renderToken !== appState.renderToken) {
-      return;
-    }
-
-    appState.activePool = buildActivePool(items, fileEntry);
-
-    if (
-      resetSequence ||
-      !appState.activePool.some((unit) => unit.unitId === appState.currentUnitId)
-    ) {
-      appState.sequence = createShuffledSequence(appState.activePool.map((unit) => unit.unitId));
-      appState.sequenceIndex = 0;
-      appState.currentUnitId = appState.sequence[0] || "";
-    } else {
-      const currentIndex = appState.sequence.indexOf(appState.currentUnitId);
-      appState.sequenceIndex = currentIndex >= 0 ? currentIndex : 0;
-    }
-
-    appState.revealed = false;
-    renderCurrentUnit();
-  } catch (error) {
-    if (renderToken !== appState.renderToken) {
-      return;
-    }
-
-    if (allowCatalogResync) {
-      try {
-        await loadCatalogResources({ preserveSelection: true });
-
-        if (renderToken !== appState.renderToken) {
-          return;
-        }
-
-        renderControls();
-        updateUrlFromState();
-        return refreshPool({ resetSequence, allowCatalogResync: false });
-      } catch (catalogError) {
-        if (renderToken !== appState.renderToken) {
-          return;
-        }
-
-        renderFileErrorState(
-          fileEntry,
-          `${error.message} Retry to resync the current selection with the latest catalog.`,
-        );
-        return;
-      }
-    }
-
-    renderFileErrorState(fileEntry, `${error.message} Retry to try the current selection again.`);
-  }
-}
-
-function moveToNextUnit() {
-  if (appState.activePool.length === 0) {
-    refreshPool({ resetSequence: true });
-    return;
-  }
-
-  if (appState.sequenceIndex < appState.sequence.length - 1) {
-    appState.sequenceIndex += 1;
-    appState.currentUnitId = appState.sequence[appState.sequenceIndex];
-  } else {
-    appState.sequence = createShuffledSequence(
-      appState.activePool.map((unit) => unit.unitId),
-      appState.currentUnitId,
-    );
-    appState.sequenceIndex = 0;
-    appState.currentUnitId = appState.sequence[0] || "";
-  }
-
-  appState.revealed = false;
-  renderCurrentUnit();
-}
-
-function registerStaticEvents() {
-  if (appState.staticEventsRegistered) {
-    return;
-  }
-
-  topicFilter.addEventListener("change", (event) => {
-    applySelection(
-      getSelectionSnapshot({
-        topic: normalizeTopicKey(event.target.value || ""),
-        file: "",
-        definitionScope: "all",
-        round: "all",
+    const loadedFiles = await Promise.all(
+      dataFiles.map(async (fileDefinition) => {
+        const records = await fetchJson(fileDefinition.path);
+        return Array.isArray(records)
+          ? records.map((record) => ({
+              ...record,
+              stage: record.stage || fileDefinition.stage,
+              level: Number(record.level || fileDefinition.level),
+            }))
+          : [];
       }),
     );
-  });
 
-  revealAnswerButton.addEventListener("click", () => {
-    appState.revealed = true;
-    updateAnswerPanel(getCurrentUnit());
-    updateActionButtons(getCurrentUnit());
-  });
-
-  nextItemButton.addEventListener("click", () => {
-    moveToNextUnit();
-  });
-
-  appState.staticEventsRegistered = true;
-}
-
-async function bootRuntime({ preserveSelection = true } = {}) {
-  setLoadingState("Loading memorisation bank...");
-
-  try {
-    await loadCatalogResources({ preserveSelection });
-    renderControls();
-    updateUrlFromState();
-    await refreshPool({ resetSequence: true, allowCatalogResync: false });
+    state.items = loadedFiles.flat();
+    state.loading = false;
+    render();
   } catch (error) {
-    renderCatalogErrorState(error.message);
+    state.loading = false;
+    state.error = error.message;
+    render();
   }
 }
 
-async function init() {
-  registerStaticEvents();
-  bootRuntime({ preserveSelection: false });
-}
-
-init();
+attachEventListeners();
+loadPack();

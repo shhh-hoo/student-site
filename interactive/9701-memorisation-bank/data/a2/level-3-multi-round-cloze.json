@@ -1,0 +1,266 @@
+[
+  {
+    "id": "a2-multi-001",
+    "stage": "A2",
+    "level": 3,
+    "topic": "group-2",
+    "subtopic": "thermal-stability",
+    "type": "multi_round_cloze",
+    "question": "Explain the trend in the thermal stabilities of the carbonates of the Group 2 elements.",
+    "full_answer": "The thermal stability of the Group 2 carbonates increases down the group because the M2+ ion has lower charge density. It polarises the carbonate ion less, so the carbonate ion is less distorted and less likely to decompose.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The thermal stability of the Group 2 carbonates increases down the group because the M2+ ion has lower ____ density.",
+        "answers": [
+          "charge"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "It ____ the carbonate ion less, so the carbonate ion is less distorted.",
+        "answers": [
+          "polarises"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The carbonate ion is less distorted and less likely to ____.",
+        "answers": [
+          "decompose"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-multi-002",
+    "stage": "A2",
+    "level": 3,
+    "topic": "transition-elements",
+    "subtopic": "variable-oxidation-states",
+    "type": "multi_round_cloze",
+    "question": "Explain why transition elements have variable oxidation states.",
+    "full_answer": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy, so electrons can be removed from both subshells.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The 3d and 4s subshells are close in ____.",
+        "answers": [
+          "energy"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "So electrons can be removed from ____ subshells.",
+        "answers": [
+          "both"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Transition elements therefore have variable ____ states.",
+        "answers": [
+          "oxidation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-multi-003",
+    "stage": "A2",
+    "level": 3,
+    "topic": "transition-elements",
+    "subtopic": "bidentate-ligand",
+    "type": "multi_round_cloze",
+    "question": "Explain what is meant by a bidentate ligand.",
+    "full_answer": "A bidentate ligand forms two coordinate bonds to the same central metal ion.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "A bidentate ligand forms ____ coordinate bonds.",
+        "answers": [
+          "two"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "A bidentate ligand forms two ____ bonds.",
+        "answers": [
+          "coordinate"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "These are to the same central metal ____.",
+        "answers": [
+          "ion"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-multi-004",
+    "stage": "A2",
+    "level": 3,
+    "topic": "stereochemistry",
+    "subtopic": "polar-isomer",
+    "type": "multi_round_cloze",
+    "question": "Explain why one stereoisomer is polar.",
+    "full_answer": "The bond dipoles do not cancel because the ligands are arranged asymmetrically in space. So the molecule has an overall dipole moment.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The bond dipoles do not ____.",
+        "answers": [
+          "cancel"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The ligands are arranged ____ in space.",
+        "answers": [
+          "asymmetrically"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "So the molecule has an overall ____ moment.",
+        "answers": [
+          "dipole"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-multi-005",
+    "stage": "A2",
+    "level": 3,
+    "topic": "thermodynamics",
+    "subtopic": "large-positive-entropy",
+    "type": "multi_round_cloze",
+    "question": "Explain why ΔS is large and positive when several gaseous molecules are formed.",
+    "full_answer": "The number of gaseous molecules increases. Gases have greater freedom of movement and are more disordered than liquids or solids. Therefore the entropy increases and is positive.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The number of ____ molecules increases.",
+        "answers": [
+          "gaseous"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Gases have greater freedom of ____.",
+        "answers": [
+          "movement"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Therefore the ____ increases and is positive.",
+        "answers": [
+          "entropy"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-multi-006",
+    "stage": "A2",
+    "level": 3,
+    "topic": "electrochemistry",
+    "subtopic": "non-standard-ecell",
+    "type": "multi_round_cloze",
+    "question": "Explain why a measured Ecell may be less positive than E°cell.",
+    "full_answer": "E°cell is defined under standard conditions. If the concentrations are not 1.0 mol dm-3, the electrode potentials change, so the measured Ecell can be less positive than E°cell.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "E°cell is defined under ____ conditions.",
+        "answers": [
+          "standard"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "If the concentrations are not 1.0 mol dm-3, the electrode ____ change.",
+        "answers": [
+          "potentials"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "So the measured Ecell can be less ____ than E°cell.",
+        "answers": [
+          "positive"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-multi-007",
+    "stage": "A2",
+    "level": 3,
+    "topic": "analytical-techniques",
+    "subtopic": "d2o",
+    "type": "multi_round_cloze",
+    "question": "Explain why an O-H proton signal disappears after shaking with D2O.",
+    "full_answer": "The O-H proton is replaced by deuterium from D2O. Deuterium is not detected in the proton NMR spectrum in the same way, so the signal disappears.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The O-H proton is replaced by ____ from D2O.",
+        "answers": [
+          "deuterium"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Deuterium is not detected in the ____ NMR spectrum in the same way.",
+        "answers": [
+          "proton"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "So the signal ____.",
+        "answers": [
+          "disappears"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2-multi-008",
+    "stage": "A2",
+    "level": 3,
+    "topic": "stereochemistry",
+    "subtopic": "drug-chirality",
+    "type": "multi_round_cloze",
+    "question": "Explain why enantiomers of a drug may have different biological effects.",
+    "full_answer": "Biological receptors are chiral so different enantiomers may interact with them differently.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Biological receptors are ____.",
+        "answers": [
+          "chiral"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "So different ____ may interact with them differently.",
+        "answers": [
+          "enantiomers"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Biological receptors are chiral so different enantiomers may interact with them ____.",
+        "answers": [
+          "differently"
+        ]
+      }
+    ]
+  }
+]

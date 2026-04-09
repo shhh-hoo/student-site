@@ -1,0 +1,267 @@
+[
+  {
+    "id": "as-multi-001",
+    "stage": "AS",
+    "level": 3,
+    "topic": "periodicity",
+    "subtopic": "electronegativity",
+    "type": "multi_round_cloze",
+    "question": "Explain the difference in the electronegativity values of O and S.",
+    "full_answer": "O has fewer occupied shells than S. There is less shielding and a smaller atomic radius, so the bonding pair is attracted more strongly to the nucleus.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "O has fewer occupied ____ than S. There is less ____ and a smaller atomic radius, so the bonding pair is attracted more strongly to the nucleus.",
+        "answers": [
+          "shells",
+          "shielding"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "O has fewer occupied shells than S. There is less shielding and a smaller atomic ____, so the bonding pair is attracted more strongly to the nucleus.",
+        "answers": [
+          "radius"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "O has fewer occupied shells than S. There is less shielding and a smaller atomic radius, so the bonding pair is attracted more ____ to the nucleus.",
+        "answers": [
+          "strongly"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-multi-002",
+    "stage": "AS",
+    "level": 3,
+    "topic": "bonding",
+    "subtopic": "metallic-conductivity",
+    "type": "multi_round_cloze",
+    "question": "Explain why Mg has a higher electrical conductivity than Na.",
+    "full_answer": "Each Mg atom contributes two delocalised electrons whereas each Na atom contributes one. So Mg has more mobile charge carriers.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Each Mg atom contributes ____ delocalised electrons whereas each Na atom contributes one.",
+        "answers": [
+          "two"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Each Mg atom contributes two ____ electrons whereas each Na atom contributes one.",
+        "answers": [
+          "delocalised"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Each Mg atom contributes two delocalised electrons whereas each Na atom contributes one. So Mg has more mobile charge ____.",
+        "answers": [
+          "carriers"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-multi-003",
+    "stage": "AS",
+    "level": 3,
+    "topic": "states-of-matter",
+    "subtopic": "co-vs-n2",
+    "type": "multi_round_cloze",
+    "question": "Explain why CO has a higher boiling point than N2.",
+    "full_answer": "CO is a polar molecule so it has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces, so the intermolecular forces in CO are stronger.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "CO is a ____ molecule so it has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces.",
+        "answers": [
+          "polar"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "N2 is ____-polar and only has instantaneous dipole-induced dipole forces.",
+        "answers": [
+          "non"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The intermolecular forces in CO are ____.",
+        "answers": [
+          "stronger"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-multi-004",
+    "stage": "AS",
+    "level": 3,
+    "topic": "equilibrium",
+    "subtopic": "pressure-and-yield",
+    "type": "multi_round_cloze",
+    "question": "Explain why the yield of the gaseous product increases when pressure is increased.",
+    "full_answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with ____ moles of gas.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Therefore the ____ of the gaseous product increases if the product side has fewer moles of gas.",
+        "answers": [
+          "yield"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of ____. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
+        "answers": [
+          "gas"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-multi-005",
+    "stage": "AS",
+    "level": 3,
+    "topic": "kinetics",
+    "subtopic": "temperature",
+    "type": "multi_round_cloze",
+    "question": "Explain why increasing temperature increases the rate of reaction.",
+    "full_answer": "At higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "At higher temperature, particles have greater ____ energy.",
+        "answers": [
+          "kinetic"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "A greater ____ of particles therefore have energy greater than or equal to the activation energy.",
+        "answers": [
+          "proportion"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "So the frequency of successful ____ increases.",
+        "answers": [
+          "collisions"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-multi-006",
+    "stage": "AS",
+    "level": 3,
+    "topic": "tests-and-observations",
+    "subtopic": "alkene-bromine",
+    "type": "multi_round_cloze",
+    "question": "Explain why bromine water is decolourised by an alkene.",
+    "full_answer": "The alkene reacts with bromine in an addition reaction. Bromine is used up as the carbon-carbon double bond is broken and new carbon-bromine bonds are formed. Therefore the orange colour disappears.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The alkene reacts with bromine in an ____ reaction.",
+        "answers": [
+          "addition"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Bromine is used up as the carbon-carbon ____ bond is broken.",
+        "answers": [
+          "double"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Therefore the orange colour ____.",
+        "answers": [
+          "disappears"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-multi-007",
+    "stage": "AS",
+    "level": 3,
+    "topic": "nitrogen-and-sulfur",
+    "subtopic": "hi-yield",
+    "type": "multi_round_cloze",
+    "question": "Explain why sodium iodide gives a smaller percentage yield of hydrogen halide than sodium chloride when reacted with concentrated sulfuric acid.",
+    "full_answer": "Iodide ions are stronger reducing agents than chloride ions. The hydrogen iodide formed is oxidised by concentrated sulfuric acid. Therefore some HI is used up and the percentage yield is lower.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Iodide ions are stronger ____ agents than chloride ions.",
+        "answers": [
+          "reducing"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The hydrogen iodide formed is ____ by concentrated sulfuric acid.",
+        "answers": [
+          "oxidised"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Therefore some ____ is used up and the percentage yield is lower.",
+        "answers": [
+          "HI"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-multi-008",
+    "stage": "AS",
+    "level": 3,
+    "topic": "states-of-matter",
+    "subtopic": "real-gases",
+    "type": "multi_round_cloze",
+    "question": "Explain why real gases deviate from ideal behaviour at high pressure.",
+    "full_answer": "At high pressure the gas particles are much closer together. Their own volume is no longer negligible and intermolecular forces become significant. Therefore the gas deviates from ideal behaviour.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "At high pressure the gas particles are much ____ together.",
+        "answers": [
+          "closer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Their own ____ is no longer negligible.",
+        "answers": [
+          "volume"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Intermolecular ____ become significant.",
+        "answers": [
+          "forces"
+        ]
+      }
+    ]
+  }
+]
