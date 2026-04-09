@@ -2043,6 +2043,42 @@ function buildQuestionMeta(question) {
   return parts.join(" · ");
 }
 
+function getRevealNote(question) {
+  if (question.type === "definition" && question.sourceScope && question.sourceScope !== "paper_only") {
+    return "Minimum pass uses the stored syllabus-style definition wording for this item.";
+  }
+
+  if (question.fileId === "core-equations") {
+    return "Minimum pass keeps equation species and arrows strict while normalizing spacing and arrow variants.";
+  }
+
+  return "Hints stay concept-level during checking. Reveal shows the full answer and the minimum acceptable pass wording together.";
+}
+
+function getReviewReasonSummary(blankId) {
+  const blankState = getBlankState(blankId);
+
+  if (!blankState) {
+    return "";
+  }
+
+  const reasons = [];
+
+  if (blankState.revealed) {
+    reasons.push("revealed");
+  }
+
+  if (blankState.wrongCount > 0) {
+    reasons.push(`${blankState.wrongCount} wrong ${blankState.wrongCount === 1 ? "attempt" : "attempts"}`);
+  }
+
+  if (!blankState.revealed && blankState.wrongCount > 0 && blankState.status === "correct") {
+    reasons.push("later corrected");
+  }
+
+  return reasons.join(" · ");
+}
+
 function getBlankFeedbackDescriptor(blank, blankState) {
   if (blankState.status === "correct") {
     return {
@@ -2194,7 +2230,12 @@ function createRevealPanel(question) {
   minimumPassText.textContent = question.minimalPass;
 
   minimumPassBlock.append(minimumPassLabel, minimumPassText);
-  shell.append(fullAnswerBlock, minimumPassBlock);
+
+  const note = document.createElement("p");
+  note.className = "memorisation-answer__note";
+  note.textContent = getRevealNote(question);
+
+  shell.append(fullAnswerBlock, minimumPassBlock, note);
   return shell;
 }
 
@@ -2286,7 +2327,9 @@ function renderReviewCard(blankId) {
 
   const meta = document.createElement("p");
   meta.className = "memorisation-question-copy";
-  meta.textContent = `${buildQuestionMeta(question)} · ${blank.label}`;
+  meta.textContent = [buildQuestionMeta(question), blank.label, getReviewReasonSummary(blankId)]
+    .filter(Boolean)
+    .join(" · ");
 
   titleBlock.append(metaLabel, title, meta);
 
@@ -2385,6 +2428,9 @@ function renderBanner() {
         <p class="memorisation-question-copy">
           ${pluralise(appState.reviewQueueBlankIds.length, "blank")} selected from wrong attempts,
           reveals, and blanks that were corrected after earlier misses.
+        </p>
+        <p class="memorisation-question-copy">
+          Ordering: revealed first, then higher wrong counts, then the most recent unresolved items.
         </p>
       </div>
     `;
