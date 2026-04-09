@@ -150,16 +150,16 @@
 
           <div class="interactive-subtle-panel memorisation-stats">
             <div class="memorisation-stat">
-              <span>Source files</span>
-              <strong id="source-file-count">0</strong>
+              <span>Source items</span>
+              <strong id="file-manifest-count">0 source items</strong>
             </div>
             <div class="memorisation-stat">
-              <span>Active items</span>
-              <strong id="active-item-count">0</strong>
+              <span>Session questions</span>
+              <strong id="pool-count">0 session questions</strong>
             </div>
             <div class="memorisation-stat">
-              <span>Topics in slice</span>
-              <strong id="topic-count">0</strong>
+              <span>Session blanks</span>
+              <strong id="item-counter">0 session blanks</strong>
             </div>
             <div class="memorisation-stat">
               <span>Current card</span>
@@ -169,35 +169,29 @@
 
           <details class="interactive-help">
             <summary>
-              <span>Levels and matching</span>
-              <span class="interactive-help-summary-copy"
-                >Open the drill rules used on this page.</span
-              >
+              Drill rules
+              <span class="interactive-help-summary-copy">
+                Concept coverage, minimum-pass matching, and review-backed reveals.
+              </span>
             </summary>
             <div class="interactive-help-body">
               <div class="interactive-help-grid">
                 <article class="interactive-note-card">
                   <span>Level 1</span>
-                  <h3>Core AO1 dictation</h3>
+                  <strong>Syllabus-grounded minimum pass</strong>
                   <p>
-                    Definitions, reagents and conditions, reaction paths, equations, observations,
-                    test outcomes, and fixed conclusions all use one stored answer.
+                    Definition items still anchor to stored syllabus wording when that source is
+                    available, but checking now looks for the required chemistry ideas instead of a
+                    single sentence form only.
                   </p>
                 </article>
                 <article class="interactive-note-card">
                   <span>Levels 2 to 4</span>
-                  <h3>Guided, multi-round, then full reconstruction</h3>
+                  <strong>Blank-first checking with review follow-up</strong>
                   <p>
-                    Guided cloze checks each gap, multi-round cloze keeps the round structure
-                    visible, and full reconstruction checks the whole canonical sentence.
-                  </p>
-                </article>
-                <article class="interactive-note-card">
-                  <span>Matching</span>
-                  <h3>Strict wording stays strict</h3>
-                  <p>
-                    The checker trims the ends, optionally collapses repeated spaces, and then
-                    requires an exact answer. It does not accept paraphrases.
+                    Guided cloze, multi-round prompts, and full reconstruction all check per blank,
+                    keep the session continuous across pages, and send wrong or revealed blanks into
+                    the review queue.
                   </p>
                 </article>
               </div>
