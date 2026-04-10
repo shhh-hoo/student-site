@@ -1,0 +1,138 @@
+[
+  {
+    "id": "as-exp-001",
+    "stage": "AS",
+    "level": 3,
+    "topic": "periodicity",
+    "subtopic": "electronegativity comparison",
+    "type": "multi_round_cloze",
+    "question": "O and S are in Group 16. Explain why O is more electronegative than S.",
+    "full_answer": "O is more electronegative than S because O has fewer occupied shells. This means less shielding and a smaller atomic radius. So the bonding pair of electrons is attracted more strongly to the nucleus.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "O is more electronegative than S because O has fewer occupied _____. This means less _____ and a smaller atomic radius. So the bonding pair of electrons is attracted more _____ to the nucleus.",
+        "answers": [
+          "shells",
+          "shielding",
+          "strongly"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "O is more electronegative than S because O has fewer occupied shells. This means less _____ and a smaller atomic _____. So the bonding pair of electrons is attracted more strongly to the _____.",
+        "answers": [
+          "shielding",
+          "radius",
+          "nucleus"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "O is more electronegative than S because O has fewer occupied shells. This means less shielding and a smaller atomic radius. So the _____ pair of electrons is attracted more strongly to the nucleus.",
+        "answers": [
+          "bonding"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-012",
+    "stage": "AS",
+    "level": 3,
+    "topic": "periodicity",
+    "subtopic": "boiling point trend",
+    "type": "multi_round_cloze",
+    "question": "Explain why the boiling points of Group 14 hydrides increase down the group.",
+    "full_answer": "Down the group the molecules become larger and contain more electrons. The electron clouds are more polarisable, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular forces.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Down the group the molecules become larger and contain more _____. The electron clouds are more polarisable, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular forces.",
+        "answers": [
+          "electrons"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Down the group the molecules become larger and contain more electrons. The electron clouds are more _____, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular forces.",
+        "answers": [
+          "polarisable"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Down the group the molecules become larger and contain more electrons. The electron clouds are more polarisable, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular _____",
+        "answers": [
+          "forces"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-013",
+    "stage": "AS",
+    "level": 3,
+    "topic": "periodicity",
+    "subtopic": "first ionisation energy of hydrogen second IE",
+    "type": "multi_round_cloze",
+    "question": "Explain why there is no second ionisation energy for hydrogen.",
+    "full_answer": "Hydrogen has only one electron. After the first ionisation, there is no electron left to remove.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Hydrogen has only one _____. After the first ionisation, there is no electron left to remove.",
+        "answers": [
+          "electron"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Hydrogen has only one electron. After the first _____, there is no electron left to remove.",
+        "answers": [
+          "ionisation"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Hydrogen has only one electron. After the first ionisation, there is no electron left to _____.",
+        "answers": [
+          "remove"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-015",
+    "stage": "AS",
+    "level": 3,
+    "topic": "periodicity",
+    "subtopic": "al3+ size",
+    "type": "multi_round_cloze",
+    "question": "Explain why Al3+ is smaller than Mg2+.",
+    "full_answer": "Al3+ and Mg2+ are isoelectronic. Al3+ has more protons, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller radius.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Al3+ and Mg2+ are _____. Al3+ has more protons, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller radius.",
+        "answers": [
+          "isoelectronic"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Al3+ and Mg2+ are isoelectronic. Al3+ has more _____, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller radius.",
+        "answers": [
+          "protons"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Al3+ and Mg2+ are isoelectronic. Al3+ has more protons, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller _____.",
+        "answers": [
+          "radius"
+        ]
+      }
+    ]
+  }
+]

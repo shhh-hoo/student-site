@@ -1,0 +1,22 @@
+[
+  {
+    "id": "a2-rc-075",
+    "stage": "A2",
+    "level": 1,
+    "topic": "buffers",
+    "subtopic": "acidic buffer",
+    "type": "reagent_condition",
+    "prompt": "acidic buffer : components",
+    "answer": "weak acid and its salt"
+  },
+  {
+    "id": "a2-rc-076",
+    "stage": "A2",
+    "level": 1,
+    "topic": "buffers",
+    "subtopic": "alkaline buffer",
+    "type": "reagent_condition",
+    "prompt": "alkaline buffer : components",
+    "answer": "weak base and its salt"
+  }
+]

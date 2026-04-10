@@ -1,0 +1,24 @@
+[
+  {
+    "id": "a2-def-015",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "primary amine",
+    "type": "definition",
+    "prompt": "Define primary amine.",
+    "answer": "an amine in which the nitrogen atom is attached to one alkyl or aryl group",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-041",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "amide",
+    "type": "definition",
+    "prompt": "Define amide.",
+    "answer": "a compound containing the functional group CONH2 or a substituted version of it",
+    "source_scope": "syllabus_only"
+  }
+]

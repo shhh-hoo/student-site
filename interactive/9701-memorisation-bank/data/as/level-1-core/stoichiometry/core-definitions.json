@@ -1,0 +1,57 @@
+[
+  {
+    "id": "as-def-021",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "relative isotopic mass",
+    "type": "definition",
+    "prompt": "Define relative isotopic mass.",
+    "answer": "the mass of an atom of an isotope compared with one twelfth of the mass of an atom of carbon-12",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-def-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "relative atomic mass",
+    "type": "definition",
+    "prompt": "Define relative atomic mass.",
+    "answer": "the weighted average mass of an atom of an element compared with one twelfth of the mass of an atom of carbon-12",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-def-023",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "relative molecular mass",
+    "type": "definition",
+    "prompt": "Define relative molecular mass.",
+    "answer": "the weighted average mass of a molecule compared with one twelfth of the mass of an atom of carbon-12",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-def-073",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "empirical formula",
+    "type": "definition",
+    "prompt": "Define empirical formula.",
+    "answer": "the simplest whole-number ratio of the different atoms in a compound",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-def-074",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "molecular formula",
+    "type": "definition",
+    "prompt": "Define molecular formula.",
+    "answer": "the actual number of each type of atom in one molecule of a compound",
+    "source_scope": "syllabus_only"
+  }
+]

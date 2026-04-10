@@ -1,0 +1,68 @@
+[
+  {
+    "id": "a2-def-042",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "chemical shift",
+    "type": "definition",
+    "prompt": "Define chemical shift.",
+    "answer": "the position of a proton NMR signal relative to tetramethylsilane measured in parts per million",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-043",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "spin-spin splitting",
+    "type": "definition",
+    "prompt": "Define spin-spin splitting.",
+    "answer": "the splitting of a proton NMR signal into multiple peaks due to non-equivalent hydrogen atoms on adjacent carbon atoms",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-057",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "retention time",
+    "type": "definition",
+    "prompt": "Define retention time in chromatography.",
+    "answer": "the time taken for a substance to pass through the column to the detector",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-058",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "mobile phase",
+    "type": "definition",
+    "prompt": "Define mobile phase.",
+    "answer": "the phase that moves through the stationary phase carrying the sample with it",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-059",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "stationary phase",
+    "type": "definition",
+    "prompt": "Define stationary phase.",
+    "answer": "the phase that does not move and with which the components of the mixture interact",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-060",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "base peak",
+    "type": "definition",
+    "prompt": "Define base peak in a mass spectrum.",
+    "answer": "the peak due to the most abundant ion which is assigned an abundance of 100%",
+    "source_scope": "syllabus_only"
+  }
+]

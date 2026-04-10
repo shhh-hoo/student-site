@@ -1,0 +1,13 @@
+[
+  {
+    "id": "a2-def-044",
+    "stage": "A2",
+    "level": 1,
+    "topic": "organic-synthesis",
+    "subtopic": "racemic mixture",
+    "type": "definition",
+    "prompt": "Define racemic mixture.",
+    "answer": "a mixture containing equal amounts of two enantiomers",
+    "source_scope": "syllabus_only"
+  }
+]

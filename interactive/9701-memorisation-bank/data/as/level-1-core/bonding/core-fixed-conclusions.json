@@ -1,0 +1,22 @@
+[
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "bonding",
+    "subtopic": "metallic bonding",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: electrical conductivity in metals is due to ____ electrons.",
+    "answer": "delocalised"
+  },
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "bonding",
+    "subtopic": "hydrogen bonding",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: more energy is needed to overcome stronger ____ forces.",
+    "answer": "intermolecular"
+  }
+]

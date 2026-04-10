@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-exp-026",
+    "stage": "A2",
+    "level": 4,
+    "topic": "energetics",
+    "subtopic": "large positive entropy",
+    "type": "full_reconstruction",
+    "question": "Explain why ΔS has a large positive value when several gas molecules are formed.",
+    "answer": "The number of gas molecules increases. Gas particles have much greater freedom of movement than solids or liquids. Therefore the disorder of the system increases greatly, so ΔS is large and positive."
+  }
+]

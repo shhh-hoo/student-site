@@ -1,0 +1,62 @@
+[
+  {
+    "id": "as-eq-073",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "Fehling test summary",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanal with Fehling’s solution using [O].",
+    "answer": "CH3CHO + 2Cu2+ + 5OH- -> CH3COO- + Cu2O + 3H2O"
+  },
+  {
+    "id": "as-eq-080",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "carbonate test gas",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of carbon dioxide with limewater.",
+    "answer": "CO2 + Ca(OH)2 -> CaCO3 + H2O"
+  },
+  {
+    "id": "as-eq-081",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "sulfate test precipitation",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of barium ions with sulfate ions.",
+    "answer": "Ba2+ + SO4^2- -> BaSO4"
+  },
+  {
+    "id": "as-eq-082",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "silver chloride formation",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of silver ions with chloride ions.",
+    "answer": "Ag+ + Cl- -> AgCl"
+  },
+  {
+    "id": "as-eq-083",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "silver bromide formation",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of silver ions with bromide ions.",
+    "answer": "Ag+ + Br- -> AgBr"
+  },
+  {
+    "id": "as-eq-084",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "silver iodide formation",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of silver ions with iodide ions.",
+    "answer": "Ag+ + I- -> AgI"
+  }
+]

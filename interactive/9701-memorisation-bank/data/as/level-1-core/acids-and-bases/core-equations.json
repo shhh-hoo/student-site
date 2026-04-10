@@ -1,0 +1,32 @@
+[
+  {
+    "id": "as-eq-024",
+    "stage": "AS",
+    "level": 1,
+    "topic": "acids-and-bases",
+    "subtopic": "ammonium ion with hydroxide",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of NH4+ with OH-.",
+    "answer": "NH4+ + OH- -> NH3 + H2O"
+  },
+  {
+    "id": "as-eq-075",
+    "stage": "AS",
+    "level": 1,
+    "topic": "acids-and-bases",
+    "subtopic": "ammonium with hydroxide",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of ammonium ions with hydroxide ions.",
+    "answer": "NH4+ + OH- -> NH3 + H2O"
+  },
+  {
+    "id": "as-eq-076",
+    "stage": "AS",
+    "level": 1,
+    "topic": "acids-and-bases",
+    "subtopic": "carbonate with acid",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the reaction of carbonate ions with hydrogen ions.",
+    "answer": "CO3^2- + 2H+ -> CO2 + H2O"
+  }
+]

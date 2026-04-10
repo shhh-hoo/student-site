@@ -1,0 +1,12 @@
+[
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "temperature",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: increasing temperature means a greater proportion of molecules have energy greater than or equal to ____.",
+    "answer": "Ea"
+  }
+]

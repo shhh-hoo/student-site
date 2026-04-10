@@ -1,0 +1,200 @@
+[
+  {
+    "id": "as-exp-005",
+    "stage": "AS",
+    "level": 3,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "multi_round_cloze",
+    "question": "Explain why the yield of a gaseous product increases when the total pressure is increased.",
+    "full_answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side if that side has fewer gaseous molecules, so the yield increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the equilibrium moves to the product side if that side has fewer gaseous molecules, so the yield increases.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium _____ to the product side if that side has fewer gaseous molecules, so the yield increases.",
+        "answers": [
+          "moves"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the _____ side if that side has fewer gaseous molecules, so the yield increases.",
+        "answers": [
+          "product"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-017",
+    "stage": "AS",
+    "level": 3,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "multi_round_cloze",
+    "question": "Explain why increasing the overall pressure increases the yield of propanal in C2H4 + CO + H2 -> CH3CH2CHO.",
+    "full_answer": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the yield increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the equilibrium moves to the product side and the yield increases.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the _____ to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the yield increases.",
+        "answers": [
+          "equilibrium"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the _____ increases.",
+        "answers": [
+          "yield"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-021",
+    "stage": "AS",
+    "level": 3,
+    "topic": "equilibrium",
+    "subtopic": "ammonium ion acid-base",
+    "type": "multi_round_cloze",
+    "question": "Explain why ammonium carbonate undergoes an acid-base reaction with NaOH(aq).",
+    "full_answer": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a _____ to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton.",
+        "answers": [
+          "proton"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it _____ a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton.",
+        "answers": [
+          "donates"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry _____ because it accepts a proton.",
+        "answers": [
+          "base"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-025",
+    "stage": "AS",
+    "level": 3,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "multi_round_cloze",
+    "question": "Explain why increasing pressure increases the yield when the product side has fewer moles of gas.",
+    "full_answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This _____ the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases.",
+        "answers": [
+          "reduces"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the _____ and the yield increases.",
+        "answers": [
+          "products"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-038",
+    "stage": "AS",
+    "level": 3,
+    "topic": "equilibrium",
+    "subtopic": "pressure and yield",
+    "type": "multi_round_cloze",
+    "question": "Explain why the yield of a gaseous product increases when pressure is increased.",
+    "full_answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of _____. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
+        "answers": [
+          "gas"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
+        "answers": [
+          "fewer"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the _____ of the gaseous product increases if the product side has fewer moles of gas.",
+        "answers": [
+          "yield"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "as-exp-039",
+    "stage": "AS",
+    "level": 3,
+    "topic": "equilibrium",
+    "subtopic": "catalyst effect",
+    "type": "multi_round_cloze",
+    "question": "State and explain the effect of a catalyst on a reversible reaction.",
+    "full_answer": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "A catalyst provides an alternative pathway with lower activation _____. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged.",
+        "answers": [
+          "energy"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the _____ reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged.",
+        "answers": [
+          "reverse"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached _____ but the position of equilibrium is unchanged.",
+        "answers": [
+          "faster"
+        ]
+      }
+    ]
+  }
+]
