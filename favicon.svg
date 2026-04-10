@@ -1,0 +1,40 @@
+<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="badgeBg" x1="22" y1="4" x2="22" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F6EEFF" />
+      <stop offset="0.52" stop-color="#F1E8FF" />
+      <stop offset="1" stop-color="#EEE7FF" />
+    </linearGradient>
+    <radialGradient
+      id="badgeTint"
+      cx="0"
+      cy="0"
+      r="1"
+      gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(22 10.5) rotate(90) scale(12.5 18)"
+    >
+      <stop offset="0" stop-color="#F6C7E8" stop-opacity="0.38" />
+      <stop offset="1" stop-color="#F6C7E8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <circle cx="22" cy="22" r="18.5" fill="url(#badgeBg)" stroke="#B8A3F3" stroke-width="1.5" />
+  <circle cx="22" cy="22" r="15.5" stroke="#FBFAFF" stroke-width="1" />
+  <circle cx="22" cy="22" r="18.5" fill="url(#badgeTint)" />
+
+  <g
+    fill="none"
+    stroke="#6D28D9"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    transform="translate(-0.4 1.2)"
+  >
+    <path
+      d="M22 12.4L23.9 18.1L29.6 20L23.9 21.9L22 27.6L20.1 21.9L14.4 20L20.1 18.1L22 12.4Z"
+      fill="#6D28D9"
+      stroke-width="1.2"
+    />
+    <path d="M29.9 11.7V15.3M28.1 13.5H31.7" stroke-width="1.7" />
+    <circle cx="15.1" cy="27.9" r="1.85" stroke-width="1.7" />
+  </g>
+</svg>

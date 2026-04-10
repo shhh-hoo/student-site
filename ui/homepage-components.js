@@ -60,7 +60,7 @@ export function createSiteHeaderMarkup(header) {
   return `
     <div class="site-header">
       <div class="site-header__brand">
-        <span class="site-header__mark" aria-hidden="true">J2</span>
+        <span class="site-header__mark" aria-hidden="true"></span>
         <div>
           <p class="site-header__eyebrow">${escapeHtml(header.eyebrow)}</p>
           <a class="site-header__title" href="${escapeHtml(header.homeHref || "./index.html")}">${escapeHtml(header.title)}</a>
