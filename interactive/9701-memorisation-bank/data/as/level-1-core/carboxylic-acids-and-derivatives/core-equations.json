@@ -1,0 +1,62 @@
+[
+  {
+    "id": "as-eq-013",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "esterification",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanoic acid with ethanol.",
+    "answer": "CH3COOH + C2H5OH -> CH3COOC2H5 + H2O"
+  },
+  {
+    "id": "as-eq-028",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "ethanoic acid with sodium carbonate",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanoic acid with sodium carbonate.",
+    "answer": "2CH3COOH + Na2CO3 -> 2CH3COONa + H2O + CO2"
+  },
+  {
+    "id": "as-eq-029",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "ethanoic acid with sodium hydroxide",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanoic acid with sodium hydroxide.",
+    "answer": "CH3COOH + NaOH -> CH3COONa + H2O"
+  },
+  {
+    "id": "as-eq-052",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "acid with carbonate",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanoic acid with sodium carbonate.",
+    "answer": "2CH3COOH + Na2CO3 -> 2CH3COONa + H2O + CO2"
+  },
+  {
+    "id": "as-eq-071",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "ethanoic acid with magnesium",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanoic acid with magnesium.",
+    "answer": "2CH3COOH + Mg -> (CH3COO)2Mg + H2"
+  },
+  {
+    "id": "as-eq-072",
+    "stage": "AS",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "esterification",
+    "type": "equation",
+    "prompt": "Write the equation for the formation of ethyl ethanoate from ethanoic acid and ethanol.",
+    "answer": "CH3COOH + CH3CH2OH -> CH3COOCH2CH3 + H2O"
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "as-eq-006",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "hydrogenation of ethene",
+    "type": "equation",
+    "prompt": "Write the equation for the hydrogenation of ethene.",
+    "answer": "C2H4 + H2 -> C2H6"
+  },
+  {
+    "id": "as-eq-007",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "hydration of ethene",
+    "type": "equation",
+    "prompt": "Write the equation for the hydration of ethene.",
+    "answer": "C2H4 + H2O -> C2H5OH"
+  },
+  {
+    "id": "as-eq-008",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "addition of bromine to ethene",
+    "type": "equation",
+    "prompt": "Write the equation for the addition of bromine to ethene.",
+    "answer": "C2H4 + Br2 -> C2H4Br2"
+  },
+  {
+    "id": "as-eq-033",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "addition polymerisation of chloroethene",
+    "type": "equation",
+    "prompt": "Write the monomer equation for addition polymerisation of chloroethene.",
+    "answer": "nCH2=CHCl -> [-CH2-CHCl-]n"
+  },
+  {
+    "id": "as-eq-053",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "polymerisation of propene",
+    "type": "equation",
+    "prompt": "Write the monomer equation for the addition polymerisation of propene.",
+    "answer": "nCH2=CHCH3 -> [-CH2-CH(CH3)-]n"
+  },
+  {
+    "id": "as-eq-054",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "hydrolysis of bromoethane",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the hydrolysis of bromoethane by hydroxide ions.",
+    "answer": "C2H5Br + OH- -> C2H5OH + Br-"
+  },
+  {
+    "id": "as-eq-074",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "combustion of ethanol",
+    "type": "equation",
+    "prompt": "Write the equation for the complete combustion of ethanol.",
+    "answer": "C2H5OH + 3O2 -> 2CO2 + 3H2O"
+  }
+]

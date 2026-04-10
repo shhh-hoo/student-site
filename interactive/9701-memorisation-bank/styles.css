@@ -1,126 +1,32 @@
-.memorisation-page {
-  --mb-ink: var(--home-ink-strong);
-  --mb-muted: var(--home-ink-muted);
-  --mb-border-soft: rgba(42, 34, 27, 0.18);
-  --mb-border-strong: var(--home-outline-strong);
-  --mb-surface: rgba(255, 251, 245, 0.98);
-  --mb-surface-strong: rgba(249, 244, 236, 0.95);
-  --mb-surface-tint: rgba(236, 248, 245, 0.97);
-  --mb-surface-warm: rgba(255, 244, 236, 0.97);
-  --mb-input-surface: rgba(255, 252, 247, 0.98);
-  --mb-chip-surface: rgba(255, 249, 240, 0.94);
-  --mb-shadow-soft: 8px 8px 0 rgba(42, 34, 27, 0.08);
-  --mb-shadow-lifted: 12px 12px 0 rgba(42, 34, 27, 0.12);
-  --mb-success-bg: rgba(224, 246, 236, 0.96);
-  --mb-success-border: rgba(31, 122, 92, 0.42);
-  --mb-danger-bg: rgba(255, 238, 236, 0.98);
-  --mb-danger-border: rgba(180, 71, 37, 0.42);
-  --mb-warning-bg: rgba(255, 245, 220, 0.98);
-  --mb-warning-border: rgba(214, 138, 36, 0.42);
-  min-height: 100vh;
-  color: var(--mb-ink);
-  background:
-    radial-gradient(circle at 12% 10%, rgba(240, 190, 97, 0.16), transparent 22%),
-    radial-gradient(circle at 82% 10%, rgba(19, 111, 99, 0.14), transparent 24%),
-    radial-gradient(circle at 88% 28%, rgba(168, 215, 255, 0.14), transparent 16%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 18%),
-    linear-gradient(180deg, var(--home-paper), var(--home-paper-shadow));
-}
-
-.memorisation-page::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(transparent 0 93%, rgba(111, 96, 81, 0.04) 93% 100%),
-    linear-gradient(90deg, transparent 0 96%, rgba(111, 96, 81, 0.03) 96% 100%);
-  background-size:
-    100% 18px,
-    18px 100%;
-  opacity: 0.45;
-}
-
-.memorisation-shell {
-  position: relative;
-  z-index: 1;
+.memorisation-layout {
   display: grid;
-  gap: 1.4rem;
-  width: min(1220px, calc(100% - 1.6rem));
-  padding-top: clamp(1rem, 2vw, 1.45rem);
-  padding-bottom: 4rem;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 1rem;
 }
 
-.memorisation-page .site-header {
-  background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(251, 244, 232, 0.94));
+.memorisation-sidebar,
+.memorisation-workspace {
+  padding: clamp(1.05rem, 3vw, 1.45rem);
 }
 
-.memorisation-page .site-header::before {
-  background: linear-gradient(90deg, var(--home-brand-teal), var(--home-brand-rust));
+.memorisation-sidebar {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
 }
 
-.memorisation-page .interactive-hero,
-.memorisation-page .interactive-panel,
-.memorisation-page .interactive-subtle-panel,
-.memorisation-page .interactive-accent-panel,
-.memorisation-page .interactive-help,
-.memorisation-page .interactive-meta-card,
-.memorisation-page .interactive-note-card {
-  border-style: solid;
-  border-color: var(--mb-border-soft);
-  border-width: var(--home-border-thin);
-  box-shadow: var(--mb-shadow-soft);
-  backdrop-filter: none;
+.memorisation-control {
+  display: grid;
+  gap: 0.55rem;
 }
 
-.memorisation-page .interactive-hero,
-.memorisation-page .interactive-panel,
-.memorisation-page .interactive-help {
-  border-color: var(--mb-border-strong);
-  border-width: var(--home-border-strong);
-  box-shadow: var(--mb-shadow-lifted);
-}
-
-.memorisation-page .interactive-hero,
-.memorisation-page .interactive-panel,
-.memorisation-page .interactive-help {
-  position: relative;
-  overflow: hidden;
-}
-
-.memorisation-page .interactive-hero::before,
-.memorisation-page .interactive-panel::before,
-.memorisation-page .interactive-help::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 0.64rem;
-  background: linear-gradient(90deg, var(--home-brand-teal), var(--home-brand-rust));
-}
-
-.memorisation-page .interactive-hero {
-  padding: clamp(1.45rem, 3vw, 2rem);
-  border-radius: 32px;
-  background: linear-gradient(160deg, var(--mb-surface), var(--mb-surface-strong));
-}
-
-.memorisation-page .interactive-hero::after {
-  content: "";
-  position: absolute;
-  inset: auto -4% -24% auto;
-  width: 16rem;
-  height: 16rem;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.72), transparent 64%);
-}
-
-.memorisation-page .interactive-return,
-.memorisation-page .interactive-kicker,
-.memorisation-panel-heading__kicker,
 .memorisation-control__label,
-.memorisation-question-eyebrow,
-.memorisation-answer__label,
-.memorisation-practice-card__label,
-.memorisation-stat span {
+.memorisation-question-label,
+.memorisation-answer__label {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -136,162 +42,67 @@
   gap: 0.6rem;
 }
 
-.memorisation-page .interactive-title-block h1,
-.memorisation-panel-heading h2,
-.memorisation-question-block h2 {
-  color: var(--mb-ink);
-  font-family: var(--font-display);
+.memorisation-levels,
+.memorisation-files,
+.memorisation-filter-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.memorisation-toggle {
+  display: grid;
+  gap: 0.28rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(15, 139, 141, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  color: inherit;
+  text-align: left;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease;
+  cursor: pointer;
+}
+
+.memorisation-toggle:hover,
+.memorisation-toggle:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(15, 139, 141, 0.24);
+  box-shadow: 0 12px 22px rgba(15, 139, 141, 0.08);
+}
+
+.memorisation-toggle[data-active="true"] {
+  border-color: rgba(15, 139, 141, 0.3);
+  background: rgba(242, 250, 247, 0.94);
+  box-shadow: 0 12px 22px rgba(15, 139, 141, 0.1);
+}
+
+.memorisation-toggle__label {
   font-weight: 700;
 }
 
-.memorisation-page .interactive-summary,
-.memorisation-panel-heading__copy,
-.memorisation-question-copy,
-.memorisation-practice-card__copy,
-.memorisation-answer__note,
-.memorisation-feedback__copy,
-.memorisation-page .interactive-note-card p,
-.memorisation-page .interactive-help-summary-copy {
-  color: var(--mb-muted);
+.memorisation-toggle__count {
+  color: var(--muted);
+  font-size: 0.84rem;
 }
 
-.memorisation-page .interactive-meta-chip {
-  border-color: var(--mb-border-soft);
-  background: var(--mb-chip-surface);
-  color: var(--mb-ink);
-  box-shadow: 4px 4px 0 rgba(42, 34, 27, 0.06);
+.memorisation-toggle--compact {
+  padding: 0.72rem 0.82rem;
+  border-radius: 16px;
 }
 
-.memorisation-page .interactive-meta-card,
-.memorisation-page .interactive-note-card {
-  background: var(--mb-surface);
+.memorisation-filter-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
-.memorisation-page .interactive-panel {
-  border-radius: 28px;
-  background: linear-gradient(180deg, var(--mb-surface), var(--mb-surface-strong));
-}
-
-.memorisation-page .interactive-subtle-panel {
-  background: var(--mb-surface);
-}
-
-.memorisation-page .interactive-accent-panel {
-  background: linear-gradient(180deg, var(--mb-surface-warm), rgba(255, 247, 241, 0.98));
-}
-
-.memorisation-layout {
-  display: grid;
-  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
-  gap: 1rem;
-  align-items: start;
-}
-
-.memorisation-sidebar,
-.memorisation-workspace {
-  padding: clamp(1.15rem, 3vw, 1.45rem);
-}
-
-.memorisation-sidebar,
-.memorisation-panel-block,
-.memorisation-panel-heading,
-.memorisation-control,
-.memorisation-stats,
-.memorisation-workspace,
-.memorisation-question-block,
-.memorisation-practice-card,
-.memorisation-feedback,
-.memorisation-answer {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.memorisation-panel-heading__copy,
-.memorisation-question-copy,
-.memorisation-practice-card__copy,
-.memorisation-answer__note,
-.memorisation-feedback__copy {
-  margin: 0;
-  line-height: 1.62;
-}
-
-.memorisation-segmented {
-  display: grid;
-  gap: 0.55rem;
-  padding: 0.35rem;
-  border: var(--home-border-thin) solid var(--mb-border-soft);
-  border-radius: 22px;
-  background: rgba(255, 253, 249, 0.92);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.memorisation-segmented--stage {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.memorisation-segmented--level {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.memorisation-filter-button,
-.memorisation-round-button,
-.memorisation-action-button {
-  appearance: none;
-  cursor: pointer;
-  font: inherit;
-  transition:
-    transform 140ms ease,
-    background 140ms ease,
-    border-color 140ms ease,
-    box-shadow 140ms ease,
-    color 140ms ease;
-}
-
-.memorisation-filter-button {
-  display: grid;
-  gap: 0.18rem;
-  min-height: 3rem;
-  padding: 0.78rem 0.84rem;
-  border: var(--home-border-thin) solid transparent;
-  border-radius: 18px;
-  background: transparent;
-  color: var(--mb-ink);
-  text-align: left;
-}
-
-.memorisation-filter-button[data-active="true"] {
-  border-color: var(--mb-border-strong);
-  background: linear-gradient(180deg, var(--home-brand-teal), var(--home-brand-teal-strong));
-  color: #fff9f4;
-  box-shadow: 4px 4px 0 rgba(19, 111, 99, 0.16);
-}
-
-.memorisation-filter-button:hover,
-.memorisation-filter-button:focus-visible,
-.memorisation-round-button:hover,
-.memorisation-round-button:focus-visible,
-.memorisation-action-button:hover,
-.memorisation-action-button:focus-visible {
-  transform: translateY(-1px);
-}
-
-.memorisation-filter-button__label {
-  font-weight: 800;
-}
-
-.memorisation-filter-button__meta {
-  font-size: 0.8rem;
-  line-height: 1.35;
-  opacity: 0.84;
-}
-
-.memorisation-select,
-.memorisation-response,
-.memorisation-cloze__input {
+.memorisation-select {
   width: 100%;
-  border: var(--home-border-thin) solid var(--mb-border-soft);
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(15, 139, 141, 0.14);
   border-radius: 18px;
-  background: var(--mb-input-surface);
+  background: rgba(255, 255, 255, 0.88);
   color: inherit;
   font: inherit;
 }
@@ -303,11 +114,10 @@
   outline-offset: 2px;
 }
 
-.memorisation-select:focus-visible,
-.memorisation-response:focus-visible,
-.memorisation-cloze__input:focus-visible {
-  outline: 2px solid rgba(19, 111, 99, 0.22);
-  outline-offset: 2px;
+.memorisation-stats {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
 }
 
 .memorisation-stat {
@@ -317,8 +127,14 @@
   gap: 0.75rem;
 }
 
-.memorisation-stat strong {
-  font-size: 1rem;
+.memorisation-stat span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.memorisation-workspace {
+  display: grid;
+  gap: 1rem;
 }
 
 .memorisation-workspace__header {
@@ -329,8 +145,7 @@
   flex-wrap: wrap;
 }
 
-.memorisation-badges,
-.memorisation-rounds {
+.memorisation-badges {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -340,21 +155,17 @@
 .memorisation-counter-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 2rem;
-  padding: 0.34rem 0.72rem;
-  border-radius: 14px;
-  border: var(--home-border-thin) solid rgba(42, 34, 27, 0.14);
-  background: var(--mb-chip-surface);
-  box-shadow: 4px 4px 0 rgba(42, 34, 27, 0.06);
-  color: var(--mb-ink);
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  padding: 0.38rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(15, 139, 141, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .memorisation-counter-chip {
-  background: rgba(255, 236, 202, 0.96);
+  background: rgba(239, 107, 59, 0.12);
+  color: #b65624;
 }
 
 .memorisation-counter-chip--soft {
@@ -574,10 +385,9 @@ textarea.memorisation-input {
   line-height: 1.6;
 }
 
-.memorisation-action-button--ghost {
-  border: var(--home-border-thin) solid var(--mb-border-soft);
-  background: rgba(255, 253, 249, 0.94);
-  color: var(--mb-ink);
+.memorisation-status-card {
+  display: grid;
+  gap: 0.85rem;
 }
 
 html[data-theme="dark"] .memorisation-control__label,
@@ -596,8 +406,10 @@ html[data-theme="dark"] .memorisation-question-stem {
   box-shadow: none;
 }
 
-.memorisation-feedback {
-  border-color: var(--mb-border-soft);
+html[data-theme="dark"] .memorisation-toggle:hover,
+html[data-theme="dark"] .memorisation-toggle:focus-visible {
+  border-color: rgba(168, 215, 255, 0.22);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.24);
 }
 
 html[data-theme="dark"] .memorisation-toggle[data-active="true"] {
@@ -613,23 +425,14 @@ html[data-theme="dark"] .memorisation-empty {
   color: rgba(230, 219, 202, 0.74);
 }
 
-html[data-theme="dark"] body.memorisation-page .interactive-meta-chip,
-html[data-theme="dark"] body.memorisation-page .memorisation-badge,
-html[data-theme="dark"] body.memorisation-page .memorisation-counter-chip,
-html[data-theme="dark"] body.memorisation-page .memorisation-round-button,
-html[data-theme="dark"] body.memorisation-page .memorisation-action-button--ghost,
-html[data-theme="dark"] body.memorisation-page .memorisation-select,
-html[data-theme="dark"] body.memorisation-page .memorisation-response,
-html[data-theme="dark"] body.memorisation-page .memorisation-cloze__input {
-  border-color: rgba(230, 219, 202, 0.16);
+html[data-theme="dark"] .memorisation-badge {
   background: rgba(42, 38, 34, 0.94);
-  box-shadow: none;
   color: rgba(247, 240, 228, 0.94);
 }
 
-html[data-theme="dark"] body.memorisation-page .memorisation-filter-button[data-active="true"],
-html[data-theme="dark"] body.memorisation-page .memorisation-action-button--primary {
-  box-shadow: none;
+html[data-theme="dark"] .memorisation-counter-chip {
+  background: rgba(91, 53, 40, 0.96);
+  color: rgba(255, 213, 188, 0.94);
 }
 
 html[data-theme="dark"] .memorisation-counter-chip--soft,

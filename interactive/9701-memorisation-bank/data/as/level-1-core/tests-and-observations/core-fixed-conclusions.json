@@ -1,0 +1,12 @@
+[
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "observations",
+    "type": "fixed_conclusion",
+    "prompt": "State the correct chemistry-style word for bubbles seen during a reaction.",
+    "answer": "effervescence"
+  }
+]

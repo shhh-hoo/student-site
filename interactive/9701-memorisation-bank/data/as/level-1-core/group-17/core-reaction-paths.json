@@ -1,0 +1,42 @@
+[
+  {
+    "id": "as-path-013",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "halide ions",
+    "type": "reaction_path",
+    "prompt": "chloride ion -> silver chloride",
+    "answer": "acidified AgNO3"
+  },
+  {
+    "id": "as-path-014",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "halide ions",
+    "type": "reaction_path",
+    "prompt": "silver chloride -> soluble complex",
+    "answer": "aqueous NH3"
+  },
+  {
+    "id": "as-path-019",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "chlorine network",
+    "type": "reaction_path",
+    "prompt": "Cl2 -> chloride and chlorate(I)",
+    "answer": "cold dilute NaOH"
+  },
+  {
+    "id": "as-path-020",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "chlorine network",
+    "type": "reaction_path",
+    "prompt": "Cl2 -> chloride and chlorate(V)",
+    "answer": "hot concentrated NaOH"
+  }
+]

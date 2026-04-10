@@ -1,0 +1,12 @@
+[
+  {
+    "id": "as-fc-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "mass spectrometry",
+    "type": "fixed_conclusion",
+    "prompt": "State the fixed conclusion for an M and M+2 pattern in a chloro compound.",
+    "answer": "two chlorine isotopes"
+  }
+]

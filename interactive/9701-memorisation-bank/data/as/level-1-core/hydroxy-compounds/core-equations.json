@@ -1,0 +1,52 @@
+[
+  {
+    "id": "as-eq-009",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "oxidation of ethanol to ethanal",
+    "type": "equation",
+    "prompt": "Write the equation for the oxidation of ethanol to ethanal using [O].",
+    "answer": "CH3CH2OH + [O] -> CH3CHO + H2O"
+  },
+  {
+    "id": "as-eq-027",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "ethanol with sodium",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanol with sodium.",
+    "answer": "2C2H5OH + 2Na -> 2C2H5ONa + H2"
+  },
+  {
+    "id": "as-eq-049",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "dehydration of ethanol",
+    "type": "equation",
+    "prompt": "Write the equation for the dehydration of ethanol to ethene.",
+    "answer": "C2H5OH -> C2H4 + H2O"
+  },
+  {
+    "id": "as-eq-050",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "ethanol with sodium",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanol with sodium.",
+    "answer": "2C2H5OH + 2Na -> 2C2H5ONa + H2"
+  },
+  {
+    "id": "as-eq-065",
+    "stage": "AS",
+    "level": 1,
+    "topic": "hydroxy-compounds",
+    "subtopic": "ethanol dehydration",
+    "type": "equation",
+    "prompt": "Write the equation for the dehydration of ethanol.",
+    "answer": "CH3CH2OH -> CH2=CH2 + H2O"
+  }
+]

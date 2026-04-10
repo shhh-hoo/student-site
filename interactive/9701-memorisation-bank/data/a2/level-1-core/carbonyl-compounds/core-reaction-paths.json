@@ -1,0 +1,62 @@
+[
+  {
+    "id": "a2-path-010",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "aldehyde to alcohol",
+    "type": "reaction_path",
+    "prompt": "aldehyde -> primary alcohol",
+    "answer": "NaBH4"
+  },
+  {
+    "id": "a2-path-011",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "ketone to alcohol",
+    "type": "reaction_path",
+    "prompt": "ketone -> secondary alcohol",
+    "answer": "NaBH4"
+  },
+  {
+    "id": "a2-path-027",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "aldehyde network",
+    "type": "reaction_path",
+    "prompt": "aldehyde -> primary alcohol",
+    "answer": "NaBH4"
+  },
+  {
+    "id": "a2-path-028",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "ketone network",
+    "type": "reaction_path",
+    "prompt": "ketone -> secondary alcohol",
+    "answer": "NaBH4"
+  },
+  {
+    "id": "a2-path-054",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "cyanohydrin path ketone",
+    "type": "reaction_path",
+    "prompt": "propanone -> hydroxynitrile",
+    "answer": "HCN and KCN"
+  },
+  {
+    "id": "a2-path-055",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "carbonyl reduction path",
+    "type": "reaction_path",
+    "prompt": "propanone -> propan-2-ol",
+    "answer": "NaBH4"
+  }
+]

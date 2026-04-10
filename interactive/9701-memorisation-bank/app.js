@@ -9,17 +9,12 @@ const definitionScopeOptions = [
   { id: "syllabus_only", label: "Syllabus only" },
   { id: "paper_and_syllabus", label: "Paper + syllabus" },
 ];
-const typeOrder = [
-  "definition",
-  "reagent_condition",
-  "reaction_path",
-  "equation",
-  "standard_observation",
-  "test_outcome",
-  "fixed_conclusion",
-  "guided_cloze",
-  "multi_round_cloze",
-  "full_reconstruction",
+
+const levelOrder = [
+  "level-1-core",
+  "level-2-guided-cloze",
+  "level-3-multi-round-cloze",
+  "level-4-full-reconstruction",
 ];
 
 const fileOrder = [
@@ -34,73 +29,6 @@ const fileOrder = [
   "full-reconstruction",
 ];
 
-const articleTokens = new Set(["a", "an", "the"]);
-const prepositionTokens = new Set([
-  "in",
-  "on",
-  "at",
-  "of",
-  "to",
-  "from",
-  "with",
-  "by",
-  "for",
-  "into",
-  "between",
-  "under",
-  "through",
-  "over",
-  "within",
-  "without",
-  "across",
-  "after",
-  "before",
-  "around",
-  "against",
-  "among",
-  "along",
-  "during",
-  "inside",
-  "outside",
-  "onto",
-  "upon",
-]);
-const exactSuccessStates = new Set(["exact", "normalized_match"]);
-const britishAmericanVariantMap = new Map([
-  ["sulphur", "sulfur"],
-  ["sulphate", "sulfate"],
-  ["sulphates", "sulfates"],
-  ["sulphite", "sulfite"],
-  ["sulphites", "sulfites"],
-  ["aluminium", "aluminum"],
-  ["ionisation", "ionization"],
-  ["ionisations", "ionizations"],
-  ["ionise", "ionize"],
-  ["ionised", "ionized"],
-  ["ionises", "ionizes"],
-  ["ionising", "ionizing"],
-  ["oxidise", "oxidize"],
-  ["oxidised", "oxidized"],
-  ["oxidises", "oxidizes"],
-  ["oxidising", "oxidizing"],
-  ["polymerisation", "polymerization"],
-  ["polymerisations", "polymerizations"],
-  ["polymerise", "polymerize"],
-  ["polymerised", "polymerized"],
-  ["polymerises", "polymerizes"],
-  ["polymerising", "polymerizing"],
-]);
-
-const hyphenLikePattern = /[‐‑‒–—−]/g;
-const singleQuotePattern = /[‘’‚‛`´]/g;
-const doubleQuotePattern = /[“”„‟]/g;
-const punctuationSpacingPattern = /\s*([,.;:!?])\s*/g;
-const bracketSpacingPattern = /\s*([()[\]{}])\s*/g;
-const quoteCharacterPattern = /["']/g;
-const stateSymbolPattern = /\(\s*(aq|s|l|g)\s*\)/gi;
-const reversibleArrowPattern = /(?:⇌|↔|⟷|<=>)/g;
-const forwardArrowPattern = /(?:⟶|⟹|→|=>)/g;
-
 const reviewPageSize = 4;
 const questionPageSizeByFile = {
   "full-reconstruction": 2,
@@ -108,53 +36,6 @@ const questionPageSizeByFile = {
   "multi-round-cloze": 3,
   default: 5,
 };
-const conceptKeywordStopwords = new Set([
-  "a",
-  "an",
-  "and",
-  "are",
-  "as",
-  "at",
-  "be",
-  "because",
-  "between",
-  "by",
-  "each",
-  "for",
-  "from",
-  "has",
-  "have",
-  "in",
-  "into",
-  "is",
-  "it",
-  "its",
-  "of",
-  "on",
-  "or",
-  "that",
-  "the",
-  "their",
-  "therefore",
-  "to",
-  "with",
-]);
-const contradictionPairs = [
-  ["same", "different"],
-  ["different", "same"],
-  ["increase", "decrease"],
-  ["decrease", "increase"],
-  ["higher", "lower"],
-  ["lower", "higher"],
-  ["stronger", "weaker"],
-  ["weaker", "stronger"],
-  ["oxidised", "reduced"],
-  ["reduced", "oxidised"],
-  ["oxidation", "reduction"],
-  ["reduction", "oxidation"],
-  ["positive", "negative"],
-  ["negative", "positive"],
-];
 
 const collator = new Intl.Collator(undefined, {
   numeric: true,
@@ -164,17 +45,22 @@ const collator = new Intl.Collator(undefined, {
 const stageSwitcher = document.getElementById("stage-switcher");
 const levelSwitcher = document.getElementById("level-switcher");
 const topicFilter = document.getElementById("topic-filter");
-const typeFilter = document.getElementById("type-filter");
-const sourceFileCount = document.getElementById("source-file-count");
-const activeItemCount = document.getElementById("active-item-count");
-const topicCount = document.getElementById("topic-count");
-const cardCounter = document.getElementById("card-counter");
+const fileSwitcher = document.getElementById("file-switcher");
+const definitionFilterSection = document.getElementById("definition-filter-section");
+const definitionFilterGrid = document.getElementById("definition-filter-grid");
+const roundSwitcherSection = document.getElementById("round-switcher-section");
+const roundSwitcher = document.getElementById("round-switcher");
+const fileManifestCount = document.getElementById("file-manifest-count");
+const poolCount = document.getElementById("pool-count");
+const itemCounter = document.getElementById("item-counter");
+const counterChip = document.getElementById("counter-chip");
 const stageBadge = document.getElementById("stage-badge");
 const levelBadge = document.getElementById("level-badge");
 const topicBadge = document.getElementById("topic-badge");
-const typeBadge = document.getElementById("type-badge");
-const counterChip = document.getElementById("counter-chip");
-const questionEyebrow = document.getElementById("question-eyebrow");
+const fileBadge = document.getElementById("file-badge");
+const sourceBadge = document.getElementById("source-badge");
+const roundBadge = document.getElementById("round-badge");
+const questionLabel = document.getElementById("question-label");
 const questionTitle = document.getElementById("question-title");
 const questionCopy = document.getElementById("question-copy");
 const pageCounter = document.getElementById("page-counter");
@@ -187,10 +73,11 @@ const reviewToggleButton = document.getElementById("review-toggle");
 const sessionBanner = document.getElementById("session-banner");
 const sessionPage = document.getElementById("session-page");
 
-const state = {
-  items: [],
-  stage: "AS",
-  level: 1,
+const appState = {
+  catalog: null,
+  topicNormalizationMap: {},
+  stage: "",
+  level: "",
   topic: "",
   file: "",
   definitionScope: "all",
@@ -227,11 +114,7 @@ function fetchJson(path) {
   });
 }
 
-function getLevelDefinition(level) {
-  return levelDefinitions.find((entry) => entry.value === level) || levelDefinitions[0];
-}
-
-function formatLooseLabel(value) {
+function formatLabel(value) {
   return String(value || "")
     .trim()
     .split(/[-\s]+/)
@@ -240,68 +123,12 @@ function formatLooseLabel(value) {
     .join(" ");
 }
 
-function formatTypeLabel(type) {
-  if (!type) {
-    return "All types";
-  }
-
-  return typeLabelMap[type] || formatLooseLabel(type);
+function formatDefinitionScope(scope) {
+  return definitionScopeOptions.find((option) => option.id === scope)?.label || formatLabel(scope);
 }
 
 function pluralise(count, singular, plural = `${singular}s`) {
   return `${count} ${count === 1 ? singular : plural}`;
-}
-
-function normaliseUnicodeText(value) {
-  return String(value ?? "")
-    .trim()
-    .replace(/\s+/g, " ");
-}
-
-function compareText(left, right) {
-  return collator.compare(left, right);
-}
-
-function getMatcherConfig(unit) {
-  if (unit?.fileId === "core-equations") {
-    const sourceText = `${unit?.prompt || ""} ${unit?.question || ""}`;
-
-    return {
-      type: "equation",
-      ignoreStateSymbols: !/state symbols?/i.test(sourceText),
-    };
-  }
-
-  return /[\d[\]()+\-<>=/]/.test(token) || /^(?:[A-Z][a-z]?){2,}$/.test(token);
-}
-
-function shouldUseChargeDigits(prefix, digits) {
-  if (!prefix || !digits) {
-    return false;
-  }
-
-  const lastCharacter = prefix.at(-1);
-
-  if (lastCharacter === "]" || lastCharacter === ")") {
-    return true;
-  }
-
-  return /[a-z]/.test(lastCharacter) && !/\d/.test(prefix);
-}
-
-function shouldSuperscriptInlineSign(formula, index) {
-  const previousCharacter = formula[index - 1] || "";
-  const nextCharacter = formula[index + 1] || "";
-
-  if (!/[A-Za-z0-9\])]/.test(previousCharacter) || nextCharacter === ">") {
-    return false;
-  }
-
-  return nextCharacter === "" || /[A-Z[(]/.test(nextCharacter);
-}
-
-function isSuccessfulMatchState(state) {
-  return exactSuccessStates.has(state);
 }
 
 function setFeedbackMessage(element, message, tone = "neutral") {
@@ -754,7 +581,7 @@ function renderDefinitionFilter() {
     return;
   }
 
-  const feedback = buildFeedbackModel(evaluation);
+  definitionFilterSection.hidden = false;
 
   const definitionSourceCounts = fileEntry.definition_source_counts || {};
   definitionFilterGrid.innerHTML = definitionScopeOptions
@@ -942,257 +769,6 @@ function fillPromptBlanks(prompt, values) {
 
     return `${built}${part}${values[index] || ""}`;
   }, "");
-}
-
-function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function splitConceptPhrases(text) {
-  const normalized = String(text || "").trim();
-
-  if (!normalized) {
-    return [];
-  }
-
-  let phrases = normalized
-    .replace(/;\s+/g, "|")
-    .replace(/\.\s+/g, "|")
-    .replace(/\s+but\s+/gi, "|")
-    .replace(/\s+because\s+/gi, "|because ")
-    .replace(/\s+therefore\s+/gi, "|therefore ")
-    .replace(/\s+to form\s+/gi, "|form ")
-    .replace(/\s+to produce\s+/gi, "|produce ")
-    .split("|")
-    .map((phrase) => phrase.trim())
-    .filter(Boolean);
-
-  if (phrases.length === 1 && phrases[0].split(/\s+/).length > 10) {
-    phrases = phrases[0]
-      .replace(/,\s+(?=(and|which|while)\b)/gi, "|")
-      .split("|")
-      .map((phrase) => phrase.trim())
-      .filter(Boolean);
-  }
-
-  return phrases.length ? phrases : [normalized];
-}
-
-function buildConceptKeywords(text, matcherConfig) {
-  if (matcherConfig.type === "equation") {
-    return [];
-  }
-
-  return buildControlledTextComparable(text).tokens.filter(
-    (token) => token && !conceptKeywordStopwords.has(token) && !prepositionTokens.has(token),
-  );
-}
-
-function buildConceptHint(phrase, keywords) {
-  const lowered = String(phrase || "").toLowerCase();
-
-  if (lowered.includes("electron") && lowered.includes("remove")) {
-    return "Mention the electron-removal step.";
-  }
-
-  if (lowered.includes("ion") && lowered.includes("form")) {
-    return "Mention the ions formed.";
-  }
-
-  if (lowered.includes("proton") && lowered.includes("number")) {
-    return "Mention the proton-number condition.";
-  }
-
-  if (lowered.includes("neutron")) {
-    return "Mention what differs about neutrons.";
-  }
-
-  if (lowered.includes("lone pair")) {
-    return "Mention the lone-pair part of the idea.";
-  }
-
-  if (lowered.includes("electrostatic")) {
-    return "Mention the electrostatic attraction.";
-  }
-
-  if (lowered.includes("gaseous")) {
-    return "Mention the gaseous species involved.";
-  }
-
-  if (keywords.length === 1) {
-    return `Mention ${keywords[0]}.`;
-  }
-
-  if (keywords.length >= 2) {
-    return `Include the ${keywords.slice(0, 2).join(" / ")} idea.`;
-  }
-
-  return "Include the missing chemistry idea.";
-}
-
-function buildContradictionsForPhrase(phrase, matcherConfig, groupId) {
-  if (matcherConfig.type === "equation") {
-    return [];
-  }
-
-  return contradictionPairs
-    .map(([fromToken, toToken]) => {
-      const tokenPattern = new RegExp(`\\b${escapeRegExp(fromToken)}\\b`, "i");
-
-      if (!tokenPattern.test(phrase)) {
-        return null;
-      }
-
-      const contradictionText = phrase.replace(tokenPattern, toToken);
-      const normalizedVariant = buildControlledTextComparable(contradictionText).text;
-
-      if (!normalizedVariant) {
-        return null;
-      }
-
-      return {
-        id: `${groupId}::${fromToken}-vs-${toToken}`,
-        variants: [contradictionText],
-        normalized_variants: [normalizedVariant],
-      };
-    })
-    .filter(Boolean);
-}
-
-function normalizeConceptGroups(conceptGroups, matcherConfig) {
-  return conceptGroups
-    .map((group, groupIndex) => {
-      const variants = Array.isArray(group.variants) ? group.variants.filter(Boolean) : [];
-      const normalizedVariants = variants
-        .map((variant) =>
-          matcherConfig.type === "equation"
-            ? buildEquationComparable(variant, matcherConfig)
-            : buildControlledTextComparable(variant).text,
-        )
-        .filter(Boolean);
-
-      if (!normalizedVariants.length) {
-        return null;
-      }
-
-      const keywords = buildConceptKeywords(variants[0], matcherConfig);
-
-      return {
-        id: group.id || `group-${groupIndex + 1}`,
-        required: group.required !== false,
-        variants,
-        normalized_variants: normalizedVariants,
-        keywords,
-        minimum_keyword_matches: Number(
-          group.minimum_keyword_matches ??
-            (matcherConfig.type === "equation"
-              ? 0
-              : Math.min(4, Math.max(1, Math.ceil(keywords.length * 0.6)))),
-        ),
-        hint: group.hint || buildConceptHint(variants[0], keywords),
-      };
-    })
-    .filter(Boolean);
-}
-
-function normalizeContradictions(contradictions, matcherConfig) {
-  return contradictions
-    .map((contradiction, contradictionIndex) => {
-      const variants = Array.isArray(contradiction.variants)
-        ? contradiction.variants.filter(Boolean)
-        : [];
-      const normalizedVariants = variants
-        .map((variant) =>
-          matcherConfig.type === "equation"
-            ? buildEquationComparable(variant, matcherConfig)
-            : buildControlledTextComparable(variant).text,
-        )
-        .filter(Boolean);
-
-      if (!normalizedVariants.length) {
-        return null;
-      }
-
-      return {
-        id: contradiction.id || `contradiction-${contradictionIndex + 1}`,
-        variants,
-        normalized_variants: normalizedVariants,
-      };
-    })
-    .filter(Boolean);
-}
-
-function deriveConceptGroups(minimalPass, matcherConfig) {
-  if (matcherConfig.type === "equation") {
-    return normalizeConceptGroups(
-      [
-        {
-          id: "equation-match",
-          required: true,
-          variants: [minimalPass],
-          hint: "Match the stored equation.",
-        },
-      ],
-      matcherConfig,
-    );
-  }
-
-  return normalizeConceptGroups(
-    splitConceptPhrases(minimalPass).map((phrase, phraseIndex) => ({
-      id: `group-${phraseIndex + 1}`,
-      required: true,
-      variants: [phrase],
-      hint: buildConceptHint(phrase, buildConceptKeywords(phrase, matcherConfig)),
-    })),
-    matcherConfig,
-  );
-}
-
-function createAnswerModel({
-  answer,
-  fullAnswer,
-  minimalPass,
-  conceptGroups,
-  contradictions,
-  fileId,
-  prompt,
-  question,
-  type,
-  sourceScope,
-}) {
-  const canonicalValue = String(answer ?? fullAnswer ?? minimalPass ?? "").trim();
-  const resolvedFullAnswer = String(fullAnswer ?? canonicalValue).trim() || canonicalValue;
-  const resolvedMinimalPass =
-    String(
-      minimalPass ??
-        (type === "definition" && sourceScope && sourceScope !== "paper_only"
-          ? canonicalValue
-          : canonicalValue),
-    ).trim() || resolvedFullAnswer;
-  const matcherConfig = getMatcherConfig({
-    fileId,
-    prompt,
-    question,
-  });
-  const resolvedConceptGroups = normalizeConceptGroups(conceptGroups || [], matcherConfig);
-  const derivedConceptGroups = resolvedConceptGroups.length
-    ? resolvedConceptGroups
-    : deriveConceptGroups(resolvedMinimalPass, matcherConfig);
-  const resolvedContradictions = normalizeContradictions(contradictions || [], matcherConfig);
-  const derivedContradictions =
-    resolvedContradictions.length > 0
-      ? resolvedContradictions
-      : derivedConceptGroups.flatMap((group) =>
-          buildContradictionsForPhrase(group.variants[0], matcherConfig, group.id),
-        );
-
-  return {
-    full_answer: resolvedFullAnswer,
-    minimal_pass: resolvedMinimalPass,
-    concept_groups: derivedConceptGroups,
-    contradictions: derivedContradictions,
-    matcherConfig,
-  };
 }
 
 function createQuestionBase(item, fileEntry, questionId, kind, questionText, promptText) {
@@ -1645,35 +1221,6 @@ function setBlankValue(blankId, value) {
   }
 
   blankState.value = value;
-}
-
-function buildComparableInput(value, matcherConfig) {
-  if (matcherConfig.type === "equation") {
-    const text = buildEquationComparable(value, matcherConfig);
-
-    return {
-      text,
-      tokens: text ? [text] : [],
-      tokenSet: new Set(text ? [text] : []),
-      ngrams: new Set(text ? [text] : []),
-    };
-  }
-
-  const comparable = buildControlledTextComparable(value);
-  const ngrams = new Set();
-
-  for (let length = Math.min(comparable.tokens.length, 6); length > 0; length -= 1) {
-    for (let startIndex = 0; startIndex <= comparable.tokens.length - length; startIndex += 1) {
-      ngrams.add(comparable.tokens.slice(startIndex, startIndex + length).join(" "));
-    }
-  }
-
-  return {
-    text: comparable.text,
-    tokens: comparable.tokens,
-    tokenSet: new Set(comparable.tokens),
-    ngrams,
-  };
 }
 
 function evaluateConceptMatcher(blank, userValue) {
@@ -2496,84 +2043,7 @@ async function refreshSession({ allowCatalogResync = true } = {}) {
 
   setLoadingState(`Loading ${fileEntry.label.toLowerCase()} session...`);
 
-function handlePreviousItem() {
-  const filteredItems = getCurrentFilteredItems();
-
-  if (!filteredItems.length) {
-    return;
-  }
-
-  state.currentIndex = (state.currentIndex - 1 + filteredItems.length) % filteredItems.length;
-  resetInteraction({ resetRound: true });
-  render();
-}
-
-function attachEventListeners() {
-  stageSwitcher.addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-stage]");
-
-    if (!button || state.stage === button.dataset.stage) {
-      return;
-    }
-
-    state.stage = button.dataset.stage;
-    state.topic = "";
-    state.type = "";
-    resetInteraction({ resetIndex: true, resetRound: true });
-    render();
-  });
-
-  levelSwitcher.addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-level]");
-    const nextLevel = Number(button?.dataset.level || 0);
-
-    if (!button || !nextLevel || state.level === nextLevel) {
-      return;
-    }
-
-    state.level = nextLevel;
-    state.topic = "";
-    state.type = "";
-    resetInteraction({ resetIndex: true, resetRound: true });
-    render();
-  });
-
-  topicFilter.addEventListener("change", () => {
-    state.topic = topicFilter.value;
-    state.type = "";
-    resetInteraction({ resetIndex: true, resetRound: true });
-    render();
-  });
-
-  typeFilter.addEventListener("change", () => {
-    state.type = typeFilter.value;
-    resetInteraction({ resetIndex: true, resetRound: true });
-    render();
-  });
-
-  roundSwitcher.addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-round]");
-    const nextRoundIndex = Number(button?.dataset.round || 0);
-
-    if (!button || state.currentRoundIndex === nextRoundIndex) {
-      return;
-    }
-
-    state.currentRoundIndex = nextRoundIndex;
-    resetInteraction({ resetRound: false });
-    render();
-  });
-
-  checkAnswerButton.addEventListener("click", handleCheckAnswer);
-  showAnswerButton.addEventListener("click", handleShowAnswer);
-  previousItemButton.addEventListener("click", handlePreviousItem);
-  nextItemButton.addEventListener("click", handleNextItem);
-}
-
-async function loadPack() {
-  state.loading = true;
-  state.error = "";
-  render();
+  const renderToken = ++appState.renderToken;
 
   try {
     const items = await loadSessionSourceItems(fileEntry);
@@ -2643,6 +2113,7 @@ function registerStaticEvents() {
         round: "all",
       }),
     );
+  });
 
   prevPageButton.addEventListener("click", () => {
     goToPage(getCurrentPageIndex() - 1);
@@ -2672,11 +2143,13 @@ async function bootRuntime({ preserveSelection = true } = {}) {
     updateUrlFromState();
     await refreshSession({ allowCatalogResync: false });
   } catch (error) {
-    state.loading = false;
-    state.error = error.message;
-    render();
+    renderCatalogErrorState(error.message);
   }
 }
 
-attachEventListeners();
-loadPack();
+async function init() {
+  registerStaticEvents();
+  bootRuntime({ preserveSelection: false });
+}
+
+init();

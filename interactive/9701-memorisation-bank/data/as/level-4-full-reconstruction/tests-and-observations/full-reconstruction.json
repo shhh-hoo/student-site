@@ -1,0 +1,42 @@
+[
+  {
+    "id": "as-exp-029",
+    "stage": "AS",
+    "level": 4,
+    "topic": "tests-and-observations",
+    "subtopic": "Mg3N2 with water",
+    "type": "full_reconstruction",
+    "question": "Explain why the solution formed when magnesium nitride reacts with water is alkaline.",
+    "answer": "Magnesium nitride reacts with water to produce ammonia. Ammonia reacts with water to form hydroxide ions. Therefore the solution is alkaline."
+  },
+  {
+    "id": "as-exp-052",
+    "stage": "AS",
+    "level": 4,
+    "topic": "tests-and-observations",
+    "subtopic": "bromine water with alkene",
+    "type": "full_reconstruction",
+    "question": "Explain why bromine water is decolourised by an alkene.",
+    "answer": "The alkene reacts with bromine in an addition reaction. Bromine is used up as the carbon-carbon double bond is broken and new carbon-bromine bonds are formed. Therefore the orange colour disappears."
+  },
+  {
+    "id": "as-exp-053",
+    "stage": "AS",
+    "level": 4,
+    "topic": "tests-and-observations",
+    "subtopic": "carbonate with acid effervescence",
+    "type": "full_reconstruction",
+    "question": "Explain why a carbonate effervesces when dilute acid is added.",
+    "answer": "Carbonate ions react with hydrogen ions to form carbon dioxide gas and water. The carbon dioxide escapes as bubbles. Therefore effervescence is seen."
+  },
+  {
+    "id": "as-exp-057",
+    "stage": "AS",
+    "level": 4,
+    "topic": "tests-and-observations",
+    "subtopic": "acidified dichromate with aldehyde",
+    "type": "full_reconstruction",
+    "question": "Explain why acidified potassium dichromate(VI) changes from orange to green when it reacts with an aldehyde.",
+    "answer": "The aldehyde is oxidised to a carboxylic acid. At the same time dichromate(VI) ions are reduced to chromium(III) ions, which are green in solution. Therefore the solution changes from orange to green."
+  }
+]

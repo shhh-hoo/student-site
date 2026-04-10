@@ -1,0 +1,32 @@
+[
+  {
+    "id": "a2-eq-012",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "reduction of ethanal",
+    "type": "equation",
+    "prompt": "Write the equation for the reduction of ethanal using [H].",
+    "answer": "CH3CHO + 2[H] -> CH3CH2OH"
+  },
+  {
+    "id": "a2-eq-013",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "reduction of propanone",
+    "type": "equation",
+    "prompt": "Write the equation for the reduction of propanone using [H].",
+    "answer": "CH3COCH3 + 2[H] -> CH3CHOHCH3"
+  },
+  {
+    "id": "a2-eq-062",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "hydroxynitrile formation equation",
+    "type": "equation",
+    "prompt": "Write the equation for the formation of a hydroxynitrile from ethanal.",
+    "answer": "CH3CHO + HCN -> CH3CH(OH)CN"
+  }
+]

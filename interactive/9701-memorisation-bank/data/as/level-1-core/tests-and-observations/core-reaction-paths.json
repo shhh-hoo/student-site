@@ -1,0 +1,22 @@
+[
+  {
+    "id": "as-path-048",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "carbonate test",
+    "type": "reaction_path",
+    "prompt": "carbonate -> carbon dioxide",
+    "answer": "dilute acid"
+  },
+  {
+    "id": "as-path-049",
+    "stage": "AS",
+    "level": 1,
+    "topic": "tests-and-observations",
+    "subtopic": "ammonium test",
+    "type": "reaction_path",
+    "prompt": "ammonium ion -> ammonia",
+    "answer": "NaOH(aq), warm"
+  }
+]

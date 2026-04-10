@@ -1,0 +1,42 @@
+[
+  {
+    "id": "as-exp-001",
+    "stage": "AS",
+    "level": 4,
+    "topic": "periodicity",
+    "subtopic": "electronegativity comparison",
+    "type": "full_reconstruction",
+    "question": "O and S are in Group 16. Explain why O is more electronegative than S.",
+    "answer": "O is more electronegative than S because O has fewer occupied shells. This means less shielding and a smaller atomic radius. So the bonding pair of electrons is attracted more strongly to the nucleus."
+  },
+  {
+    "id": "as-exp-012",
+    "stage": "AS",
+    "level": 4,
+    "topic": "periodicity",
+    "subtopic": "boiling point trend",
+    "type": "full_reconstruction",
+    "question": "Explain why the boiling points of Group 14 hydrides increase down the group.",
+    "answer": "Down the group the molecules become larger and contain more electrons. The electron clouds are more polarisable, so the instantaneous dipole induced dipole forces become stronger. More energy is needed to overcome these intermolecular forces."
+  },
+  {
+    "id": "as-exp-013",
+    "stage": "AS",
+    "level": 4,
+    "topic": "periodicity",
+    "subtopic": "first ionisation energy of hydrogen second IE",
+    "type": "full_reconstruction",
+    "question": "Explain why there is no second ionisation energy for hydrogen.",
+    "answer": "Hydrogen has only one electron. After the first ionisation, there is no electron left to remove."
+  },
+  {
+    "id": "as-exp-015",
+    "stage": "AS",
+    "level": 4,
+    "topic": "periodicity",
+    "subtopic": "al3+ size",
+    "type": "full_reconstruction",
+    "question": "Explain why Al3+ is smaller than Mg2+.",
+    "answer": "Al3+ and Mg2+ are isoelectronic. Al3+ has more protons, so there is a stronger attraction between the nucleus and the electrons. Therefore Al3+ has the smaller radius."
+  }
+]

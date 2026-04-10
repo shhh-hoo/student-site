@@ -1,0 +1,22 @@
+[
+  {
+    "id": "a2-path-044",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "exchangeable proton test",
+    "type": "reaction_path",
+    "prompt": "alcohol O-H signal -> disappears in proton NMR",
+    "answer": "D2O, shake"
+  },
+  {
+    "id": "a2-path-070",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "chromatography setup",
+    "type": "reaction_path",
+    "prompt": "stationary phase -> separated spots",
+    "answer": "solvent as mobile phase"
+  }
+]

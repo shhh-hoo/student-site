@@ -1,0 +1,12 @@
+[
+  {
+    "id": "as-eq-018",
+    "stage": "AS",
+    "level": 1,
+    "topic": "redox",
+    "subtopic": "disproportionation of chlorine in water",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of chlorine with water.",
+    "answer": "Cl2 + H2O -> HCl + HClO"
+  }
+]

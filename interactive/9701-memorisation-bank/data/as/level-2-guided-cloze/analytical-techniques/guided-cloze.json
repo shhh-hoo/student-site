@@ -1,0 +1,144 @@
+[
+  {
+    "id": "as-exp-010",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "IR functional group identification",
+    "type": "guided_cloze",
+    "question": "Explain how an absorption at about 1700 cm-1 helps to identify a compound.",
+    "prompt": "An absorption at about 1700 cm-1 indicates a carbon oxygen _____ bond. This means the compound contains a carbonyl group.",
+    "answers": [
+      "double"
+    ],
+    "full_answer": "An absorption at about 1700 cm-1 indicates a carbon oxygen double bond. This means the compound contains a carbonyl group."
+  },
+  {
+    "id": "as-exp-011",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "M and M+2 peaks",
+    "type": "guided_cloze",
+    "question": "Explain why a chloro compound shows both an M peak and an M+2 peak.",
+    "prompt": "Chlorine has two common isotopes 35Cl and _____. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl. So both an M peak and an M+2 peak are seen.",
+    "answers": [
+      "37Cl"
+    ],
+    "full_answer": "Chlorine has two common isotopes 35Cl and 37Cl. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl. So both an M peak and an M+2 peak are seen."
+  },
+  {
+    "id": "as-exp-022",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "IR identification logic",
+    "type": "guided_cloze",
+    "question": "Explain why absorptions at 2850–2950 cm-1 are not useful for deciding between compounds A, B and C.",
+    "prompt": "These absorptions are due to _____-H bonds. All of the possible compounds contain C-H bonds, so this region does not distinguish between them.",
+    "answers": [
+      "C"
+    ],
+    "full_answer": "These absorptions are due to C-H bonds. All of the possible compounds contain C-H bonds, so this region does not distinguish between them."
+  },
+  {
+    "id": "as-exp-030",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "mass spectrum M+2",
+    "type": "guided_cloze",
+    "question": "Explain why a compound containing chlorine shows an M and an M+2 peak.",
+    "prompt": "Chlorine has two common _____, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both an M peak and an M+2 peak are seen.",
+    "answers": [
+      "isotopes"
+    ],
+    "full_answer": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both an M peak and an M+2 peak are seen."
+  },
+  {
+    "id": "as-exp-031",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "IR C=O identification",
+    "type": "guided_cloze",
+    "question": "Explain how an absorption around 1700 cm-1 helps identify a compound.",
+    "prompt": "An absorption around 1700 cm-1 indicates a carbon oxygen _____ bond. This suggests that the compound contains a carbonyl group.",
+    "answers": [
+      "double"
+    ],
+    "full_answer": "An absorption around 1700 cm-1 indicates a carbon oxygen double bond. This suggests that the compound contains a carbonyl group."
+  },
+  {
+    "id": "as-exp-044",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "IR ketone identification",
+    "type": "guided_cloze",
+    "question": "Explain why a compound is identified as a ketone from its infrared spectrum.",
+    "prompt": "The spectrum has a strong absorption around 1700 cm-1 showing a _____ bond. There is no broad absorption due to O-H. So the compound can be identified as a ketone.",
+    "answers": [
+      "C=O"
+    ],
+    "full_answer": "The spectrum has a strong absorption around 1700 cm-1 showing a C=O bond. There is no broad absorption due to O-H. So the compound can be identified as a ketone."
+  },
+  {
+    "id": "as-exp-045",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "chlorine isotope pattern",
+    "type": "guided_cloze",
+    "question": "Explain why a molecule containing one chlorine atom has an M peak and an M+2 peak in the mass spectrum.",
+    "prompt": "Chlorine has two common isotopes, _____ and _____. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl, so an M+2 peak is observed as well as the M peak.",
+    "answers": [
+      "35Cl",
+      "37Cl"
+    ],
+    "full_answer": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl, so an M+2 peak is observed as well as the M peak."
+  },
+  {
+    "id": "as-exp-050",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "chlorine isotope pattern",
+    "type": "guided_cloze",
+    "question": "Explain why a compound containing one chlorine atom shows molecular ion peaks at M and M+2.",
+    "prompt": "Chlorine has two common isotopes, _____ and _____. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both M and M+2 peaks are seen.",
+    "answers": [
+      "35Cl",
+      "37Cl"
+    ],
+    "full_answer": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both M and M+2 peaks are seen."
+  },
+  {
+    "id": "as-exp-051",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "carbonyl infrared absorption",
+    "type": "guided_cloze",
+    "question": "Explain why a compound containing a carbonyl group shows a strong infrared absorption around 1700 cm-1.",
+    "prompt": "The C=O bond vibrates and absorbs infrared radiation at around _____. This absorption is strong because the carbonyl bond is highly polar. Therefore a strong peak appears in this region.",
+    "answers": [
+      "1700 cm-1"
+    ],
+    "full_answer": "The C=O bond vibrates and absorbs infrared radiation at around 1700 cm-1. This absorption is strong because the carbonyl bond is highly polar. Therefore a strong peak appears in this region."
+  },
+  {
+    "id": "as-exp-056",
+    "stage": "AS",
+    "level": 2,
+    "topic": "analytical-techniques",
+    "subtopic": "molecular ion peak",
+    "type": "guided_cloze",
+    "question": "Explain what is meant by the molecular ion peak in a mass spectrum.",
+    "prompt": "The molecular ion peak is due to the ion formed when one _____ is removed from a molecule without fragmentation. It therefore represents the mass-to-charge ratio of the molecular ion.",
+    "answers": [
+      "electron"
+    ],
+    "full_answer": "The molecular ion peak is due to the ion formed when one electron is removed from a molecule without fragmentation. It therefore represents the mass-to-charge ratio of the molecular ion."
+  }
+]

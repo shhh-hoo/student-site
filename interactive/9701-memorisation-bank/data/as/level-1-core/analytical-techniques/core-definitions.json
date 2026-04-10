@@ -1,0 +1,57 @@
+[
+  {
+    "id": "as-def-018",
+    "stage": "AS",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "molecular ion",
+    "type": "definition",
+    "prompt": "Define molecular ion.",
+    "answer": "the ion formed when one electron is removed from a molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-035",
+    "stage": "AS",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "base peak",
+    "type": "definition",
+    "prompt": "Define base peak in a mass spectrum.",
+    "answer": "the peak due to the most abundant ion which is assigned a relative abundance of 100",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-070",
+    "stage": "AS",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "molecular ion",
+    "type": "definition",
+    "prompt": "Define molecular ion peak.",
+    "answer": "the peak due to the ion formed when one electron is removed from the molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-078",
+    "stage": "AS",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "base peak",
+    "type": "definition",
+    "prompt": "Define base peak.",
+    "answer": "the tallest peak in a mass spectrum assigned a relative abundance of 100",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-079",
+    "stage": "AS",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "fingerprint region",
+    "type": "definition",
+    "prompt": "Define fingerprint region.",
+    "answer": "the part of an infrared spectrum below 1500 cm-1 that is characteristic of a particular compound",
+    "source_scope": "syllabus_only"
+  }
+]

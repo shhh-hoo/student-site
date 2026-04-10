@@ -1,0 +1,22 @@
+[
+  {
+    "id": "as-rc-020",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-2",
+    "subtopic": "sulfate test",
+    "type": "reagent_condition",
+    "prompt": "Test for sulfate ions : reagent and conditions",
+    "answer": "BaCl2, then dilute HCl"
+  },
+  {
+    "id": "as-rc-057",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-2",
+    "subtopic": "barium test",
+    "type": "reagent_condition",
+    "prompt": "Test to distinguish Mg2+(aq) and Ba2+(aq) : reagent",
+    "answer": "Na2SO4(aq)"
+  }
+]

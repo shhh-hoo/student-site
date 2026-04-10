@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="../../styles/interactive-shell.css" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="interactive-shell-page memorisation-page">
-    <div class="page-shell interactive-site-shell memorisation-shell">
+  <body class="interactive-shell-page">
+    <div class="page-shell interactive-site-shell">
       <header class="site-header" aria-label="Site header">
         <div class="site-header__brand">
           <span class="site-header__mark" aria-hidden="true">J2</span>
@@ -47,7 +47,7 @@
         </div>
       </header>
 
-      <header class="interactive-hero memorisation-hero">
+      <header class="interactive-hero">
         <a class="interactive-return" href="../index.html" data-preserve-theme
           >Back to Interactive</a
         >
@@ -57,7 +57,7 @@
             <div class="interactive-meta-row">
               <span class="interactive-meta-chip">CAIE 9701</span>
               <span class="interactive-meta-chip">AS + A2</span>
-              <span class="interactive-meta-chip">Exact-match drill</span>
+              <span class="interactive-meta-chip">Levelled pack</span>
             </div>
             <h1>9701 Memorisation Bank</h1>
             <p class="interactive-summary">
@@ -81,44 +81,9 @@
 
       <main class="interactive-app-shell memorisation-layout">
         <aside class="interactive-panel memorisation-sidebar">
-          <section class="memorisation-panel-block">
-            <div class="memorisation-panel-heading">
-              <p class="memorisation-panel-heading__kicker">Filters</p>
-              <h2>Choose a drill slice</h2>
-              <p class="memorisation-panel-heading__copy">
-                Move by stage, level, topic, and type without leaving the route.
-              </p>
-            </div>
-
-            <section class="memorisation-control">
-              <p class="memorisation-control__label">Stage</p>
-              <div
-                id="stage-switcher"
-                class="memorisation-segmented memorisation-segmented--stage"
-                role="tablist"
-                aria-label="Stage"
-              ></div>
-            </section>
-
-            <section class="memorisation-control">
-              <p class="memorisation-control__label">Level</p>
-              <div
-                id="level-switcher"
-                class="memorisation-segmented memorisation-segmented--level"
-                role="tablist"
-                aria-label="Level"
-              ></div>
-            </section>
-
-            <label class="memorisation-control" for="topic-filter">
-              <span class="memorisation-control__label">Topic</span>
-              <select id="topic-filter" class="memorisation-select"></select>
-            </label>
-
-            <label class="memorisation-control" for="type-filter">
-              <span class="memorisation-control__label">Type</span>
-              <select id="type-filter" class="memorisation-select"></select>
-            </label>
+          <section class="memorisation-control">
+            <p class="memorisation-control__label">Stage</p>
+            <div id="stage-switcher" class="memorisation-switcher"></div>
           </section>
 
           <section class="memorisation-control">
@@ -161,11 +126,7 @@
               <span>Session blanks</span>
               <strong id="item-counter">0 session blanks</strong>
             </div>
-            <div class="memorisation-stat">
-              <span>Current card</span>
-              <strong id="card-counter">0 / 0</strong>
-            </div>
-          </article>
+          </div>
 
           <details class="interactive-help">
             <summary>
@@ -205,7 +166,9 @@
               <span id="stage-badge" class="memorisation-badge">Stage</span>
               <span id="level-badge" class="memorisation-badge">Level</span>
               <span id="topic-badge" class="memorisation-badge">Topic</span>
-              <span id="type-badge" class="memorisation-badge">Type</span>
+              <span id="file-badge" class="memorisation-badge">Training file</span>
+              <span id="source-badge" class="memorisation-badge" hidden>Definition source</span>
+              <span id="round-badge" class="memorisation-badge" hidden>Round</span>
             </div>
             <span id="counter-chip" class="memorisation-counter-chip">Main session</span>
           </div>

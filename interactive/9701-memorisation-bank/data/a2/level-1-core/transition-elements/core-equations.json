@@ -1,0 +1,122 @@
+[
+  {
+    "id": "a2-eq-002",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "iron(II) oxidation",
+    "type": "equation",
+    "prompt": "Write the half-equation for the oxidation of Fe2+ to Fe3+.",
+    "answer": "Fe2+ -> Fe3+ + e-"
+  },
+  {
+    "id": "a2-eq-004",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "dichromate with iron(II)",
+    "type": "equation",
+    "prompt": "Write the ionic equation for Cr2O7 2- reacting with Fe2+ in acid.",
+    "answer": "Cr2O7 2- + 14H+ + 6Fe2+ -> 2Cr3+ + 7H2O + 6Fe3+"
+  },
+  {
+    "id": "a2-eq-005",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "barium chromate precipitation",
+    "type": "equation",
+    "prompt": "Write the ionic equation for the formation of barium chromate.",
+    "answer": "Ba2+ + CrO4 2- -> BaCrO4"
+  },
+  {
+    "id": "a2-eq-021",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "cryolite complex ion",
+    "type": "equation",
+    "prompt": "Write the formula of the complex ion in cryolite as an equation-style answer.",
+    "answer": "[AlF6]3-"
+  },
+  {
+    "id": "a2-eq-022",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "ligand substitution example",
+    "type": "equation",
+    "prompt": "Write the ligand substitution equation for Cu(H2O)6 2+ with excess NH3.",
+    "answer": "[Cu(H2O)6]2+ + 4NH3 -> [Cu(NH3)4(H2O)2]2+ + 4H2O"
+  },
+  {
+    "id": "a2-eq-040",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "aluminium electrolysis",
+    "type": "equation",
+    "prompt": "Write the cathode half-equation for the formation of aluminium from Al3+.",
+    "answer": "Al3+ + 3e- -> Al"
+  },
+  {
+    "id": "a2-eq-041",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "formation of tetraamminecopper(II)",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of [Cu(H2O)6]2+ with excess NH3.",
+    "answer": "[Cu(H2O)6]2+ + 4NH3 -> [Cu(H2O)2(NH3)4]2+ + 4H2O"
+  },
+  {
+    "id": "a2-eq-042",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "ligand exchange",
+    "type": "equation",
+    "prompt": "Write the equation for the ligand exchange of [Cu(H2O)6]2+ with chloride ions.",
+    "answer": "[Cu(H2O)6]2+ + 4Cl- -> [CuCl4]2- + 6H2O"
+  },
+  {
+    "id": "a2-eq-053",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "tetraamminecopper(II) complex formation",
+    "type": "equation",
+    "prompt": "Write the equation for the formation of the tetraamminecopper(II) complex from hexaaquacopper(II).",
+    "answer": "[Cu(H2O)6]2+ + 4NH3 -> [Cu(NH3)4(H2O)2]2+ + 4H2O"
+  },
+  {
+    "id": "a2-eq-054",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "tetrachlorocuprate(II) formation",
+    "type": "equation",
+    "prompt": "Write the equation for the formation of tetrachlorocuprate(II) from hexaaquacopper(II).",
+    "answer": "[Cu(H2O)6]2+ + 4Cl- -> [CuCl4]2- + 6H2O"
+  },
+  {
+    "id": "a2-eq-071",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "copper ammonia complex",
+    "type": "equation",
+    "prompt": "Write the equation for the formation of [Cu(NH3)4(H2O)2]2+ from [Cu(H2O)6]2+ and NH3.",
+    "answer": "[Cu(H2O)6]2+ + 4NH3 <-> [Cu(NH3)4(H2O)2]2+ + 4H2O"
+  },
+  {
+    "id": "a2-eq-072",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "copper chloride complex",
+    "type": "equation",
+    "prompt": "Write the equation for the formation of [CuCl4]2- from [Cu(H2O)6]2+ and chloride ions.",
+    "answer": "[Cu(H2O)6]2+ + 4Cl- <-> [CuCl4]2- + 6H2O"
+  }
+]

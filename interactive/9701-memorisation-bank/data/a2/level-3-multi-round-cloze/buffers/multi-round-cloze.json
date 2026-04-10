@@ -1,0 +1,35 @@
+[
+  {
+    "id": "a2-exp-031",
+    "stage": "A2",
+    "level": 3,
+    "topic": "buffers",
+    "subtopic": "buffer action",
+    "type": "multi_round_cloze",
+    "question": "Explain how a buffer resists a change in pH when acid is added.",
+    "full_answer": "The added hydrogen ions react with the weak base present in the buffer. This removes most of the added hydrogen ions. Therefore the pH changes only slightly.",
+    "rounds": [
+      {
+        "round": 1,
+        "prompt": "The added hydrogen ions react with the weak _____ present in the buffer. This removes most of the added hydrogen ions. Therefore the pH changes only slightly.",
+        "answers": [
+          "base"
+        ]
+      },
+      {
+        "round": 2,
+        "prompt": "The added hydrogen ions react with the weak base present in the buffer. This _____ most of the added hydrogen ions. Therefore the pH changes only slightly.",
+        "answers": [
+          "removes"
+        ]
+      },
+      {
+        "round": 3,
+        "prompt": "The added hydrogen ions react with the weak base present in the buffer. This removes most of the added hydrogen ions. Therefore the pH changes only _____.",
+        "answers": [
+          "slightly"
+        ]
+      }
+    ]
+  }
+]

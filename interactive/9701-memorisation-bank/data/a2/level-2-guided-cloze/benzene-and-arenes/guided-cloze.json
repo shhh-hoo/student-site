@@ -1,0 +1,44 @@
+[
+  {
+    "id": "a2-exp-011",
+    "stage": "A2",
+    "level": 2,
+    "topic": "benzene-and-arenes",
+    "subtopic": "electrophilic substitution in benzene",
+    "type": "guided_cloze",
+    "question": "Explain why benzene undergoes substitution rather than addition.",
+    "prompt": "Benzene contains a stable delocalised pi system. Addition would destroy this _____, so substitution is favoured because the aromatic system is retained.",
+    "answers": [
+      "delocalisation"
+    ],
+    "full_answer": "Benzene contains a stable delocalised pi system. Addition would destroy this delocalisation, so substitution is favoured because the aromatic system is retained."
+  },
+  {
+    "id": "a2-exp-020",
+    "stage": "A2",
+    "level": 2,
+    "topic": "benzene-and-arenes",
+    "subtopic": "why benzene undergoes substitution",
+    "type": "guided_cloze",
+    "question": "Explain why benzene undergoes substitution rather than addition.",
+    "prompt": "Benzene has a delocalised pi electron system which is very _____. Addition would break the delocalisation and reduce the stability. Therefore benzene tends to undergo substitution so that the delocalised system is retained.",
+    "answers": [
+      "stable"
+    ],
+    "full_answer": "Benzene has a delocalised pi electron system which is very stable. Addition would break the delocalisation and reduce the stability. Therefore benzene tends to undergo substitution so that the delocalised system is retained."
+  },
+  {
+    "id": "a2-exp-045",
+    "stage": "A2",
+    "level": 2,
+    "topic": "benzene-and-arenes",
+    "subtopic": "low tendency for addition",
+    "type": "guided_cloze",
+    "question": "Explain why benzene is less likely than an alkene to undergo addition reactions.",
+    "prompt": "Benzene has a _____ pi system and is stabilised by aromaticity. An addition reaction would break this delocalisation, so addition is less favourable than substitution.",
+    "answers": [
+      "delocalised"
+    ],
+    "full_answer": "Benzene has a delocalised pi system and is stabilised by aromaticity. An addition reaction would break this delocalisation, so addition is less favourable than substitution."
+  }
+]

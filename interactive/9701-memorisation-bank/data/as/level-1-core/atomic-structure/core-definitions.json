@@ -1,0 +1,35 @@
+[
+  {
+    "id": "as-def-002",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "first ionisation energy",
+    "type": "definition",
+    "prompt": "Define first ionisation energy.",
+    "answer": "the energy required to remove one electron from each atom in one mole of gaseous atoms to form one mole of gaseous 1+ ions",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-024",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "isotopes",
+    "type": "definition",
+    "prompt": "Define isotopes.",
+    "answer": "atoms of the same element with the same proton number but different numbers of neutrons",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-053",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "second ionisation energy",
+    "type": "definition",
+    "prompt": "Define second ionisation energy.",
+    "answer": "the energy required to remove one electron from each ion in one mole of gaseous 1+ ions to form one mole of gaseous 2+ ions",
+    "source_scope": "syllabus_only"
+  }
+]

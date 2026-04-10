@@ -94,10 +94,22 @@ body.page-home::before {
   align-items: center;
   padding: 1.05rem 1.2rem;
   border: var(--home-border-strong) solid var(--home-outline-strong);
-  border-radius: 30px;
+  border-radius: 32px;
   background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(251, 244, 232, 0.94));
-  box-shadow: none;
+  box-shadow: var(--home-shadow-lifted);
   overflow: hidden;
+}
+
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: -0.2rem auto auto 12%;
+  width: 7rem;
+  height: 1.1rem;
+  border: var(--home-border-strong) solid var(--home-outline-strong);
+  border-radius: 16px;
+  background: #a8d7ff;
+  transform: rotate(-7deg);
 }
 
 .site-header__brand {
@@ -1866,9 +1878,10 @@ body.page-home {
 .page-home .site-header {
   border-width: 3px;
   border-radius: 30px;
-  box-shadow: none;
+  box-shadow: var(--home-refine-shadow-card);
 }
 
+.page-home .site-header::before,
 .page-home .homepage-hero__poster::before,
 .page-home .homepage-hero__poster::after,
 .page-home .homepage-section::before {
@@ -2305,6 +2318,12 @@ body.page-home {
     gap: 0.75rem;
     padding: 0.85rem 0.9rem;
     border-radius: 24px;
+  }
+
+  .page-home .site-header::before {
+    left: 18%;
+    width: 5rem;
+    height: 0.75rem;
   }
 
   .page-home .site-header__brand {
@@ -2914,7 +2933,14 @@ html[data-theme="dark"] body.page-home .brand-tag--search {
 
 html[data-theme="dark"] body.page-home .site-header {
   background: linear-gradient(180deg, rgba(15, 17, 32, 0.96), rgba(14, 17, 30, 0.92));
-  box-shadow: none;
+  box-shadow:
+    var(--home-refine-shadow-card),
+    0 0 26px rgba(110, 216, 255, 0.08);
+}
+
+html[data-theme="dark"] body.page-home .site-header::before {
+  background: var(--home-dark-surface-green);
+  box-shadow: 0 0 22px rgba(124, 255, 178, 0.2);
 }
 
 html[data-theme="dark"] body.page-home .site-header__mark {
@@ -3310,6 +3336,7 @@ html[data-theme="dark"] body.page-home .empty-state--library code {
 }
 
 .page-home::before,
+.page-home .site-header::before,
 .page-home .homepage-hero__poster::before,
 .page-home .homepage-hero__poster::after,
 .page-home .homepage-section::before {

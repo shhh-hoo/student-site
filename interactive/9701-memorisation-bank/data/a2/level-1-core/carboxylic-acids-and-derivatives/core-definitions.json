@@ -1,0 +1,13 @@
+[
+  {
+    "id": "a2-def-016",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "acyl chloride",
+    "type": "definition",
+    "prompt": "Define acyl chloride.",
+    "answer": "a compound containing the functional group RCOCl",
+    "source_scope": "syllabus_only"
+  }
+]
