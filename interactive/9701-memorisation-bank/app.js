@@ -1,33 +1,13 @@
-const stageOrder = ["AS", "A2"];
-const levelDefinitions = [
-  {
-    value: 1,
-    key: "level-1-core",
-    label: "Level 1",
-    shortLabel: "1",
-    summary: "Core AO1 dictation",
-  },
-  {
-    value: 2,
-    key: "level-2-guided-cloze",
-    label: "Level 2",
-    shortLabel: "2",
-    summary: "Guided cloze",
-  },
-  {
-    value: 3,
-    key: "level-3-multi-round-cloze",
-    label: "Level 3",
-    shortLabel: "3",
-    summary: "Multi-round cloze",
-  },
-  {
-    value: 4,
-    key: "level-4-full-reconstruction",
-    label: "Level 4",
-    shortLabel: "4",
-    summary: "Full reconstruction",
-  },
+import {
+  createAnswerModel as buildAnswerModel,
+  evaluateAnswerModel,
+} from "./matcher.mjs";
+
+const definitionScopeOptions = [
+  { id: "all", label: "All" },
+  { id: "paper_only", label: "Past paper only" },
+  { id: "syllabus_only", label: "Syllabus only" },
+  { id: "paper_and_syllabus", label: "Paper + syllabus" },
 ];
 const typeOrder = [
   "definition",
@@ -1257,7 +1237,7 @@ function buildSingleQuestion(item, fileEntry) {
   const questionId = `${fileEntry.id}::${item.topic}::${item.id}`;
   const promptText = item.prompt || item.question || "";
   const question = createQuestionBase(item, fileEntry, questionId, "single", promptText, promptText);
-  const answerModel = createAnswerModel({
+  const answerModel = buildAnswerModel({
     answer: item.answer,
     fullAnswer: item.full_answer || item.answer,
     minimalPass: item.minimal_pass,
@@ -1296,7 +1276,7 @@ function buildGuidedClozeQuestion(item, fileEntry) {
   }
 
   const answerModels = answers.map((answer, answerIndex) =>
-    createAnswerModel({
+    buildAnswerModel({
       answer,
       fullAnswer: answer,
       minimalPass: item.minimal_pass_answers?.[answerIndex],
@@ -1355,7 +1335,7 @@ function buildMultiRoundQuestions(item, fileEntry) {
       }
 
       const answerModels = answers.map((answer, answerIndex) =>
-        createAnswerModel({
+        buildAnswerModel({
           answer,
           fullAnswer: answer,
           minimalPass: item.minimal_pass_answers?.[answerIndex],
@@ -1400,7 +1380,7 @@ function buildFullReconstructionQuestion(item, fileEntry) {
     questionText,
     questionText,
   );
-  const answerModel = createAnswerModel({
+  const answerModel = buildAnswerModel({
     answer: item.answer,
     fullAnswer: item.answer,
     minimalPass: item.minimal_pass,
@@ -1697,53 +1677,7 @@ function buildComparableInput(value, matcherConfig) {
 }
 
 function evaluateConceptMatcher(blank, userValue) {
-  const answerModel = blank.answerModel;
-  const comparableInput = buildComparableInput(userValue, answerModel.matcherConfig);
-  const legacyResult = evaluateMatchResult(
-    userValue,
-    answerModel.minimal_pass,
-    answerModel.matcherConfig,
-  );
-  const coveredGroups = [];
-  const missingGroups = [];
-
-  answerModel.concept_groups.forEach((group) => {
-    const phraseCovered = group.normalized_variants.some(
-      (variant) => comparableInput.text === variant || comparableInput.ngrams.has(variant),
-    );
-    const keywordMatches = group.keywords.filter((keyword) => comparableInput.tokenSet.has(keyword));
-    const keywordCovered =
-      answerModel.matcherConfig.type !== "equation" &&
-      group.minimum_keyword_matches > 0 &&
-      keywordMatches.length >= group.minimum_keyword_matches;
-
-    if (phraseCovered || keywordCovered) {
-      coveredGroups.push(group.id);
-      return;
-    }
-
-    if (group.required) {
-      missingGroups.push(group.id);
-    }
-  });
-
-  const contradictionHits = answerModel.contradictions
-    .filter((contradiction) =>
-      contradiction.normalized_variants.some(
-        (variant) => comparableInput.text === variant || comparableInput.ngrams.has(variant),
-      ),
-    )
-    .map((contradiction) => contradiction.id);
-  const minimumPassSatisfied = missingGroups.length === 0 && contradictionHits.length === 0;
-
-  return {
-    status: minimumPassSatisfied ? "correct" : "wrong",
-    coveredGroups,
-    missingGroups,
-    contradictionHits,
-    minimumPassSatisfied,
-    matchState: legacyResult.state,
-  };
+  return evaluateAnswerModel(blank.answerModel, userValue);
 }
 
 function checkBlank(blankId) {
