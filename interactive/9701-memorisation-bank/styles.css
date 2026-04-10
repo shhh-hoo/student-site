@@ -498,6 +498,12 @@
   line-height: 1.7;
 }
 
+.memorisation-answer__text .chem-inline sub,
+.memorisation-answer__text .chem-inline sup {
+  font-size: 0.76em;
+  line-height: 0;
+}
+
 html[data-theme="dark"] body.memorisation-page {
   color: rgba(247, 240, 228, 0.94);
   background:

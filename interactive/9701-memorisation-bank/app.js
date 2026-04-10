@@ -91,6 +91,7 @@ const roundSwitcher = document.getElementById("round-switcher");
 const promptCard = document.getElementById("prompt-card");
 const checkAnswerButton = document.getElementById("check-answer");
 const showAnswerButton = document.getElementById("show-answer");
+const previousItemButton = document.getElementById("previous-item");
 const nextItemButton = document.getElementById("next-item");
 const feedbackPanel = document.getElementById("feedback-panel");
 const feedbackStatus = document.getElementById("feedback-status");
@@ -165,6 +166,152 @@ function normaliseAnswer(value) {
 
 function compareText(left, right) {
   return collator.compare(left, right);
+}
+
+function looksChemicalToken(token) {
+  if (!token || !/[A-Z]/.test(token)) {
+    return false;
+  }
+
+  return /[\d[\]()+\-<>=/]/.test(token) || /^(?:[A-Z][a-z]?){2,}$/.test(token);
+}
+
+function shouldUseChargeDigits(prefix, digits) {
+  if (!prefix || !digits) {
+    return false;
+  }
+
+  const lastCharacter = prefix.at(-1);
+
+  if (lastCharacter === "]" || lastCharacter === ")") {
+    return true;
+  }
+
+  return /[a-z]/.test(lastCharacter) && !/\d/.test(prefix);
+}
+
+function shouldSuperscriptInlineSign(formula, index) {
+  const previousCharacter = formula[index - 1] || "";
+  const nextCharacter = formula[index + 1] || "";
+
+  if (!/[A-Za-z0-9\])]/.test(previousCharacter) || nextCharacter === ">") {
+    return false;
+  }
+
+  return nextCharacter === "" || /[A-Z[(]/.test(nextCharacter);
+}
+
+function appendStyledChemicalText(parent, text, mode = "plain") {
+  if (!text) {
+    return;
+  }
+
+  if (mode === "plain") {
+    parent.append(document.createTextNode(text));
+    return;
+  }
+
+  const element = document.createElement(mode);
+  element.textContent = text;
+  parent.append(element);
+}
+
+function appendFormulaContent(parent, formula) {
+  let currentMode = "plain";
+  let currentText = "";
+
+  const flush = () => {
+    appendStyledChemicalText(parent, currentText, currentMode);
+    currentText = "";
+  };
+
+  Array.from(formula).forEach((character, index) => {
+    const previousCharacter = formula[index - 1] || "";
+    let nextMode = "plain";
+
+    if (/\d/.test(character) && /[A-Za-z\])]/.test(previousCharacter)) {
+      nextMode = "sub";
+    } else if (
+      (character === "+" || character === "-") &&
+      shouldSuperscriptInlineSign(formula, index)
+    ) {
+      nextMode = "sup";
+    }
+
+    if (nextMode !== currentMode) {
+      flush();
+      currentMode = nextMode;
+    }
+
+    currentText += character;
+  });
+
+  flush();
+}
+
+function buildChemistryFragment(text) {
+  const fragment = document.createDocumentFragment();
+
+  String(text || "")
+    .split(/(\s+)/)
+    .forEach((part) => {
+      if (!part) {
+        return;
+      }
+
+      if (/^\s+$/.test(part)) {
+        fragment.append(document.createTextNode(part));
+        return;
+      }
+
+      const match = part.match(/^(.*?)([.,;:!?]+)?$/);
+      const core = match?.[1] || part;
+      const suffix = match?.[2] || "";
+
+      if (!looksChemicalToken(core)) {
+        fragment.append(document.createTextNode(part));
+        return;
+      }
+
+      const token = document.createElement("span");
+      const slashParts = core.split("/");
+
+      token.className = "chem-inline";
+
+      slashParts.forEach((slashPart, slashIndex) => {
+        if (slashIndex > 0) {
+          token.append(document.createTextNode("/"));
+        }
+
+        const signMatch = slashPart.match(/^(.*?)([+-])$/);
+        let formula = slashPart;
+        let chargeDigits = "";
+        let chargeSign = "";
+
+        if (signMatch && looksChemicalToken(signMatch[1])) {
+          formula = signMatch[1];
+          chargeSign = signMatch[2];
+
+          const digitMatch = formula.match(/^(.*?)(\d+)$/);
+
+          if (digitMatch && shouldUseChargeDigits(digitMatch[1], digitMatch[2])) {
+            formula = digitMatch[1];
+            chargeDigits = digitMatch[2];
+          }
+        }
+
+        appendFormulaContent(token, formula);
+        appendStyledChemicalText(token, `${chargeDigits}${chargeSign}`, "sup");
+      });
+
+      fragment.append(token);
+
+      if (suffix) {
+        fragment.append(document.createTextNode(suffix));
+      }
+    });
+
+  return fragment;
 }
 
 function sortByDefinedOrder(values, order) {
@@ -698,13 +845,13 @@ function renderFeedback(evaluation) {
 function renderAnswer(item, promptModel) {
   if (!state.showAnswer || !item) {
     answerPanel.hidden = true;
-    answerText.textContent = "";
+    answerText.replaceChildren();
     answerNote.textContent = "";
     return;
   }
 
   answerPanel.hidden = false;
-  answerText.textContent = promptModel.canonicalAnswer;
+  answerText.replaceChildren(buildChemistryFragment(promptModel.canonicalAnswer));
   answerNote.textContent = buildAnswerNote(item, promptModel);
 }
 
@@ -751,10 +898,12 @@ function renderWorkspace(filterModel) {
   renderAnswer(currentItem, promptModel);
 
   const routeReady = !state.loading && !state.error && Boolean(currentItem);
+  const canMoveWithinPool = routeReady && filterModel.filteredItems.length > 1;
 
   checkAnswerButton.disabled = !routeReady;
   showAnswerButton.disabled = !routeReady;
-  nextItemButton.disabled = !routeReady;
+  previousItemButton.disabled = !canMoveWithinPool;
+  nextItemButton.disabled = !canMoveWithinPool;
   showAnswerButton.textContent = state.showAnswer ? "Hide answer" : "Show answer";
 }
 
@@ -808,6 +957,18 @@ function handleNextItem() {
   }
 
   state.currentIndex = (state.currentIndex + 1) % filteredItems.length;
+  resetInteraction({ resetRound: true });
+  render();
+}
+
+function handlePreviousItem() {
+  const filteredItems = getCurrentFilteredItems();
+
+  if (!filteredItems.length) {
+    return;
+  }
+
+  state.currentIndex = (state.currentIndex - 1 + filteredItems.length) % filteredItems.length;
   resetInteraction({ resetRound: true });
   render();
 }
@@ -870,6 +1031,7 @@ function attachEventListeners() {
 
   checkAnswerButton.addEventListener("click", handleCheckAnswer);
   showAnswerButton.addEventListener("click", handleShowAnswer);
+  previousItemButton.addEventListener("click", handlePreviousItem);
   nextItemButton.addEventListener("click", handleNextItem);
 }
 
