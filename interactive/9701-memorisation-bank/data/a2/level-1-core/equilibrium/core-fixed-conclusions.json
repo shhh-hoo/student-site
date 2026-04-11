@@ -1,0 +1,22 @@
+[
+  {
+    "id": "a2-fc-004",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "fixed-conclusion-in-an-acidic-buffer-added-oh-reacts-with",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: in an acidic buffer, added OH- reacts with the ____.",
+    "answer": "weak acid"
+  },
+  {
+    "id": "a2-fc-005",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "fixed-conclusion-in-an-alkaline-buffer-added-h-plus-reacts-with",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: in an alkaline buffer, added H+ reacts with the ____.",
+    "answer": "weak base"
+  }
+]

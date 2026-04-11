@@ -1,12 +1,12 @@
 [
   {
-    "id": "a2-fc-020",
+    "id": "a2-fc-008",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
-    "subtopic": "cell feasibility",
+    "subtopic": "fixed-conclusion-a-more-positive-e-degrees-cell-means-reaction-is-more-likely-to-be",
     "type": "fixed_conclusion",
-    "prompt": "What is meant by a feasible reaction?",
-    "answer": "a reaction with a negative Gibbs free energy change"
+    "prompt": "Complete the fixed conclusion: a more positive E°cell means the reaction is more likely to be ____.",
+    "answer": "feasible"
   }
 ]

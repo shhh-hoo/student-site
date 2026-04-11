@@ -1,13 +1,24 @@
 [
   {
-    "id": "a2-def-012",
+    "id": "a2-def-041",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
-    "subtopic": "acylation",
+    "subtopic": "azo-group",
     "type": "definition",
-    "prompt": "Define acylation.",
-    "answer": "a reaction in which an acyl group is introduced into a molecule",
+    "prompt": "Define azo group.",
+    "answer": "the group -N=N-",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-042",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "phenol",
+    "type": "definition",
+    "prompt": "Define phenol.",
+    "answer": "a compound in which a hydroxyl group is bonded directly to a benzene ring",
     "source_scope": "syllabus_only"
   }
 ]

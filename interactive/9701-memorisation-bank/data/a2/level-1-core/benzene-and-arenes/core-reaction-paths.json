@@ -1,182 +1,82 @@
 [
   {
-    "id": "a2-path-001",
+    "id": "a2-path-004",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
-    "subtopic": "benzene to nitrobenzene",
-    "type": "reaction_path",
-    "prompt": "benzene -> nitrobenzene",
-    "answer": "concentrated HNO3 and concentrated H2SO4, 55C"
-  },
-  {
-    "id": "a2-path-002",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "nitrobenzene to phenylamine",
-    "type": "reaction_path",
-    "prompt": "nitrobenzene -> phenylamine",
-    "answer": "Sn and concentrated HCl, heat, then NaOH"
-  },
-  {
-    "id": "a2-path-015",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "benzene to bromobenzene",
-    "type": "reaction_path",
-    "prompt": "benzene -> bromobenzene",
-    "answer": "Br2, AlBr3"
-  },
-  {
-    "id": "a2-path-016",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "benzene to methylbenzene",
-    "type": "reaction_path",
-    "prompt": "benzene -> methylbenzene",
-    "answer": "CH3Cl, AlCl3"
-  },
-  {
-    "id": "a2-path-019",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "benzene network",
-    "type": "reaction_path",
-    "prompt": "benzene -> nitrobenzene",
-    "answer": "concentrated HNO3 and concentrated H2SO4, 50 °C"
-  },
-  {
-    "id": "a2-path-020",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "benzene network",
-    "type": "reaction_path",
-    "prompt": "benzene -> bromobenzene",
-    "answer": "Br2, AlBr3 catalyst"
-  },
-  {
-    "id": "a2-path-023",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "methylbenzene network",
-    "type": "reaction_path",
-    "prompt": "methylbenzene -> benzoic acid",
-    "answer": "hot alkaline KMnO4, then acidify"
-  },
-  {
-    "id": "a2-path-033",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "side-chain halogenation",
-    "type": "reaction_path",
-    "prompt": "methylbenzene -> benzyl bromide",
-    "answer": "Br2, UV light"
-  },
-  {
-    "id": "a2-path-034",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "side-chain substitution",
-    "type": "reaction_path",
-    "prompt": "benzyl bromide -> benzyl alcohol",
-    "answer": "aqueous NaOH, heat"
-  },
-  {
-    "id": "a2-path-041",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "phenol esterification",
-    "type": "reaction_path",
-    "prompt": "phenol -> phenyl ethanoate",
-    "answer": "CH3COCl, room temperature"
-  },
-  {
-    "id": "a2-path-042",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "alkylbenzene oxidation",
-    "type": "reaction_path",
-    "prompt": "ethylbenzene -> benzoic acid",
-    "answer": "hot alkaline KMnO4, then acidify"
-  },
-  {
-    "id": "a2-path-046",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "diazonium route",
-    "type": "reaction_path",
-    "prompt": "phenylamine -> benzene diazonium salt",
-    "answer": "NaNO2, HCl, 0-10C"
-  },
-  {
-    "id": "a2-path-048",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "bromination path",
+    "subtopic": "benzene-to-bromobenzene",
     "type": "reaction_path",
     "prompt": "benzene -> bromobenzene",
     "answer": "Br2, FeBr3 catalyst"
   },
   {
-    "id": "a2-path-049",
+    "id": "a2-path-005",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
-    "subtopic": "alkylation path",
+    "subtopic": "benzene-to-methylbenzene",
     "type": "reaction_path",
     "prompt": "benzene -> methylbenzene",
     "answer": "CH3Cl, AlCl3 catalyst"
   },
   {
-    "id": "a2-path-050",
+    "id": "a2-path-006",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
-    "subtopic": "acylation path",
+    "subtopic": "benzene-to-nitrobenzene",
+    "type": "reaction_path",
+    "prompt": "benzene -> nitrobenzene",
+    "answer": "concentrated HNO3, concentrated H2SO4, 55 °C"
+  },
+  {
+    "id": "a2-path-007",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "benzene-to-phenylethanone",
     "type": "reaction_path",
     "prompt": "benzene -> phenylethanone",
     "answer": "CH3COCl, AlCl3 catalyst"
   },
   {
-    "id": "a2-path-051",
+    "id": "a2-path-008",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
-    "subtopic": "amine to diazonium path",
+    "subtopic": "benzenediazonium-chloride-plus-phenol-to-azo-dye",
     "type": "reaction_path",
-    "prompt": "phenylamine -> benzenediazonium chloride",
-    "answer": "NaNO2 and HCl, below 10C"
+    "prompt": "benzenediazonium chloride + phenol -> azo dye",
+    "answer": "cold alkaline solution"
   },
   {
-    "id": "a2-path-052",
+    "id": "a2-path-009",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
-    "subtopic": "diazonium to phenol",
+    "subtopic": "benzenediazonium-chloride-to-phenol",
     "type": "reaction_path",
     "prompt": "benzenediazonium chloride -> phenol",
     "answer": "warm water"
   },
   {
-    "id": "a2-path-053",
+    "id": "a2-path-010",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
-    "subtopic": "azo dye path",
+    "subtopic": "nitrobenzene-to-phenylamine",
     "type": "reaction_path",
-    "prompt": "benzenediazonium chloride + phenol -> azo dye",
-    "answer": "cold alkaline solution"
+    "prompt": "nitrobenzene -> phenylamine",
+    "answer": "Sn, concentrated HCl, heat, then NaOH"
+  },
+  {
+    "id": "a2-path-011",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "phenylamine-to-benzenediazonium-chloride",
+    "type": "reaction_path",
+    "prompt": "phenylamine -> benzenediazonium chloride",
+    "answer": "NaNO2 and dilute acid, below 10 °C"
   }
 ]

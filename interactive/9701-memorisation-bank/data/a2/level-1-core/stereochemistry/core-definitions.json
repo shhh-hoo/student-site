@@ -1,0 +1,46 @@
+[
+  {
+    "id": "a2-def-056",
+    "stage": "A2",
+    "level": 1,
+    "topic": "stereochemistry",
+    "subtopic": "chiral-centre",
+    "type": "definition",
+    "prompt": "Define chiral centre.",
+    "answer": "a carbon atom bonded to four different groups",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-057",
+    "stage": "A2",
+    "level": 1,
+    "topic": "stereochemistry",
+    "subtopic": "enantiomers",
+    "type": "definition",
+    "prompt": "Define enantiomers.",
+    "answer": "stereoisomers that are non-superimposable mirror images of each other",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-058",
+    "stage": "A2",
+    "level": 1,
+    "topic": "stereochemistry",
+    "subtopic": "optically-active",
+    "type": "definition",
+    "prompt": "Define optically active.",
+    "answer": "able to rotate plane-polarised light",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-059",
+    "stage": "A2",
+    "level": 1,
+    "topic": "stereochemistry",
+    "subtopic": "racemic-mixture",
+    "type": "definition",
+    "prompt": "Define racemic mixture.",
+    "answer": "a mixture containing equal amounts of two enantiomers",
+    "source_scope": "syllabus_only"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-fc-019",
+    "stage": "A2",
+    "level": 1,
+    "topic": "polymers",
+    "subtopic": "fixed-conclusion-polyesters-and-polyamides-are-degraded-by-acidic-and-alkaline",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: polyesters and polyamides are degraded by acidic and alkaline ____.",
+    "answer": "hydrolysis"
+  }
+]

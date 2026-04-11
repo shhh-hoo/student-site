@@ -1,120 +1,30 @@
 [
   {
-    "id": "a2-rc-005",
+    "id": "a2-rc-024",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
-    "subtopic": "nitrobenzene reduction",
+    "subtopic": "amino-acids-dipeptides-electrophoresis",
     "type": "reagent_condition",
-    "prompt": "nitrobenzene -> phenylamine : reagent and conditions",
-    "answer": "Sn and concentrated HCl, heat, then NaOH"
+    "prompt": "amino acids / dipeptides electrophoresis : condition",
+    "answer": "use buffer solutions of different pH"
   },
   {
-    "id": "a2-rc-017",
+    "id": "a2-rc-025",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
-    "subtopic": "nitrile hydrolysis acidic",
-    "type": "reagent_condition",
-    "prompt": "nitrile -> carboxylic acid : reagent and conditions",
-    "answer": "dilute HCl, heat"
-  },
-  {
-    "id": "a2-rc-018",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "nitrile hydrolysis alkaline",
-    "type": "reagent_condition",
-    "prompt": "nitrile -> carboxylate : reagent and conditions",
-    "answer": "aqueous NaOH, heat"
-  },
-  {
-    "id": "a2-rc-019",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "nitrile reduction",
-    "type": "reagent_condition",
-    "prompt": "nitrile -> amine : reagent and conditions",
-    "answer": "LiAlH4 in dry ether"
-  },
-  {
-    "id": "a2-rc-034",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "amine formation from halogenoalkane",
-    "type": "reagent_condition",
-    "prompt": "halogenoalkane -> amine : reagent and conditions",
-    "answer": "NH3 in ethanol, heat"
-  },
-  {
-    "id": "a2-rc-035",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "phenylamine bromination",
-    "type": "reagent_condition",
-    "prompt": "phenylamine -> tribromophenylamine : reagent and conditions",
-    "answer": "Br2(aq), room temperature"
-  },
-  {
-    "id": "a2-rc-038",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "nitrile hydrolysis",
-    "type": "reagent_condition",
-    "prompt": "nitrile -> carboxylic acid : reagent and conditions",
-    "answer": "H+, H2O, heat"
-  },
-  {
-    "id": "a2-rc-039",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "nitrile reduction",
-    "type": "reagent_condition",
-    "prompt": "nitrile -> amine : reagent and conditions",
-    "answer": "LiAlH4 in dry ether"
-  },
-  {
-    "id": "a2-rc-046",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "halogenoalkane to nitrile",
-    "type": "reagent_condition",
-    "prompt": "halogenoalkane -> nitrile : reagent and conditions",
-    "answer": "KCN in ethanol, heat"
-  },
-  {
-    "id": "a2-rc-047",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "halogenoalkane to amine",
-    "type": "reagent_condition",
-    "prompt": "halogenoalkane -> primary amine : reagent and conditions",
-    "answer": "excess NH3 in ethanol, heat"
-  },
-  {
-    "id": "a2-rc-065",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "nitrile hydrolysis acid",
+    "subtopic": "ethanenitrile-to-ethanoic-acid-and",
     "type": "reagent_condition",
     "prompt": "ethanenitrile -> ethanoic acid : reagent and conditions",
     "answer": "dilute HCl, heat"
   },
   {
-    "id": "a2-rc-066",
+    "id": "a2-rc-026",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
-    "subtopic": "nitrile reduction",
+    "subtopic": "ethanenitrile-to-ethylamine-and",
     "type": "reagent_condition",
     "prompt": "ethanenitrile -> ethylamine : reagent and conditions",
     "answer": "LiAlH4 in dry ether"

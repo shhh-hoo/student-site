@@ -1,57 +1,156 @@
 [
   {
-    "id": "as-def-021",
+    "id": "as-def-009",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
-    "subtopic": "relative isotopic mass",
+    "subtopic": "avogadro-constant-na",
     "type": "definition",
-    "prompt": "Define relative isotopic mass.",
-    "answer": "the mass of an atom of an isotope compared with one twelfth of the mass of an atom of carbon-12",
-    "source_scope": "paper_and_syllabus"
+    "prompt": "Define Avogadro constant, NA.",
+    "answer": "the number of particles per mole, 6.02 × 10^23 mol^-1",
+    "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-022",
+    "id": "as-def-010",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
-    "subtopic": "relative atomic mass",
+    "subtopic": "anhydrous",
     "type": "definition",
-    "prompt": "Define relative atomic mass.",
-    "answer": "the weighted average mass of an atom of an element compared with one twelfth of the mass of an atom of carbon-12",
-    "source_scope": "paper_and_syllabus"
+    "prompt": "Define anhydrous.",
+    "answer": "containing no water of crystallisation",
+    "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-023",
+    "id": "as-def-011",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
-    "subtopic": "relative molecular mass",
-    "type": "definition",
-    "prompt": "Define relative molecular mass.",
-    "answer": "the weighted average mass of a molecule compared with one twelfth of the mass of an atom of carbon-12",
-    "source_scope": "paper_and_syllabus"
-  },
-  {
-    "id": "as-def-073",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "empirical formula",
+    "subtopic": "empirical-formula",
     "type": "definition",
     "prompt": "Define empirical formula.",
     "answer": "the simplest whole-number ratio of the different atoms in a compound",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-def-074",
+    "id": "as-def-012",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
-    "subtopic": "molecular formula",
+    "subtopic": "hydrated",
+    "type": "definition",
+    "prompt": "Define hydrated.",
+    "answer": "containing water of crystallisation in the crystal structure",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-013",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "limiting",
+    "type": "definition",
+    "prompt": "Define limiting reagent.",
+    "answer": "the reactant that is completely used up first and so limits the amount of product formed",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-014",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "mole",
+    "type": "definition",
+    "prompt": "Define mole.",
+    "answer": "the amount of substance containing Avogadro constant, NA, of specified entities",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-015",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "molecular-formula",
     "type": "definition",
     "prompt": "Define molecular formula.",
-    "answer": "the actual number of each type of atom in one molecule of a compound",
+    "answer": "the actual number of each type of atom in one molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-016",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "percentage-yield",
+    "type": "definition",
+    "prompt": "Define percentage yield.",
+    "answer": "actual amount of product divided by theoretical amount of product multiplied by 100%",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-017",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "relative-atomic-mass-ar",
+    "type": "definition",
+    "prompt": "Define relative atomic mass, Ar.",
+    "answer": "the weighted mean mass of the atoms of an element compared with one twelfth of the mass of one atom of carbon-12",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-def-018",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "relative-formula-mass",
+    "type": "definition",
+    "prompt": "Define relative formula mass.",
+    "answer": "the mass of one formula unit compared with one twelfth of the mass of one atom of carbon-12",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-019",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "relative-isotopic-mass",
+    "type": "definition",
+    "prompt": "Define relative isotopic mass.",
+    "answer": "the mass of one atom of an isotope compared with one twelfth of the mass of one atom of carbon-12",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-def-020",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "relative-molecular-mass-mr",
+    "type": "definition",
+    "prompt": "Define relative molecular mass, Mr.",
+    "answer": "the mass of one molecule compared with one twelfth of the mass of one atom of carbon-12",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "as-def-021",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "unified-atomic-mass-unit-1-u",
+    "type": "definition",
+    "prompt": "Define unified atomic mass unit, 1 u.",
+    "answer": "one twelfth of the mass of one atom of carbon-12",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-022",
+    "stage": "AS",
+    "level": 1,
+    "topic": "stoichiometry",
+    "subtopic": "water-of-crystallisation",
+    "type": "definition",
+    "prompt": "Define water of crystallisation.",
+    "answer": "a fixed number of water molecules chemically bound in the crystal lattice per formula unit",
     "source_scope": "syllabus_only"
   }
 ]

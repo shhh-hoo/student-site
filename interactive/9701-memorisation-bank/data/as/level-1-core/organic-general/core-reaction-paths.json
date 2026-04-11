@@ -1,12 +1,112 @@
 [
   {
-    "id": "as-path-015",
+    "id": "as-path-001",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
-    "subtopic": "alkene hydration / halogenation contrast",
+    "subtopic": "bromoethane-to-ethanol",
     "type": "reaction_path",
-    "prompt": "propene -> propan-2-ol major pathway clue",
-    "answer": "secondary carbocation more stable"
+    "prompt": "bromoethane -> ethanol",
+    "answer": "aqueous NaOH, heat"
+  },
+  {
+    "id": "as-path-002",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "bromoethane-to-ethene",
+    "type": "reaction_path",
+    "prompt": "bromoethane -> ethene",
+    "answer": "ethanolic KOH, heat"
+  },
+  {
+    "id": "as-path-003",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "bromoethane-to-propanenitrile",
+    "type": "reaction_path",
+    "prompt": "bromoethane -> propanenitrile",
+    "answer": "KCN in ethanol, heat"
+  },
+  {
+    "id": "as-path-004",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethanal-to-ethanol",
+    "type": "reaction_path",
+    "prompt": "ethanal -> ethanol",
+    "answer": "NaBH4"
+  },
+  {
+    "id": "as-path-005",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethanoic-acid-plus-ethanol-to-ethyl-ethanoate",
+    "type": "reaction_path",
+    "prompt": "ethanoic acid + ethanol -> ethyl ethanoate",
+    "answer": "concentrated H2SO4, heat"
+  },
+  {
+    "id": "as-path-006",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethanol-to-ethanal",
+    "type": "reaction_path",
+    "prompt": "ethanol -> ethanal",
+    "answer": "acidified K2Cr2O7, distil"
+  },
+  {
+    "id": "as-path-007",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethanol-to-ethanoic-acid",
+    "type": "reaction_path",
+    "prompt": "ethanol -> ethanoic acid",
+    "answer": "acidified K2Cr2O7, reflux"
+  },
+  {
+    "id": "as-path-008",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethene-to-1-2-dibromoethane",
+    "type": "reaction_path",
+    "prompt": "ethene -> 1,2-dibromoethane",
+    "answer": "Br2, room temperature"
+  },
+  {
+    "id": "as-path-009",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethene-to-ethanol",
+    "type": "reaction_path",
+    "prompt": "ethene -> ethanol",
+    "answer": "steam, H3PO4 catalyst, 300 C, 60 atm"
+  },
+  {
+    "id": "as-path-010",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethene-to-poly-ethene",
+    "type": "reaction_path",
+    "prompt": "ethene -> poly(ethene)",
+    "answer": "high pressure, high temperature, catalyst"
+  },
+  {
+    "id": "as-path-011",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "propanone-to-propan-2-ol",
+    "type": "reaction_path",
+    "prompt": "propanone -> propan-2-ol",
+    "answer": "NaBH4"
   }
 ]

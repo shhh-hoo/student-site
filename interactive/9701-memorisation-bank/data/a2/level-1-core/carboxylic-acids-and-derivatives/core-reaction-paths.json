@@ -1,222 +1,62 @@
 [
   {
-    "id": "a2-path-003",
+    "id": "a2-path-016",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acid to acyl chloride",
-    "type": "reaction_path",
-    "prompt": "carboxylic acid -> acyl chloride",
-    "answer": "SOCl2"
-  },
-  {
-    "id": "a2-path-004",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acyl chloride to ester",
-    "type": "reaction_path",
-    "prompt": "acyl chloride -> ester",
-    "answer": "alcohol, room temperature"
-  },
-  {
-    "id": "a2-path-005",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acyl chloride to amide",
-    "type": "reaction_path",
-    "prompt": "acyl chloride -> amide",
-    "answer": "NH3, room temperature"
-  },
-  {
-    "id": "a2-path-006",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "ester hydrolysis",
-    "type": "reaction_path",
-    "prompt": "ester -> carboxylic acid + alcohol",
-    "answer": "dilute acid, heat"
-  },
-  {
-    "id": "a2-path-007",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "ester alkaline hydrolysis",
-    "type": "reaction_path",
-    "prompt": "ester -> carboxylate + alcohol",
-    "answer": "aqueous NaOH, heat"
-  },
-  {
-    "id": "a2-path-024",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acid derivative network",
-    "type": "reaction_path",
-    "prompt": "carboxylic acid -> acyl chloride",
-    "answer": "SOCl2, reflux"
-  },
-  {
-    "id": "a2-path-025",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acid derivative network",
-    "type": "reaction_path",
-    "prompt": "acyl chloride -> ester",
-    "answer": "alcohol, room temperature"
-  },
-  {
-    "id": "a2-path-026",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acid derivative network",
-    "type": "reaction_path",
-    "prompt": "acyl chloride -> amide",
-    "answer": "NH3, room temperature"
-  },
-  {
-    "id": "a2-path-031",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "ester network",
-    "type": "reaction_path",
-    "prompt": "ester -> carboxylic acid + alcohol",
-    "answer": "H+, water, heat"
-  },
-  {
-    "id": "a2-path-032",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "ester network",
-    "type": "reaction_path",
-    "prompt": "ester -> carboxylate salt + alcohol",
-    "answer": "NaOH(aq), heat"
-  },
-  {
-    "id": "a2-path-035",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "amide hydrolysis",
-    "type": "reaction_path",
-    "prompt": "amide -> carboxylic acid",
-    "answer": "dilute acid, heat"
-  },
-  {
-    "id": "a2-path-036",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "amide hydrolysis",
-    "type": "reaction_path",
-    "prompt": "amide -> carboxylate",
-    "answer": "aqueous NaOH, heat"
-  },
-  {
-    "id": "a2-path-037",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "amide reduction",
-    "type": "reaction_path",
-    "prompt": "amide -> amine",
-    "answer": "LiAlH4 in dry ether"
-  },
-  {
-    "id": "a2-path-038",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acyl chloride to alcohol",
-    "type": "reaction_path",
-    "prompt": "acyl chloride -> primary alcohol",
-    "answer": "LiAlH4 in dry ether"
-  },
-  {
-    "id": "a2-path-045",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acyl chloride to N-substituted amide",
-    "type": "reaction_path",
-    "prompt": "acyl chloride -> N-substituted amide",
-    "answer": "amine, room temperature"
-  },
-  {
-    "id": "a2-path-047",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acid to ammonium salt",
-    "type": "reaction_path",
-    "prompt": "carboxylic acid -> ammonium carboxylate",
-    "answer": "NH3, room temperature"
-  },
-  {
-    "id": "a2-path-058",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acid chloride path",
+    "subtopic": "ethanoic-acid-to-ethanoyl-chloride",
     "type": "reaction_path",
     "prompt": "ethanoic acid -> ethanoyl chloride",
     "answer": "PCl5"
   },
   {
-    "id": "a2-path-059",
+    "id": "a2-path-017",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "hydrolysis path",
-    "type": "reaction_path",
-    "prompt": "ethanoyl chloride -> ethanoic acid",
-    "answer": "H2O, room temperature"
-  },
-  {
-    "id": "a2-path-060",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "amide path",
+    "subtopic": "ethanoyl-chloride-to-ethanamide",
     "type": "reaction_path",
     "prompt": "ethanoyl chloride -> ethanamide",
     "answer": "NH3, room temperature"
   },
   {
-    "id": "a2-path-061",
+    "id": "a2-path-018",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "ester path",
+    "subtopic": "ethanoyl-chloride-to-ethanoic-acid",
+    "type": "reaction_path",
+    "prompt": "ethanoyl chloride -> ethanoic acid",
+    "answer": "H2O, room temperature"
+  },
+  {
+    "id": "a2-path-019",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "ethanoyl-chloride-to-ethyl-ethanoate",
     "type": "reaction_path",
     "prompt": "ethanoyl chloride -> ethyl ethanoate",
     "answer": "ethanol, room temperature"
   },
   {
-    "id": "a2-path-062",
+    "id": "a2-path-020",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acid hydrolysis path",
-    "type": "reaction_path",
-    "prompt": "ethyl ethanoate -> ethanol + ethanoic acid",
-    "answer": "dilute acid, heat"
-  },
-  {
-    "id": "a2-path-063",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "alkaline hydrolysis path",
+    "subtopic": "ethyl-ethanoate-to-ethanol-plus-ethanoate-ion",
     "type": "reaction_path",
     "prompt": "ethyl ethanoate -> ethanol + ethanoate ion",
     "answer": "aqueous NaOH, heat"
+  },
+  {
+    "id": "a2-path-021",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "ethyl-ethanoate-to-ethanol-plus-ethanoic-acid",
+    "type": "reaction_path",
+    "prompt": "ethyl ethanoate -> ethanol + ethanoic acid",
+    "answer": "dilute acid, heat"
   }
 ]

@@ -1,10 +1,10 @@
 [
   {
-    "id": "a2-obs-020",
+    "id": "a2-obs-010",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acyl chloride hydrolysis",
+    "subtopic": "observation-when-an-acyl-chloride-is-added-to-water",
     "type": "standard_observation",
     "prompt": "State the observation when an acyl chloride is added to water.",
     "answer": "steamy fumes"

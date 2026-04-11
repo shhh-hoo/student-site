@@ -1,42 +1,22 @@
 [
   {
+    "id": "a2-path-012",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "phenol-to-2-4-6-tribromophenol",
+    "type": "reaction_path",
+    "prompt": "phenol -> 2,4,6-tribromophenol",
+    "answer": "Br2(aq), room temperature"
+  },
+  {
     "id": "a2-path-013",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
-    "subtopic": "phenol to tribromophenol",
+    "subtopic": "phenol-to-phenyl-ethanoate",
     "type": "reaction_path",
-    "prompt": "phenol -> 2,4,6-tribromophenol",
-    "answer": "Br2(aq), room temperature"
-  },
-  {
-    "id": "a2-path-014",
-    "stage": "A2",
-    "level": 1,
-    "topic": "phenols",
-    "subtopic": "phenol to nitrophenol",
-    "type": "reaction_path",
-    "prompt": "phenol -> nitrophenol",
-    "answer": "dilute HNO3, room temperature"
-  },
-  {
-    "id": "a2-path-021",
-    "stage": "A2",
-    "level": 1,
-    "topic": "phenols",
-    "subtopic": "phenol network",
-    "type": "reaction_path",
-    "prompt": "phenol -> 2,4,6-tribromophenol",
-    "answer": "Br2(aq), room temperature"
-  },
-  {
-    "id": "a2-path-022",
-    "stage": "A2",
-    "level": 1,
-    "topic": "phenols",
-    "subtopic": "phenol network",
-    "type": "reaction_path",
-    "prompt": "phenol -> sodium phenoxide",
-    "answer": "Na"
+    "prompt": "phenol -> phenyl ethanoate",
+    "answer": "CH3COCl, room temperature"
   }
 ]

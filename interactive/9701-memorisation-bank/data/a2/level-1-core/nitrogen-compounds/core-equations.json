@@ -1,10 +1,10 @@
 [
   {
-    "id": "a2-eq-011",
+    "id": "a2-eq-016",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
-    "subtopic": "hydrolysis of ethanenitrile",
+    "subtopic": "equation-acid-hydrolysis-of-ethanenitrile",
     "type": "equation",
     "prompt": "Write the equation for the acid hydrolysis of ethanenitrile.",
     "answer": "CH3CN + 2H2O + H+ -> CH3COOH + NH4+"
@@ -14,37 +14,7 @@
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
-    "subtopic": "reduction of nitrobenzene",
-    "type": "equation",
-    "prompt": "Write the equation for the reduction of nitrobenzene to phenylamine.",
-    "answer": "C6H5NO2 + 6[H] -> C6H5NH2 + 2H2O"
-  },
-  {
-    "id": "a2-eq-037",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "nitrile hydrolysis",
-    "type": "equation",
-    "prompt": "Write the equation for the acid hydrolysis of ethanenitrile.",
-    "answer": "CH3CN + 2H2O + H+ -> CH3COOH + NH4+"
-  },
-  {
-    "id": "a2-eq-038",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "nitrile reduction",
-    "type": "equation",
-    "prompt": "Write the equation for the reduction of ethanenitrile to ethylamine.",
-    "answer": "CH3CN + 4[H] -> CH3CH2NH2"
-  },
-  {
-    "id": "a2-eq-061",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "nitrile reduction equation",
+    "subtopic": "equation-reduction-of-ethanenitrile-to-ethylamine",
     "type": "equation",
     "prompt": "Write the equation for the reduction of ethanenitrile to ethylamine.",
     "answer": "CH3CN + 2H2 -> CH3CH2NH2"

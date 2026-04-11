@@ -1,13 +1,24 @@
 [
   {
-    "id": "a2-def-016",
+    "id": "a2-def-044",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "acyl chloride",
+    "subtopic": "acyl-chloride",
     "type": "definition",
     "prompt": "Define acyl chloride.",
-    "answer": "a compound containing the functional group RCOCl",
+    "answer": "a carboxylic acid derivative in which the hydroxyl group is replaced by chlorine",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-045",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carboxylic-acids-and-derivatives",
+    "subtopic": "ester",
+    "type": "definition",
+    "prompt": "Define ester.",
+    "answer": "a compound formed from a carboxylic acid and an alcohol with the elimination of water",
     "source_scope": "syllabus_only"
   }
 ]

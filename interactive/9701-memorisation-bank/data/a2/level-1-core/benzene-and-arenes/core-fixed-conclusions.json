@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-fc-016",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "fixed-conclusion-benzene-undergoes-substitution-rather-than-addition-because-aromatic-is-retained",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: benzene undergoes substitution rather than addition because aromatic ____ is retained.",
+    "answer": "stability"
+  }
+]

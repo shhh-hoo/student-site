@@ -1,46 +1,101 @@
 [
   {
-    "id": "as-def-037",
+    "id": "as-def-044",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
-    "subtopic": "standard enthalpy change of formation",
+    "subtopic": "hesss-law",
     "type": "definition",
-    "prompt": "Define the standard enthalpy change of formation.",
-    "answer": "the enthalpy change when one mole of a compound is formed from its elements under standard conditions",
+    "prompt": "Define Hess’s law.",
+    "answer": "the enthalpy change of a reaction depends only on the initial and final states and is independent of the route taken",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-038",
+    "id": "as-def-045",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
-    "subtopic": "standard enthalpy change of combustion",
+    "subtopic": "endothermic-reaction",
     "type": "definition",
-    "prompt": "Define the standard enthalpy change of combustion.",
-    "answer": "the enthalpy change when one mole of a substance is completely burned in oxygen under standard conditions",
+    "prompt": "Define endothermic reaction.",
+    "answer": "a reaction that absorbs heat and has a positive ΔH",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-055",
+    "id": "as-def-046",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
-    "subtopic": "standard enthalpy change of formation",
+    "subtopic": "enthalpy-change-delta-h",
     "type": "definition",
-    "prompt": "Define standard enthalpy change of formation.",
-    "answer": "the enthalpy change when one mole of a compound is formed from its elements under standard conditions with all substances in their standard states",
-    "source_scope": "paper_only"
+    "prompt": "Define enthalpy change, ΔH.",
+    "answer": "the heat energy change of a reaction measured at constant pressure",
+    "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-056",
+    "id": "as-def-047",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
-    "subtopic": "standard enthalpy change of combustion",
+    "subtopic": "enthalpy-of-neutralisation",
+    "type": "definition",
+    "prompt": "Define enthalpy of neutralisation.",
+    "answer": "the enthalpy change when one mole of water is formed by the reaction of an acid and an alkali in aqueous solution under standard conditions",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-048",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "exothermic-reaction",
+    "type": "definition",
+    "prompt": "Define exothermic reaction.",
+    "answer": "a reaction that releases heat and has a negative ΔH",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-049",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard",
+    "type": "definition",
+    "prompt": "Define standard conditions.",
+    "answer": "298 K and 101 kPa",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-050",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard-enthalpy-change-of-combustion",
     "type": "definition",
     "prompt": "Define standard enthalpy change of combustion.",
     "answer": "the enthalpy change when one mole of a substance is completely burned in oxygen under standard conditions with all substances in their standard states",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-051",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard-enthalpy-change-of-formation",
+    "type": "definition",
+    "prompt": "Define standard enthalpy change of formation.",
+    "answer": "the enthalpy change when one mole of a compound is formed from its elements in their standard states under standard conditions",
+    "source_scope": "paper_only"
+  },
+  {
+    "id": "as-def-052",
+    "stage": "AS",
+    "level": 1,
+    "topic": "energetics",
+    "subtopic": "standard-enthalpy-change",
+    "type": "definition",
+    "prompt": "Define standard enthalpy change.",
+    "answer": "the enthalpy change when reactants and products are in their standard states under standard conditions",
     "source_scope": "syllabus_only"
   }
 ]

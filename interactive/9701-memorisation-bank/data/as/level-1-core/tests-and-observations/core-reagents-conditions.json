@@ -1,92 +1,72 @@
 [
   {
-    "id": "as-rc-044",
+    "id": "as-rc-001",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
-    "subtopic": "alkene test",
+    "subtopic": "test-aldehyde",
     "type": "reagent_condition",
-    "prompt": "Test for C=C bond : reagent and observation",
-    "answer": "Br2(aq), decolourises"
+    "prompt": "Test for aldehyde : reagent",
+    "answer": "Tollens reagent or Fehling solution"
   },
   {
-    "id": "as-rc-054",
+    "id": "as-rc-002",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
-    "subtopic": "aldehyde test",
+    "subtopic": "test-alkene",
     "type": "reagent_condition",
-    "prompt": "Test for aldehyde with silver mirror : reagent and conditions",
-    "answer": "Tollens reagent, warm"
+    "prompt": "Test for alkene : reagent",
+    "answer": "bromine water"
   },
   {
-    "id": "as-rc-055",
+    "id": "as-rc-003",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
-    "subtopic": "aldehyde test Fehling",
+    "subtopic": "test-ammonium-ion-and",
     "type": "reagent_condition",
-    "prompt": "Test for aldehyde with red precipitate : reagent and conditions",
-    "answer": "Fehlings solution, warm"
+    "prompt": "Test for ammonium ion : reagent and condition",
+    "answer": "aqueous NaOH, warm"
   },
   {
-    "id": "as-rc-058",
+    "id": "as-rc-004",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
-    "subtopic": "chloride ion test",
+    "subtopic": "test-carbonate",
     "type": "reagent_condition",
-    "prompt": "chloride ion : reagent and conditions",
-    "answer": "acidify with dilute HNO3, then add AgNO3(aq)"
+    "prompt": "Test for carbonate : reagent",
+    "answer": "dilute acid"
   },
   {
-    "id": "as-rc-059",
+    "id": "as-rc-005",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
-    "subtopic": "bromide ion test",
+    "subtopic": "test-carbonyl-compound",
     "type": "reagent_condition",
-    "prompt": "bromide ion : reagent and conditions",
-    "answer": "acidify with dilute HNO3, then add AgNO3(aq)"
+    "prompt": "Test for carbonyl compound : reagent",
+    "answer": "2,4-DNPH"
   },
   {
-    "id": "as-rc-060",
+    "id": "as-rc-006",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
-    "subtopic": "iodide ion test",
+    "subtopic": "test-chloride-bromide-iodide",
     "type": "reagent_condition",
-    "prompt": "iodide ion : reagent and conditions",
-    "answer": "acidify with dilute HNO3, then add AgNO3(aq)"
+    "prompt": "Test for chloride / bromide / iodide : reagents",
+    "answer": "dilute HNO3, AgNO3, then NH3"
   },
   {
-    "id": "as-rc-061",
+    "id": "as-rc-007",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
-    "subtopic": "sulfate ion test",
+    "subtopic": "test-sulfate",
     "type": "reagent_condition",
-    "prompt": "sulfate ion : reagent and conditions",
-    "answer": "acidify with dilute HCl, then add BaCl2(aq)"
-  },
-  {
-    "id": "as-rc-062",
-    "stage": "AS",
-    "level": 1,
-    "topic": "tests-and-observations",
-    "subtopic": "carbonate test",
-    "type": "reagent_condition",
-    "prompt": "carbonate : reagent and conditions",
-    "answer": "add dilute acid"
-  },
-  {
-    "id": "as-rc-063",
-    "stage": "AS",
-    "level": 1,
-    "topic": "tests-and-observations",
-    "subtopic": "ammonium ion test",
-    "type": "reagent_condition",
-    "prompt": "ammonium ion : reagent and conditions",
-    "answer": "NaOH(aq), warm"
+    "prompt": "Test for sulfate : reagents",
+    "answer": "dilute HNO3, then Ba(NO3)2"
   }
 ]

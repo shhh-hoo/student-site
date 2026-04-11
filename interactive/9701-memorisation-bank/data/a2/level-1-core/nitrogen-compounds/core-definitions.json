@@ -1,17 +1,6 @@
 [
   {
-    "id": "a2-def-015",
-    "stage": "A2",
-    "level": 1,
-    "topic": "nitrogen-compounds",
-    "subtopic": "primary amine",
-    "type": "definition",
-    "prompt": "Define primary amine.",
-    "answer": "an amine in which the nitrogen atom is attached to one alkyl or aryl group",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-041",
+    "id": "a2-def-046",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -19,6 +8,61 @@
     "type": "definition",
     "prompt": "Define amide.",
     "answer": "a compound containing the functional group CONH2 or a substituted version of it",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-047",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "amino-acid",
+    "type": "definition",
+    "prompt": "Define amino acid.",
+    "answer": "a compound containing both an amino group and a carboxylic acid group",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-048",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "isoelectric-point",
+    "type": "definition",
+    "prompt": "Define isoelectric point.",
+    "answer": "the pH at which an amino acid has no overall charge",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-049",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "peptide-bond",
+    "type": "definition",
+    "prompt": "Define peptide bond.",
+    "answer": "the amide link formed between the carboxyl group of one amino acid and the amino group of another amino acid",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-050",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "primary-amine",
+    "type": "definition",
+    "prompt": "Define primary amine.",
+    "answer": "an amine in which the nitrogen atom is bonded to one alkyl or aryl group and two hydrogen atoms",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-051",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "zwitterion",
+    "type": "definition",
+    "prompt": "Define zwitterion.",
+    "answer": "an ion that contains both a positive charge and a negative charge",
     "source_scope": "syllabus_only"
   }
 ]

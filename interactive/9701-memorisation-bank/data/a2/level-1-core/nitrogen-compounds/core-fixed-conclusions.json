@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-fc-018",
+    "stage": "A2",
+    "level": 1,
+    "topic": "nitrogen-compounds",
+    "subtopic": "fixed-conclusion-at-isoelectric-point-amino-acid-has-no-overall",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: at the isoelectric point, the amino acid has no overall ____.",
+    "answer": "charge"
+  }
+]
