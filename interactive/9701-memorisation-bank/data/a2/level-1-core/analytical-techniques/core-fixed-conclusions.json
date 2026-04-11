@@ -1,32 +1,42 @@
 [
   {
-    "id": "a2-def-062",
+    "id": "a2-fc-012",
     "stage": "A2",
     "level": 1,
     "topic": "analytical-techniques",
-    "subtopic": "splitting pattern",
+    "subtopic": "fixed-conclusion-in-a-carbon-13-nmr-spectrum-number-of-peaks-equals-number-of-different-carbon",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: in a carbon-13 NMR spectrum, the number of peaks equals the number of different carbon ____.",
+    "answer": "environments"
+  },
+  {
+    "id": "a2-fc-013",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "effect-of-d2o-on-an-o-h-or-n-h-proton-signal",
+    "type": "fixed_conclusion",
+    "prompt": "State the effect of D2O on an O-H or N-H proton signal.",
+    "answer": "the signal disappears"
+  },
+  {
+    "id": "a2-fc-014",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "n-plus-1-rule",
     "type": "fixed_conclusion",
     "prompt": "State the n + 1 rule.",
     "answer": "a proton peak is split into n + 1 peaks by n equivalent protons on an adjacent carbon atom"
   },
   {
-    "id": "a2-fc-020",
+    "id": "a2-fc-015",
     "stage": "A2",
     "level": 1,
     "topic": "analytical-techniques",
-    "subtopic": "nmr",
+    "subtopic": "standard-used-chemical-shift-measurements-in-proton-nmr",
     "type": "fixed_conclusion",
-    "prompt": "State the n + 1 rule.",
-    "answer": "a proton peak is split into n + 1 peaks by n equivalent protons on an adjacent carbon atom"
-  },
-  {
-    "id": "a2-fc-020",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "d2o",
-    "type": "fixed_conclusion",
-    "prompt": "Complete the fixed conclusion: exchangeable O-H and N-H protons are replaced by ____.",
-    "answer": "deuterium"
+    "prompt": "State the standard used for chemical shift measurements in proton NMR.",
+    "answer": "tetramethylsilane"
   }
 ]

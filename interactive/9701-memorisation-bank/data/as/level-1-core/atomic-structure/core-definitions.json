@@ -1,35 +1,90 @@
 [
   {
+    "id": "as-def-001",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "atom-structure",
+    "type": "definition",
+    "prompt": "Define atom (structure).",
+    "answer": "a particle made mostly of empty space with almost all its mass concentrated in a very small dense nucleus containing protons and neutrons, with electrons in shells around the nucleus",
+    "source_scope": "syllabus_only"
+  },
+  {
     "id": "as-def-002",
     "stage": "AS",
     "level": 1,
     "topic": "atomic-structure",
-    "subtopic": "first ionisation energy",
+    "subtopic": "atomic-number-proton-number-z",
+    "type": "definition",
+    "prompt": "Define atomic number / proton number, Z.",
+    "answer": "the number of protons in the nucleus of an atom",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-003",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "electron",
+    "type": "definition",
+    "prompt": "Define electron.",
+    "answer": "a subatomic particle outside the nucleus with relative charge -1 and very small relative mass",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-004",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "first-ionisation-energy",
     "type": "definition",
     "prompt": "Define first ionisation energy.",
     "answer": "the energy required to remove one electron from each atom in one mole of gaseous atoms to form one mole of gaseous 1+ ions",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-024",
+    "id": "as-def-005",
     "stage": "AS",
     "level": 1,
     "topic": "atomic-structure",
     "subtopic": "isotopes",
     "type": "definition",
     "prompt": "Define isotopes.",
-    "answer": "atoms of the same element with the same proton number but different numbers of neutrons",
+    "answer": "atoms of the same element with the same number of protons but different numbers of neutrons",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-053",
+    "id": "as-def-006",
     "stage": "AS",
     "level": 1,
     "topic": "atomic-structure",
-    "subtopic": "second ionisation energy",
+    "subtopic": "mass-number-nucleon-number-a",
     "type": "definition",
-    "prompt": "Define second ionisation energy.",
-    "answer": "the energy required to remove one electron from each ion in one mole of gaseous 1+ ions to form one mole of gaseous 2+ ions",
+    "prompt": "Define mass number / nucleon number, A.",
+    "answer": "the total number of protons and neutrons in the nucleus of an atom",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-007",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "neutron",
+    "type": "definition",
+    "prompt": "Define neutron.",
+    "answer": "a subatomic particle in the nucleus with relative charge 0 and relative mass about 1",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-008",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "proton",
+    "type": "definition",
+    "prompt": "Define proton.",
+    "answer": "a subatomic particle in the nucleus with relative charge +1 and relative mass about 1",
     "source_scope": "syllabus_only"
   }
 ]

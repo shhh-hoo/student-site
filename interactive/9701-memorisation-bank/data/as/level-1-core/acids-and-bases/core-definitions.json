@@ -1,35 +1,68 @@
 [
   {
-    "id": "as-def-014",
+    "id": "as-def-061",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
-    "subtopic": "Brønsted-Lowry acid",
+    "subtopic": "brnsted-lowry-acid",
     "type": "definition",
-    "prompt": "Define a Brønsted-Lowry acid.",
+    "prompt": "Define Brønsted-Lowry acid.",
     "answer": "a proton donor",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-015",
+    "id": "as-def-062",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
-    "subtopic": "Brønsted-Lowry base",
+    "subtopic": "brnsted-lowry-base",
     "type": "definition",
-    "prompt": "Define a Brønsted-Lowry base.",
+    "prompt": "Define Brønsted-Lowry base.",
     "answer": "a proton acceptor",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-082",
+    "id": "as-def-063",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
-    "subtopic": "strong acid",
+    "subtopic": "strong-acid",
     "type": "definition",
     "prompt": "Define strong acid.",
     "answer": "an acid that is completely dissociated in aqueous solution",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-064",
+    "stage": "AS",
+    "level": 1,
+    "topic": "acids-and-bases",
+    "subtopic": "strong-base",
+    "type": "definition",
+    "prompt": "Define strong base.",
+    "answer": "a base that is completely dissociated in aqueous solution",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-065",
+    "stage": "AS",
+    "level": 1,
+    "topic": "acids-and-bases",
+    "subtopic": "weak-acid",
+    "type": "definition",
+    "prompt": "Define weak acid.",
+    "answer": "an acid that is partially dissociated in aqueous solution",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-066",
+    "stage": "AS",
+    "level": 1,
+    "topic": "acids-and-bases",
+    "subtopic": "weak-base",
+    "type": "definition",
+    "prompt": "Define weak base.",
+    "answer": "a base that is partially dissociated in aqueous solution",
     "source_scope": "syllabus_only"
   }
 ]

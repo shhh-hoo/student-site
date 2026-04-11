@@ -1,35 +1,13 @@
 [
   {
-    "id": "a2-def-023",
+    "id": "a2-def-001",
     "stage": "A2",
     "level": 1,
     "topic": "thermodynamics",
-    "subtopic": "gibbs free energy change",
+    "subtopic": "entropy-s",
     "type": "definition",
-    "prompt": "Define Gibbs free energy change.",
-    "answer": "the quantity defined by the equation delta G = delta H - T delta S",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-067",
-    "stage": "A2",
-    "level": 1,
-    "topic": "thermodynamics",
-    "subtopic": "standard Gibbs free energy change",
-    "type": "definition",
-    "prompt": "Define standard Gibbs free energy change.",
-    "answer": "the standard enthalpy change minus temperature multiplied by the standard entropy change",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-068",
-    "stage": "A2",
-    "level": 1,
-    "topic": "thermodynamics",
-    "subtopic": "feasible reaction",
-    "type": "definition",
-    "prompt": "What is meant by a feasible reaction?",
-    "answer": "a reaction that has a negative Gibbs free energy change under the stated conditions",
-    "source_scope": "syllabus_only"
+    "prompt": "Define entropy, S.",
+    "answer": "the number of possible arrangements of the particles and their energy in a given system",
+    "source_scope": "paper_and_syllabus"
   }
 ]

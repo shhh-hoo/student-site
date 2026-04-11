@@ -1,35 +1,46 @@
 [
   {
-    "id": "as-def-016",
+    "id": "as-def-053",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
-    "subtopic": "dynamic equilibrium",
+    "subtopic": "le-chateliers-principle",
+    "type": "definition",
+    "prompt": "Define Le Chatelier’s principle.",
+    "answer": "if a change is made to a system at dynamic equilibrium, the position of equilibrium shifts to minimise this change",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-054",
+    "stage": "AS",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "dynamic-equilibrium",
     "type": "definition",
     "prompt": "Define dynamic equilibrium.",
-    "answer": "the state reached in a reversible reaction when the rate of the forward reaction equals the rate of the reverse reaction and the concentrations of all species remain constant",
+    "answer": "in a closed system, the rate of the forward reaction equals the rate of the reverse reaction and the concentrations of reactants and products remain constant",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-029",
+    "id": "as-def-055",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
-    "subtopic": "bronsted-lowry acid",
+    "subtopic": "equilibrium-constant-kc",
     "type": "definition",
-    "prompt": "Define Brønsted-Lowry acid.",
-    "answer": "a proton donor",
+    "prompt": "Define equilibrium constant, Kc.",
+    "answer": "the equilibrium constant expressed using equilibrium concentrations",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-030",
+    "id": "as-def-056",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
-    "subtopic": "bronsted-lowry base",
+    "subtopic": "reversible-reaction",
     "type": "definition",
-    "prompt": "Define Brønsted-Lowry base.",
-    "answer": "a proton acceptor",
+    "prompt": "Define reversible reaction.",
+    "answer": "a reaction that can proceed in both the forward and reverse directions under the same conditions",
     "source_scope": "syllabus_only"
   }
 ]

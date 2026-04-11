@@ -1,0 +1,32 @@
+[
+  {
+    "id": "a2-eq-001",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "equation-reaction-of-ammonia-with-hydrogen-ions",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ammonia with hydrogen ions.",
+    "answer": "NH3 + H+ -> NH4+"
+  },
+  {
+    "id": "a2-eq-002",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "equation-reaction-of-ammonia-with-water",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ammonia with water.",
+    "answer": "NH3 + H2O <-> NH4+ + OH-"
+  },
+  {
+    "id": "a2-eq-003",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "equation-reaction-of-ethanoic-acid-with-hydroxide-ions",
+    "type": "equation",
+    "prompt": "Write the equation for the reaction of ethanoic acid with hydroxide ions.",
+    "answer": "CH3COOH + OH- -> CH3COO- + H2O"
+  }
+]

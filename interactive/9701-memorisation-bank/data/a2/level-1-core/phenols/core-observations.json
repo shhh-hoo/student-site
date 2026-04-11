@@ -1,12 +1,22 @@
 [
   {
-    "id": "a2-obs-020",
+    "id": "a2-obs-005",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
-    "subtopic": "bromination",
-    "type": "test_outcome",
+    "subtopic": "observation-when-phenol-reacts-with-bromine-water",
+    "type": "standard_observation",
     "prompt": "State the observation when phenol reacts with bromine water.",
+    "answer": "orange to colourless and a white precipitate forms"
+  },
+  {
+    "id": "a2-obs-006",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "observation-when-phenylamine-reacts-with-bromine-water",
+    "type": "standard_observation",
+    "prompt": "State the observation when phenylamine reacts with bromine water.",
     "answer": "orange to colourless and a white precipitate forms"
   }
 ]

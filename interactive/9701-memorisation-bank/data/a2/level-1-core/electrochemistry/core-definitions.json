@@ -1,35 +1,24 @@
 [
   {
-    "id": "a2-def-006",
+    "id": "a2-def-018",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
-    "subtopic": "standard electrode potential",
+    "subtopic": "standard-cell-potential-e-degrees-cell",
     "type": "definition",
-    "prompt": "Define standard electrode potential.",
-    "answer": "the e.m.f. of a cell formed by combining the half-cell with the standard hydrogen electrode under standard conditions with all solutions at 1 mol dm-3 and a temperature of 298 K",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-024",
-    "stage": "A2",
-    "level": 1,
-    "topic": "electrochemistry",
-    "subtopic": "standard cell potential",
-    "type": "definition",
-    "prompt": "Define standard cell potential.",
+    "prompt": "Define standard cell potential, E°cell.",
     "answer": "the e.m.f. of a cell under standard conditions",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-025",
+    "id": "a2-def-019",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
-    "subtopic": "standard conditions",
+    "subtopic": "standard-electrode-potential-e-degrees",
     "type": "definition",
-    "prompt": "Define standard conditions for electrode potentials.",
-    "answer": "solutions at 1 mol dm-3 gases at 1 bar and a temperature of 298 K",
+    "prompt": "Define standard electrode potential, E°.",
+    "answer": "the e.m.f. of a cell formed by connecting a half-cell to a standard hydrogen electrode under standard conditions",
     "source_scope": "syllabus_only"
   }
 ]

@@ -1,24 +1,46 @@
 [
   {
-    "id": "as-def-013",
+    "id": "as-def-057",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "activation-energy-ea",
+    "type": "definition",
+    "prompt": "Define activation energy, Ea.",
+    "answer": "the minimum energy required for a collision to be effective",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-058",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
     "subtopic": "catalyst",
     "type": "definition",
     "prompt": "Define catalyst.",
-    "answer": "a substance that increases the rate of a reaction by providing an alternative pathway with a lower activation energy and is unchanged at the end of the reaction",
+    "answer": "a substance that provides an alternative reaction pathway with lower activation energy and is chemically unchanged at the end of the reaction",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-031",
+    "id": "as-def-059",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
-    "subtopic": "activation energy",
+    "subtopic": "effective-collision",
     "type": "definition",
-    "prompt": "Define activation energy.",
-    "answer": "the minimum energy that colliding particles must have for a reaction to occur",
+    "prompt": "Define effective collision.",
+    "answer": "a collision that has enough energy greater than or equal to Ea and the correct orientation to result in reaction",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "as-def-060",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "rate-of-reaction",
+    "type": "definition",
+    "prompt": "Define rate of reaction.",
+    "answer": "change in concentration of a reactant or product per unit time",
     "source_scope": "syllabus_only"
   }
 ]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-fc-017",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "fixed-conclusion-phenol-is-more-acidic-than-cyclohexanol-because-phenoxide-ion-is-stabilised-by",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: phenol is more acidic than cyclohexanol because the phenoxide ion is stabilised by ____.",
+    "answer": "delocalisation"
+  }
+]

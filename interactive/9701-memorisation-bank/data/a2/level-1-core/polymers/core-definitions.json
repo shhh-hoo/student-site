@@ -1,35 +1,46 @@
 [
   {
-    "id": "a2-def-018",
+    "id": "a2-def-052",
     "stage": "A2",
     "level": 1,
     "topic": "polymers",
-    "subtopic": "condensation polymerisation",
+    "subtopic": "condensation-polymerisation",
     "type": "definition",
     "prompt": "Define condensation polymerisation.",
-    "answer": "polymerisation in which monomers join together with elimination of a small molecule",
+    "answer": "polymerisation in which monomers join together with the elimination of a small molecule",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-069",
+    "id": "a2-def-053",
     "stage": "A2",
     "level": 1,
     "topic": "polymers",
-    "subtopic": "addition polymer",
+    "subtopic": "polyamide",
     "type": "definition",
-    "prompt": "Define addition polymer.",
-    "answer": "a polymer formed from monomers adding together without the elimination of a small molecule",
+    "prompt": "Define polyamide.",
+    "answer": "a condensation polymer containing amide links in the polymer chain",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-070",
+    "id": "a2-def-054",
     "stage": "A2",
     "level": 1,
     "topic": "polymers",
-    "subtopic": "condensation polymer",
+    "subtopic": "polyester",
     "type": "definition",
-    "prompt": "Define condensation polymer.",
-    "answer": "a polymer formed when monomers join together with the elimination of a small molecule",
+    "prompt": "Define polyester.",
+    "answer": "a condensation polymer containing ester links in the polymer chain",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-055",
+    "stage": "A2",
+    "level": 1,
+    "topic": "polymers",
+    "subtopic": "repeat-unit",
+    "type": "definition",
+    "prompt": "Define repeat unit.",
+    "answer": "the smallest repeating structural unit of a polymer chain",
     "source_scope": "syllabus_only"
   }
 ]

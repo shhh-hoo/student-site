@@ -1,24 +1,79 @@
 [
   {
+    "id": "a2-def-002",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "acid-dissociation-constant-ka",
+    "type": "definition",
+    "prompt": "Define acid dissociation constant, Ka.",
+    "answer": "the equilibrium constant for the dissociation of a weak acid",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-003",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "buffer-solution",
+    "type": "definition",
+    "prompt": "Define buffer solution.",
+    "answer": "a solution that resists change in pH when small amounts of acid or alkali are added",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "a2-def-004",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "conjugate-acid-base-pair",
+    "type": "definition",
+    "prompt": "Define conjugate acid-base pair.",
+    "answer": "two species that differ by a proton",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-005",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "ionic-product-of-water-kw",
+    "type": "definition",
+    "prompt": "Define ionic product of water, Kw.",
+    "answer": "the product of the equilibrium concentrations of H+ and OH- in water",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-006",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "pka",
+    "type": "definition",
+    "prompt": "Define pKa.",
+    "answer": "the negative logarithm to base 10 of Ka",
+    "source_scope": "syllabus_only"
+  },
+  {
     "id": "a2-def-007",
     "stage": "A2",
     "level": 1,
     "topic": "equilibrium",
-    "subtopic": "buffer solution",
+    "subtopic": "partition-coefficient-kpc",
     "type": "definition",
-    "prompt": "Define buffer solution.",
-    "answer": "a solution that resists changes in pH on addition of small amounts of acid or alkali",
+    "prompt": "Define partition coefficient, Kpc.",
+    "answer": "the ratio of the concentration of a solute in two immiscible solvents at equilibrium",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-017",
+    "id": "a2-def-008",
     "stage": "A2",
     "level": 1,
     "topic": "equilibrium",
-    "subtopic": "partition coefficient",
+    "subtopic": "solubility-product-ksp",
     "type": "definition",
-    "prompt": "Define partition coefficient.",
-    "answer": "the ratio of the equilibrium concentrations of a solute distributed between two immiscible solvents at a constant temperature",
+    "prompt": "Define solubility product, Ksp.",
+    "answer": "the product of the equilibrium concentrations of the ions in a saturated solution, each concentration raised to the power of its stoichiometric coefficient",
     "source_scope": "syllabus_only"
   }
 ]

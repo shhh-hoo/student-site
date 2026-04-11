@@ -1,0 +1,22 @@
+[
+  {
+    "id": "a2-fc-006",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "equation-linking-k-and-half-life-a-first-order-reaction",
+    "type": "fixed_conclusion",
+    "prompt": "State the equation linking k and half-life for a first-order reaction.",
+    "answer": "k = 0.693 / t1/2"
+  },
+  {
+    "id": "a2-fc-007",
+    "stage": "A2",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "relationship-a-first-order-reaction",
+    "type": "fixed_conclusion",
+    "prompt": "State the relationship for a first-order reaction.",
+    "answer": "half-life is independent of concentration"
+  }
+]

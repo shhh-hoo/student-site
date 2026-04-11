@@ -50,7 +50,7 @@
   "nmr": "analytical-techniques",
   "organic nitrogen compounds": "nitrogen-compounds",
   "organic synthesis": "organic-synthesis",
-  "partition coefficient": "analytical-techniques",
+  "partition coefficient": "equilibrium",
   "peptides": "amino-acids-and-proteins",
   "pharmaceutical chemistry": "pharmaceutical-chemistry",
   "phenol": "phenols",
@@ -59,5 +59,10 @@
   "stereochemistry": "stereochemistry",
   "thermodynamics": "thermodynamics",
   "transition elements": "transition-elements",
-  "transition metals": "transition-elements"
+  "transition metals": "transition-elements",
+  "amount of substance": "stoichiometry",
+  "equilibrium and buffers": "equilibrium",
+  "key equations": "key-equations",
+  "nitrogen compounds and amino acids": "nitrogen-compounds",
+  "phenols and phenylamine": "phenols"
 }

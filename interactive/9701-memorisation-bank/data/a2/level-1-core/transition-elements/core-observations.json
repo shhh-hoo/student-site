@@ -1,32 +1,42 @@
 [
   {
-    "id": "a2-obs-020",
+    "id": "a2-obs-001",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
-    "subtopic": "ligand exchange",
-    "type": "test_outcome",
-    "prompt": "State the observation when aqueous ammonia is added in excess to aqueous copper(II) ions.",
-    "answer": "pale blue precipitate dissolves in excess to give a dark blue solution"
-  },
-  {
-    "id": "a2-obs-020",
-    "stage": "A2",
-    "level": 1,
-    "topic": "transition-elements",
-    "subtopic": "chromate dichromate",
+    "subtopic": "colour-of-chromate-vi-ions",
     "type": "standard_observation",
-    "prompt": "State the colour of chromate(VI) ions in aqueous solution.",
+    "prompt": "State the colour of chromate(VI) ions.",
     "answer": "yellow"
   },
   {
-    "id": "a2-obs-020",
+    "id": "a2-obs-002",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
-    "subtopic": "chromate dichromate",
+    "subtopic": "colour-of-dichromate-vi-ions",
     "type": "standard_observation",
-    "prompt": "State the colour of dichromate(VI) ions in aqueous solution.",
+    "prompt": "State the colour of dichromate(VI) ions.",
     "answer": "orange"
+  },
+  {
+    "id": "a2-obs-003",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "observation-when-aqueous-ammonia-is-added-in-excess-to-aqueous-copper-ii-ions",
+    "type": "standard_observation",
+    "prompt": "State the observation when aqueous ammonia is added in excess to aqueous copper(II) ions.",
+    "answer": "pale blue precipitate dissolves in excess to give a deep blue solution"
+  },
+  {
+    "id": "a2-obs-004",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "observation-when-concentrated-hydrochloric-acid-is-added-to-an-aqueous-cobalt-ii-solution",
+    "type": "standard_observation",
+    "prompt": "State the observation when concentrated hydrochloric acid is added to an aqueous cobalt(II) solution.",
+    "answer": "pink solution changes to blue"
   }
 ]

@@ -7,7 +7,7 @@
       "slug": "as",
       "manifest_path": "as/manifest.json",
       "counts": {
-        "level-1-core": 280,
+        "level-1-core": 162,
         "level-2-guided-cloze": 57,
         "level-3-multi-round-cloze": 57,
         "level-4-full-reconstruction": 57
@@ -16,84 +16,8 @@
         {
           "id": "level-1-core",
           "label": "Level 1 · Core",
-          "count": 280,
+          "count": 162,
           "topics": [
-            {
-              "id": "acids-and-bases",
-              "source_directory": "acids-and-bases",
-              "label": "Acids And Bases",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "as/level-1-core/acids-and-bases/core-definitions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 3,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/acids-and-bases/core-equations.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "analytical-techniques",
-              "source_directory": "analytical-techniques",
-              "label": "Analytical Techniques",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "as/level-1-core/analytical-techniques/core-definitions.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 5,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/analytical-techniques/core-reagents-conditions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-observations",
-                  "label": "Observations / Test Outcomes",
-                  "path": "as/level-1-core/analytical-techniques/core-observations.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "as/level-1-core/analytical-techniques/core-fixed-conclusions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
             {
               "id": "atomic-structure",
               "source_directory": "atomic-structure",
@@ -103,12 +27,32 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/atomic-structure/core-definitions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
+                  "count": 8,
+                  "runtime_unit_count": 8,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 3,
+                    "syllabus_only": 8,
                     "paper_and_syllabus": 0
+                  },
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "stoichiometry",
+              "source_directory": "stoichiometry",
+              "label": "Amount of Substance",
+              "files": [
+                {
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "as/level-1-core/stoichiometry/core-definitions.json",
+                  "count": 14,
+                  "runtime_unit_count": 14,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 10,
+                    "paper_and_syllabus": 4
                   },
                   "rounds": []
                 }
@@ -123,90 +67,33 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/bonding/core-definitions.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
+                  "count": 15,
+                  "runtime_unit_count": 15,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 4,
+                    "syllabus_only": 14,
                     "paper_and_syllabus": 1
                   },
                   "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "as/level-1-core/bonding/core-fixed-conclusions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
                 }
               ]
             },
             {
-              "id": "carbonyl-compounds",
-              "source_directory": "carbonyl-compounds",
-              "label": "Carbonyl Compounds",
+              "id": "states-of-matter",
+              "source_directory": "states-of-matter",
+              "label": "States of Matter",
               "files": [
                 {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/carbonyl-compounds/core-reagents-conditions.json",
-                  "count": 9,
-                  "runtime_unit_count": 9,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/carbonyl-compounds/core-reaction-paths.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/carbonyl-compounds/core-equations.json",
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "as/level-1-core/states-of-matter/core-definitions.json",
                   "count": 6,
                   "runtime_unit_count": 6,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "carboxylic-acids-and-derivatives",
-              "source_directory": "carboxylic-acids-and-derivatives",
-              "label": "Carboxylic Acids And Derivatives",
-              "files": [
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/carboxylic-acids-and-derivatives/core-reagents-conditions.json",
-                  "count": 7,
-                  "runtime_unit_count": 7,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/carboxylic-acids-and-derivatives/core-reaction-paths.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/carboxylic-acids-and-derivatives/core-equations.json",
-                  "count": 6,
-                  "runtime_unit_count": 6,
-                  "definition_source_counts": null,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 6,
+                    "paper_and_syllabus": 0
+                  },
                   "rounds": []
                 }
               ]
@@ -220,22 +107,13 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/energetics/core-definitions.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
+                  "count": 9,
+                  "runtime_unit_count": 9,
                   "definition_source_counts": {
                     "paper_only": 1,
-                    "syllabus_only": 3,
+                    "syllabus_only": 8,
                     "paper_and_syllabus": 0
                   },
-                  "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "as/level-1-core/energetics/core-fixed-conclusions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
                   "rounds": []
                 }
               ]
@@ -249,11 +127,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/equilibrium/core-definitions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
+                  "count": 4,
+                  "runtime_unit_count": 4,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 3,
+                    "syllabus_only": 4,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
@@ -270,44 +148,70 @@
               ]
             },
             {
-              "id": "group-17",
-              "source_directory": "group-17",
-              "label": "Group 17",
+              "id": "kinetics",
+              "source_directory": "kinetics",
+              "label": "Kinetics",
               "files": [
                 {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/group-17/core-reagents-conditions.json",
-                  "count": 6,
-                  "runtime_unit_count": 6,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/group-17/core-reaction-paths.json",
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "as/level-1-core/kinetics/core-definitions.json",
                   "count": 4,
                   "runtime_unit_count": 4,
-                  "definition_source_counts": null,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 4,
+                    "paper_and_syllabus": 0
+                  },
                   "rounds": []
                 },
                 {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/group-17/core-equations.json",
-                  "count": 17,
-                  "runtime_unit_count": 17,
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "as/level-1-core/kinetics/core-fixed-conclusions.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
                   "definition_source_counts": null,
                   "rounds": []
-                },
+                }
+              ]
+            },
+            {
+              "id": "acids-and-bases",
+              "source_directory": "acids-and-bases",
+              "label": "Acids and Bases",
+              "files": [
                 {
-                  "id": "core-observations",
-                  "label": "Observations / Test Outcomes",
-                  "path": "as/level-1-core/group-17/core-observations.json",
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "as/level-1-core/acids-and-bases/core-definitions.json",
                   "count": 6,
                   "runtime_unit_count": 6,
-                  "definition_source_counts": null,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 6,
+                    "paper_and_syllabus": 0
+                  },
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "redox",
+              "source_directory": "redox",
+              "label": "Redox",
+              "files": [
+                {
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "as/level-1-core/redox/core-definitions.json",
+                  "count": 7,
+                  "runtime_unit_count": 7,
+                  "definition_source_counts": {
+                    "paper_only": 1,
+                    "syllabus_only": 6,
+                    "paper_and_syllabus": 0
+                  },
                   "rounds": []
                 }
               ]
@@ -318,216 +222,52 @@
               "label": "Group 2",
               "files": [
                 {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/group-2/core-reagents-conditions.json",
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "as/level-1-core/group-2/core-fixed-conclusions.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
+                  "definition_source_counts": null,
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "group-17",
+              "source_directory": "group-17",
+              "label": "Group 17",
+              "files": [
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "as/level-1-core/group-17/core-fixed-conclusions.json",
                   "count": 2,
                   "runtime_unit_count": 2,
                   "definition_source_counts": null,
                   "rounds": []
-                },
+                }
+              ]
+            },
+            {
+              "id": "tests-and-observations",
+              "source_directory": "tests-and-observations",
+              "label": "Tests and Observations",
+              "files": [
                 {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/group-2/core-reaction-paths.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/group-2/core-equations.json",
+                  "id": "core-reagents-conditions",
+                  "label": "Reagents / Conditions",
+                  "path": "as/level-1-core/tests-and-observations/core-reagents-conditions.json",
                   "count": 7,
                   "runtime_unit_count": 7,
                   "definition_source_counts": null,
                   "rounds": []
                 },
                 {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "as/level-1-core/group-2/core-fixed-conclusions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "halogenoalkanes",
-              "source_directory": "halogenoalkanes",
-              "label": "Halogenoalkanes",
-              "files": [
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/halogenoalkanes/core-reagents-conditions.json",
-                  "count": 6,
-                  "runtime_unit_count": 6,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/halogenoalkanes/core-reaction-paths.json",
-                  "count": 8,
-                  "runtime_unit_count": 8,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/halogenoalkanes/core-equations.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "hydrocarbons",
-              "source_directory": "hydrocarbons",
-              "label": "Hydrocarbons",
-              "files": [
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/hydrocarbons/core-reagents-conditions.json",
-                  "count": 11,
-                  "runtime_unit_count": 11,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/hydrocarbons/core-reaction-paths.json",
-                  "count": 11,
-                  "runtime_unit_count": 11,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/hydrocarbons/core-equations.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "hydroxy-compounds",
-              "source_directory": "hydroxy-compounds",
-              "label": "Hydroxy Compounds",
-              "files": [
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/hydroxy-compounds/core-reagents-conditions.json",
-                  "count": 8,
-                  "runtime_unit_count": 8,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/hydroxy-compounds/core-reaction-paths.json",
-                  "count": 12,
-                  "runtime_unit_count": 12,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/hydroxy-compounds/core-equations.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "kinetics",
-              "source_directory": "kinetics",
-              "label": "Kinetics",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "as/level-1-core/kinetics/core-definitions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 2,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "as/level-1-core/kinetics/core-fixed-conclusions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "nitrogen-and-sulfur",
-              "source_directory": "nitrogen-and-sulfur",
-              "label": "Nitrogen And Sulfur",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "as/level-1-core/nitrogen-and-sulfur/core-definitions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 3,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/nitrogen-and-sulfur/core-reagents-conditions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/nitrogen-and-sulfur/core-reaction-paths.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/nitrogen-and-sulfur/core-equations.json",
-                  "count": 12,
-                  "runtime_unit_count": 12,
+                  "id": "core-observations",
+                  "label": "Observations / Test Outcomes",
+                  "path": "as/level-1-core/tests-and-observations/core-observations.json",
+                  "count": 10,
+                  "runtime_unit_count": 10,
                   "definition_source_counts": null,
                   "rounds": []
                 }
@@ -542,11 +282,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/organic-general/core-definitions.json",
-                  "count": 14,
-                  "runtime_unit_count": 14,
+                  "count": 23,
+                  "runtime_unit_count": 23,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 13,
+                    "syllabus_only": 22,
                     "paper_and_syllabus": 1
                   },
                   "rounds": []
@@ -555,8 +295,8 @@
                   "id": "core-reagents-conditions",
                   "label": "Reagents / Conditions",
                   "path": "as/level-1-core/organic-general/core-reagents-conditions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
+                  "count": 11,
+                  "runtime_unit_count": 11,
                   "definition_source_counts": null,
                   "rounds": []
                 },
@@ -564,172 +304,24 @@
                   "id": "core-reaction-paths",
                   "label": "Reaction Paths",
                   "path": "as/level-1-core/organic-general/core-reaction-paths.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/organic-general/core-equations.json",
-                  "count": 7,
-                  "runtime_unit_count": 7,
+                  "count": 11,
+                  "runtime_unit_count": 11,
                   "definition_source_counts": null,
                   "rounds": []
                 }
               ]
             },
             {
-              "id": "periodicity",
-              "source_directory": "periodicity",
-              "label": "Periodicity",
+              "id": "key-equations",
+              "source_directory": "key-equations",
+              "label": "Key Equations",
               "files": [
                 {
                   "id": "core-equations",
                   "label": "Equations",
-                  "path": "as/level-1-core/periodicity/core-equations.json",
-                  "count": 7,
-                  "runtime_unit_count": 7,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "as/level-1-core/periodicity/core-fixed-conclusions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "redox",
-              "source_directory": "redox",
-              "label": "Redox",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "as/level-1-core/redox/core-definitions.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
-                  "definition_source_counts": {
-                    "paper_only": 1,
-                    "syllabus_only": 3,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/redox/core-equations.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "states-of-matter",
-              "source_directory": "states-of-matter",
-              "label": "States Of Matter",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "as/level-1-core/states-of-matter/core-definitions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 1,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "as/level-1-core/states-of-matter/core-fixed-conclusions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "stoichiometry",
-              "source_directory": "stoichiometry",
-              "label": "Stoichiometry",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "as/level-1-core/stoichiometry/core-definitions.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 1,
-                    "paper_and_syllabus": 4
-                  },
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "tests-and-observations",
-              "source_directory": "tests-and-observations",
-              "label": "Tests And Observations",
-              "files": [
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "as/level-1-core/tests-and-observations/core-reagents-conditions.json",
-                  "count": 9,
-                  "runtime_unit_count": 9,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "as/level-1-core/tests-and-observations/core-reaction-paths.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "as/level-1-core/tests-and-observations/core-equations.json",
-                  "count": 6,
-                  "runtime_unit_count": 6,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-observations",
-                  "label": "Observations / Test Outcomes",
-                  "path": "as/level-1-core/tests-and-observations/core-observations.json",
-                  "count": 7,
-                  "runtime_unit_count": 7,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "as/level-1-core/tests-and-observations/core-fixed-conclusions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
+                  "path": "as/level-1-core/key-equations/core-equations.json",
+                  "count": 18,
+                  "runtime_unit_count": 18,
                   "definition_source_counts": null,
                   "rounds": []
                 }
@@ -1389,7 +981,7 @@
       "slug": "a2",
       "manifest_path": "a2/manifest.json",
       "counts": {
-        "level-1-core": 309,
+        "level-1-core": 155,
         "level-2-guided-cloze": 45,
         "level-3-multi-round-cloze": 45,
         "level-4-full-reconstruction": 45
@@ -1398,59 +990,202 @@
         {
           "id": "level-1-core",
           "label": "Level 1 · Core",
-          "count": 309,
+          "count": 155,
           "topics": [
             {
-              "id": "amino-acids-and-proteins",
-              "source_directory": "amino-acids-and-proteins",
-              "label": "Amino Acids And Proteins",
+              "id": "thermodynamics",
+              "source_directory": "thermodynamics",
+              "label": "Thermodynamics",
               "files": [
                 {
                   "id": "core-definitions",
                   "label": "Definitions",
-                  "path": "a2/level-1-core/amino-acids-and-proteins/core-definitions.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
+                  "path": "a2/level-1-core/thermodynamics/core-definitions.json",
+                  "count": 1,
+                  "runtime_unit_count": 1,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 4,
+                    "syllabus_only": 0,
+                    "paper_and_syllabus": 1
+                  },
+                  "rounds": []
+                },
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/thermodynamics/core-fixed-conclusions.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
+                  "definition_source_counts": null,
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "equilibrium",
+              "source_directory": "equilibrium",
+              "label": "Equilibrium and Buffers",
+              "files": [
+                {
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "a2/level-1-core/equilibrium/core-definitions.json",
+                  "count": 7,
+                  "runtime_unit_count": 7,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 6,
+                    "paper_and_syllabus": 1
+                  },
+                  "rounds": []
+                },
+                {
+                  "id": "core-equations",
+                  "label": "Equations",
+                  "path": "a2/level-1-core/equilibrium/core-equations.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
+                  "definition_source_counts": null,
+                  "rounds": []
+                },
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/equilibrium/core-fixed-conclusions.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
+                  "definition_source_counts": null,
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "kinetics",
+              "source_directory": "kinetics",
+              "label": "Kinetics",
+              "files": [
+                {
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "a2/level-1-core/kinetics/core-definitions.json",
+                  "count": 9,
+                  "runtime_unit_count": 9,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 9,
                     "paper_and_syllabus": 0
+                  },
+                  "rounds": []
+                },
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/kinetics/core-fixed-conclusions.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
+                  "definition_source_counts": null,
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "electrochemistry",
+              "source_directory": "electrochemistry",
+              "label": "Electrochemistry",
+              "files": [
+                {
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "a2/level-1-core/electrochemistry/core-definitions.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 2,
+                    "paper_and_syllabus": 0
+                  },
+                  "rounds": []
+                },
+                {
+                  "id": "core-equations",
+                  "label": "Equations",
+                  "path": "a2/level-1-core/electrochemistry/core-equations.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
+                  "definition_source_counts": null,
+                  "rounds": []
+                },
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/electrochemistry/core-fixed-conclusions.json",
+                  "count": 1,
+                  "runtime_unit_count": 1,
+                  "definition_source_counts": null,
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "transition-elements",
+              "source_directory": "transition-elements",
+              "label": "Transition Elements",
+              "files": [
+                {
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "a2/level-1-core/transition-elements/core-definitions.json",
+                  "count": 10,
+                  "runtime_unit_count": 10,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 9,
+                    "paper_and_syllabus": 1
                   },
                   "rounds": []
                 },
                 {
                   "id": "core-reagents-conditions",
                   "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/amino-acids-and-proteins/core-reagents-conditions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
+                  "path": "a2/level-1-core/transition-elements/core-reagents-conditions.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
                   "definition_source_counts": null,
                   "rounds": []
                 },
                 {
                   "id": "core-reaction-paths",
                   "label": "Reaction Paths",
-                  "path": "a2/level-1-core/amino-acids-and-proteins/core-reaction-paths.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
+                  "path": "a2/level-1-core/transition-elements/core-reaction-paths.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
                   "definition_source_counts": null,
                   "rounds": []
                 },
                 {
                   "id": "core-equations",
                   "label": "Equations",
-                  "path": "a2/level-1-core/amino-acids-and-proteins/core-equations.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
+                  "path": "a2/level-1-core/transition-elements/core-equations.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
                   "definition_source_counts": null,
                   "rounds": []
                 },
                 {
                   "id": "core-observations",
                   "label": "Observations / Test Outcomes",
-                  "path": "a2/level-1-core/amino-acids-and-proteins/core-observations.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
+                  "path": "a2/level-1-core/transition-elements/core-observations.json",
+                  "count": 4,
+                  "runtime_unit_count": 4,
+                  "definition_source_counts": null,
+                  "rounds": []
+                },
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/transition-elements/core-fixed-conclusions.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
                   "definition_source_counts": null,
                   "rounds": []
                 }
@@ -1465,57 +1200,21 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/analytical-techniques/core-definitions.json",
-                  "count": 6,
-                  "runtime_unit_count": 6,
+                  "count": 9,
+                  "runtime_unit_count": 9,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 6,
+                    "syllabus_only": 9,
                     "paper_and_syllabus": 0
                   },
-                  "rounds": []
-                },
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/analytical-techniques/core-reagents-conditions.json",
-                  "count": 6,
-                  "runtime_unit_count": 6,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "a2/level-1-core/analytical-techniques/core-reaction-paths.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/analytical-techniques/core-equations.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-observations",
-                  "label": "Observations / Test Outcomes",
-                  "path": "a2/level-1-core/analytical-techniques/core-observations.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
                   "rounds": []
                 },
                 {
                   "id": "core-fixed-conclusions",
                   "label": "Fixed Conclusions",
                   "path": "a2/level-1-core/analytical-techniques/core-fixed-conclusions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
+                  "count": 4,
+                  "runtime_unit_count": 4,
                   "definition_source_counts": null,
                   "rounds": []
                 }
@@ -1524,59 +1223,12 @@
             {
               "id": "benzene-and-arenes",
               "source_directory": "benzene-and-arenes",
-              "label": "Benzene And Arenes",
+              "label": "Benzene and Arenes",
               "files": [
                 {
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/benzene-and-arenes/core-definitions.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 5,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/benzene-and-arenes/core-reagents-conditions.json",
-                  "count": 18,
-                  "runtime_unit_count": 18,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "a2/level-1-core/benzene-and-arenes/core-reaction-paths.json",
-                  "count": 18,
-                  "runtime_unit_count": 18,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/benzene-and-arenes/core-equations.json",
-                  "count": 10,
-                  "runtime_unit_count": 10,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "buffers",
-              "source_directory": "buffers",
-              "label": "Buffers",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/buffers/core-definitions.json",
                   "count": 2,
                   "runtime_unit_count": 2,
                   "definition_source_counts": {
@@ -1589,7 +1241,63 @@
                 {
                   "id": "core-reagents-conditions",
                   "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/buffers/core-reagents-conditions.json",
+                  "path": "a2/level-1-core/benzene-and-arenes/core-reagents-conditions.json",
+                  "count": 8,
+                  "runtime_unit_count": 8,
+                  "definition_source_counts": null,
+                  "rounds": []
+                },
+                {
+                  "id": "core-reaction-paths",
+                  "label": "Reaction Paths",
+                  "path": "a2/level-1-core/benzene-and-arenes/core-reaction-paths.json",
+                  "count": 8,
+                  "runtime_unit_count": 8,
+                  "definition_source_counts": null,
+                  "rounds": []
+                },
+                {
+                  "id": "core-equations",
+                  "label": "Equations",
+                  "path": "a2/level-1-core/benzene-and-arenes/core-equations.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
+                  "definition_source_counts": null,
+                  "rounds": []
+                },
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/benzene-and-arenes/core-fixed-conclusions.json",
+                  "count": 1,
+                  "runtime_unit_count": 1,
+                  "definition_source_counts": null,
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "phenols",
+              "source_directory": "phenols",
+              "label": "Phenols and Phenylamine",
+              "files": [
+                {
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "a2/level-1-core/phenols/core-definitions.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 2,
+                    "paper_and_syllabus": 0
+                  },
+                  "rounds": []
+                },
+                {
+                  "id": "core-reagents-conditions",
+                  "label": "Reagents / Conditions",
+                  "path": "a2/level-1-core/phenols/core-reagents-conditions.json",
                   "count": 2,
                   "runtime_unit_count": 2,
                   "definition_source_counts": null,
@@ -1598,7 +1306,7 @@
                 {
                   "id": "core-reaction-paths",
                   "label": "Reaction Paths",
-                  "path": "a2/level-1-core/buffers/core-reaction-paths.json",
+                  "path": "a2/level-1-core/phenols/core-reaction-paths.json",
                   "count": 2,
                   "runtime_unit_count": 2,
                   "definition_source_counts": null,
@@ -1607,9 +1315,27 @@
                 {
                   "id": "core-equations",
                   "label": "Equations",
-                  "path": "a2/level-1-core/buffers/core-equations.json",
-                  "count": 7,
-                  "runtime_unit_count": 7,
+                  "path": "a2/level-1-core/phenols/core-equations.json",
+                  "count": 1,
+                  "runtime_unit_count": 1,
+                  "definition_source_counts": null,
+                  "rounds": []
+                },
+                {
+                  "id": "core-observations",
+                  "label": "Observations / Test Outcomes",
+                  "path": "a2/level-1-core/phenols/core-observations.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
+                  "definition_source_counts": null,
+                  "rounds": []
+                },
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/phenols/core-fixed-conclusions.json",
+                  "count": 1,
+                  "runtime_unit_count": 1,
                   "definition_source_counts": null,
                   "rounds": []
                 }
@@ -1637,8 +1363,8 @@
                   "id": "core-reagents-conditions",
                   "label": "Reagents / Conditions",
                   "path": "a2/level-1-core/carbonyl-compounds/core-reagents-conditions.json",
-                  "count": 8,
-                  "runtime_unit_count": 8,
+                  "count": 4,
+                  "runtime_unit_count": 4,
                   "definition_source_counts": null,
                   "rounds": []
                 },
@@ -1646,15 +1372,15 @@
                   "id": "core-reaction-paths",
                   "label": "Reaction Paths",
                   "path": "a2/level-1-core/carbonyl-compounds/core-reaction-paths.json",
-                  "count": 6,
-                  "runtime_unit_count": 6,
+                  "count": 2,
+                  "runtime_unit_count": 2,
                   "definition_source_counts": null,
                   "rounds": []
                 },
                 {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/carbonyl-compounds/core-equations.json",
+                  "id": "core-observations",
+                  "label": "Observations / Test Outcomes",
+                  "path": "a2/level-1-core/carbonyl-compounds/core-observations.json",
                   "count": 3,
                   "runtime_unit_count": 3,
                   "definition_source_counts": null,
@@ -1665,17 +1391,17 @@
             {
               "id": "carboxylic-acids-and-derivatives",
               "source_directory": "carboxylic-acids-and-derivatives",
-              "label": "Carboxylic Acids And Derivatives",
+              "label": "Carboxylic Acids and Derivatives",
               "files": [
                 {
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/carboxylic-acids-and-derivatives/core-definitions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
+                  "count": 2,
+                  "runtime_unit_count": 2,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 1,
+                    "syllabus_only": 2,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
@@ -1684,8 +1410,8 @@
                   "id": "core-reagents-conditions",
                   "label": "Reagents / Conditions",
                   "path": "a2/level-1-core/carboxylic-acids-and-derivatives/core-reagents-conditions.json",
-                  "count": 25,
-                  "runtime_unit_count": 25,
+                  "count": 6,
+                  "runtime_unit_count": 6,
                   "definition_source_counts": null,
                   "rounds": []
                 },
@@ -1693,8 +1419,8 @@
                   "id": "core-reaction-paths",
                   "label": "Reaction Paths",
                   "path": "a2/level-1-core/carboxylic-acids-and-derivatives/core-reaction-paths.json",
-                  "count": 22,
-                  "runtime_unit_count": 22,
+                  "count": 6,
+                  "runtime_unit_count": 6,
                   "definition_source_counts": null,
                   "rounds": []
                 },
@@ -1702,8 +1428,8 @@
                   "id": "core-equations",
                   "label": "Equations",
                   "path": "a2/level-1-core/carboxylic-acids-and-derivatives/core-equations.json",
-                  "count": 18,
-                  "runtime_unit_count": 18,
+                  "count": 4,
+                  "runtime_unit_count": 4,
                   "definition_source_counts": null,
                   "rounds": []
                 },
@@ -1719,209 +1445,14 @@
               ]
             },
             {
-              "id": "electrochemistry",
-              "source_directory": "electrochemistry",
-              "label": "Electrochemistry",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/electrochemistry/core-definitions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 3,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/electrochemistry/core-equations.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "a2/level-1-core/electrochemistry/core-fixed-conclusions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "energetics",
-              "source_directory": "energetics",
-              "label": "Energetics",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/energetics/core-definitions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 0,
-                    "paper_and_syllabus": 1
-                  },
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "equilibrium",
-              "source_directory": "equilibrium",
-              "label": "Equilibrium",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/equilibrium/core-definitions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 2,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "group-2",
-              "source_directory": "group-2",
-              "label": "Group 2",
-              "files": [
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/group-2/core-equations.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "hydroxy-compounds",
-              "source_directory": "hydroxy-compounds",
-              "label": "Hydroxy Compounds",
-              "files": [
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/hydroxy-compounds/core-reagents-conditions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "a2/level-1-core/hydroxy-compounds/core-reaction-paths.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/hydroxy-compounds/core-equations.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "kinetics",
-              "source_directory": "kinetics",
-              "label": "Kinetics",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/kinetics/core-definitions.json",
-                  "count": 7,
-                  "runtime_unit_count": 7,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 7,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                }
-              ]
-            },
-            {
               "id": "nitrogen-compounds",
               "source_directory": "nitrogen-compounds",
-              "label": "Nitrogen Compounds",
+              "label": "Nitrogen Compounds and Amino Acids",
               "files": [
                 {
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/nitrogen-compounds/core-definitions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 2,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/nitrogen-compounds/core-reagents-conditions.json",
-                  "count": 12,
-                  "runtime_unit_count": 12,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "a2/level-1-core/nitrogen-compounds/core-reaction-paths.json",
-                  "count": 11,
-                  "runtime_unit_count": 11,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/nitrogen-compounds/core-equations.json",
-                  "count": 5,
-                  "runtime_unit_count": 5,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "organic-general",
-              "source_directory": "organic-general",
-              "label": "Organic General",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/organic-general/core-definitions.json",
                   "count": 6,
                   "runtime_unit_count": 6,
                   "definition_source_counts": {
@@ -1934,108 +1465,34 @@
                 {
                   "id": "core-reagents-conditions",
                   "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/organic-general/core-reagents-conditions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "organic-synthesis",
-              "source_directory": "organic-synthesis",
-              "label": "Organic Synthesis",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/organic-synthesis/core-definitions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 1,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "a2/level-1-core/organic-synthesis/core-reaction-paths.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "pharmaceutical-chemistry",
-              "source_directory": "pharmaceutical-chemistry",
-              "label": "Pharmaceutical Chemistry",
-              "files": [
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "a2/level-1-core/pharmaceutical-chemistry/core-fixed-conclusions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "phenols",
-              "source_directory": "phenols",
-              "label": "Phenols",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/phenols/core-definitions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 1,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/phenols/core-reagents-conditions.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
+                  "path": "a2/level-1-core/nitrogen-compounds/core-reagents-conditions.json",
+                  "count": 3,
+                  "runtime_unit_count": 3,
                   "definition_source_counts": null,
                   "rounds": []
                 },
                 {
                   "id": "core-reaction-paths",
                   "label": "Reaction Paths",
-                  "path": "a2/level-1-core/phenols/core-reaction-paths.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
+                  "path": "a2/level-1-core/nitrogen-compounds/core-reaction-paths.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
                   "definition_source_counts": null,
                   "rounds": []
                 },
                 {
                   "id": "core-equations",
                   "label": "Equations",
-                  "path": "a2/level-1-core/phenols/core-equations.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
+                  "path": "a2/level-1-core/nitrogen-compounds/core-equations.json",
+                  "count": 2,
+                  "runtime_unit_count": 2,
                   "definition_source_counts": null,
                   "rounds": []
                 },
                 {
-                  "id": "core-observations",
-                  "label": "Observations / Test Outcomes",
-                  "path": "a2/level-1-core/phenols/core-observations.json",
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/nitrogen-compounds/core-fixed-conclusions.json",
                   "count": 1,
                   "runtime_unit_count": 1,
                   "definition_source_counts": null,
@@ -2052,142 +1509,50 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/polymers/core-definitions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
+                  "count": 4,
+                  "runtime_unit_count": 4,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 3,
+                    "syllabus_only": 4,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
                 },
                 {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/polymers/core-reagents-conditions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "a2/level-1-core/polymers/core-reaction-paths.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/polymers/core-equations.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
-              "id": "thermodynamics",
-              "source_directory": "thermodynamics",
-              "label": "Thermodynamics",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/thermodynamics/core-definitions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 3,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/thermodynamics/core-equations.json",
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/polymers/core-fixed-conclusions.json",
                   "count": 1,
                   "runtime_unit_count": 1,
                   "definition_source_counts": null,
                   "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "a2/level-1-core/thermodynamics/core-fixed-conclusions.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": null,
-                  "rounds": []
                 }
               ]
             },
             {
-              "id": "transition-elements",
-              "source_directory": "transition-elements",
-              "label": "Transition Elements",
+              "id": "stereochemistry",
+              "source_directory": "stereochemistry",
+              "label": "Stereochemistry",
               "files": [
                 {
                   "id": "core-definitions",
                   "label": "Definitions",
-                  "path": "a2/level-1-core/transition-elements/core-definitions.json",
-                  "count": 7,
-                  "runtime_unit_count": 7,
+                  "path": "a2/level-1-core/stereochemistry/core-definitions.json",
+                  "count": 4,
+                  "runtime_unit_count": 4,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 6,
-                    "paper_and_syllabus": 1
+                    "syllabus_only": 4,
+                    "paper_and_syllabus": 0
                   },
-                  "rounds": []
-                },
-                {
-                  "id": "core-reagents-conditions",
-                  "label": "Reagents / Conditions",
-                  "path": "a2/level-1-core/transition-elements/core-reagents-conditions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-reaction-paths",
-                  "label": "Reaction Paths",
-                  "path": "a2/level-1-core/transition-elements/core-reaction-paths.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-equations",
-                  "label": "Equations",
-                  "path": "a2/level-1-core/transition-elements/core-equations.json",
-                  "count": 12,
-                  "runtime_unit_count": 12,
-                  "definition_source_counts": null,
-                  "rounds": []
-                },
-                {
-                  "id": "core-observations",
-                  "label": "Observations / Test Outcomes",
-                  "path": "a2/level-1-core/transition-elements/core-observations.json",
-                  "count": 3,
-                  "runtime_unit_count": 3,
-                  "definition_source_counts": null,
                   "rounds": []
                 },
                 {
                   "id": "core-fixed-conclusions",
                   "label": "Fixed Conclusions",
-                  "path": "a2/level-1-core/transition-elements/core-fixed-conclusions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
+                  "path": "a2/level-1-core/stereochemistry/core-fixed-conclusions.json",
+                  "count": 1,
+                  "runtime_unit_count": 1,
                   "definition_source_counts": null,
                   "rounds": []
                 }

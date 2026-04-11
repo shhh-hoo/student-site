@@ -1,12 +1,32 @@
 [
   {
-    "id": "as-fc-022",
+    "id": "as-fc-002",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
-    "subtopic": "temperature",
+    "subtopic": "chain-a-greater-proportion-of-particles-has-energy-greater-than-or-equal-to",
     "type": "fixed_conclusion",
-    "prompt": "Complete the fixed conclusion: increasing temperature means a greater proportion of molecules have energy greater than or equal to ____.",
+    "prompt": "Complete the chain: a greater proportion of particles has energy greater than or equal to ____.",
     "answer": "Ea"
+  },
+  {
+    "id": "as-fc-003",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "chain-at-a-higher-temperature-particles-have-more-and-move",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the chain: at a higher temperature, particles have more ____ ____ and move ____.",
+    "answer": "kinetic energy; faster"
+  },
+  {
+    "id": "as-fc-004",
+    "stage": "AS",
+    "level": 1,
+    "topic": "kinetics",
+    "subtopic": "chain-collisions-happen-more-frequently-and-frequency-of-collisions-increases",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the chain: collisions happen more frequently and the frequency of ____ collisions increases.",
+    "answer": "successful"
   }
 ]

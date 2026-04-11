@@ -1,12 +1,32 @@
 [
   {
-    "id": "as-fc-022",
+    "id": "as-fc-005",
     "stage": "AS",
     "level": 1,
     "topic": "group-2",
-    "subtopic": "charge density",
+    "subtopic": "trend-in-solubility-of-group-2-hydroxides",
     "type": "fixed_conclusion",
-    "prompt": "Complete the fixed conclusion: down Group 2 the cation has lower ____ density.",
-    "answer": "charge"
+    "prompt": "State the trend in solubility of Group 2 hydroxides.",
+    "answer": "solubility increases down the group"
+  },
+  {
+    "id": "as-fc-006",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-2",
+    "subtopic": "trend-in-solubility-of-group-2-sulfates",
+    "type": "fixed_conclusion",
+    "prompt": "State the trend in solubility of Group 2 sulfates.",
+    "answer": "solubility decreases down the group"
+  },
+  {
+    "id": "as-fc-007",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-2",
+    "subtopic": "trend-in-thermal-stability-of-group-2-carbonates-and-nitrates",
+    "type": "fixed_conclusion",
+    "prompt": "State the trend in thermal stability of Group 2 carbonates and nitrates.",
+    "answer": "thermal stability increases down the group"
   }
 ]

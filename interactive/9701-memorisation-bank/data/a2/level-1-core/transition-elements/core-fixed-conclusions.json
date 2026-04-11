@@ -1,22 +1,32 @@
 [
   {
-    "id": "a2-fc-020",
+    "id": "a2-fc-009",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
-    "subtopic": "variable oxidation states",
+    "subtopic": "fixed-conclusion-coloured-transition-metal-complexes-absorb-certain-wavelengths-of-light",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: coloured transition-metal complexes absorb certain wavelengths of ____ light.",
+    "answer": "visible"
+  },
+  {
+    "id": "a2-fc-010",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "fixed-conclusion-ligand-exchange-can-change-observed",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: ligand exchange can change the ____ observed.",
+    "answer": "colour"
+  },
+  {
+    "id": "a2-fc-011",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "fixed-conclusion-transition-elements-have-variable-oxidation-states-because-3d-and-4s-subshells-are-close-in",
     "type": "fixed_conclusion",
     "prompt": "Complete the fixed conclusion: transition elements have variable oxidation states because the 3d and 4s subshells are close in ____.",
     "answer": "energy"
-  },
-  {
-    "id": "a2-fc-020",
-    "stage": "A2",
-    "level": 1,
-    "topic": "transition-elements",
-    "subtopic": "colour",
-    "type": "fixed_conclusion",
-    "prompt": "Complete the fixed conclusion: colour in transition-metal complexes arises because different wavelengths of visible light are ____.",
-    "answer": "absorbed"
   }
 ]

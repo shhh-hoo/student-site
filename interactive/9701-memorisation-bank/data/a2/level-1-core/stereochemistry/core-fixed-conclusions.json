@@ -1,0 +1,12 @@
+[
+  {
+    "id": "a2-fc-020",
+    "stage": "A2",
+    "level": 1,
+    "topic": "stereochemistry",
+    "subtopic": "fixed-conclusion-biological-receptors-are-so-enantiomers-may-have-different-biological-activity",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: biological receptors are ____, so enantiomers may have different biological activity.",
+    "answer": "chiral"
+  }
+]

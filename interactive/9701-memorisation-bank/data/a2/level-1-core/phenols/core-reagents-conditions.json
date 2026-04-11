@@ -1,42 +1,22 @@
 [
   {
-    "id": "a2-rc-006",
+    "id": "a2-rc-012",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
-    "subtopic": "phenol bromination",
+    "subtopic": "phenol-to-2-4-6-tribromophenol-and",
     "type": "reagent_condition",
     "prompt": "phenol -> 2,4,6-tribromophenol : reagent and conditions",
     "answer": "Br2(aq), room temperature"
   },
   {
-    "id": "a2-rc-007",
+    "id": "a2-rc-013",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
-    "subtopic": "phenol nitration",
+    "subtopic": "phenol-to-phenyl-ethanoate-and",
     "type": "reagent_condition",
-    "prompt": "phenol -> nitrophenol : reagent and conditions",
-    "answer": "dilute HNO3, room temperature"
-  },
-  {
-    "id": "a2-rc-025",
-    "stage": "A2",
-    "level": 1,
-    "topic": "phenols",
-    "subtopic": "bromination",
-    "type": "reagent_condition",
-    "prompt": "phenol -> 2,4,6-tribromophenol : reagent and conditions",
-    "answer": "Br2(aq), room temperature"
-  },
-  {
-    "id": "a2-rc-026",
-    "stage": "A2",
-    "level": 1,
-    "topic": "phenols",
-    "subtopic": "nitration",
-    "type": "reagent_condition",
-    "prompt": "phenol -> nitrophenol : reagent and conditions",
-    "answer": "dilute HNO3, room temperature"
+    "prompt": "phenol -> phenyl ethanoate : reagent and conditions",
+    "answer": "CH3COCl, room temperature"
   }
 ]

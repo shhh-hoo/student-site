@@ -1,22 +1,112 @@
 [
   {
-    "id": "as-rc-029",
+    "id": "as-rc-008",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
-    "subtopic": "polymerisation",
+    "subtopic": "bromoethane-to-ethanol-and",
     "type": "reagent_condition",
-    "prompt": "alkene -> addition polymer : condition",
-    "answer": "polymerisation conditions"
+    "prompt": "bromoethane -> ethanol : reagent and conditions",
+    "answer": "aqueous NaOH, heat"
   },
   {
-    "id": "as-rc-034",
+    "id": "as-rc-009",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
-    "subtopic": "halogenoalkane identification",
+    "subtopic": "bromoethane-to-ethene-and",
     "type": "reagent_condition",
-    "prompt": "test to compare hydrolysis rates of halogenoalkanes : reagent and condition",
-    "answer": "aqueous AgNO3 in ethanol, warm"
+    "prompt": "bromoethane -> ethene : reagent and conditions",
+    "answer": "ethanolic KOH, heat"
+  },
+  {
+    "id": "as-rc-010",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "bromoethane-to-propanenitrile-and",
+    "type": "reagent_condition",
+    "prompt": "bromoethane -> propanenitrile : reagent and conditions",
+    "answer": "KCN in ethanol, heat"
+  },
+  {
+    "id": "as-rc-011",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethanal-to-ethanol-and",
+    "type": "reagent_condition",
+    "prompt": "ethanal -> ethanol : reagent and conditions",
+    "answer": "NaBH4"
+  },
+  {
+    "id": "as-rc-012",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethanoic-acid-plus-ethanol-to-ethyl-ethanoate-and",
+    "type": "reagent_condition",
+    "prompt": "ethanoic acid + ethanol -> ethyl ethanoate : reagent and conditions",
+    "answer": "concentrated H2SO4, heat"
+  },
+  {
+    "id": "as-rc-013",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethanol-to-ethanal-and",
+    "type": "reagent_condition",
+    "prompt": "ethanol -> ethanal : reagent and conditions",
+    "answer": "acidified K2Cr2O7, distil"
+  },
+  {
+    "id": "as-rc-014",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethanol-to-ethanoic-acid-and",
+    "type": "reagent_condition",
+    "prompt": "ethanol -> ethanoic acid : reagent and conditions",
+    "answer": "acidified K2Cr2O7, reflux"
+  },
+  {
+    "id": "as-rc-015",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethene-to-1-2-dibromoethane-and",
+    "type": "reagent_condition",
+    "prompt": "ethene -> 1,2-dibromoethane : reagent and conditions",
+    "answer": "Br2, room temperature"
+  },
+  {
+    "id": "as-rc-016",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethene-to-ethanol-and",
+    "type": "reagent_condition",
+    "prompt": "ethene -> ethanol : reagent and conditions",
+    "answer": "steam, H3PO4 catalyst, 300 C, 60 atm"
+  },
+  {
+    "id": "as-rc-017",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "ethene-to-poly-ethene",
+    "type": "reagent_condition",
+    "prompt": "ethene -> poly(ethene) : conditions",
+    "answer": "high pressure, high temperature, catalyst"
+  },
+  {
+    "id": "as-rc-018",
+    "stage": "AS",
+    "level": 1,
+    "topic": "organic-general",
+    "subtopic": "propanone-to-propan-2-ol-and",
+    "type": "reagent_condition",
+    "prompt": "propanone -> propan-2-ol : reagent and conditions",
+    "answer": "NaBH4"
   }
 ]

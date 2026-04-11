@@ -1,0 +1,32 @@
+[
+  {
+    "id": "a2-obs-007",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "positive-observation-with-2-4-dnph-an-aldehyde-or-ketone",
+    "type": "standard_observation",
+    "prompt": "State the positive observation with 2,4-DNPH for an aldehyde or ketone.",
+    "answer": "orange precipitate"
+  },
+  {
+    "id": "a2-obs-008",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "positive-observation-with-fehling-solution-an-aldehyde",
+    "type": "standard_observation",
+    "prompt": "State the positive observation with Fehling solution for an aldehyde.",
+    "answer": "brick-red precipitate"
+  },
+  {
+    "id": "a2-obs-009",
+    "stage": "A2",
+    "level": 1,
+    "topic": "carbonyl-compounds",
+    "subtopic": "positive-observation-with-tollens-an-aldehyde",
+    "type": "standard_observation",
+    "prompt": "State the positive observation with Tollens reagent for an aldehyde.",
+    "answer": "silver mirror"
+  }
+]

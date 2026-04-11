@@ -1,0 +1,22 @@
+[
+  {
+    "id": "as-fc-008",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "trend-in-oxidising-power-down-group-17",
+    "type": "fixed_conclusion",
+    "prompt": "State the trend in oxidising power down Group 17.",
+    "answer": "Cl2 > Br2 > I2"
+  },
+  {
+    "id": "as-fc-009",
+    "stage": "AS",
+    "level": 1,
+    "topic": "group-17",
+    "subtopic": "trend-in-reducing-power-of-halide-ions",
+    "type": "fixed_conclusion",
+    "prompt": "State the trend in reducing power of the halide ions.",
+    "answer": "I- > Br- > Cl-"
+  }
+]

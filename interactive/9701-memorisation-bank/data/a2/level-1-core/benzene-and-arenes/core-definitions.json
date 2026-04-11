@@ -1,57 +1,24 @@
 [
   {
-    "id": "a2-def-010",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "delocalisation",
-    "type": "definition",
-    "prompt": "Define delocalisation in benzene.",
-    "answer": "the spreading of electrons over more than two atoms",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-032",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "electrophilic substitution",
-    "type": "definition",
-    "prompt": "Define electrophilic substitution in benzene.",
-    "answer": "a reaction in which an electrophile replaces a hydrogen atom in benzene",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-052",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "electrophile",
-    "type": "definition",
-    "prompt": "Define electrophile.",
-    "answer": "a species that accepts a pair of electrons",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-053",
-    "stage": "A2",
-    "level": 1,
-    "topic": "benzene-and-arenes",
-    "subtopic": "nucleophile",
-    "type": "definition",
-    "prompt": "Define nucleophile.",
-    "answer": "a species that donates a pair of electrons",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-054",
+    "id": "a2-def-039",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
     "subtopic": "addition-elimination",
     "type": "definition",
-    "prompt": "Define addition-elimination reaction.",
+    "prompt": "Define addition-elimination.",
     "answer": "a reaction in which a reagent adds to a molecule and is then followed by the elimination of a small molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-040",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "electrophilic-substitution",
+    "type": "definition",
+    "prompt": "Define electrophilic substitution.",
+    "answer": "a reaction in which an electrophile replaces an atom or group of atoms in a molecule",
     "source_scope": "syllabus_only"
   }
 ]

@@ -1,13 +1,13 @@
 [
   {
-    "id": "a2-def-013",
+    "id": "a2-def-043",
     "stage": "A2",
     "level": 1,
     "topic": "carbonyl-compounds",
-    "subtopic": "nucleophilic addition-elimination",
+    "subtopic": "carbonyl-compound",
     "type": "definition",
-    "prompt": "Define nucleophilic addition-elimination.",
-    "answer": "a reaction in which a nucleophile adds to a carbonyl compound and then another group is eliminated",
+    "prompt": "Define carbonyl compound.",
+    "answer": "a compound containing a carbon oxygen double bond",
     "source_scope": "syllabus_only"
   }
 ]

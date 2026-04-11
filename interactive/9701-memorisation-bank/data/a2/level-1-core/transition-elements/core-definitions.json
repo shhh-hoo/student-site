@@ -1,46 +1,13 @@
 [
   {
-    "id": "a2-def-001",
+    "id": "a2-def-020",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
-    "subtopic": "transition element",
+    "subtopic": "complex",
     "type": "definition",
-    "prompt": "Define transition element.",
-    "answer": "an element that forms at least one stable ion with a partially filled d subshell",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-002",
-    "stage": "A2",
-    "level": 1,
-    "topic": "transition-elements",
-    "subtopic": "ligand",
-    "type": "definition",
-    "prompt": "Define ligand.",
-    "answer": "a species that donates a lone pair of electrons to a metal ion to form a dative covalent bond",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-def-003",
-    "stage": "A2",
-    "level": 1,
-    "topic": "transition-elements",
-    "subtopic": "bidentate ligand",
-    "type": "definition",
-    "prompt": "Define bidentate ligand.",
-    "answer": "a ligand that donates two lone pairs of electrons to the same metal ion",
-    "source_scope": "paper_and_syllabus"
-  },
-  {
-    "id": "a2-def-004",
-    "stage": "A2",
-    "level": 1,
-    "topic": "transition-elements",
-    "subtopic": "coordination number",
-    "type": "definition",
-    "prompt": "Define coordination number.",
-    "answer": "the number of coordinate bonds formed to the central metal ion",
+    "prompt": "Define complex.",
+    "answer": "a molecule or ion formed by a central metal atom or ion surrounded by one or more ligands",
     "source_scope": "syllabus_only"
   },
   {
@@ -48,10 +15,10 @@
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
-    "subtopic": "monodentate ligand",
+    "subtopic": "degenerate-d-orbitals",
     "type": "definition",
-    "prompt": "Define monodentate ligand.",
-    "answer": "a ligand that donates one lone pair of electrons to a metal ion",
+    "prompt": "Define degenerate d orbitals.",
+    "answer": "d orbitals of the same energy",
     "source_scope": "syllabus_only"
   },
   {
@@ -59,21 +26,87 @@
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
-    "subtopic": "dative covalent bond",
+    "subtopic": "ligand",
     "type": "definition",
-    "prompt": "Define dative covalent bond.",
-    "answer": "a covalent bond in which both bonding electrons are provided by one species",
+    "prompt": "Define ligand.",
+    "answer": "a species that contains a lone pair of electrons that forms a dative covalent bond to a central metal atom or ion",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-046",
+    "id": "a2-def-023",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
-    "subtopic": "complex ion",
+    "subtopic": "monodentate-ligand",
     "type": "definition",
-    "prompt": "Define complex ion.",
-    "answer": "an ion containing a central metal ion bonded to one or more ligands by coordinate bonds",
+    "prompt": "Define monodentate ligand.",
+    "answer": "a ligand that forms one coordinate bond to a central metal atom or ion",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-024",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "non-degenerate-d-orbitals",
+    "type": "definition",
+    "prompt": "Define non-degenerate d orbitals.",
+    "answer": "d orbitals of different energies",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-025",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "polydentate-ligand",
+    "type": "definition",
+    "prompt": "Define polydentate ligand.",
+    "answer": "a ligand that forms more than two coordinate bonds to the same central metal atom or ion",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-026",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "stability-constant-kstab",
+    "type": "definition",
+    "prompt": "Define stability constant, Kstab.",
+    "answer": "the equilibrium constant for the formation of a complex ion in a solvent from its constituent ions or molecules",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-027",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "transition-element",
+    "type": "definition",
+    "prompt": "Define transition element.",
+    "answer": "a d-block element which forms one or more stable ions with incomplete d orbitals",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-028",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "explain-what-is-meant-by-a-bidentate-ligand",
+    "type": "definition",
+    "prompt": "Explain what is meant by a bidentate ligand.",
+    "answer": "a ligand that forms two coordinate bonds to the same central metal atom or ion",
+    "source_scope": "paper_and_syllabus"
+  },
+  {
+    "id": "a2-def-029",
+    "stage": "A2",
+    "level": 1,
+    "topic": "transition-elements",
+    "subtopic": "explain-what-is-meant-by-coordination-number",
+    "type": "definition",
+    "prompt": "Explain what is meant by coordination number.",
+    "answer": "the number of coordinate bonds formed to the central metal atom or ion",
     "source_scope": "syllabus_only"
   }
 ]
