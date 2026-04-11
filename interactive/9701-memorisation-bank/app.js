@@ -2,6 +2,7 @@ import {
   createAnswerModel as buildAnswerModel,
   evaluateAnswerModel,
 } from "./matcher.mjs";
+import { buildSoftHighlightModel } from "./display-feedback.mjs";
 
 const definitionScopeOptions = [
   { id: "all", label: "All" },
@@ -134,6 +135,47 @@ function pluralise(count, singular, plural = `${singular}s`) {
 function setFeedbackMessage(element, message, tone = "neutral") {
   element.textContent = message;
   element.dataset.tone = tone;
+}
+
+function hasBlankBeenChecked(blankState) {
+  return Boolean(blankState && blankState.status !== "idle");
+}
+
+function renderInlineFeedbackSegments(target, segments) {
+  target.replaceChildren();
+
+  if (!segments.length) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  segments.forEach((segment) => {
+    const piece = document.createElement("span");
+    piece.className = `memorisation-display-segment memorisation-display-segment--${segment.tone}`;
+    piece.textContent = segment.text;
+    fragment.append(piece);
+  });
+
+  target.append(fragment);
+}
+
+function syncMirroredFieldScroll(field, mirror) {
+  mirror.scrollTop = field.scrollTop;
+  mirror.scrollLeft = field.scrollLeft;
+}
+
+function updateBlankInlineDisplay(blank, blankState, mirror, field) {
+  renderInlineFeedbackSegments(
+    mirror,
+    buildSoftHighlightModel(
+      blankState?.value || "",
+      blank.answerModel.full_answer,
+      hasBlankBeenChecked(blankState),
+      blank.answerModel.matcherConfig?.type,
+    ).segments,
+  );
+  syncMirroredFieldScroll(field, mirror);
 }
 
 function chunkIntoPages(items, pageSize) {
@@ -1175,8 +1217,9 @@ function queueFocusBlank(blankId) {
     }
 
     field.focus();
-    if (typeof field.select === "function" && field.tagName !== "TEXTAREA") {
-      field.select();
+    if (typeof field.setSelectionRange === "function") {
+      const caretPosition = field.value.length;
+      field.setSelectionRange(caretPosition, caretPosition);
     }
 
     appState.currentBlankId = blankId;
@@ -1580,6 +1623,13 @@ function createBlankField(blank) {
 
   fieldHeader.append(label, status);
 
+  const inputShell = document.createElement("div");
+  inputShell.className = "memorisation-input-shell";
+
+  const mirror = document.createElement("div");
+  mirror.className = "memorisation-input__mirror";
+  mirror.setAttribute("aria-hidden", "true");
+
   const field = document.createElement(blank.multiline ? "textarea" : "input");
 
   if (!blank.multiline) {
@@ -1600,6 +1650,10 @@ function createBlankField(blank) {
   });
   field.addEventListener("input", (event) => {
     setBlankValue(blank.id, event.target.value);
+    updateBlankInlineDisplay(blank, getBlankState(blank.id), mirror, field);
+  });
+  field.addEventListener("scroll", () => {
+    syncMirroredFieldScroll(field, mirror);
   });
   field.addEventListener("keydown", (event) => {
     const isEnter = event.key === "Enter";
@@ -1618,8 +1672,11 @@ function createBlankField(blank) {
   feedback.dataset.tone = descriptor.tone;
   feedback.textContent = descriptor.message;
 
+  inputShell.append(mirror, field);
+  updateBlankInlineDisplay(blank, blankState, mirror, field);
+
   appState.blankInputRefs.set(blank.id, field);
-  fieldShell.append(fieldHeader, field, feedback);
+  fieldShell.append(fieldHeader, inputShell, feedback);
   return fieldShell;
 }
 

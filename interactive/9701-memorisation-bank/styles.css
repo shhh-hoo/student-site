@@ -1,4 +1,6 @@
 .memorisation-layout {
+  --memorisation-word-hit-color: #b45309;
+  --memorisation-phrase-hit-color: #15803d;
   display: grid;
   grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
   gap: 1rem;
@@ -109,9 +111,13 @@
 
 .memorisation-select:focus-visible,
 .memorisation-toggle:focus-visible,
-.memorisation-input:focus-visible {
+.memorisation-input-shell:focus-within {
   outline: 2px solid rgba(15, 139, 141, 0.24);
   outline-offset: 2px;
+}
+
+.memorisation-input:focus-visible {
+  outline: none;
 }
 
 .memorisation-stats {
@@ -317,22 +323,74 @@
   color: #b45309;
 }
 
-.memorisation-input {
+.memorisation-input-shell {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(15, 139, 141, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.memorisation-input,
+.memorisation-input__mirror {
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
   padding: 0.9rem 1rem;
-  border: 1px solid rgba(15, 139, 141, 0.14);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.98);
-  color: inherit;
   font: inherit;
   line-height: 1.5;
+}
+
+.memorisation-input__mirror {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  color: inherit;
+  pointer-events: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  scrollbar-width: none;
+}
+
+.memorisation-input__mirror::-webkit-scrollbar {
+  display: none;
+}
+
+.memorisation-input {
+  position: relative;
+  z-index: 1;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--accent-strong);
+  -webkit-text-fill-color: transparent;
+}
+
+.memorisation-input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+  -webkit-text-fill-color: var(--muted);
 }
 
 textarea.memorisation-input {
   min-height: 8rem;
   resize: vertical;
+}
+
+.memorisation-display-segment--word_hit {
+  color: var(--memorisation-word-hit-color);
+}
+
+.memorisation-display-segment--phrase_hit {
+  color: var(--memorisation-phrase-hit-color);
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
 }
 
 .memorisation-feedback {
@@ -396,9 +454,14 @@ html[data-theme="dark"] .memorisation-answer__label {
   color: rgba(168, 215, 255, 0.78);
 }
 
+html[data-theme="dark"] .memorisation-layout {
+  --memorisation-word-hit-color: #facc15;
+  --memorisation-phrase-hit-color: #86efac;
+}
+
 html[data-theme="dark"] .memorisation-toggle,
 html[data-theme="dark"] .memorisation-select,
-html[data-theme="dark"] .memorisation-input,
+html[data-theme="dark"] .memorisation-input-shell,
 html[data-theme="dark"] .memorisation-blank,
 html[data-theme="dark"] .memorisation-question-stem {
   border-color: rgba(230, 219, 202, 0.14);
