@@ -1,17 +1,6 @@
 [
   {
-    "id": "as-def-023",
-    "stage": "AS",
-    "level": 1,
-    "topic": "bonding",
-    "subtopic": "london-dispersion-forces",
-    "type": "definition",
-    "prompt": "Define London dispersion forces.",
-    "answer": "attractions arising from temporary dipoles that induce dipoles in neighbouring molecules",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-024",
+    "id": "as-def-016",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -22,7 +11,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-025",
+    "id": "as-def-017",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -33,7 +22,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-026",
+    "id": "as-def-018",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -44,7 +33,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-027",
+    "id": "as-def-019",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -55,7 +44,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-028",
+    "id": "as-def-020",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -66,7 +55,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-029",
+    "id": "as-def-021",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -77,29 +66,29 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-030",
+    "id": "as-def-022",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
     "subtopic": "electronegativity",
     "type": "definition",
     "prompt": "Define electronegativity.",
-    "answer": "the power of an atom to attract the bonding pair of electrons towards itself",
+    "answer": "the power of an atom to attract electrons towards itself",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-def-031",
+    "id": "as-def-023",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
     "subtopic": "hydrogen-bonding",
     "type": "definition",
     "prompt": "Define hydrogen bonding.",
-    "answer": "a strong intermolecular attraction between a hydrogen atom bonded to N or O and a lone pair on N or O in another molecule",
+    "answer": "a strong intermolecular attraction between a delta positive hydrogen atom bonded to N or O and a lone pair on N or O in another molecule",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-032",
+    "id": "as-def-024",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -110,7 +99,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-033",
+    "id": "as-def-025",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -121,7 +110,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-034",
+    "id": "as-def-026",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -132,7 +121,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-035",
+    "id": "as-def-027",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -143,7 +132,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-036",
+    "id": "as-def-028",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -151,17 +140,6 @@
     "type": "definition",
     "prompt": "Define sigma (σ) bond.",
     "answer": "a bond formed by direct overlap of orbitals along the line joining the nuclei",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-037",
-    "stage": "AS",
-    "level": 1,
-    "topic": "bonding",
-    "subtopic": "van-der-waals-forces",
-    "type": "definition",
-    "prompt": "Define van der Waals’ forces.",
-    "answer": "intermolecular forces between molecules other than those due to bond formation, used as a general term for intermolecular forces",
     "source_scope": "syllabus_only"
   }
 ]

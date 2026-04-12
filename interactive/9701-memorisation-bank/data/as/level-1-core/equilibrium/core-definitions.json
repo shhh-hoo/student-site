@@ -1,6 +1,6 @@
 [
   {
-    "id": "as-def-053",
+    "id": "as-def-044",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
@@ -11,7 +11,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-054",
+    "id": "as-def-045",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
@@ -22,18 +22,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-055",
-    "stage": "AS",
-    "level": 1,
-    "topic": "equilibrium",
-    "subtopic": "equilibrium-constant-kc",
-    "type": "definition",
-    "prompt": "Define equilibrium constant, Kc.",
-    "answer": "the equilibrium constant expressed using equilibrium concentrations",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-056",
+    "id": "as-def-046",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",

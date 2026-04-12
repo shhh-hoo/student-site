@@ -26,25 +26,14 @@
     "stage": "AS",
     "level": 1,
     "topic": "atomic-structure",
-    "subtopic": "electron",
+    "subtopic": "mass-number-nucleon-number-a",
     "type": "definition",
-    "prompt": "Define electron.",
-    "answer": "a subatomic particle outside the nucleus with relative charge -1 and very small relative mass",
+    "prompt": "Define mass number / nucleon number, A.",
+    "answer": "the total number of protons and neutrons in the nucleus of an atom",
     "source_scope": "syllabus_only"
   },
   {
     "id": "as-def-004",
-    "stage": "AS",
-    "level": 1,
-    "topic": "atomic-structure",
-    "subtopic": "first-ionisation-energy",
-    "type": "definition",
-    "prompt": "Define first ionisation energy.",
-    "answer": "the energy required to remove one electron from each atom in one mole of gaseous atoms to form one mole of gaseous 1+ ions",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-005",
     "stage": "AS",
     "level": 1,
     "topic": "atomic-structure",
@@ -55,36 +44,14 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-006",
+    "id": "as-def-005",
     "stage": "AS",
     "level": 1,
     "topic": "atomic-structure",
-    "subtopic": "mass-number-nucleon-number-a",
+    "subtopic": "first-ionisation-energy",
     "type": "definition",
-    "prompt": "Define mass number / nucleon number, A.",
-    "answer": "the total number of protons and neutrons in the nucleus of an atom",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-007",
-    "stage": "AS",
-    "level": 1,
-    "topic": "atomic-structure",
-    "subtopic": "neutron",
-    "type": "definition",
-    "prompt": "Define neutron.",
-    "answer": "a subatomic particle in the nucleus with relative charge 0 and relative mass about 1",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-008",
-    "stage": "AS",
-    "level": 1,
-    "topic": "atomic-structure",
-    "subtopic": "proton",
-    "type": "definition",
-    "prompt": "Define proton.",
-    "answer": "a subatomic particle in the nucleus with relative charge +1 and relative mass about 1",
+    "prompt": "Define first ionisation energy.",
+    "answer": "the energy required to remove one electron from each atom in one mole of gaseous atoms to form one mole of gaseous 1+ ions",
     "source_scope": "syllabus_only"
   }
 ]

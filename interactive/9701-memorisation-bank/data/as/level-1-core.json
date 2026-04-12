@@ -26,25 +26,14 @@
     "stage": "AS",
     "level": 1,
     "topic": "atomic-structure",
-    "subtopic": "electron",
+    "subtopic": "mass-number-nucleon-number-a",
     "type": "definition",
-    "prompt": "Define electron.",
-    "answer": "a subatomic particle outside the nucleus with relative charge -1 and very small relative mass",
+    "prompt": "Define mass number / nucleon number, A.",
+    "answer": "the total number of protons and neutrons in the nucleus of an atom",
     "source_scope": "syllabus_only"
   },
   {
     "id": "as-core-004",
-    "stage": "AS",
-    "level": 1,
-    "topic": "atomic-structure",
-    "subtopic": "first-ionisation-energy",
-    "type": "definition",
-    "prompt": "Define first ionisation energy.",
-    "answer": "the energy required to remove one electron from each atom in one mole of gaseous atoms to form one mole of gaseous 1+ ions",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-005",
     "stage": "AS",
     "level": 1,
     "topic": "atomic-structure",
@@ -55,40 +44,18 @@
     "source_scope": "syllabus_only"
   },
   {
+    "id": "as-core-005",
+    "stage": "AS",
+    "level": 1,
+    "topic": "atomic-structure",
+    "subtopic": "first-ionisation-energy",
+    "type": "definition",
+    "prompt": "Define first ionisation energy.",
+    "answer": "the energy required to remove one electron from each atom in one mole of gaseous atoms to form one mole of gaseous 1+ ions",
+    "source_scope": "syllabus_only"
+  },
+  {
     "id": "as-core-006",
-    "stage": "AS",
-    "level": 1,
-    "topic": "atomic-structure",
-    "subtopic": "mass-number-nucleon-number-a",
-    "type": "definition",
-    "prompt": "Define mass number / nucleon number, A.",
-    "answer": "the total number of protons and neutrons in the nucleus of an atom",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-007",
-    "stage": "AS",
-    "level": 1,
-    "topic": "atomic-structure",
-    "subtopic": "neutron",
-    "type": "definition",
-    "prompt": "Define neutron.",
-    "answer": "a subatomic particle in the nucleus with relative charge 0 and relative mass about 1",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-008",
-    "stage": "AS",
-    "level": 1,
-    "topic": "atomic-structure",
-    "subtopic": "proton",
-    "type": "definition",
-    "prompt": "Define proton.",
-    "answer": "a subatomic particle in the nucleus with relative charge +1 and relative mass about 1",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-009",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -99,18 +66,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-010",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "anhydrous",
-    "type": "definition",
-    "prompt": "Define anhydrous.",
-    "answer": "containing no water of crystallisation",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-011",
+    "id": "as-core-007",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -121,18 +77,7 @@
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-core-012",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "hydrated",
-    "type": "definition",
-    "prompt": "Define hydrated.",
-    "answer": "containing water of crystallisation in the crystal structure",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-013",
+    "id": "as-core-008",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -143,7 +88,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-014",
+    "id": "as-core-009",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -154,7 +99,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-015",
+    "id": "as-core-010",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -165,40 +110,29 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-016",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "percentage-yield",
-    "type": "definition",
-    "prompt": "Define percentage yield.",
-    "answer": "actual amount of product divided by theoretical amount of product multiplied by 100%",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-017",
+    "id": "as-core-011",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
     "subtopic": "relative-atomic-mass-ar",
     "type": "definition",
     "prompt": "Define relative atomic mass, Ar.",
-    "answer": "the weighted mean mass of the atoms of an element compared with one twelfth of the mass of one atom of carbon-12",
+    "answer": "the weighted average mass of the atoms of an element compared with one twelfth of the mass of one atom of carbon-12",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-core-018",
+    "id": "as-core-012",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
     "subtopic": "relative-formula-mass",
     "type": "definition",
     "prompt": "Define relative formula mass.",
-    "answer": "the mass of one formula unit compared with one twelfth of the mass of one atom of carbon-12",
+    "answer": "the weighted average mass of one formula unit compared with one twelfth of the mass of one atom of carbon-12",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-019",
+    "id": "as-core-013",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -209,18 +143,18 @@
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-core-020",
+    "id": "as-core-014",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
     "subtopic": "relative-molecular-mass-mr",
     "type": "definition",
     "prompt": "Define relative molecular mass, Mr.",
-    "answer": "the mass of one molecule compared with one twelfth of the mass of one atom of carbon-12",
+    "answer": "the weighted average mass of one molecule compared with one twelfth of the mass of one atom of carbon-12",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-core-021",
+    "id": "as-core-015",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -231,29 +165,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-022",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "water-of-crystallisation",
-    "type": "definition",
-    "prompt": "Define water of crystallisation.",
-    "answer": "a fixed number of water molecules chemically bound in the crystal lattice per formula unit",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-023",
-    "stage": "AS",
-    "level": 1,
-    "topic": "bonding",
-    "subtopic": "london-dispersion-forces",
-    "type": "definition",
-    "prompt": "Define London dispersion forces.",
-    "answer": "attractions arising from temporary dipoles that induce dipoles in neighbouring molecules",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-024",
+    "id": "as-core-016",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -264,7 +176,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-025",
+    "id": "as-core-017",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -275,7 +187,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-026",
+    "id": "as-core-018",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -286,7 +198,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-027",
+    "id": "as-core-019",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -297,7 +209,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-028",
+    "id": "as-core-020",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -308,7 +220,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-029",
+    "id": "as-core-021",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -319,29 +231,29 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-030",
+    "id": "as-core-022",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
     "subtopic": "electronegativity",
     "type": "definition",
     "prompt": "Define electronegativity.",
-    "answer": "the power of an atom to attract the bonding pair of electrons towards itself",
+    "answer": "the power of an atom to attract electrons towards itself",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-core-031",
+    "id": "as-core-023",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
     "subtopic": "hydrogen-bonding",
     "type": "definition",
     "prompt": "Define hydrogen bonding.",
-    "answer": "a strong intermolecular attraction between a hydrogen atom bonded to N or O and a lone pair on N or O in another molecule",
+    "answer": "a strong intermolecular attraction between a delta positive hydrogen atom bonded to N or O and a lone pair on N or O in another molecule",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-032",
+    "id": "as-core-024",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -352,7 +264,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-033",
+    "id": "as-core-025",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -363,7 +275,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-034",
+    "id": "as-core-026",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -374,7 +286,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-035",
+    "id": "as-core-027",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -385,7 +297,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-036",
+    "id": "as-core-028",
     "stage": "AS",
     "level": 1,
     "topic": "bonding",
@@ -396,18 +308,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-037",
-    "stage": "AS",
-    "level": 1,
-    "topic": "bonding",
-    "subtopic": "van-der-waals-forces",
-    "type": "definition",
-    "prompt": "Define van der Waals’ forces.",
-    "answer": "intermolecular forces between molecules other than those due to bond formation, used as a general term for intermolecular forces",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-038",
+    "id": "as-core-029",
     "stage": "AS",
     "level": 1,
     "topic": "states-of-matter",
@@ -418,7 +319,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-039",
+    "id": "as-core-030",
     "stage": "AS",
     "level": 1,
     "topic": "states-of-matter",
@@ -429,7 +330,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-040",
+    "id": "as-core-031",
     "stage": "AS",
     "level": 1,
     "topic": "states-of-matter",
@@ -440,7 +341,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-041",
+    "id": "as-core-032",
     "stage": "AS",
     "level": 1,
     "topic": "states-of-matter",
@@ -451,7 +352,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-042",
+    "id": "as-core-033",
     "stage": "AS",
     "level": 1,
     "topic": "states-of-matter",
@@ -462,7 +363,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-043",
+    "id": "as-core-034",
     "stage": "AS",
     "level": 1,
     "topic": "states-of-matter",
@@ -473,18 +374,18 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-044",
+    "id": "as-core-035",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
     "subtopic": "hesss-law",
     "type": "definition",
     "prompt": "Define Hess’s law.",
-    "answer": "the enthalpy change of a reaction depends only on the initial and final states and is independent of the route taken",
+    "answer": "the enthalpy change of a reaction is independent of the route taken",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-045",
+    "id": "as-core-036",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -495,7 +396,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-046",
+    "id": "as-core-037",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -506,7 +407,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-047",
+    "id": "as-core-038",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -517,7 +418,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-048",
+    "id": "as-core-039",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -528,7 +429,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-049",
+    "id": "as-core-040",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -539,7 +440,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-050",
+    "id": "as-core-041",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -550,7 +451,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-051",
+    "id": "as-core-042",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -561,7 +462,7 @@
     "source_scope": "paper_only"
   },
   {
-    "id": "as-core-052",
+    "id": "as-core-043",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -572,7 +473,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-053",
+    "id": "as-core-044",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
@@ -583,7 +484,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-054",
+    "id": "as-core-045",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
@@ -594,18 +495,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-055",
-    "stage": "AS",
-    "level": 1,
-    "topic": "equilibrium",
-    "subtopic": "equilibrium-constant-kc",
-    "type": "definition",
-    "prompt": "Define equilibrium constant, Kc.",
-    "answer": "the equilibrium constant expressed using equilibrium concentrations",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-056",
+    "id": "as-core-046",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
@@ -616,7 +506,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-057",
+    "id": "as-core-047",
     "stage": "AS",
     "level": 1,
     "topic": "equilibrium",
@@ -626,7 +516,7 @@
     "answer": "fewer"
   },
   {
-    "id": "as-core-058",
+    "id": "as-core-048",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
@@ -637,29 +527,29 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-059",
+    "id": "as-core-049",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
     "subtopic": "catalyst",
     "type": "definition",
     "prompt": "Define catalyst.",
-    "answer": "a substance that provides an alternative reaction pathway with lower activation energy and is chemically unchanged at the end of the reaction",
+    "answer": "a substance increases the rate of reaction by providing an alternative reaction pathway with lower activation energy and is chemically unchanged at the end of the reaction",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-060",
+    "id": "as-core-050",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
     "subtopic": "effective-collision",
     "type": "definition",
     "prompt": "Define effective collision.",
-    "answer": "a collision that has enough energy greater than or equal to Ea and the correct orientation to result in reaction",
+    "answer": "a collision that has energy greater than or equal to Ea and the correct orientation to result in reaction",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-061",
+    "id": "as-core-051",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
@@ -670,7 +560,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-062",
+    "id": "as-core-052",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
@@ -680,7 +570,7 @@
     "answer": "Ea"
   },
   {
-    "id": "as-core-063",
+    "id": "as-core-053",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
@@ -690,7 +580,7 @@
     "answer": "kinetic energy; faster"
   },
   {
-    "id": "as-core-064",
+    "id": "as-core-054",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
@@ -700,7 +590,7 @@
     "answer": "successful"
   },
   {
-    "id": "as-core-065",
+    "id": "as-core-055",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
@@ -711,7 +601,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-066",
+    "id": "as-core-056",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
@@ -722,7 +612,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-067",
+    "id": "as-core-057",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
@@ -733,7 +623,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-068",
+    "id": "as-core-058",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
@@ -744,7 +634,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-069",
+    "id": "as-core-059",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
@@ -755,7 +645,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-070",
+    "id": "as-core-060",
     "stage": "AS",
     "level": 1,
     "topic": "acids-and-bases",
@@ -766,7 +656,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-071",
+    "id": "as-core-061",
     "stage": "AS",
     "level": 1,
     "topic": "redox",
@@ -777,7 +667,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-072",
+    "id": "as-core-062",
     "stage": "AS",
     "level": 1,
     "topic": "redox",
@@ -788,7 +678,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-073",
+    "id": "as-core-063",
     "stage": "AS",
     "level": 1,
     "topic": "redox",
@@ -799,7 +689,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-074",
+    "id": "as-core-064",
     "stage": "AS",
     "level": 1,
     "topic": "redox",
@@ -810,7 +700,7 @@
     "source_scope": "paper_only"
   },
   {
-    "id": "as-core-075",
+    "id": "as-core-065",
     "stage": "AS",
     "level": 1,
     "topic": "redox",
@@ -821,7 +711,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-076",
+    "id": "as-core-066",
     "stage": "AS",
     "level": 1,
     "topic": "redox",
@@ -832,7 +722,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-077",
+    "id": "as-core-067",
     "stage": "AS",
     "level": 1,
     "topic": "redox",
@@ -843,7 +733,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-078",
+    "id": "as-core-068",
     "stage": "AS",
     "level": 1,
     "topic": "group-2",
@@ -853,7 +743,7 @@
     "answer": "solubility increases down the group"
   },
   {
-    "id": "as-core-079",
+    "id": "as-core-069",
     "stage": "AS",
     "level": 1,
     "topic": "group-2",
@@ -863,7 +753,7 @@
     "answer": "solubility decreases down the group"
   },
   {
-    "id": "as-core-080",
+    "id": "as-core-070",
     "stage": "AS",
     "level": 1,
     "topic": "group-2",
@@ -873,7 +763,7 @@
     "answer": "thermal stability increases down the group"
   },
   {
-    "id": "as-core-081",
+    "id": "as-core-071",
     "stage": "AS",
     "level": 1,
     "topic": "group-17",
@@ -883,7 +773,7 @@
     "answer": "Cl2 > Br2 > I2"
   },
   {
-    "id": "as-core-082",
+    "id": "as-core-072",
     "stage": "AS",
     "level": 1,
     "topic": "group-17",
@@ -893,7 +783,7 @@
     "answer": "I- > Br- > Cl-"
   },
   {
-    "id": "as-core-083",
+    "id": "as-core-073",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -903,7 +793,7 @@
     "answer": "Tollens reagent or Fehling solution"
   },
   {
-    "id": "as-core-084",
+    "id": "as-core-074",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -913,17 +803,17 @@
     "answer": "bromine water"
   },
   {
-    "id": "as-core-085",
+    "id": "as-core-075",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
     "subtopic": "test-ammonium-ion-and",
     "type": "reagent_condition",
     "prompt": "Test for ammonium ion : reagent and condition",
-    "answer": "aqueous NaOH, warm"
+    "answer": "aqueous NaOH, heat"
   },
   {
-    "id": "as-core-086",
+    "id": "as-core-076",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -933,7 +823,7 @@
     "answer": "dilute acid"
   },
   {
-    "id": "as-core-087",
+    "id": "as-core-077",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -943,7 +833,7 @@
     "answer": "2,4-DNPH"
   },
   {
-    "id": "as-core-088",
+    "id": "as-core-078",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -953,7 +843,7 @@
     "answer": "dilute HNO3, AgNO3, then NH3"
   },
   {
-    "id": "as-core-089",
+    "id": "as-core-079",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -963,27 +853,27 @@
     "answer": "dilute HNO3, then Ba(NO3)2"
   },
   {
-    "id": "as-core-090",
+    "id": "as-core-080",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
     "subtopic": "observation-when-ammonium-ions-are-warmed-with-aqueous-sodium-hydroxide",
     "type": "standard_observation",
     "prompt": "State the observation when ammonium ions are warmed with aqueous sodium hydroxide.",
-    "answer": "ammonia is evolved"
+    "answer": "turns the damp red litmus paper blue and produces a pungent gas"
   },
   {
-    "id": "as-core-091",
+    "id": "as-core-081",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
     "subtopic": "observation-when-bromide-ions-react-with-aqueous-silver-nitrate",
     "type": "standard_observation",
     "prompt": "State the observation when bromide ions react with aqueous silver nitrate.",
-    "answer": "cream precipitate"
+    "answer": "cream precipitate, dissolves in excess / conc. ammonia solution"
   },
   {
-    "id": "as-core-092",
+    "id": "as-core-082",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -993,7 +883,7 @@
     "answer": "orange to colourless"
   },
   {
-    "id": "as-core-093",
+    "id": "as-core-083",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -1003,37 +893,37 @@
     "answer": "limewater turns milky"
   },
   {
-    "id": "as-core-094",
+    "id": "as-core-084",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
     "subtopic": "observation-when-carbonate-reacts-with-dilute-acid",
     "type": "standard_observation",
     "prompt": "State the observation when carbonate reacts with dilute acid.",
-    "answer": "effervescence"
+    "answer": "effervescence (and solid dissolves)"
   },
   {
-    "id": "as-core-095",
+    "id": "as-core-085",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
     "subtopic": "observation-when-chloride-ions-react-with-aqueous-silver-nitrate",
     "type": "standard_observation",
     "prompt": "State the observation when chloride ions react with aqueous silver nitrate.",
-    "answer": "white precipitate"
+    "answer": "white precipitate, dissolves in dilute ammonia solution"
   },
   {
-    "id": "as-core-096",
+    "id": "as-core-086",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
     "subtopic": "observation-when-iodide-ions-react-with-aqueous-silver-nitrate",
     "type": "standard_observation",
     "prompt": "State the observation when iodide ions react with aqueous silver nitrate.",
-    "answer": "yellow precipitate"
+    "answer": "yellow precipitate, does not dissolve in ammonia solution"
   },
   {
-    "id": "as-core-097",
+    "id": "as-core-087",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -1043,7 +933,7 @@
     "answer": "orange precipitate"
   },
   {
-    "id": "as-core-098",
+    "id": "as-core-088",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -1053,7 +943,7 @@
     "answer": "brick-red precipitate"
   },
   {
-    "id": "as-core-099",
+    "id": "as-core-089",
     "stage": "AS",
     "level": 1,
     "topic": "tests-and-observations",
@@ -1063,7 +953,7 @@
     "answer": "silver mirror"
   },
   {
-    "id": "as-core-100",
+    "id": "as-core-090",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1074,7 +964,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-101",
+    "id": "as-core-091",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1085,7 +975,7 @@
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-core-102",
+    "id": "as-core-092",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1096,7 +986,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-103",
+    "id": "as-core-093",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1107,7 +997,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-104",
+    "id": "as-core-094",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1118,7 +1008,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-105",
+    "id": "as-core-095",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1129,7 +1019,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-106",
+    "id": "as-core-096",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1140,7 +1030,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-107",
+    "id": "as-core-097",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1151,18 +1041,18 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-108",
+    "id": "as-core-098",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
     "subtopic": "geometrical-isomerism",
     "type": "definition",
     "prompt": "Define geometrical isomerism.",
-    "answer": "stereoisomerism due to restricted rotation giving different spatial arrangements",
+    "answer": "a type of stereoisomerism in which molecules have the same structural formula but different arrangement of atoms or groups in space due to restricted rotation about a double bond",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-109",
+    "id": "as-core-099",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1173,18 +1063,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-110",
-    "stage": "AS",
-    "level": 1,
-    "topic": "organic-general",
-    "subtopic": "homologous-series",
-    "type": "definition",
-    "prompt": "Define homologous series.",
-    "answer": "a family of organic compounds with the same functional group and general formula, showing similar chemical properties and a gradual change in physical properties",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-111",
+    "id": "as-core-100",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1195,7 +1074,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-112",
+    "id": "as-core-101",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1206,7 +1085,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-113",
+    "id": "as-core-102",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1217,7 +1096,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-114",
+    "id": "as-core-103",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1228,40 +1107,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-115",
-    "stage": "AS",
-    "level": 1,
-    "topic": "organic-general",
-    "subtopic": "oxidation-organic",
-    "type": "definition",
-    "prompt": "Define oxidation (organic).",
-    "answer": "an increase in C-O bonds and/or a decrease in C-H bonds",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-116",
-    "stage": "AS",
-    "level": 1,
-    "topic": "organic-general",
-    "subtopic": "reduction-organic",
-    "type": "definition",
-    "prompt": "Define reduction (organic).",
-    "answer": "a decrease in C-O bonds and/or an increase in C-H bonds",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-117",
-    "stage": "AS",
-    "level": 1,
-    "topic": "organic-general",
-    "subtopic": "repeat-unit",
-    "type": "definition",
-    "prompt": "Define repeat unit.",
-    "answer": "the smallest repeating structural unit of a polymer chain",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-core-118",
+    "id": "as-core-104",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1272,7 +1118,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-119",
+    "id": "as-core-105",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1283,7 +1129,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-120",
+    "id": "as-core-106",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1294,7 +1140,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-121",
+    "id": "as-core-107",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1305,7 +1151,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-122",
+    "id": "as-core-108",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1316,7 +1162,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-core-123",
+    "id": "as-core-109",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1326,7 +1172,7 @@
     "answer": "aqueous NaOH, heat"
   },
   {
-    "id": "as-core-124",
+    "id": "as-core-110",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1336,7 +1182,7 @@
     "answer": "ethanolic KOH, heat"
   },
   {
-    "id": "as-core-125",
+    "id": "as-core-111",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1346,7 +1192,7 @@
     "answer": "KCN in ethanol, heat"
   },
   {
-    "id": "as-core-126",
+    "id": "as-core-112",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1356,7 +1202,7 @@
     "answer": "NaBH4"
   },
   {
-    "id": "as-core-127",
+    "id": "as-core-113",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1366,7 +1212,7 @@
     "answer": "concentrated H2SO4, heat"
   },
   {
-    "id": "as-core-128",
+    "id": "as-core-114",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1376,7 +1222,7 @@
     "answer": "acidified K2Cr2O7, distil"
   },
   {
-    "id": "as-core-129",
+    "id": "as-core-115",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1386,7 +1232,7 @@
     "answer": "acidified K2Cr2O7, reflux"
   },
   {
-    "id": "as-core-130",
+    "id": "as-core-116",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1396,7 +1242,7 @@
     "answer": "Br2, room temperature"
   },
   {
-    "id": "as-core-131",
+    "id": "as-core-117",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1406,7 +1252,7 @@
     "answer": "steam, H3PO4 catalyst, 300 C, 60 atm"
   },
   {
-    "id": "as-core-132",
+    "id": "as-core-118",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1416,7 +1262,7 @@
     "answer": "high pressure, high temperature, catalyst"
   },
   {
-    "id": "as-core-133",
+    "id": "as-core-119",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -1426,7 +1272,7 @@
     "answer": "NaBH4"
   },
   {
-    "id": "as-core-134",
+    "id": "as-core-120",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1436,7 +1282,7 @@
     "answer": "CH3CH2OH -> CH2=CH2 + H2O"
   },
   {
-    "id": "as-core-135",
+    "id": "as-core-121",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1446,7 +1292,7 @@
     "answer": "CH3CH2Br + OH- -> CH2=CH2 + Br- + H2O"
   },
   {
-    "id": "as-core-136",
+    "id": "as-core-122",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1456,7 +1302,7 @@
     "answer": "CH3COOH + CH3CH2OH -> CH3COOCH2CH3 + H2O"
   },
   {
-    "id": "as-core-137",
+    "id": "as-core-123",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1466,7 +1312,7 @@
     "answer": "CH2=CH2 + H2O -> CH3CH2OH"
   },
   {
-    "id": "as-core-138",
+    "id": "as-core-124",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1476,7 +1322,7 @@
     "answer": "CH3CH2Br + OH- -> CH3CH2OH + Br-"
   },
   {
-    "id": "as-core-139",
+    "id": "as-core-125",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1486,7 +1332,7 @@
     "answer": "CH3CHO + [O] -> CH3COOH"
   },
   {
-    "id": "as-core-140",
+    "id": "as-core-126",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1496,7 +1342,7 @@
     "answer": "Ca + 2H2O -> Ca(OH)2 + H2"
   },
   {
-    "id": "as-core-141",
+    "id": "as-core-127",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1506,7 +1352,7 @@
     "answer": "Cl2 + 2NaOH -> NaCl + NaClO + H2O"
   },
   {
-    "id": "as-core-142",
+    "id": "as-core-128",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1516,7 +1362,7 @@
     "answer": "3Cl2 + 6NaOH -> 5NaCl + NaClO3 + 3H2O"
   },
   {
-    "id": "as-core-143",
+    "id": "as-core-129",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1526,7 +1372,7 @@
     "answer": "CH2=CH2 + Br2 -> CH2BrCH2Br"
   },
   {
-    "id": "as-core-144",
+    "id": "as-core-130",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1536,7 +1382,7 @@
     "answer": "Mg3N2 + 6H2O -> 3Mg(OH)2 + 2NH3"
   },
   {
-    "id": "as-core-145",
+    "id": "as-core-131",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1546,7 +1392,7 @@
     "answer": "CH3CHO + 2[H] -> CH3CH2OH"
   },
   {
-    "id": "as-core-146",
+    "id": "as-core-132",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1556,7 +1402,7 @@
     "answer": "CH3COCH3 + 2[H] -> CH3CH(OH)CH3"
   },
   {
-    "id": "as-core-147",
+    "id": "as-core-133",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1566,7 +1412,7 @@
     "answer": "NH4+ + OH- -> NH3 + H2O"
   },
   {
-    "id": "as-core-148",
+    "id": "as-core-134",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1576,7 +1422,7 @@
     "answer": "Br2 + 2I- -> 2Br- + I2"
   },
   {
-    "id": "as-core-149",
+    "id": "as-core-135",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1586,7 +1432,7 @@
     "answer": "CO3^2- + 2H+ -> CO2 + H2O"
   },
   {
-    "id": "as-core-150",
+    "id": "as-core-136",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",
@@ -1596,7 +1442,7 @@
     "answer": "Cl2 + 2I- -> 2Cl- + I2"
   },
   {
-    "id": "as-core-151",
+    "id": "as-core-137",
     "stage": "AS",
     "level": 1,
     "topic": "key-equations",

@@ -7,7 +7,7 @@
     "subtopic": "acid-dissociation-constant-ka",
     "type": "definition",
     "prompt": "Define acid dissociation constant, Ka.",
-    "answer": "the equilibrium constant for the dissociation of a weak acid",
+    "answer": "the equilibrium constant for the dissociation of a weak acid in aqueous solution",
     "source_scope": "syllabus_only"
   },
   {
@@ -40,7 +40,7 @@
     "subtopic": "ionic-product-of-water-kw",
     "type": "definition",
     "prompt": "Define ionic product of water, Kw.",
-    "answer": "the product of the equilibrium concentrations of H+ and OH- in water",
+    "answer": "the product of the equilibrium concentrations of H+ and OH- in water at a given temperature",
     "source_scope": "syllabus_only"
   },
   {
@@ -62,7 +62,7 @@
     "subtopic": "partition-coefficient-kpc",
     "type": "definition",
     "prompt": "Define partition coefficient, Kpc.",
-    "answer": "the ratio of the concentration of a solute in two immiscible solvents at equilibrium",
+    "answer": "the ratio of the equilibrium concentrations of a solute distributed between two immiscible solvents at a fixed temperature",
     "source_scope": "syllabus_only"
   },
   {
@@ -74,6 +74,17 @@
     "type": "definition",
     "prompt": "Define solubility product, Ksp.",
     "answer": "the product of the equilibrium concentrations of the ions in a saturated solution, each concentration raised to the power of its stoichiometric coefficient",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-009",
+    "stage": "A2",
+    "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "common-ion-effect",
+    "type": "definition",
+    "prompt": "Define common ion effect.",
+    "answer": "a decrease in solubility caused by an increase in the concentration of a common ion",
     "source_scope": "syllabus_only"
   }
 ]

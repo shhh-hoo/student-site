@@ -1,17 +1,17 @@
 [
   {
-    "id": "as-def-044",
+    "id": "as-def-035",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
     "subtopic": "hesss-law",
     "type": "definition",
     "prompt": "Define Hess’s law.",
-    "answer": "the enthalpy change of a reaction depends only on the initial and final states and is independent of the route taken",
+    "answer": "the enthalpy change of a reaction is independent of the route taken",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-045",
+    "id": "as-def-036",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -22,7 +22,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-046",
+    "id": "as-def-037",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -33,7 +33,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-047",
+    "id": "as-def-038",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -44,7 +44,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-048",
+    "id": "as-def-039",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -55,7 +55,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-049",
+    "id": "as-def-040",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -66,7 +66,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-050",
+    "id": "as-def-041",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -77,7 +77,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-051",
+    "id": "as-def-042",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",
@@ -88,7 +88,7 @@
     "source_scope": "paper_only"
   },
   {
-    "id": "as-def-052",
+    "id": "as-def-043",
     "stage": "AS",
     "level": 1,
     "topic": "energetics",

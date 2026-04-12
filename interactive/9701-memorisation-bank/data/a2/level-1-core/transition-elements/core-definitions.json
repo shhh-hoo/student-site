@@ -1,17 +1,17 @@
 [
   {
-    "id": "a2-def-020",
+    "id": "a2-def-022",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "complex",
     "type": "definition",
     "prompt": "Define complex.",
-    "answer": "a molecule or ion formed by a central metal atom or ion surrounded by one or more ligands",
+    "answer": "a molecule or ion formed by a central metal atom or ion bonded to one or more ligands by coordinate bonds",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-021",
+    "id": "a2-def-023",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -22,29 +22,29 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-022",
+    "id": "a2-def-024",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "ligand",
     "type": "definition",
     "prompt": "Define ligand.",
-    "answer": "a species that contains a lone pair of electrons that forms a dative covalent bond to a central metal atom or ion",
+    "answer": "a species with a lone pair of electrons that forms a coordinate bond to a central metal atom or ion",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-023",
+    "id": "a2-def-025",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "monodentate-ligand",
     "type": "definition",
     "prompt": "Define monodentate ligand.",
-    "answer": "a ligand that forms one coordinate bond to a central metal atom or ion",
+    "answer": "a ligand that uses one lone pair of electrons to form one coordinate bond to a central metal atom or ion",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-024",
+    "id": "a2-def-026",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -55,18 +55,18 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-025",
+    "id": "a2-def-027",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "polydentate-ligand",
     "type": "definition",
     "prompt": "Define polydentate ligand.",
-    "answer": "a ligand that forms more than two coordinate bonds to the same central metal atom or ion",
+    "answer": "a ligand that uses more than one lone pair of electrons to form more than one coordinate bond to the same central metal atom or ion",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-026",
+    "id": "a2-def-028",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -77,7 +77,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-027",
+    "id": "a2-def-029",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -88,18 +88,18 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-028",
+    "id": "a2-def-030",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "explain-what-is-meant-by-a-bidentate-ligand",
     "type": "definition",
     "prompt": "Explain what is meant by a bidentate ligand.",
-    "answer": "a ligand that forms two coordinate bonds to the same central metal atom or ion",
+    "answer": "a ligand with two lone pairs of electrons that forms two coordinate bonds to the same central metal atom or ion",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "a2-def-029",
+    "id": "a2-def-031",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",

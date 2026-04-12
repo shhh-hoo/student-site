@@ -1,6 +1,6 @@
 [
   {
-    "id": "a2-def-041",
+    "id": "a2-def-036",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -11,7 +11,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-042",
+    "id": "a2-def-037",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -19,6 +19,17 @@
     "type": "definition",
     "prompt": "Define phenol.",
     "answer": "a compound in which a hydroxyl group is bonded directly to a benzene ring",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-038",
+    "stage": "A2",
+    "level": 1,
+    "topic": "phenols",
+    "subtopic": "phenylamine",
+    "type": "definition",
+    "prompt": "Define phenylamine.",
+    "answer": "an aromatic amine in which an NH2 group is bonded directly to a benzene ring",
     "source_scope": "syllabus_only"
   }
 ]

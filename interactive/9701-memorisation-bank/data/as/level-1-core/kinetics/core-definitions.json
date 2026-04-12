@@ -1,6 +1,6 @@
 [
   {
-    "id": "as-def-057",
+    "id": "as-def-047",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
@@ -11,29 +11,29 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-058",
+    "id": "as-def-048",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
     "subtopic": "catalyst",
     "type": "definition",
     "prompt": "Define catalyst.",
-    "answer": "a substance that provides an alternative reaction pathway with lower activation energy and is chemically unchanged at the end of the reaction",
+    "answer": "a substance increases the rate of reaction by providing an alternative reaction pathway with lower activation energy and is chemically unchanged at the end of the reaction",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-059",
+    "id": "as-def-049",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
     "subtopic": "effective-collision",
     "type": "definition",
     "prompt": "Define effective collision.",
-    "answer": "a collision that has enough energy greater than or equal to Ea and the correct orientation to result in reaction",
+    "answer": "a collision that has energy greater than or equal to Ea and the correct orientation to result in reaction",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-060",
+    "id": "as-def-050",
     "stage": "AS",
     "level": 1,
     "topic": "kinetics",
