@@ -48,7 +48,7 @@
     "subtopic": "acid-dissociation-constant-ka",
     "type": "definition",
     "prompt": "Define acid dissociation constant, Ka.",
-    "answer": "the equilibrium constant for the dissociation of a weak acid",
+    "answer": "the equilibrium constant for the dissociation of a weak acid in aqueous solution",
     "source_scope": "syllabus_only"
   },
   {
@@ -81,7 +81,7 @@
     "subtopic": "ionic-product-of-water-kw",
     "type": "definition",
     "prompt": "Define ionic product of water, Kw.",
-    "answer": "the product of the equilibrium concentrations of H+ and OH- in water",
+    "answer": "the product of the equilibrium concentrations of H+ and OH- in water at a given temperature",
     "source_scope": "syllabus_only"
   },
   {
@@ -103,7 +103,7 @@
     "subtopic": "partition-coefficient-kpc",
     "type": "definition",
     "prompt": "Define partition coefficient, Kpc.",
-    "answer": "the ratio of the concentration of a solute in two immiscible solvents at equilibrium",
+    "answer": "the ratio of the equilibrium concentrations of a solute distributed between two immiscible solvents at a fixed temperature",
     "source_scope": "syllabus_only"
   },
   {
@@ -171,6 +171,17 @@
     "id": "a2-core-017",
     "stage": "A2",
     "level": 1,
+    "topic": "equilibrium",
+    "subtopic": "common-ion-effect",
+    "type": "definition",
+    "prompt": "Define common ion effect.",
+    "answer": "a decrease in solubility caused by an increase in the concentration of a common ion",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-018",
+    "stage": "A2",
+    "level": 1,
     "topic": "kinetics",
     "subtopic": "half-life",
     "type": "definition",
@@ -179,7 +190,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-018",
+    "id": "a2-core-019",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -190,7 +201,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-019",
+    "id": "a2-core-020",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -201,7 +212,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-020",
+    "id": "a2-core-021",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -212,7 +223,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-021",
+    "id": "a2-core-022",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -223,7 +234,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-022",
+    "id": "a2-core-023",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -234,7 +245,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-023",
+    "id": "a2-core-024",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -245,18 +256,18 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-024",
+    "id": "a2-core-025",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
     "subtopic": "rate-equation",
     "type": "definition",
     "prompt": "Define rate equation.",
-    "answer": "an equation that shows how the rate depends on the concentrations of reactants",
+    "answer": "an equation that shows how the rate of reaction depends on the concentrations of reactants",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-025",
+    "id": "a2-core-026",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -267,7 +278,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-026",
+    "id": "a2-core-027",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -277,7 +288,7 @@
     "answer": "k = 0.693 / t1/2"
   },
   {
-    "id": "a2-core-027",
+    "id": "a2-core-028",
     "stage": "A2",
     "level": 1,
     "topic": "kinetics",
@@ -287,29 +298,40 @@
     "answer": "half-life is independent of concentration"
   },
   {
-    "id": "a2-core-028",
+    "id": "a2-core-029",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
     "subtopic": "standard-cell-potential-e-degrees-cell",
     "type": "definition",
     "prompt": "Define standard cell potential, E°cell.",
-    "answer": "the e.m.f. of a cell under standard conditions",
+    "answer": "the potential difference between two half-cells under standard conditions",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-029",
+    "id": "a2-core-030",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
     "subtopic": "standard-electrode-potential-e-degrees",
     "type": "definition",
     "prompt": "Define standard electrode potential, E°.",
-    "answer": "the e.m.f. of a cell formed by connecting a half-cell to a standard hydrogen electrode under standard conditions",
+    "answer": "the potential difference between a half-cell and a standard hydrogen electrode under standard conditions",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-030",
+    "id": "a2-core-031",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "state-standard-conditions",
+    "type": "definition",
+    "prompt": "State standard conditions.",
+    "answer": "1 mol dm⁻³, 298 K, 1 atm",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-032",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
@@ -319,7 +341,7 @@
     "answer": "2H+ + 2e- -> H2"
   },
   {
-    "id": "a2-core-031",
+    "id": "a2-core-033",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
@@ -329,7 +351,7 @@
     "answer": "MnO4- + 8H+ + 5Fe2+ -> Mn2+ + 4H2O + 5Fe3+"
   },
   {
-    "id": "a2-core-032",
+    "id": "a2-core-034",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
@@ -339,7 +361,7 @@
     "answer": "I2 + 2S2O3^2- -> 2I- + S4O6^2-"
   },
   {
-    "id": "a2-core-033",
+    "id": "a2-core-035",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
@@ -349,18 +371,18 @@
     "answer": "feasible"
   },
   {
-    "id": "a2-core-034",
+    "id": "a2-core-036",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "complex",
     "type": "definition",
     "prompt": "Define complex.",
-    "answer": "a molecule or ion formed by a central metal atom or ion surrounded by one or more ligands",
+    "answer": "a molecule or ion formed by a central metal atom or ion bonded to one or more ligands by coordinate bonds",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-035",
+    "id": "a2-core-037",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -371,29 +393,29 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-036",
+    "id": "a2-core-038",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "ligand",
     "type": "definition",
     "prompt": "Define ligand.",
-    "answer": "a species that contains a lone pair of electrons that forms a dative covalent bond to a central metal atom or ion",
+    "answer": "a species with a lone pair of electrons that forms a coordinate bond to a central metal atom or ion",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-037",
+    "id": "a2-core-039",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "monodentate-ligand",
     "type": "definition",
     "prompt": "Define monodentate ligand.",
-    "answer": "a ligand that forms one coordinate bond to a central metal atom or ion",
+    "answer": "a ligand that uses one lone pair of electrons to form one coordinate bond to a central metal atom or ion",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-038",
+    "id": "a2-core-040",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -404,18 +426,18 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-039",
+    "id": "a2-core-041",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "polydentate-ligand",
     "type": "definition",
     "prompt": "Define polydentate ligand.",
-    "answer": "a ligand that forms more than two coordinate bonds to the same central metal atom or ion",
+    "answer": "a ligand that uses more than one lone pair of electrons to form more than one coordinate bond to the same central metal atom or ion",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-040",
+    "id": "a2-core-042",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -426,7 +448,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-041",
+    "id": "a2-core-043",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -437,18 +459,18 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-042",
+    "id": "a2-core-044",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
     "subtopic": "explain-what-is-meant-by-a-bidentate-ligand",
     "type": "definition",
     "prompt": "Explain what is meant by a bidentate ligand.",
-    "answer": "a ligand that forms two coordinate bonds to the same central metal atom or ion",
+    "answer": "a ligand with two lone pairs of electrons that forms two coordinate bonds to the same central metal atom or ion",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "a2-core-043",
+    "id": "a2-core-045",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -459,7 +481,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-044",
+    "id": "a2-core-046",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -469,7 +491,7 @@
     "answer": "[Cu(H2O)6]2+ + 4Cl- <-> [CuCl4]2- + 6H2O"
   },
   {
-    "id": "a2-core-045",
+    "id": "a2-core-047",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -479,7 +501,7 @@
     "answer": "[Cu(H2O)6]2+ + 4NH3 <-> [Cu(NH3)4(H2O)2]2+ + 4H2O"
   },
   {
-    "id": "a2-core-046",
+    "id": "a2-core-048",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -489,7 +511,7 @@
     "answer": "visible"
   },
   {
-    "id": "a2-core-047",
+    "id": "a2-core-049",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -499,7 +521,7 @@
     "answer": "colour"
   },
   {
-    "id": "a2-core-048",
+    "id": "a2-core-050",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -509,7 +531,7 @@
     "answer": "energy"
   },
   {
-    "id": "a2-core-049",
+    "id": "a2-core-051",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -519,7 +541,7 @@
     "answer": "yellow"
   },
   {
-    "id": "a2-core-050",
+    "id": "a2-core-052",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -529,7 +551,7 @@
     "answer": "orange"
   },
   {
-    "id": "a2-core-051",
+    "id": "a2-core-053",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -539,7 +561,7 @@
     "answer": "pale blue precipitate dissolves in excess to give a deep blue solution"
   },
   {
-    "id": "a2-core-052",
+    "id": "a2-core-054",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -549,7 +571,7 @@
     "answer": "pink solution changes to blue"
   },
   {
-    "id": "a2-core-053",
+    "id": "a2-core-055",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -559,7 +581,7 @@
     "answer": "concentrated HCl"
   },
   {
-    "id": "a2-core-054",
+    "id": "a2-core-056",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -569,7 +591,7 @@
     "answer": "excess NH3(aq)"
   },
   {
-    "id": "a2-core-055",
+    "id": "a2-core-057",
     "stage": "A2",
     "level": 1,
     "topic": "transition-elements",
@@ -579,146 +601,7 @@
     "answer": "concentrated HCl"
   },
   {
-    "id": "a2-core-056",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "rf-value",
-    "type": "definition",
-    "prompt": "Define Rf value.",
-    "answer": "the distance moved by the substance divided by the distance moved by the solvent front",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-057",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "baseline",
-    "type": "definition",
-    "prompt": "Define baseline.",
-    "answer": "the line on the chromatogram where the sample is initially placed",
-    "source_scope": "syllabus_only"
-  },
-  {
     "id": "a2-core-058",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "chemical-shift",
-    "type": "definition",
-    "prompt": "Define chemical shift.",
-    "answer": "the difference in resonance frequency relative to tetramethylsilane measured in ppm",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-059",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "mobile-phase-in-gas-liquid-chromatography",
-    "type": "definition",
-    "prompt": "Define mobile phase in gas-liquid chromatography.",
-    "answer": "an unreactive gas",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-060",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "mobile-phase-in-thin-layer-chromatography",
-    "type": "definition",
-    "prompt": "Define mobile phase in thin-layer chromatography.",
-    "answer": "the solvent that moves up the plate",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-061",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "retention-time",
-    "type": "definition",
-    "prompt": "Define retention time.",
-    "answer": "the time taken for a substance to pass through the column to the detector",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-062",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "solvent-front",
-    "type": "definition",
-    "prompt": "Define solvent front.",
-    "answer": "the furthest point reached by the solvent on the chromatogram",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-063",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "stationary-phase-in-gas-liquid-chromatography",
-    "type": "definition",
-    "prompt": "Define stationary phase in gas-liquid chromatography.",
-    "answer": "a high boiling point non-polar liquid on a solid support",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-064",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "stationary-phase-in-thin-layer-chromatography",
-    "type": "definition",
-    "prompt": "Define stationary phase in thin-layer chromatography.",
-    "answer": "the solid phase that remains in place, for example aluminium oxide on a solid support",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-065",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "fixed-conclusion-in-a-carbon-13-nmr-spectrum-number-of-peaks-equals-number-of-different-carbon",
-    "type": "fixed_conclusion",
-    "prompt": "Complete the fixed conclusion: in a carbon-13 NMR spectrum, the number of peaks equals the number of different carbon ____.",
-    "answer": "environments"
-  },
-  {
-    "id": "a2-core-066",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "effect-of-d2o-on-an-o-h-or-n-h-proton-signal",
-    "type": "fixed_conclusion",
-    "prompt": "State the effect of D2O on an O-H or N-H proton signal.",
-    "answer": "the signal disappears"
-  },
-  {
-    "id": "a2-core-067",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "n-plus-1-rule",
-    "type": "fixed_conclusion",
-    "prompt": "State the n + 1 rule.",
-    "answer": "a proton peak is split into n + 1 peaks by n equivalent protons on an adjacent carbon atom"
-  },
-  {
-    "id": "a2-core-068",
-    "stage": "A2",
-    "level": 1,
-    "topic": "analytical-techniques",
-    "subtopic": "standard-used-chemical-shift-measurements-in-proton-nmr",
-    "type": "fixed_conclusion",
-    "prompt": "State the standard used for chemical shift measurements in proton NMR.",
-    "answer": "tetramethylsilane"
-  },
-  {
-    "id": "a2-core-069",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -729,7 +612,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-070",
+    "id": "a2-core-059",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -740,7 +623,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-071",
+    "id": "a2-core-060",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -750,7 +633,7 @@
     "answer": "C6H6 + Br2 -> C6H5Br + HBr"
   },
   {
-    "id": "a2-core-072",
+    "id": "a2-core-061",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -760,7 +643,7 @@
     "answer": "C6H6 + HNO3 -> C6H5NO2 + H2O"
   },
   {
-    "id": "a2-core-073",
+    "id": "a2-core-062",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -770,7 +653,7 @@
     "answer": "stability"
   },
   {
-    "id": "a2-core-074",
+    "id": "a2-core-063",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -780,7 +663,7 @@
     "answer": "Br2, FeBr3 catalyst"
   },
   {
-    "id": "a2-core-075",
+    "id": "a2-core-064",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -790,7 +673,7 @@
     "answer": "CH3Cl, AlCl3 catalyst"
   },
   {
-    "id": "a2-core-076",
+    "id": "a2-core-065",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -800,7 +683,7 @@
     "answer": "concentrated HNO3, concentrated H2SO4, 55 °C"
   },
   {
-    "id": "a2-core-077",
+    "id": "a2-core-066",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -810,7 +693,7 @@
     "answer": "CH3COCl, AlCl3 catalyst"
   },
   {
-    "id": "a2-core-078",
+    "id": "a2-core-067",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -820,7 +703,7 @@
     "answer": "cold alkaline solution"
   },
   {
-    "id": "a2-core-079",
+    "id": "a2-core-068",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -830,7 +713,7 @@
     "answer": "warm water"
   },
   {
-    "id": "a2-core-080",
+    "id": "a2-core-069",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -840,7 +723,7 @@
     "answer": "Sn, concentrated HCl, heat, then NaOH"
   },
   {
-    "id": "a2-core-081",
+    "id": "a2-core-070",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -850,7 +733,29 @@
     "answer": "NaNO2 and dilute acid, below 10 °C"
   },
   {
-    "id": "a2-core-082",
+    "id": "a2-core-071",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "nitrile",
+    "type": "definition",
+    "prompt": "Define nitrile.",
+    "answer": "a compound containing the functional group C≡N",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-072",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "acylation",
+    "type": "definition",
+    "prompt": "Define acylation.",
+    "answer": "an electrophilic substitution reaction in which an acyl group is introduced into a molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-073",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -861,7 +766,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-083",
+    "id": "a2-core-074",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -872,7 +777,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-084",
+    "id": "a2-core-075",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -882,7 +787,7 @@
     "answer": "C6H5OH + 3Br2 -> C6H2Br3OH + 3HBr"
   },
   {
-    "id": "a2-core-085",
+    "id": "a2-core-076",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -892,7 +797,7 @@
     "answer": "delocalisation"
   },
   {
-    "id": "a2-core-086",
+    "id": "a2-core-077",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -902,7 +807,7 @@
     "answer": "orange to colourless and a white precipitate forms"
   },
   {
-    "id": "a2-core-087",
+    "id": "a2-core-078",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -912,7 +817,7 @@
     "answer": "orange to colourless and a white precipitate forms"
   },
   {
-    "id": "a2-core-088",
+    "id": "a2-core-079",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -922,7 +827,7 @@
     "answer": "Br2(aq), room temperature"
   },
   {
-    "id": "a2-core-089",
+    "id": "a2-core-080",
     "stage": "A2",
     "level": 1,
     "topic": "phenols",
@@ -932,18 +837,18 @@
     "answer": "CH3COCl, room temperature"
   },
   {
-    "id": "a2-core-090",
+    "id": "a2-core-081",
     "stage": "A2",
     "level": 1,
-    "topic": "carbonyl-compounds",
-    "subtopic": "carbonyl-compound",
+    "topic": "phenols",
+    "subtopic": "phenylamine",
     "type": "definition",
-    "prompt": "Define carbonyl compound.",
-    "answer": "a compound containing a carbon oxygen double bond",
+    "prompt": "Define phenylamine.",
+    "answer": "an aromatic amine in which an NH2 group is bonded directly to a benzene ring",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-091",
+    "id": "a2-core-082",
     "stage": "A2",
     "level": 1,
     "topic": "carbonyl-compounds",
@@ -953,7 +858,7 @@
     "answer": "orange precipitate"
   },
   {
-    "id": "a2-core-092",
+    "id": "a2-core-083",
     "stage": "A2",
     "level": 1,
     "topic": "carbonyl-compounds",
@@ -963,7 +868,7 @@
     "answer": "brick-red precipitate"
   },
   {
-    "id": "a2-core-093",
+    "id": "a2-core-084",
     "stage": "A2",
     "level": 1,
     "topic": "carbonyl-compounds",
@@ -973,7 +878,7 @@
     "answer": "silver mirror"
   },
   {
-    "id": "a2-core-094",
+    "id": "a2-core-085",
     "stage": "A2",
     "level": 1,
     "topic": "carbonyl-compounds",
@@ -983,7 +888,7 @@
     "answer": "2,4-DNPH"
   },
   {
-    "id": "a2-core-095",
+    "id": "a2-core-086",
     "stage": "A2",
     "level": 1,
     "topic": "carbonyl-compounds",
@@ -993,7 +898,7 @@
     "answer": "Tollens reagent or Fehling solution"
   },
   {
-    "id": "a2-core-096",
+    "id": "a2-core-087",
     "stage": "A2",
     "level": 1,
     "topic": "carbonyl-compounds",
@@ -1003,7 +908,7 @@
     "answer": "HCN and KCN"
   },
   {
-    "id": "a2-core-097",
+    "id": "a2-core-088",
     "stage": "A2",
     "level": 1,
     "topic": "carbonyl-compounds",
@@ -1013,7 +918,7 @@
     "answer": "NaBH4"
   },
   {
-    "id": "a2-core-098",
+    "id": "a2-core-089",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1024,18 +929,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-099",
-    "stage": "A2",
-    "level": 1,
-    "topic": "carboxylic-acids-and-derivatives",
-    "subtopic": "ester",
-    "type": "definition",
-    "prompt": "Define ester.",
-    "answer": "a compound formed from a carboxylic acid and an alcohol with the elimination of water",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "a2-core-100",
+    "id": "a2-core-090",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1045,7 +939,7 @@
     "answer": "CH3COOCH2CH3 + H2O -> CH3COOH + CH3CH2OH"
   },
   {
-    "id": "a2-core-101",
+    "id": "a2-core-091",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1055,7 +949,7 @@
     "answer": "CH3COOCH2CH3 + OH- -> CH3COO- + CH3CH2OH"
   },
   {
-    "id": "a2-core-102",
+    "id": "a2-core-092",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1065,7 +959,7 @@
     "answer": "CH3COCl + 2NH3 -> CH3CONH2 + NH4Cl"
   },
   {
-    "id": "a2-core-103",
+    "id": "a2-core-093",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1075,7 +969,7 @@
     "answer": "CH3COCl + CH3CH2OH -> CH3COOCH2CH3 + HCl"
   },
   {
-    "id": "a2-core-104",
+    "id": "a2-core-094",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1085,7 +979,7 @@
     "answer": "steamy fumes"
   },
   {
-    "id": "a2-core-105",
+    "id": "a2-core-095",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1095,7 +989,7 @@
     "answer": "PCl5"
   },
   {
-    "id": "a2-core-106",
+    "id": "a2-core-096",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1105,7 +999,7 @@
     "answer": "NH3, room temperature"
   },
   {
-    "id": "a2-core-107",
+    "id": "a2-core-097",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1115,7 +1009,7 @@
     "answer": "H2O, room temperature"
   },
   {
-    "id": "a2-core-108",
+    "id": "a2-core-098",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1125,7 +1019,7 @@
     "answer": "ethanol, room temperature"
   },
   {
-    "id": "a2-core-109",
+    "id": "a2-core-099",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1135,7 +1029,7 @@
     "answer": "aqueous NaOH, heat"
   },
   {
-    "id": "a2-core-110",
+    "id": "a2-core-100",
     "stage": "A2",
     "level": 1,
     "topic": "carboxylic-acids-and-derivatives",
@@ -1145,7 +1039,7 @@
     "answer": "dilute acid, heat"
   },
   {
-    "id": "a2-core-111",
+    "id": "a2-core-101",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1156,7 +1050,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-112",
+    "id": "a2-core-102",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1167,7 +1061,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-113",
+    "id": "a2-core-103",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1178,7 +1072,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-114",
+    "id": "a2-core-104",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1189,7 +1083,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-115",
+    "id": "a2-core-105",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1200,7 +1094,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-116",
+    "id": "a2-core-106",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1211,7 +1105,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-117",
+    "id": "a2-core-107",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1221,7 +1115,7 @@
     "answer": "CH3CN + 2H2O + H+ -> CH3COOH + NH4+"
   },
   {
-    "id": "a2-core-118",
+    "id": "a2-core-108",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1231,7 +1125,7 @@
     "answer": "CH3CN + 2H2 -> CH3CH2NH2"
   },
   {
-    "id": "a2-core-119",
+    "id": "a2-core-109",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1241,7 +1135,7 @@
     "answer": "charge"
   },
   {
-    "id": "a2-core-120",
+    "id": "a2-core-110",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1251,7 +1145,7 @@
     "answer": "use buffer solutions of different pH"
   },
   {
-    "id": "a2-core-121",
+    "id": "a2-core-111",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1261,7 +1155,7 @@
     "answer": "dilute HCl, heat"
   },
   {
-    "id": "a2-core-122",
+    "id": "a2-core-112",
     "stage": "A2",
     "level": 1,
     "topic": "nitrogen-compounds",
@@ -1271,7 +1165,7 @@
     "answer": "LiAlH4 in dry ether"
   },
   {
-    "id": "a2-core-123",
+    "id": "a2-core-113",
     "stage": "A2",
     "level": 1,
     "topic": "polymers",
@@ -1282,7 +1176,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-124",
+    "id": "a2-core-114",
     "stage": "A2",
     "level": 1,
     "topic": "polymers",
@@ -1293,7 +1187,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-125",
+    "id": "a2-core-115",
     "stage": "A2",
     "level": 1,
     "topic": "polymers",
@@ -1304,7 +1198,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-126",
+    "id": "a2-core-116",
     "stage": "A2",
     "level": 1,
     "topic": "polymers",
@@ -1315,7 +1209,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-127",
+    "id": "a2-core-117",
     "stage": "A2",
     "level": 1,
     "topic": "polymers",
@@ -1325,7 +1219,7 @@
     "answer": "hydrolysis"
   },
   {
-    "id": "a2-core-128",
+    "id": "a2-core-118",
     "stage": "A2",
     "level": 1,
     "topic": "stereochemistry",
@@ -1336,7 +1230,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-129",
+    "id": "a2-core-119",
     "stage": "A2",
     "level": 1,
     "topic": "stereochemistry",
@@ -1347,7 +1241,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-130",
+    "id": "a2-core-120",
     "stage": "A2",
     "level": 1,
     "topic": "stereochemistry",
@@ -1358,7 +1252,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-131",
+    "id": "a2-core-121",
     "stage": "A2",
     "level": 1,
     "topic": "stereochemistry",
@@ -1369,7 +1263,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-core-132",
+    "id": "a2-core-122",
     "stage": "A2",
     "level": 1,
     "topic": "stereochemistry",
@@ -1377,5 +1271,144 @@
     "type": "fixed_conclusion",
     "prompt": "Complete the fixed conclusion: biological receptors are ____, so enantiomers may have different biological activity.",
     "answer": "chiral"
+  },
+  {
+    "id": "a2-core-123",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "rf-value",
+    "type": "definition",
+    "prompt": "Define Rf value.",
+    "answer": "the distance moved by the substance divided by the distance moved by the solvent front",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-124",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "baseline",
+    "type": "definition",
+    "prompt": "Define baseline.",
+    "answer": "the line on the chromatogram where the sample is initially placed",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-125",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "chemical-shift",
+    "type": "definition",
+    "prompt": "Define chemical shift.",
+    "answer": "the difference in resonance frequency relative to tetramethylsilane measured in ppm",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-126",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "mobile-phase-in-gas-liquid-chromatography",
+    "type": "definition",
+    "prompt": "Define mobile phase in gas-liquid chromatography.",
+    "answer": "an unreactive gas",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-127",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "mobile-phase-in-thin-layer-chromatography",
+    "type": "definition",
+    "prompt": "Define mobile phase in thin-layer chromatography.",
+    "answer": "the solvent that moves up the plate",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-128",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "retention-time",
+    "type": "definition",
+    "prompt": "Define retention time.",
+    "answer": "the time taken for a substance to pass through the column to the detector",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-129",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "solvent-front",
+    "type": "definition",
+    "prompt": "Define solvent front.",
+    "answer": "the furthest point reached by the solvent on the chromatogram",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-130",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "stationary-phase-in-gas-liquid-chromatography",
+    "type": "definition",
+    "prompt": "Define stationary phase in gas-liquid chromatography.",
+    "answer": "a high boiling point non-polar liquid on a solid support",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-131",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "stationary-phase-in-thin-layer-chromatography",
+    "type": "definition",
+    "prompt": "Define stationary phase in thin-layer chromatography.",
+    "answer": "the solid phase that remains in place, for example aluminium oxide on a solid support",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-core-132",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "fixed-conclusion-in-a-carbon-13-nmr-spectrum-number-of-peaks-equals-number-of-different-carbon",
+    "type": "fixed_conclusion",
+    "prompt": "Complete the fixed conclusion: in a carbon-13 NMR spectrum, the number of peaks equals the number of different carbon ____.",
+    "answer": "environments"
+  },
+  {
+    "id": "a2-core-133",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "effect-of-d2o-on-an-o-h-or-n-h-proton-signal",
+    "type": "fixed_conclusion",
+    "prompt": "State the effect of D2O on an O-H or N-H proton signal.",
+    "answer": "the signal disappears"
+  },
+  {
+    "id": "a2-core-134",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "n-plus-1-rule",
+    "type": "fixed_conclusion",
+    "prompt": "State the n + 1 rule.",
+    "answer": "a proton peak is split into n + 1 peaks by n equivalent protons on an adjacent carbon atom"
+  },
+  {
+    "id": "a2-core-135",
+    "stage": "A2",
+    "level": 1,
+    "topic": "analytical-techniques",
+    "subtopic": "standard-used-chemical-shift-measurements-in-proton-nmr",
+    "type": "fixed_conclusion",
+    "prompt": "State the standard used for chemical shift measurements in proton NMR.",
+    "answer": "tetramethylsilane"
   }
 ]

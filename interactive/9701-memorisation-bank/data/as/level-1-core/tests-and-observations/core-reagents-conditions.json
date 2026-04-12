@@ -27,7 +27,7 @@
     "subtopic": "test-ammonium-ion-and",
     "type": "reagent_condition",
     "prompt": "Test for ammonium ion : reagent and condition",
-    "answer": "aqueous NaOH, warm"
+    "answer": "aqueous NaOH, heat"
   },
   {
     "id": "as-rc-004",

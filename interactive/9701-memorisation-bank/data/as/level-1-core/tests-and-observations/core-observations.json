@@ -7,7 +7,7 @@
     "subtopic": "observation-when-ammonium-ions-are-warmed-with-aqueous-sodium-hydroxide",
     "type": "standard_observation",
     "prompt": "State the observation when ammonium ions are warmed with aqueous sodium hydroxide.",
-    "answer": "ammonia is evolved"
+    "answer": "turns the damp red litmus paper blue and produces a pungent gas"
   },
   {
     "id": "as-obs-002",
@@ -17,7 +17,7 @@
     "subtopic": "observation-when-bromide-ions-react-with-aqueous-silver-nitrate",
     "type": "standard_observation",
     "prompt": "State the observation when bromide ions react with aqueous silver nitrate.",
-    "answer": "cream precipitate"
+    "answer": "cream precipitate, dissolves in excess / conc. ammonia solution"
   },
   {
     "id": "as-obs-003",
@@ -47,7 +47,7 @@
     "subtopic": "observation-when-carbonate-reacts-with-dilute-acid",
     "type": "standard_observation",
     "prompt": "State the observation when carbonate reacts with dilute acid.",
-    "answer": "effervescence"
+    "answer": "effervescence (and solid dissolves)"
   },
   {
     "id": "as-obs-006",
@@ -57,7 +57,7 @@
     "subtopic": "observation-when-chloride-ions-react-with-aqueous-silver-nitrate",
     "type": "standard_observation",
     "prompt": "State the observation when chloride ions react with aqueous silver nitrate.",
-    "answer": "white precipitate"
+    "answer": "white precipitate, dissolves in dilute ammonia solution"
   },
   {
     "id": "as-obs-007",
@@ -67,7 +67,7 @@
     "subtopic": "observation-when-iodide-ions-react-with-aqueous-silver-nitrate",
     "type": "standard_observation",
     "prompt": "State the observation when iodide ions react with aqueous silver nitrate.",
-    "answer": "yellow precipitate"
+    "answer": "yellow precipitate, does not dissolve in ammonia solution"
   },
   {
     "id": "as-obs-008",

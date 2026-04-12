@@ -1,6 +1,6 @@
 [
   {
-    "id": "a2-def-039",
+    "id": "a2-def-032",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -11,7 +11,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-040",
+    "id": "a2-def-033",
     "stage": "A2",
     "level": 1,
     "topic": "benzene-and-arenes",
@@ -19,6 +19,28 @@
     "type": "definition",
     "prompt": "Define electrophilic substitution.",
     "answer": "a reaction in which an electrophile replaces an atom or group of atoms in a molecule",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-034",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "nitrile",
+    "type": "definition",
+    "prompt": "Define nitrile.",
+    "answer": "a compound containing the functional group C≡N",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-035",
+    "stage": "A2",
+    "level": 1,
+    "topic": "benzene-and-arenes",
+    "subtopic": "acylation",
+    "type": "definition",
+    "prompt": "Define acylation.",
+    "answer": "an electrophilic substitution reaction in which an acyl group is introduced into a molecule",
     "source_scope": "syllabus_only"
   }
 ]

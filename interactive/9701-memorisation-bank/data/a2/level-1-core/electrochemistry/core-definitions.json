@@ -1,24 +1,35 @@
 [
   {
-    "id": "a2-def-018",
+    "id": "a2-def-019",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
     "subtopic": "standard-cell-potential-e-degrees-cell",
     "type": "definition",
     "prompt": "Define standard cell potential, E°cell.",
-    "answer": "the e.m.f. of a cell under standard conditions",
+    "answer": "the potential difference between two half-cells under standard conditions",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "a2-def-019",
+    "id": "a2-def-020",
     "stage": "A2",
     "level": 1,
     "topic": "electrochemistry",
     "subtopic": "standard-electrode-potential-e-degrees",
     "type": "definition",
     "prompt": "Define standard electrode potential, E°.",
-    "answer": "the e.m.f. of a cell formed by connecting a half-cell to a standard hydrogen electrode under standard conditions",
+    "answer": "the potential difference between a half-cell and a standard hydrogen electrode under standard conditions",
+    "source_scope": "syllabus_only"
+  },
+  {
+    "id": "a2-def-021",
+    "stage": "A2",
+    "level": 1,
+    "topic": "electrochemistry",
+    "subtopic": "state-standard-conditions",
+    "type": "definition",
+    "prompt": "State standard conditions.",
+    "answer": "1 mol dm⁻³, 298 K, 1 atm",
     "source_scope": "syllabus_only"
   }
 ]

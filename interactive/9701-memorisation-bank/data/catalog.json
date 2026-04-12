@@ -7,7 +7,7 @@
       "slug": "as",
       "manifest_path": "as/manifest.json",
       "counts": {
-        "level-1-core": 162,
+        "level-1-core": 148,
         "level-2-guided-cloze": 57,
         "level-3-multi-round-cloze": 57,
         "level-4-full-reconstruction": 57
@@ -16,7 +16,7 @@
         {
           "id": "level-1-core",
           "label": "Level 1 · Core",
-          "count": 162,
+          "count": 148,
           "topics": [
             {
               "id": "atomic-structure",
@@ -27,11 +27,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/atomic-structure/core-definitions.json",
-                  "count": 8,
-                  "runtime_unit_count": 8,
+                  "count": 5,
+                  "runtime_unit_count": 5,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 8,
+                    "syllabus_only": 5,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
@@ -47,11 +47,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/stoichiometry/core-definitions.json",
-                  "count": 14,
-                  "runtime_unit_count": 14,
+                  "count": 10,
+                  "runtime_unit_count": 10,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 10,
+                    "syllabus_only": 6,
                     "paper_and_syllabus": 4
                   },
                   "rounds": []
@@ -67,11 +67,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/bonding/core-definitions.json",
-                  "count": 15,
-                  "runtime_unit_count": 15,
+                  "count": 13,
+                  "runtime_unit_count": 13,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 14,
+                    "syllabus_only": 12,
                     "paper_and_syllabus": 1
                   },
                   "rounds": []
@@ -127,11 +127,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/equilibrium/core-definitions.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
+                  "count": 3,
+                  "runtime_unit_count": 3,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 4,
+                    "syllabus_only": 3,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
@@ -282,11 +282,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "as/level-1-core/organic-general/core-definitions.json",
-                  "count": 23,
-                  "runtime_unit_count": 23,
+                  "count": 19,
+                  "runtime_unit_count": 19,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 22,
+                    "syllabus_only": 18,
                     "paper_and_syllabus": 1
                   },
                   "rounds": []
@@ -981,7 +981,7 @@
       "slug": "a2",
       "manifest_path": "a2/manifest.json",
       "counts": {
-        "level-1-core": 155,
+        "level-1-core": 158,
         "level-2-guided-cloze": 45,
         "level-3-multi-round-cloze": 45,
         "level-4-full-reconstruction": 45
@@ -990,7 +990,7 @@
         {
           "id": "level-1-core",
           "label": "Level 1 · Core",
-          "count": 155,
+          "count": 158,
           "topics": [
             {
               "id": "thermodynamics",
@@ -1030,11 +1030,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/equilibrium/core-definitions.json",
-                  "count": 7,
-                  "runtime_unit_count": 7,
+                  "count": 8,
+                  "runtime_unit_count": 8,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 6,
+                    "syllabus_only": 7,
                     "paper_and_syllabus": 1
                   },
                   "rounds": []
@@ -1097,11 +1097,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/electrochemistry/core-definitions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
+                  "count": 3,
+                  "runtime_unit_count": 3,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 2,
+                    "syllabus_only": 3,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
@@ -1192,35 +1192,6 @@
               ]
             },
             {
-              "id": "analytical-techniques",
-              "source_directory": "analytical-techniques",
-              "label": "Analytical Techniques",
-              "files": [
-                {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/analytical-techniques/core-definitions.json",
-                  "count": 9,
-                  "runtime_unit_count": 9,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 9,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
-                  "id": "core-fixed-conclusions",
-                  "label": "Fixed Conclusions",
-                  "path": "a2/level-1-core/analytical-techniques/core-fixed-conclusions.json",
-                  "count": 4,
-                  "runtime_unit_count": 4,
-                  "definition_source_counts": null,
-                  "rounds": []
-                }
-              ]
-            },
-            {
               "id": "benzene-and-arenes",
               "source_directory": "benzene-and-arenes",
               "label": "Benzene and Arenes",
@@ -1229,11 +1200,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/benzene-and-arenes/core-definitions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
+                  "count": 4,
+                  "runtime_unit_count": 4,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 2,
+                    "syllabus_only": 4,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
@@ -1285,11 +1256,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/phenols/core-definitions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
+                  "count": 3,
+                  "runtime_unit_count": 3,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 2,
+                    "syllabus_only": 3,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
@@ -1347,19 +1318,6 @@
               "label": "Carbonyl Compounds",
               "files": [
                 {
-                  "id": "core-definitions",
-                  "label": "Definitions",
-                  "path": "a2/level-1-core/carbonyl-compounds/core-definitions.json",
-                  "count": 1,
-                  "runtime_unit_count": 1,
-                  "definition_source_counts": {
-                    "paper_only": 0,
-                    "syllabus_only": 1,
-                    "paper_and_syllabus": 0
-                  },
-                  "rounds": []
-                },
-                {
                   "id": "core-reagents-conditions",
                   "label": "Reagents / Conditions",
                   "path": "a2/level-1-core/carbonyl-compounds/core-reagents-conditions.json",
@@ -1397,11 +1355,11 @@
                   "id": "core-definitions",
                   "label": "Definitions",
                   "path": "a2/level-1-core/carboxylic-acids-and-derivatives/core-definitions.json",
-                  "count": 2,
-                  "runtime_unit_count": 2,
+                  "count": 1,
+                  "runtime_unit_count": 1,
                   "definition_source_counts": {
                     "paper_only": 0,
-                    "syllabus_only": 2,
+                    "syllabus_only": 1,
                     "paper_and_syllabus": 0
                   },
                   "rounds": []
@@ -1553,6 +1511,35 @@
                   "path": "a2/level-1-core/stereochemistry/core-fixed-conclusions.json",
                   "count": 1,
                   "runtime_unit_count": 1,
+                  "definition_source_counts": null,
+                  "rounds": []
+                }
+              ]
+            },
+            {
+              "id": "analytical-techniques",
+              "source_directory": "analytical-techniques",
+              "label": "Analytical Techniques",
+              "files": [
+                {
+                  "id": "core-definitions",
+                  "label": "Definitions",
+                  "path": "a2/level-1-core/analytical-techniques/core-definitions.json",
+                  "count": 9,
+                  "runtime_unit_count": 9,
+                  "definition_source_counts": {
+                    "paper_only": 0,
+                    "syllabus_only": 9,
+                    "paper_and_syllabus": 0
+                  },
+                  "rounds": []
+                },
+                {
+                  "id": "core-fixed-conclusions",
+                  "label": "Fixed Conclusions",
+                  "path": "a2/level-1-core/analytical-techniques/core-fixed-conclusions.json",
+                  "count": 4,
+                  "runtime_unit_count": 4,
                   "definition_source_counts": null,
                   "rounds": []
                 }

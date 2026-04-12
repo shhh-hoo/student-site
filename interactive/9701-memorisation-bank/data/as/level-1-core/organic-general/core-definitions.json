@@ -1,6 +1,6 @@
 [
   {
-    "id": "as-def-074",
+    "id": "as-def-064",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -11,7 +11,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-075",
+    "id": "as-def-065",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -22,7 +22,7 @@
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-def-076",
+    "id": "as-def-066",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -33,7 +33,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-077",
+    "id": "as-def-067",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -44,7 +44,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-078",
+    "id": "as-def-068",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -55,7 +55,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-079",
+    "id": "as-def-069",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -66,7 +66,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-080",
+    "id": "as-def-070",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -77,7 +77,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-081",
+    "id": "as-def-071",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -88,18 +88,18 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-082",
+    "id": "as-def-072",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
     "subtopic": "geometrical-isomerism",
     "type": "definition",
     "prompt": "Define geometrical isomerism.",
-    "answer": "stereoisomerism due to restricted rotation giving different spatial arrangements",
+    "answer": "a type of stereoisomerism in which molecules have the same structural formula but different arrangement of atoms or groups in space due to restricted rotation about a double bond",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-083",
+    "id": "as-def-073",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -110,18 +110,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-084",
-    "stage": "AS",
-    "level": 1,
-    "topic": "organic-general",
-    "subtopic": "homologous-series",
-    "type": "definition",
-    "prompt": "Define homologous series.",
-    "answer": "a family of organic compounds with the same functional group and general formula, showing similar chemical properties and a gradual change in physical properties",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-085",
+    "id": "as-def-074",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -132,7 +121,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-086",
+    "id": "as-def-075",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -143,7 +132,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-087",
+    "id": "as-def-076",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -154,7 +143,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-088",
+    "id": "as-def-077",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -165,40 +154,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-089",
-    "stage": "AS",
-    "level": 1,
-    "topic": "organic-general",
-    "subtopic": "oxidation-organic",
-    "type": "definition",
-    "prompt": "Define oxidation (organic).",
-    "answer": "an increase in C-O bonds and/or a decrease in C-H bonds",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-090",
-    "stage": "AS",
-    "level": 1,
-    "topic": "organic-general",
-    "subtopic": "reduction-organic",
-    "type": "definition",
-    "prompt": "Define reduction (organic).",
-    "answer": "a decrease in C-O bonds and/or an increase in C-H bonds",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-091",
-    "stage": "AS",
-    "level": 1,
-    "topic": "organic-general",
-    "subtopic": "repeat-unit",
-    "type": "definition",
-    "prompt": "Define repeat unit.",
-    "answer": "the smallest repeating structural unit of a polymer chain",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-092",
+    "id": "as-def-078",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -209,7 +165,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-093",
+    "id": "as-def-079",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -220,7 +176,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-094",
+    "id": "as-def-080",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -231,7 +187,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-095",
+    "id": "as-def-081",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",
@@ -242,7 +198,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-096",
+    "id": "as-def-082",
     "stage": "AS",
     "level": 1,
     "topic": "organic-general",

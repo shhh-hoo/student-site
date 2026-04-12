@@ -1,6 +1,6 @@
 [
   {
-    "id": "as-def-009",
+    "id": "as-def-006",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -11,18 +11,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-010",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "anhydrous",
-    "type": "definition",
-    "prompt": "Define anhydrous.",
-    "answer": "containing no water of crystallisation",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-011",
+    "id": "as-def-007",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -33,18 +22,7 @@
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-def-012",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "hydrated",
-    "type": "definition",
-    "prompt": "Define hydrated.",
-    "answer": "containing water of crystallisation in the crystal structure",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-013",
+    "id": "as-def-008",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -55,7 +33,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-014",
+    "id": "as-def-009",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -66,7 +44,7 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-015",
+    "id": "as-def-010",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -77,40 +55,29 @@
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-016",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "percentage-yield",
-    "type": "definition",
-    "prompt": "Define percentage yield.",
-    "answer": "actual amount of product divided by theoretical amount of product multiplied by 100%",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-017",
+    "id": "as-def-011",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
     "subtopic": "relative-atomic-mass-ar",
     "type": "definition",
     "prompt": "Define relative atomic mass, Ar.",
-    "answer": "the weighted mean mass of the atoms of an element compared with one twelfth of the mass of one atom of carbon-12",
+    "answer": "the weighted average mass of the atoms of an element compared with one twelfth of the mass of one atom of carbon-12",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-def-018",
+    "id": "as-def-012",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
     "subtopic": "relative-formula-mass",
     "type": "definition",
     "prompt": "Define relative formula mass.",
-    "answer": "the mass of one formula unit compared with one twelfth of the mass of one atom of carbon-12",
+    "answer": "the weighted average mass of one formula unit compared with one twelfth of the mass of one atom of carbon-12",
     "source_scope": "syllabus_only"
   },
   {
-    "id": "as-def-019",
+    "id": "as-def-013",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -121,18 +88,18 @@
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-def-020",
+    "id": "as-def-014",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
     "subtopic": "relative-molecular-mass-mr",
     "type": "definition",
     "prompt": "Define relative molecular mass, Mr.",
-    "answer": "the mass of one molecule compared with one twelfth of the mass of one atom of carbon-12",
+    "answer": "the weighted average mass of one molecule compared with one twelfth of the mass of one atom of carbon-12",
     "source_scope": "paper_and_syllabus"
   },
   {
-    "id": "as-def-021",
+    "id": "as-def-015",
     "stage": "AS",
     "level": 1,
     "topic": "stoichiometry",
@@ -140,17 +107,6 @@
     "type": "definition",
     "prompt": "Define unified atomic mass unit, 1 u.",
     "answer": "one twelfth of the mass of one atom of carbon-12",
-    "source_scope": "syllabus_only"
-  },
-  {
-    "id": "as-def-022",
-    "stage": "AS",
-    "level": 1,
-    "topic": "stoichiometry",
-    "subtopic": "water-of-crystallisation",
-    "type": "definition",
-    "prompt": "Define water of crystallisation.",
-    "answer": "a fixed number of water molecules chemically bound in the crystal lattice per formula unit",
     "source_scope": "syllabus_only"
   }
 ]
