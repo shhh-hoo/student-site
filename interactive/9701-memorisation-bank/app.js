@@ -64,15 +64,23 @@ const roundBadge = document.getElementById("round-badge");
 const questionLabel = document.getElementById("question-label");
 const questionTitle = document.getElementById("question-title");
 const questionCopy = document.getElementById("question-copy");
+const currentSetSummary = document.getElementById("current-set-summary");
+const currentSetCopy = document.getElementById("current-set-copy");
 const pageCounter = document.getElementById("page-counter");
 const completionChip = document.getElementById("completion-chip");
 const reviewChip = document.getElementById("review-chip");
-const prevPageButton = document.getElementById("prev-page");
+const filtersBackdrop = document.getElementById("filters-backdrop");
+const filtersSheet = document.getElementById("filters-sheet");
+const filtersToggleButton = document.getElementById("filters-toggle");
+const filtersCloseButton = document.getElementById("filters-close");
+const prevBlankButton = document.getElementById("prev-blank");
+const checkBlankButton = document.getElementById("check-blank");
+const revealBlankButton = document.getElementById("reveal-blank");
 const nextBlankButton = document.getElementById("next-blank");
-const nextPageButton = document.getElementById("next-page");
 const reviewToggleButton = document.getElementById("review-toggle");
 const sessionBanner = document.getElementById("session-banner");
 const sessionPage = document.getElementById("session-page");
+const sessionOutline = document.getElementById("session-outline");
 
 const appState = {
   catalog: null,
@@ -101,6 +109,7 @@ const appState = {
   currentBlankId: "",
   pendingFocusBlankId: "",
   interactionTick: 0,
+  filtersOpen: false,
   revealedQuestionIds: new Set(),
   blankInputRefs: new Map(),
 };
@@ -449,6 +458,61 @@ function updateUrlFromState() {
   window.history.replaceState(null, "", nextUrl);
 }
 
+function isCompactViewport() {
+  return window.matchMedia("(max-width: 980px)").matches;
+}
+
+function setFiltersOpen(nextOpen) {
+  appState.filtersOpen = Boolean(nextOpen);
+  filtersSheet.hidden = !appState.filtersOpen;
+  filtersBackdrop.hidden = !appState.filtersOpen || !isCompactViewport();
+  filtersToggleButton.setAttribute("aria-expanded", String(appState.filtersOpen));
+  document.body.classList.toggle(
+    "memorisation-filters-open",
+    appState.filtersOpen && isCompactViewport(),
+  );
+}
+
+function closeFilters() {
+  setFiltersOpen(false);
+}
+
+function getActiveBlankId() {
+  const blankOrder = getCurrentModeBlankOrder();
+
+  if (!blankOrder.length) {
+    return "";
+  }
+
+  if (blankOrder.includes(appState.pendingFocusBlankId)) {
+    return appState.pendingFocusBlankId;
+  }
+
+  return blankOrder.includes(appState.currentBlankId) ? appState.currentBlankId : blankOrder[0];
+}
+
+function getBlankOrderIndex(blankId, blankOrder = getCurrentModeBlankOrder()) {
+  return blankOrder.indexOf(blankId);
+}
+
+function getAdjacentBlankId(blankId, direction, blankOrder = getCurrentModeBlankOrder()) {
+  const currentIndex = getBlankOrderIndex(blankId, blankOrder);
+
+  if (currentIndex < 0) {
+    return "";
+  }
+
+  return blankOrder[currentIndex + direction] || "";
+}
+
+function focusAdjacentBlank(direction) {
+  const nextBlankId = getAdjacentBlankId(getActiveBlankId(), direction);
+
+  if (nextBlankId) {
+    focusBlank(nextBlankId);
+  }
+}
+
 function getFileCountLabel(fileEntry) {
   if (!fileEntry) {
     return "0 items";
@@ -466,6 +530,9 @@ function getFileCountLabel(fileEntry) {
 
 function applySelection(nextSelection) {
   synchroniseSelection(nextSelection);
+  if (isCompactViewport()) {
+    closeFilters();
+  }
   renderControls();
   updateUrlFromState();
   refreshSession({ allowCatalogResync: true });
@@ -1246,14 +1313,30 @@ function focusBlank(blankId) {
 }
 
 function moveToNextBlank(blankId = appState.currentBlankId) {
-  const nextBlankId = findNextIncompleteBlankAfter(blankId);
+  const nextBlankId = getAdjacentBlankId(blankId, 1);
 
-  if (!nextBlankId) {
-    renderSession();
+  if (nextBlankId) {
+    focusBlank(nextBlankId);
+  }
+}
+
+function moveToPreviousBlank(blankId = appState.currentBlankId) {
+  const previousBlankId = getAdjacentBlankId(blankId, -1);
+
+  if (previousBlankId) {
+    focusBlank(previousBlankId);
+  }
+}
+
+function checkCurrentBlank() {
+  const activeBlankId = getActiveBlankId();
+
+  if (!activeBlankId) {
     return;
   }
 
-  focusBlank(nextBlankId);
+  checkBlank(activeBlankId);
+  renderSession({ focusBlankId: activeBlankId });
 }
 
 function setBlankValue(blankId, value) {
@@ -1343,17 +1426,8 @@ function onBlankEnter(blankId) {
     return;
   }
 
-  if (blankState.status === "correct") {
-    moveToNextBlank(blankId);
-    return;
-  }
-
-  const result = checkBlank(blankId);
+  checkBlank(blankId);
   renderSession({ focusBlankId: blankId });
-
-  if (result.status === "correct") {
-    return;
-  }
 }
 
 function setReviewMode(reviewMode) {
@@ -1408,15 +1482,19 @@ function setLoadingState(message = "Loading current session...") {
   questionLabel.textContent = "Loading session";
   questionTitle.textContent = message;
   questionCopy.textContent = "Flattening the selected training file into one continuous session.";
-  pageCounter.textContent = "Page 0 / 0";
+  currentSetSummary.textContent = "Loading session...";
+  currentSetCopy.textContent = "Building the current drill set.";
+  pageCounter.textContent = "Prompt 0 / 0";
   completionChip.textContent = "0 / 0 blanks completed";
   reviewChip.textContent = "0 to review";
   sessionBanner.hidden = true;
   sessionBanner.innerHTML = "";
   sessionPage.innerHTML = `<p class="memorisation-empty">${message}</p>`;
-  prevPageButton.disabled = true;
+  sessionOutline.innerHTML = `<p class="memorisation-empty">${message}</p>`;
+  prevBlankButton.disabled = true;
+  checkBlankButton.disabled = true;
+  revealBlankButton.disabled = true;
   nextBlankButton.disabled = true;
-  nextPageButton.disabled = true;
   reviewToggleButton.hidden = true;
 }
 
@@ -1545,19 +1623,21 @@ function getReviewReasonSummary(blankId) {
 }
 
 function getBlankFeedbackDescriptor(blank, blankState) {
+  const hasAnswer = Boolean(String(blankState?.value || "").trim());
+
   if (blankState.status === "correct") {
     return {
-      label: "correct",
+      label: "Accepted",
       tone: "correct",
-      message: "Correct. Press Enter again to move to the next incomplete blank.",
+      message: "Accepted. The required chemistry ideas are in place.",
     };
   }
 
   if (blankState.status === "revealed") {
     return {
-      label: "revealed",
+      label: "Answer revealed",
       tone: "revealed",
-      message: "Revealed. Compare your wording with the minimum pass below.",
+      message: "Compare your wording with the canonical answer and minimum pass below.",
     };
   }
 
@@ -1568,60 +1648,57 @@ function getBlankFeedbackDescriptor(blank, blankState) {
     const contradictionWarning = blankState.contradictionHits.length
       ? " Remove the contradictory idea and try again."
       : "";
+    const isNearMatch =
+      blankState.matchState === "near_miss_preposition" ||
+      (blankState.coveredGroups.length > 0 && blankState.missingGroups.length > 0);
 
-    if (blankState.matchState === "near_miss_preposition") {
+    if (isNearMatch) {
       return {
-        label: "wrong",
-        tone: "wrong",
-        message: "Wrong. You are close, but the remaining issue looks like a preposition.",
+        label: "Near match",
+        tone: "near",
+        message: `Near match. ${
+          blankState.matchState === "near_miss_preposition"
+            ? "The remaining issue looks like a small preposition or phrasing shift."
+            : firstMissingGroup?.hint || "Tighten the remaining chemistry wording."
+        }${contradictionWarning}`,
       };
     }
 
     return {
-      label: "wrong",
+      label: "Needs revision",
       tone: "wrong",
-      message: `Wrong. ${firstMissingGroup?.hint || "Add the missing chemistry idea."}${contradictionWarning}`,
+      message: `Needs revision. ${
+        firstMissingGroup?.hint || "Add the missing chemistry idea."
+      }${contradictionWarning}`,
     };
   }
 
-  if (blank.multiline) {
+  if (!hasAnswer) {
     return {
-      label: "idle",
+      label: "No answer yet",
       tone: "neutral",
-      message: "Press Enter to check this blank. Use Shift+Enter for a new line.",
+      message: blank.multiline
+        ? "Type first, then use Check. Shift+Enter adds a new line."
+        : "Type first, then use Check.",
     };
   }
 
   return {
-    label: "idle",
+    label: "Ready to check",
     tone: "neutral",
-    message: "Press Enter to check this blank.",
+    message: "Use Check to compare this draft against the minimum pass wording.",
   };
 }
 
-function createBlankField(blank) {
+function createAnswerField(blank) {
   const blankState = getBlankState(blank.id);
   const fieldShell = document.createElement("div");
-  fieldShell.className = "memorisation-blank";
-  fieldShell.dataset.status = blankState?.status || "idle";
-  fieldShell.dataset.blankId = blank.id;
-
-  const fieldHeader = document.createElement("div");
-  fieldHeader.className = "memorisation-blank__header";
+  fieldShell.className = "memorisation-answer-card__field";
 
   const label = document.createElement("label");
   label.className = "memorisation-field__label";
   label.textContent = blank.label;
   label.setAttribute("for", blank.id);
-
-  const status = document.createElement("span");
-  status.className = "memorisation-blank__status";
-
-  const descriptor = getBlankFeedbackDescriptor(blank, blankState);
-  status.textContent = descriptor.label;
-  status.dataset.tone = descriptor.tone;
-
-  fieldHeader.append(label, status);
 
   const inputShell = document.createElement("div");
   inputShell.className = "memorisation-input-shell";
@@ -1630,11 +1707,7 @@ function createBlankField(blank) {
   mirror.className = "memorisation-input__mirror";
   mirror.setAttribute("aria-hidden", "true");
 
-  const field = document.createElement(blank.multiline ? "textarea" : "input");
-
-  if (!blank.multiline) {
-    field.type = "text";
-  }
+  const field = document.createElement("textarea");
 
   field.id = blank.id;
   field.className = "memorisation-input";
@@ -1643,7 +1716,7 @@ function createBlankField(blank) {
   field.autocapitalize = "off";
   field.placeholder = blank.placeholder;
   field.value = blankState?.value || "";
-  field.rows = blank.multiline ? 5 : undefined;
+  field.rows = blank.multiline ? 8 : 5;
   field.dataset.status = blankState?.status || "idle";
   field.addEventListener("focus", () => {
     appState.currentBlankId = blank.id;
@@ -1667,22 +1740,45 @@ function createBlankField(blank) {
     onBlankEnter(blank.id);
   });
 
-  const feedback = document.createElement("p");
-  feedback.className = "memorisation-feedback";
-  feedback.dataset.tone = descriptor.tone;
-  feedback.textContent = descriptor.message;
-
   inputShell.append(mirror, field);
   updateBlankInlineDisplay(blank, blankState, mirror, field);
 
   appState.blankInputRefs.set(blank.id, field);
-  fieldShell.append(fieldHeader, inputShell, feedback);
+  fieldShell.append(label, inputShell);
   return fieldShell;
 }
 
-function createRevealPanel(question) {
+function createFeedbackCard(blank) {
+  const blankState = getBlankState(blank.id);
+  const descriptor = getBlankFeedbackDescriptor(blank, blankState);
   const shell = document.createElement("section");
-  shell.className = "memorisation-reveal";
+  shell.className = "memorisation-feedback-card";
+  shell.dataset.tone = descriptor.tone;
+
+  const label = document.createElement("p");
+  label.className = "memorisation-feedback-card__label";
+  label.textContent = "Feedback";
+
+  const title = document.createElement("h4");
+  title.className = "memorisation-feedback-card__title";
+  title.textContent = descriptor.label;
+
+  const copy = document.createElement("p");
+  copy.className = "memorisation-feedback";
+  copy.dataset.tone = descriptor.tone;
+  copy.textContent = descriptor.message;
+
+  shell.append(label, title, copy);
+  return shell;
+}
+
+function createRevealPanel(question, blank) {
+  const shell = document.createElement("section");
+  shell.className = "interactive-subtle-panel memorisation-reveal";
+
+  const headerLabel = document.createElement("p");
+  headerLabel.className = "memorisation-question-label";
+  headerLabel.textContent = "Canonical answer";
 
   const fullAnswerBlock = document.createElement("div");
   fullAnswerBlock.className = "memorisation-reveal__block";
@@ -1712,157 +1808,38 @@ function createRevealPanel(question) {
 
   const note = document.createElement("p");
   note.className = "memorisation-answer__note";
-  note.textContent = getRevealNote(question);
+  note.textContent = [
+    question.blanks.length > 1 ? `Current target: ${blank.label}.` : "",
+    getRevealNote(question),
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-  shell.append(fullAnswerBlock, minimumPassBlock, note);
+  shell.append(headerLabel, fullAnswerBlock, minimumPassBlock, note);
   return shell;
 }
 
-function renderQuestionCard(question) {
-  const card = document.createElement("article");
-  card.className = "interactive-subtle-panel memorisation-question-card";
-
-  const header = document.createElement("div");
-  header.className = "memorisation-question-card__header";
-
-  const titleBlock = document.createElement("div");
-  titleBlock.className = "memorisation-question-card__title";
-
-  const metaLabel = document.createElement("p");
-  metaLabel.className = "memorisation-question-label";
-  metaLabel.textContent = question.fileLabel;
-
-  const title = document.createElement("h3");
-  title.textContent = question.question;
-
-  const meta = document.createElement("p");
-  meta.className = "memorisation-question-copy";
-  meta.textContent = buildQuestionMeta(question);
-
-  titleBlock.append(metaLabel, title, meta);
-
-  const actions = document.createElement("div");
-  actions.className = "memorisation-question-card__actions";
-
-  const revealButton = document.createElement("button");
-  revealButton.type = "button";
-  revealButton.className = "secondary-link";
-  revealButton.textContent = appState.revealedQuestionIds.has(question.id)
-    ? "Answer shown"
-    : "Reveal answer";
-  revealButton.disabled = appState.revealedQuestionIds.has(question.id);
-  revealButton.addEventListener("click", () => {
-    revealQuestion(question.id);
-  });
-
-  actions.append(revealButton);
-  header.append(titleBlock, actions);
-  card.append(header);
-
-  if (question.kind === "cloze") {
-    const stem = document.createElement("p");
-    stem.className = "memorisation-question-stem";
-    stem.textContent = question.prompt;
-    card.append(stem);
-  }
-
-  const blankList = document.createElement("div");
-  blankList.className = "memorisation-blank-list";
-  question.blanks.forEach((blank) => {
-    blankList.append(createBlankField(blank));
-  });
-  card.append(blankList);
-
-  if (appState.revealedQuestionIds.has(question.id)) {
-    card.append(createRevealPanel(question));
-  }
-
-  return card;
-}
-
-function renderReviewCard(blankId) {
-  const blank = getBlank(blankId);
-  const question = getQuestion(blank?.questionId || "");
-
-  if (!blank || !question) {
-    return null;
-  }
-
-  const card = document.createElement("article");
-  card.className = "interactive-subtle-panel memorisation-question-card memorisation-question-card--review";
-
-  const header = document.createElement("div");
-  header.className = "memorisation-question-card__header";
-
-  const titleBlock = document.createElement("div");
-  titleBlock.className = "memorisation-question-card__title";
-
-  const metaLabel = document.createElement("p");
-  metaLabel.className = "memorisation-question-label";
-  metaLabel.textContent = "Review blank";
-
-  const title = document.createElement("h3");
-  title.textContent = question.question;
-
-  const meta = document.createElement("p");
-  meta.className = "memorisation-question-copy";
-  meta.textContent = [buildQuestionMeta(question), blank.label, getReviewReasonSummary(blankId)]
-    .filter(Boolean)
-    .join(" · ");
-
-  titleBlock.append(metaLabel, title, meta);
-
-  const actions = document.createElement("div");
-  actions.className = "memorisation-question-card__actions";
-
-  const revealButton = document.createElement("button");
-  revealButton.type = "button";
-  revealButton.className = "secondary-link";
-  revealButton.textContent = appState.revealedQuestionIds.has(question.id)
-    ? "Answer shown"
-    : "Reveal answer";
-  revealButton.disabled = appState.revealedQuestionIds.has(question.id);
-  revealButton.addEventListener("click", () => {
-    revealQuestion(question.id);
-  });
-
-  actions.append(revealButton);
-  header.append(titleBlock, actions);
-  card.append(header);
-
-  if (question.kind === "cloze") {
-    const stem = document.createElement("p");
-    stem.className = "memorisation-question-stem";
-    stem.textContent = question.prompt;
-    card.append(stem);
-  }
-
-  const blankList = document.createElement("div");
-  blankList.className = "memorisation-blank-list";
-  blankList.append(createBlankField(blank));
-  card.append(blankList);
-
-  if (appState.revealedQuestionIds.has(question.id)) {
-    card.append(createRevealPanel(question));
-  }
-
-  return card;
-}
-
 function renderProgressHeader() {
-  const pages = getPageSet();
-  const currentPageIndex = getCurrentPageIndex();
+  const blankOrder = getCurrentModeBlankOrder();
+  const activeBlankId = getActiveBlankId();
+  const activeBlankIndex = getBlankOrderIndex(activeBlankId, blankOrder);
+  const activeQuestion = getQuestion(getBlank(activeBlankId)?.questionId || "");
   const totalBlanks = appState.sessionBlankIds.length;
   const completedBlanks = getCompletedBlankCount();
   const reviewCount = appState.reviewQueueBlankIds.length;
-  const pageLabel = pages.length ? currentPageIndex + 1 : 0;
+  const promptLabel = activeBlankIndex >= 0 ? activeBlankIndex + 1 : 0;
 
-  pageCounter.textContent = `Page ${pageLabel} / ${pages.length}`;
+  pageCounter.textContent = `${appState.reviewMode ? "Review" : "Prompt"} ${promptLabel} / ${
+    blankOrder.length
+  }`;
   completionChip.textContent = `${completedBlanks} / ${totalBlanks} blanks completed`;
   reviewChip.textContent = `${reviewCount} to review`;
-  prevPageButton.disabled = currentPageIndex <= 0;
-  nextPageButton.disabled = currentPageIndex >= pages.length - 1;
-  nextBlankButton.disabled = !findNextIncompleteBlankAfter(appState.currentBlankId);
+  prevBlankButton.disabled = activeBlankIndex <= 0;
+  nextBlankButton.disabled = activeBlankIndex < 0 || activeBlankIndex >= blankOrder.length - 1;
+  checkBlankButton.disabled = !activeBlankId;
+  revealBlankButton.disabled = !activeQuestion || appState.revealedQuestionIds.has(activeQuestion.id);
+  revealBlankButton.textContent =
+    activeQuestion && appState.revealedQuestionIds.has(activeQuestion.id) ? "Shown" : "Reveal";
 
   reviewToggleButton.hidden =
     reviewCount === 0 || (!appState.reviewMode && completedBlanks !== totalBlanks);
@@ -1927,11 +1904,15 @@ function renderSessionHeaderCopy() {
   const topicText = appState.topic ? getTopicEntry()?.label || "Current topic" : "All topics";
 
   if (appState.reviewMode) {
-    questionLabel.textContent = "Session review";
+    questionLabel.textContent = "Focused review";
     questionTitle.textContent = `${fileEntry?.label || "Training file"} review queue`;
-    questionCopy.textContent = `Reviewing flagged blanks from ${stageEntry?.id || "stage"} · ${
-      levelEntry?.label || "level"
-    } · ${topicText}.`;
+    questionCopy.textContent = `Return to missed or revealed blanks from ${
+      stageEntry?.id || "stage"
+    } · ${levelEntry?.label || "level"} · ${topicText}.`;
+    currentSetSummary.textContent = `Reviewing ${topicText}`;
+    currentSetCopy.textContent = `${stageEntry?.id || "Stage"} · ${
+      levelEntry?.label || "Level"
+    } · ${pluralise(appState.reviewQueueBlankIds.length, "blank")} queued`;
     return;
   }
 
@@ -1939,43 +1920,195 @@ function renderSessionHeaderCopy() {
   questionTitle.textContent = `${fileEntry?.label || "Training file"} · ${
     levelEntry?.label || "Level"
   }`;
-  questionCopy.textContent = `Flattened across ${topicText}. Use Enter to check the current blank and Next blank to follow session order.`;
+  questionCopy.textContent = `Follow the drill loop: read, type, check, then move on. The review queue collects reveals and misses for a second pass.`;
+  currentSetSummary.textContent = `${topicText} · ${fileEntry?.label || "Training file"}`;
+  currentSetCopy.textContent = `${stageEntry?.id || "Stage"} · ${
+    levelEntry?.label || "Level"
+  } · ${getFileCountLabel(fileEntry)}`;
 }
 
-function renderPageContent() {
-  sessionPage.replaceChildren();
-  appState.blankInputRefs = new Map();
+function getOutlineStatusLabel(blank, blankState) {
+  if (!blank || !blankState) {
+    return "Not started";
+  }
 
-  const pageEntries = getCurrentPageEntries();
+  return getBlankFeedbackDescriptor(blank, blankState).label;
+}
 
-  if (!pageEntries.length) {
-    renderStatusCard(sessionPage, "No page entries are available for the current session.");
+function renderSessionOutline() {
+  sessionOutline.replaceChildren();
+
+  const blankOrder = getCurrentModeBlankOrder();
+
+  if (!blankOrder.length) {
+    const emptyState = document.createElement("p");
+    emptyState.className = "memorisation-empty";
+    emptyState.textContent = "No prompts in this session yet.";
+    sessionOutline.append(emptyState);
     return;
   }
 
-  if (appState.reviewMode) {
-    pageEntries.forEach((blankId) => {
-      const reviewCard = renderReviewCard(blankId);
-      if (reviewCard) {
-        sessionPage.append(reviewCard);
-      }
-    });
-  } else {
-    pageEntries.forEach((questionId) => {
-      const question = getQuestion(questionId);
-      if (question) {
-        sessionPage.append(renderQuestionCard(question));
-      }
-    });
+  const activeBlankId = getActiveBlankId();
+  const currentIndex = Math.max(getBlankOrderIndex(activeBlankId, blankOrder), 0);
+  const maxVisible = 7;
+  let startIndex = Math.max(0, currentIndex - 2);
+  let endIndex = Math.min(blankOrder.length, startIndex + maxVisible);
+
+  if (endIndex - startIndex < maxVisible) {
+    startIndex = Math.max(0, endIndex - maxVisible);
   }
 
-  const focusBlankId =
-    appState.pendingFocusBlankId ||
-    (appState.reviewMode
-      ? pageEntries[0] || ""
-      : getQuestion(pageEntries[0])?.blanks[0]?.id || "");
+  blankOrder.slice(startIndex, endIndex).forEach((blankId) => {
+    const blank = getBlank(blankId);
+    const question = getQuestion(blank?.questionId || "");
+    const blankState = getBlankState(blankId);
 
-  queueFocusBlank(focusBlankId);
+    if (!blank || !question || !blankState) {
+      return;
+    }
+
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "memorisation-outline__item";
+    item.dataset.current = String(blankId === activeBlankId);
+    item.dataset.status = blankState.status;
+    item.addEventListener("click", () => {
+      focusBlank(blankId);
+    });
+
+    const title = document.createElement("span");
+    title.className = "memorisation-outline__title";
+    title.textContent = question.question;
+
+    const meta = document.createElement("p");
+    meta.className = "memorisation-outline__meta";
+    meta.textContent = [blank.label, buildQuestionMeta(question)].filter(Boolean).join(" · ");
+
+    const status = document.createElement("span");
+    status.className = "memorisation-outline__status";
+    status.textContent = getOutlineStatusLabel(blank, blankState);
+
+    item.append(title, meta, status);
+    sessionOutline.append(item);
+  });
+
+  if (startIndex > 0 || endIndex < blankOrder.length) {
+    const overflow = document.createElement("p");
+    overflow.className = "memorisation-outline__overflow";
+    overflow.textContent = `${blankOrder.length - (endIndex - startIndex)} more prompt${
+      blankOrder.length - (endIndex - startIndex) === 1 ? "" : "s"
+    } in this session.`;
+    sessionOutline.append(overflow);
+  }
+}
+
+function renderActivePractice() {
+  sessionPage.replaceChildren();
+  appState.blankInputRefs = new Map();
+
+  const activeBlankId = getActiveBlankId();
+  const blank = getBlank(activeBlankId);
+  const question = getQuestion(blank?.questionId || "");
+
+  if (!blank || !question) {
+    renderStatusCard(sessionPage, "No active prompt is available for the current session.");
+    return;
+  }
+
+  const promptCard = document.createElement("article");
+  promptCard.className = "interactive-subtle-panel memorisation-prompt-card";
+
+  const promptChips = document.createElement("div");
+  promptChips.className = "memorisation-card-chips";
+
+  const topicChip = document.createElement("span");
+  topicChip.className = "memorisation-card-chip";
+  topicChip.textContent = question.topicLabel || "Current topic";
+
+  const typeChip = document.createElement("span");
+  typeChip.className = "memorisation-card-chip";
+  typeChip.textContent = question.type || question.fileLabel;
+
+  promptChips.append(topicChip, typeChip);
+
+  if (question.blanks.length > 1) {
+    const blankChip = document.createElement("span");
+    blankChip.className = "memorisation-card-chip memorisation-card-chip--muted";
+    blankChip.textContent = blank.label;
+    promptChips.append(blankChip);
+  }
+
+  const promptLabel = document.createElement("p");
+  promptLabel.className = "memorisation-question-label";
+  promptLabel.textContent = appState.reviewMode ? "Review prompt" : "Active prompt";
+
+  const promptTitle = document.createElement("h3");
+  promptTitle.textContent = question.question;
+
+  const promptMeta = document.createElement("p");
+  promptMeta.className = "memorisation-prompt-card__meta";
+  promptMeta.textContent = [buildQuestionMeta(question), getReviewReasonSummary(blank.id)]
+    .filter(Boolean)
+    .join(" · ");
+
+  promptCard.append(promptChips, promptLabel, promptTitle, promptMeta);
+
+  if (question.prompt && (question.kind === "cloze" || question.prompt !== question.question)) {
+    const contextBlock = document.createElement("div");
+    contextBlock.className = "memorisation-prompt-context";
+
+    const contextLabel = document.createElement("p");
+    contextLabel.className = "memorisation-prompt-context__label";
+    contextLabel.textContent = question.kind === "cloze" ? "Prompt context" : "Prompt";
+
+    const contextText = document.createElement("p");
+    contextText.className = "memorisation-prompt-context__text";
+    contextText.textContent = question.prompt;
+
+    contextBlock.append(contextLabel, contextText);
+    promptCard.append(contextBlock);
+  }
+
+  const answerCard = document.createElement("article");
+  answerCard.className = "interactive-subtle-panel memorisation-answer-card";
+
+  const answerHeader = document.createElement("div");
+  answerHeader.className = "memorisation-answer-card__header";
+
+  const answerHeaderCopy = document.createElement("div");
+
+  const answerLabel = document.createElement("p");
+  answerLabel.className = "memorisation-question-label";
+  answerLabel.textContent = "Your answer";
+
+  const answerCopy = document.createElement("p");
+  answerCopy.className = "memorisation-answer-card__copy";
+  answerCopy.textContent = blank.multiline
+    ? "Use a full multi-line response. Shift+Enter adds a new line without checking."
+    : "Keep the wording tight, then use Check to compare it against the minimum pass.";
+
+  answerHeaderCopy.append(answerLabel, answerCopy);
+
+  const statusPill = document.createElement("span");
+  const descriptor = getBlankFeedbackDescriptor(blank, getBlankState(blank.id));
+  statusPill.className = "memorisation-status-pill";
+  statusPill.dataset.tone = descriptor.tone;
+  statusPill.textContent = descriptor.label;
+
+  answerHeader.append(answerHeaderCopy, statusPill);
+  answerCard.append(answerHeader, createAnswerField(blank));
+
+  sessionPage.append(promptCard, answerCard, createFeedbackCard(blank));
+
+  if (appState.revealedQuestionIds.has(question.id)) {
+    sessionPage.append(createRevealPanel(question, blank));
+  }
+
+  queueFocusBlank(appState.pendingFocusBlankId || activeBlankId);
+}
+
+function renderPageContent() {
+  renderActivePractice();
 }
 
 function renderEmptyState(message) {
@@ -1984,15 +2117,19 @@ function renderEmptyState(message) {
   questionLabel.textContent = "No session questions";
   questionTitle.textContent = "Nothing matches the current selection.";
   questionCopy.textContent = message;
-  pageCounter.textContent = "Page 0 / 0";
+  currentSetSummary.textContent = "Nothing matches this set";
+  currentSetCopy.textContent = message;
+  pageCounter.textContent = "Prompt 0 / 0";
   completionChip.textContent = "0 / 0 blanks completed";
   reviewChip.textContent = "0 to review";
   sessionBanner.hidden = true;
   sessionBanner.innerHTML = "";
   renderStatusCard(sessionPage, message);
-  prevPageButton.disabled = true;
+  renderSessionOutline();
+  prevBlankButton.disabled = true;
+  checkBlankButton.disabled = true;
+  revealBlankButton.disabled = true;
   nextBlankButton.disabled = true;
-  nextPageButton.disabled = true;
   reviewToggleButton.hidden = true;
   updateUrlFromState();
 }
@@ -2019,7 +2156,9 @@ function renderCatalogErrorState(message) {
   questionTitle.textContent = "Could not load memorisation data.";
   questionCopy.textContent =
     "The catalog or its supporting files could not be loaded. Retry this page in a moment.";
-  pageCounter.textContent = "Page 0 / 0";
+  currentSetSummary.textContent = "Memorisation bank unavailable";
+  currentSetCopy.textContent = "The catalog or its supporting files could not be loaded.";
+  pageCounter.textContent = "Prompt 0 / 0";
   completionChip.textContent = "0 / 0 blanks completed";
   reviewChip.textContent = "0 to review";
   sessionBanner.hidden = true;
@@ -2027,9 +2166,11 @@ function renderCatalogErrorState(message) {
   renderStatusCard(sessionPage, message, "Retry loading", () => {
     bootRuntime({ preserveSelection: false });
   });
-  prevPageButton.disabled = true;
+  renderSessionOutline();
+  prevBlankButton.disabled = true;
+  checkBlankButton.disabled = true;
+  revealBlankButton.disabled = true;
   nextBlankButton.disabled = true;
-  nextPageButton.disabled = true;
   reviewToggleButton.hidden = true;
 }
 
@@ -2050,7 +2191,9 @@ function renderFileErrorState(fileEntry, message) {
   questionLabel.textContent = "Loading error";
   questionTitle.textContent = `Could not load ${fileEntry?.label || "the selected training file"}.`;
   questionCopy.textContent = message;
-  pageCounter.textContent = "Page 0 / 0";
+  currentSetSummary.textContent = "Could not load this set";
+  currentSetCopy.textContent = message;
+  pageCounter.textContent = "Prompt 0 / 0";
   completionChip.textContent = "0 / 0 blanks completed";
   reviewChip.textContent = "0 to review";
   sessionBanner.hidden = true;
@@ -2058,9 +2201,11 @@ function renderFileErrorState(fileEntry, message) {
   renderStatusCard(sessionPage, message, "Retry loading", () => {
     refreshSession({ allowCatalogResync: true });
   });
-  prevPageButton.disabled = true;
+  renderSessionOutline();
+  prevBlankButton.disabled = true;
+  checkBlankButton.disabled = true;
+  revealBlankButton.disabled = true;
   nextBlankButton.disabled = true;
-  nextPageButton.disabled = true;
   reviewToggleButton.hidden = true;
   updateUrlFromState();
 }
@@ -2076,6 +2221,7 @@ function renderSession({ focusBlankId = "" } = {}) {
   renderProgressHeader();
   renderBanner();
   renderPageContent();
+  renderSessionOutline();
   updateUrlFromState();
 }
 
@@ -2161,6 +2307,18 @@ function registerStaticEvents() {
     return;
   }
 
+  filtersToggleButton.addEventListener("click", () => {
+    setFiltersOpen(!appState.filtersOpen);
+  });
+
+  filtersCloseButton.addEventListener("click", () => {
+    closeFilters();
+  });
+
+  filtersBackdrop.addEventListener("click", () => {
+    closeFilters();
+  });
+
   topicFilter.addEventListener("change", (event) => {
     applySelection(
       getSelectionSnapshot({
@@ -2172,20 +2330,33 @@ function registerStaticEvents() {
     );
   });
 
-  prevPageButton.addEventListener("click", () => {
-    goToPage(getCurrentPageIndex() - 1);
+  prevBlankButton.addEventListener("click", () => {
+    moveToPreviousBlank(getActiveBlankId());
   });
 
-  nextPageButton.addEventListener("click", () => {
-    goToPage(getCurrentPageIndex() + 1);
+  checkBlankButton.addEventListener("click", () => {
+    checkCurrentBlank();
+  });
+
+  revealBlankButton.addEventListener("click", () => {
+    const activeBlankId = getActiveBlankId();
+    const questionId = getBlank(activeBlankId)?.questionId;
+
+    if (questionId) {
+      revealQuestion(questionId);
+    }
   });
 
   nextBlankButton.addEventListener("click", () => {
-    moveToNextBlank(appState.currentBlankId);
+    moveToNextBlank(getActiveBlankId());
   });
 
   reviewToggleButton.addEventListener("click", () => {
     setReviewMode(!appState.reviewMode);
+  });
+
+  window.addEventListener("resize", () => {
+    setFiltersOpen(appState.filtersOpen);
   });
 
   appState.staticEventsRegistered = true;
