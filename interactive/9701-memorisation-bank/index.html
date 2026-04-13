@@ -48,86 +48,188 @@
         </div>
       </header>
 
-      <header class="interactive-hero">
+      <header class="interactive-hero memorisation-page-header">
         <a class="interactive-return" href="../index.html" data-preserve-theme
           >Back to Interactive</a
         >
-        <p class="interactive-kicker">Student Site · Interactive Chemistry</p>
-        <div class="interactive-hero-grid">
-          <div class="interactive-title-block">
+        <div class="memorisation-page-header__grid">
+          <div class="memorisation-page-header__copy">
+            <p class="interactive-kicker">Student Site · Interactive Chemistry</p>
             <div class="interactive-meta-row">
               <span class="interactive-meta-chip">CAIE 9701</span>
               <span class="interactive-meta-chip">AS + A2</span>
-              <span class="interactive-meta-chip">Levelled pack</span>
+              <span class="interactive-meta-chip">Focused drill flow</span>
             </div>
             <h1>9701 Memorisation Bank</h1>
             <p class="interactive-summary">
-              Build one continuous memorisation session from the current stage, level, file, and
-              topic filter. The session now runs through a flattened question order with multiple
-              prompts per page, blank-first checking, and a review queue at the end.
+              One active prompt, one answer surface, one clear next step. Refine the set quietly,
+              check blank by blank, and send misses or reveals into review without turning the page
+              into a dashboard.
             </p>
           </div>
-          <div class="interactive-meta-group">
-            <article class="interactive-meta-card">
-              <span>Navigation model</span>
-              <strong>Stage → Level → Training file, with topic filtering and continuous pages.</strong>
-            </article>
-            <article class="interactive-meta-card">
-              <span>Checking model</span>
-              <strong>Blank-level checking, lightweight inline feedback, and answer reveal for review.</strong>
-            </article>
-          </div>
+
+          <section class="interactive-subtle-panel memorisation-session-strip">
+            <div class="memorisation-workspace__header">
+              <div class="memorisation-badges">
+                <span id="stage-badge" class="memorisation-badge">Stage</span>
+                <span id="level-badge" class="memorisation-badge">Level</span>
+                <span id="topic-badge" class="memorisation-badge">Topic</span>
+                <span id="file-badge" class="memorisation-badge">Training file</span>
+                <span id="source-badge" class="memorisation-badge" hidden>Definition source</span>
+                <span id="round-badge" class="memorisation-badge" hidden>Round</span>
+              </div>
+              <span id="counter-chip" class="memorisation-counter-chip">Main session</span>
+            </div>
+
+            <p id="question-label" class="memorisation-question-label">Preparing session</p>
+            <h2 id="question-title">Loading memorisation data...</h2>
+            <p id="question-copy" class="memorisation-question-copy">
+              Reading stage manifests and building a flattened session list.
+            </p>
+
+            <div class="memorisation-progress__summary memorisation-progress__summary--header">
+              <span id="page-counter" class="memorisation-counter-chip">Prompt 0 / 0</span>
+              <span id="completion-chip" class="memorisation-counter-chip memorisation-counter-chip--soft"
+                >0 / 0 blanks completed</span
+              >
+              <span id="review-chip" class="memorisation-counter-chip memorisation-counter-chip--soft"
+                >0 to review</span
+              >
+            </div>
+          </section>
         </div>
       </header>
 
       <main class="interactive-app-shell memorisation-layout">
-        <aside class="interactive-panel memorisation-sidebar">
-          <section class="memorisation-control">
-            <p class="memorisation-control__label">Stage</p>
-            <div id="stage-switcher" class="memorisation-switcher"></div>
-          </section>
-
-          <section class="memorisation-control">
-            <p class="memorisation-control__label">Level</p>
-            <div id="level-switcher" class="memorisation-levels"></div>
-          </section>
-
-          <label class="memorisation-control" for="topic-filter">
-            <span class="memorisation-control__label">Topic Filter</span>
-            <select id="topic-filter" class="memorisation-select">
-              <option value="">Loading topics...</option>
-            </select>
-          </label>
-
-          <section class="memorisation-control">
-            <p class="memorisation-control__label">Training File</p>
-            <div id="file-switcher" class="memorisation-files"></div>
-          </section>
-
-          <section id="definition-filter-section" class="memorisation-control" hidden>
-            <p class="memorisation-control__label">Definition Source</p>
-            <div id="definition-filter-grid" class="memorisation-filter-grid"></div>
-          </section>
-
-          <section id="round-switcher-section" class="memorisation-control" hidden>
-            <p class="memorisation-control__label">Round</p>
-            <div id="round-switcher" class="memorisation-filter-grid"></div>
-          </section>
-
-          <div class="interactive-subtle-panel memorisation-stats">
-            <div class="memorisation-stat">
-              <span>Source items</span>
-              <strong id="file-manifest-count">0 source items</strong>
+        <section class="interactive-panel memorisation-workspace">
+          <section class="interactive-subtle-panel memorisation-control-band">
+            <div class="memorisation-current-row">
+              <div>
+                <p class="memorisation-question-label">Current set</p>
+                <h3 id="current-set-summary" class="memorisation-current-row__title">
+                  Loading session...
+                </h3>
+                <p id="current-set-copy" class="memorisation-current-row__copy">
+                  Choose a stage, level, topic, and training file to begin.
+                </p>
+              </div>
+              <div class="memorisation-current-row__actions">
+                <button id="review-toggle" class="secondary-link" type="button" hidden>
+                  Review missed / revealed blanks
+                </button>
+                <button
+                  id="filters-toggle"
+                  class="doc-link"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="filters-sheet"
+                >
+                  Refine set
+                </button>
+              </div>
             </div>
-            <div class="memorisation-stat">
-              <span>Session questions</span>
-              <strong id="pool-count">0 session questions</strong>
+          </section>
+
+          <div id="filters-backdrop" class="memorisation-filter-backdrop" hidden></div>
+
+          <section
+            id="filters-sheet"
+            class="interactive-subtle-panel memorisation-filters-sheet"
+            aria-label="Refine set"
+            hidden
+          >
+            <div class="memorisation-filters-sheet__header">
+              <div>
+                <p class="memorisation-question-label">Refine set</p>
+                <h2>Adjust the session scope</h2>
+              </div>
+              <button id="filters-close" class="secondary-link" type="button">Close</button>
             </div>
-            <div class="memorisation-stat">
-              <span>Session blanks</span>
-              <strong id="item-counter">0 session blanks</strong>
+
+            <div class="memorisation-filters-sheet__content">
+              <section class="memorisation-control">
+                <p class="memorisation-control__label">Stage</p>
+                <div id="stage-switcher" class="memorisation-switcher"></div>
+              </section>
+
+              <section class="memorisation-control">
+                <p class="memorisation-control__label">Level</p>
+                <div id="level-switcher" class="memorisation-levels"></div>
+              </section>
+
+              <label class="memorisation-control" for="topic-filter">
+                <span class="memorisation-control__label">Topic filter</span>
+                <select id="topic-filter" class="memorisation-select">
+                  <option value="">Loading topics...</option>
+                </select>
+              </label>
+
+              <section class="memorisation-control">
+                <p class="memorisation-control__label">Training file</p>
+                <div id="file-switcher" class="memorisation-files"></div>
+              </section>
+
+              <section id="definition-filter-section" class="memorisation-control" hidden>
+                <p class="memorisation-control__label">Definition source</p>
+                <div id="definition-filter-grid" class="memorisation-filter-grid"></div>
+              </section>
+
+              <section id="round-switcher-section" class="memorisation-control" hidden>
+                <p class="memorisation-control__label">Round</p>
+                <div id="round-switcher" class="memorisation-filter-grid"></div>
+              </section>
             </div>
-          </div>
+          </section>
+
+          <section class="memorisation-practice-shell">
+            <section
+              id="session-banner"
+              class="interactive-accent-panel memorisation-banner"
+              hidden
+            ></section>
+
+            <section id="session-page" class="memorisation-session-page"></section>
+
+            <div class="memorisation-action-bar" role="group" aria-label="Session actions">
+              <button id="prev-blank" class="secondary-link" type="button">Previous</button>
+              <button id="check-blank" class="doc-link" type="button">Check</button>
+              <button id="reveal-blank" class="secondary-link" type="button">Reveal</button>
+              <button id="next-blank" class="secondary-link" type="button">Next</button>
+            </div>
+          </section>
+        </section>
+
+        <aside class="interactive-panel memorisation-sidebar" aria-label="Session support">
+          <section class="interactive-subtle-panel memorisation-side-card">
+            <div class="memorisation-side-card__header">
+              <div>
+                <p class="memorisation-question-label">Session outline</p>
+                <h2>Keep the next prompts nearby</h2>
+              </div>
+            </div>
+            <p class="memorisation-side-card__copy">
+              Jump backward or forward without reopening the full filter stack.
+            </p>
+            <div id="session-outline" class="memorisation-outline"></div>
+          </section>
+
+          <section class="interactive-subtle-panel memorisation-side-card">
+            <p class="memorisation-question-label">Session stats</p>
+            <div class="memorisation-stats memorisation-stats--compact">
+              <div class="memorisation-stat">
+                <span>Source items</span>
+                <strong id="file-manifest-count">0 source items</strong>
+              </div>
+              <div class="memorisation-stat">
+                <span>Session questions</span>
+                <strong id="pool-count">0 session questions</strong>
+              </div>
+              <div class="memorisation-stat">
+                <span>Session blanks</span>
+                <strong id="item-counter">0 session blanks</strong>
+              </div>
+            </div>
+          </section>
 
           <details class="interactive-help">
             <summary>
@@ -152,59 +254,14 @@
                   <strong>Blank-first checking with review follow-up</strong>
                   <p>
                     Guided cloze, multi-round prompts, and full reconstruction all check per blank,
-                    keep the session continuous across pages, and send wrong or revealed blanks into
-                    the review queue.
+                    keep the session continuous across the same drill loop, and send wrong or
+                    revealed blanks into the review queue.
                   </p>
                 </article>
               </div>
             </div>
           </details>
         </aside>
-
-        <section class="interactive-panel memorisation-workspace">
-          <div class="memorisation-workspace__header">
-            <div class="memorisation-badges">
-              <span id="stage-badge" class="memorisation-badge">Stage</span>
-              <span id="level-badge" class="memorisation-badge">Level</span>
-              <span id="topic-badge" class="memorisation-badge">Topic</span>
-              <span id="file-badge" class="memorisation-badge">Training file</span>
-              <span id="source-badge" class="memorisation-badge" hidden>Definition source</span>
-              <span id="round-badge" class="memorisation-badge" hidden>Round</span>
-            </div>
-            <span id="counter-chip" class="memorisation-counter-chip">Main session</span>
-          </div>
-
-          <p id="question-label" class="memorisation-question-label">Preparing session</p>
-          <h2 id="question-title">Loading memorisation data...</h2>
-          <p id="question-copy" class="memorisation-question-copy">
-            Reading stage manifests and building a flattened session list.
-          </p>
-
-          <section class="interactive-subtle-panel memorisation-progress">
-            <div class="memorisation-progress__summary">
-              <span id="page-counter" class="memorisation-counter-chip">Page 0 / 0</span>
-              <span id="completion-chip" class="memorisation-counter-chip memorisation-counter-chip--soft"
-                >0 / 0 blanks completed</span
-              >
-              <span id="review-chip" class="memorisation-counter-chip memorisation-counter-chip--soft"
-                >0 to review</span
-              >
-            </div>
-
-            <div class="memorisation-progress__actions">
-              <button id="prev-page" class="secondary-link" type="button">Prev page</button>
-              <button id="next-blank" class="doc-link" type="button">Next blank</button>
-              <button id="next-page" class="secondary-link" type="button">Next page</button>
-              <button id="review-toggle" class="doc-link" type="button" hidden>
-                Review missed / revealed blanks
-              </button>
-            </div>
-          </section>
-
-          <section id="session-banner" class="interactive-accent-panel memorisation-banner" hidden></section>
-
-          <section id="session-page" class="memorisation-session-page"></section>
-        </section>
       </main>
     </div>
 
