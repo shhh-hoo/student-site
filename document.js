@@ -88,16 +88,16 @@ function normalizeDocumentId(value) {
 
 function buildLibraryReturnHref(params) {
   const librarySearch = normalizeLibrarySearchParam(params.get("from"));
-  const explicitTheme =
-    params.get(themeQueryKey) || window.StudentSiteTheme?.getExplicitTheme?.(window.location.search);
+  const explicitThemePreference =
+    params.get(themeQueryKey) || window.StudentSiteTheme?.getExplicitThemePreference?.(window.location.search);
   const destination = new URL("./index.html", window.location.href);
 
   if (librarySearch) {
     destination.search = librarySearch;
   }
 
-  if (window.StudentSiteTheme?.isThemeValue?.(explicitTheme)) {
-    destination.searchParams.set(themeQueryKey, explicitTheme);
+  if (window.StudentSiteTheme?.isThemePreferenceValue?.(explicitThemePreference)) {
+    destination.searchParams.set(themeQueryKey, explicitThemePreference);
   }
 
   return `${destination.pathname}${destination.search}${destination.hash}`;
@@ -128,10 +128,10 @@ function normalizeLibrarySearchParam(value) {
     normalizedParams.set(libraryFilterQueryKeys.tags, tags.join(","));
   }
 
-  const explicitTheme = sourceParams.get(themeQueryKey);
+  const explicitThemePreference = sourceParams.get(themeQueryKey);
 
-  if (window.StudentSiteTheme?.isThemeValue?.(explicitTheme)) {
-    normalizedParams.set(themeQueryKey, explicitTheme);
+  if (window.StudentSiteTheme?.isThemePreferenceValue?.(explicitThemePreference)) {
+    normalizedParams.set(themeQueryKey, explicitThemePreference);
   }
 
   return normalizedParams.toString();
