@@ -14,10 +14,6 @@ body.interactive-shell-page {
   padding-bottom: 4rem;
 }
 
-.interactive-shell-page .site-header__eyebrow {
-  color: var(--home-ink-muted);
-}
-
 .interactive-shell-page .cta-button {
   border-width: var(--home-border-strong);
   border-radius: 18px;
