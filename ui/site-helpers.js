@@ -103,8 +103,7 @@ function getExplicitTheme() {
 }
 
 function preserveExplicitTheme(destination) {
-  const explicitThemePreference =
-    window.StudentSiteTheme?.getExplicitThemePreference?.() || getExplicitTheme();
+  const explicitThemePreference = window.StudentSiteTheme?.getExplicitThemePreference?.() || getExplicitTheme();
 
   if (window.StudentSiteTheme?.isThemePreferenceValue?.(explicitThemePreference)) {
     destination.searchParams.set(window.StudentSiteTheme.themeQueryKey, explicitThemePreference);
