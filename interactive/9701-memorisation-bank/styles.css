@@ -8,6 +8,9 @@
   --memorisation-surface-soft: rgba(244, 251, 248, 0.92);
   --memorisation-surface-accent: rgba(15, 139, 141, 0.06);
   --memorisation-shadow: 0 18px 36px rgba(15, 139, 141, 0.08);
+  --memorisation-input-min-height: 13rem;
+  --memorisation-input-max-height: 24rem;
+  --memorisation-sticky-bar-space: 1rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
   gap: 1rem;
@@ -271,7 +274,7 @@ body.memorisation-filters-open {
 .memorisation-practice-shell {
   display: grid;
   gap: 1rem;
-  padding-bottom: 0.35rem;
+  padding-bottom: var(--memorisation-sticky-bar-space);
 }
 
 .memorisation-session-page {
@@ -281,9 +284,11 @@ body.memorisation-filters-open {
 
 .memorisation-prompt-card,
 .memorisation-answer-card,
-.memorisation-feedback-card {
+.memorisation-feedback-card,
+.memorisation-reveal {
   display: grid;
   gap: 0.95rem;
+  scroll-margin-bottom: calc(var(--memorisation-sticky-bar-space) + 1.25rem);
 }
 
 .memorisation-card-chips {
@@ -437,6 +442,7 @@ body.memorisation-filters-open {
   width: 100%;
   min-width: 0;
   padding: 1rem 1.1rem;
+  box-sizing: border-box;
   font: inherit;
   line-height: 1.65;
 }
@@ -479,8 +485,10 @@ body.memorisation-filters-open {
 }
 
 textarea.memorisation-input {
-  min-height: 13rem;
-  resize: vertical;
+  min-height: var(--memorisation-input-min-height);
+  max-height: var(--memorisation-input-max-height);
+  overflow-y: hidden;
+  resize: none;
 }
 
 .memorisation-display-segment--word_hit {
@@ -531,6 +539,19 @@ textarea.memorisation-input {
 .memorisation-feedback {
   margin: 0;
   line-height: 1.6;
+}
+
+.memorisation-feedback__guidance {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.memorisation-feedback__guidance li {
+  padding-left: 0.1rem;
 }
 
 .memorisation-feedback[data-tone="correct"] {
@@ -846,6 +867,12 @@ html[data-theme="dark"] .memorisation-action-bar {
 }
 
 @media (max-width: 720px) {
+  .memorisation-layout {
+    --memorisation-input-min-height: 11rem;
+    --memorisation-input-max-height: 18rem;
+    --memorisation-sticky-bar-space: 6.35rem;
+  }
+
   .memorisation-page-header {
     padding: 1rem;
   }
@@ -894,9 +921,5 @@ html[data-theme="dark"] .memorisation-action-bar {
   .memorisation-switcher,
   .memorisation-filter-grid {
     grid-template-columns: 1fr;
-  }
-
-  textarea.memorisation-input {
-    min-height: 11rem;
   }
 }

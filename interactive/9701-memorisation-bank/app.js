@@ -1,5 +1,6 @@
 import { createAnswerModel as buildAnswerModel, evaluateAnswerModel } from "./matcher.mjs";
 import { buildSoftHighlightModel } from "./display-feedback.mjs";
+import { resolveActiveBlankId, resolvePreferredBlankId } from "./active-blank-state.mjs";
 
 const definitionScopeOptions = [
   { id: "all", label: "All" },
@@ -34,6 +35,11 @@ const collator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: "base",
 });
+const sessionStorageVersion = 1;
+const sessionStoragePrefix = "memorisation-bank-session";
+const inputPersistDelayMs = 150;
+const answerFieldResizeFrames = new WeakMap();
+let persistSessionStateTimeoutId = 0;
 
 const stageSwitcher = document.getElementById("stage-switcher");
 const levelSwitcher = document.getElementById("level-switcher");
@@ -73,6 +79,7 @@ const reviewToggleButton = document.getElementById("review-toggle");
 const sessionBanner = document.getElementById("session-banner");
 const sessionPage = document.getElementById("session-page");
 const sessionOutline = document.getElementById("session-outline");
+const actionBar = document.querySelector(".memorisation-action-bar");
 
 const appState = {
   catalog: null,
@@ -100,10 +107,13 @@ const appState = {
   reviewMode: false,
   currentBlankId: "",
   pendingFocusBlankId: "",
+  lastMainBlankId: "",
+  lastReviewBlankId: "",
   interactionTick: 0,
   filtersOpen: false,
   revealedQuestionIds: new Set(),
   blankInputRefs: new Map(),
+  blankInputMirrorRefs: new Map(),
 };
 
 function fetchJson(path) {
@@ -166,6 +176,50 @@ function syncMirroredFieldScroll(field, mirror) {
   mirror.scrollLeft = field.scrollLeft;
 }
 
+function getAnswerFieldHeightBounds(field) {
+  const computedStyles = window.getComputedStyle(field);
+
+  return {
+    minHeight: parseFloat(computedStyles.minHeight) || field.scrollHeight || 0,
+    maxHeight: parseFloat(computedStyles.maxHeight) || field.scrollHeight || 0,
+  };
+}
+
+function resizeAnswerField(field, mirror) {
+  if (!field || !mirror) {
+    return;
+  }
+
+  const { minHeight, maxHeight } = getAnswerFieldHeightBounds(field);
+
+  field.style.height = "auto";
+  const nextHeight = Math.min(maxHeight, Math.max(minHeight, field.scrollHeight));
+
+  field.style.height = `${nextHeight}px`;
+  mirror.style.height = `${nextHeight}px`;
+  field.style.overflowY = field.scrollHeight > maxHeight + 1 ? "auto" : "hidden";
+  syncMirroredFieldScroll(field, mirror);
+}
+
+function scheduleAnswerFieldResize(field, mirror) {
+  if (!field || !mirror) {
+    return;
+  }
+
+  const pendingFrame = answerFieldResizeFrames.get(field);
+
+  if (pendingFrame) {
+    cancelAnimationFrame(pendingFrame);
+  }
+
+  const nextFrame = requestAnimationFrame(() => {
+    answerFieldResizeFrames.delete(field);
+    resizeAnswerField(field, mirror);
+  });
+
+  answerFieldResizeFrames.set(field, nextFrame);
+}
+
 function updateBlankInlineDisplay(blank, blankState, mirror, field) {
   renderInlineFeedbackSegments(
     mirror,
@@ -176,7 +230,7 @@ function updateBlankInlineDisplay(blank, blankState, mirror, field) {
       blank.answerModel.matcherConfig?.type
     ).segments
   );
-  syncMirroredFieldScroll(field, mirror);
+  scheduleAnswerFieldResize(field, mirror);
 }
 
 function chunkIntoPages(items, pageSize) {
@@ -347,6 +401,21 @@ function getSelectionSnapshot(overrides = {}) {
   };
 }
 
+function buildSessionSelectionKey(selection = getSelectionSnapshot()) {
+  return [
+    selection.stage || "",
+    selection.level || "",
+    selection.topic || "",
+    selection.file || "",
+    selection.definitionScope || "all",
+    selection.round || "all",
+  ].join("::");
+}
+
+function getSessionStorageKey(selection = getSelectionSnapshot()) {
+  return `${sessionStoragePrefix}::${buildSessionSelectionKey(selection)}`;
+}
+
 function getInitialSelectionFromUrl() {
   const searchParams = new URLSearchParams(window.location.search);
   const requestedRound = searchParams.get("round");
@@ -447,18 +516,23 @@ function closeFilters() {
   setFiltersOpen(false);
 }
 
-function getActiveBlankId() {
-  const blankOrder = getCurrentModeBlankOrder();
-
-  if (!blankOrder.length) {
-    return "";
+function setTrackedBlankId(blankId, reviewMode = appState.reviewMode) {
+  if (!blankId) {
+    return;
   }
 
-  if (blankOrder.includes(appState.pendingFocusBlankId)) {
-    return appState.pendingFocusBlankId;
+  appState.currentBlankId = blankId;
+
+  if (reviewMode) {
+    appState.lastReviewBlankId = blankId;
+    return;
   }
 
-  return blankOrder.includes(appState.currentBlankId) ? appState.currentBlankId : blankOrder[0];
+  appState.lastMainBlankId = blankId;
+}
+
+function getActiveBlankId(blankOrder = getCurrentModeBlankOrder()) {
+  return resolveActiveBlankId(blankOrder, appState.pendingFocusBlankId, appState.currentBlankId);
 }
 
 function getBlankOrderIndex(blankId, blankOrder = getCurrentModeBlankOrder()) {
@@ -483,6 +557,75 @@ function focusAdjacentBlank(direction) {
   }
 }
 
+function getStickyActionBarClearance() {
+  if (!actionBar) {
+    return 24;
+  }
+
+  const actionBarRect = actionBar.getBoundingClientRect();
+
+  if (!actionBarRect.height) {
+    return 24;
+  }
+
+  const bottomOffset = parseFloat(window.getComputedStyle(actionBar).bottom) || 0;
+  return actionBarRect.height + bottomOffset + 24;
+}
+
+function ensureElementVisibleAboveStickyBar(element) {
+  if (!element) {
+    return;
+  }
+
+  try {
+    element.scrollIntoView({
+      block: "nearest",
+      inline: "nearest",
+    });
+  } catch (error) {
+    // Fall through to manual scroll adjustments below.
+  }
+
+  const topInset = 24;
+  const bottomInset = window.innerHeight - getStickyActionBarClearance();
+  const elementRect = element.getBoundingClientRect();
+
+  if (elementRect.top < topInset) {
+    window.scrollBy({
+      top: elementRect.top - topInset,
+      behavior: "auto",
+    });
+    return;
+  }
+
+  if (elementRect.bottom > bottomInset) {
+    window.scrollBy({
+      top: elementRect.bottom - bottomInset,
+      behavior: "auto",
+    });
+  }
+}
+
+function ensurePracticeViewportForBlank(blankId, { includeReveal = false } = {}) {
+  requestAnimationFrame(() => {
+    const field = appState.blankInputRefs.get(blankId);
+
+    if (field) {
+      ensureElementVisibleAboveStickyBar(field);
+    }
+
+    if (!includeReveal) {
+      return;
+    }
+
+    const revealPanel = sessionPage.querySelector(`.memorisation-reveal[data-blank-id="${blankId}"]`);
+
+    if (revealPanel) {
+      ensureElementVisibleAboveStickyBar(revealPanel);
+    }
+  });
+}
+
 function getFileCountLabel(fileEntry) {
   if (!fileEntry) {
     return "0 items";
@@ -496,6 +639,7 @@ function getFileCountLabel(fileEntry) {
 }
 
 function applySelection(nextSelection) {
+  flushPersistedSessionState();
   synchroniseSelection(nextSelection);
   if (isCompactViewport()) {
     closeFilters();
@@ -683,6 +827,7 @@ function renderDefinitionFilter() {
         return;
       }
 
+      flushPersistedSessionState();
       appState.definitionScope = nextScope;
       renderDefinitionFilter();
       updateUrlFromState();
@@ -733,6 +878,7 @@ function renderRoundSwitcher() {
         return;
       }
 
+      flushPersistedSessionState();
       appState.round = nextRound;
       renderRoundSwitcher();
       updateUrlFromState();
@@ -1101,8 +1247,11 @@ function rebuildSessionRuntime(sessionQuestions) {
   appState.reviewMode = false;
   appState.currentBlankId = appState.sessionBlankIds[0] || "";
   appState.pendingFocusBlankId = appState.currentBlankId;
+  appState.lastMainBlankId = appState.currentBlankId;
+  appState.lastReviewBlankId = "";
   appState.revealedQuestionIds = new Set();
   appState.blankInputRefs = new Map();
+  appState.blankInputMirrorRefs = new Map();
   updateReviewQueue();
 }
 
@@ -1116,6 +1265,221 @@ function getBlank(blankId) {
 
 function getBlankState(blankId) {
   return appState.blankStates.get(blankId) || null;
+}
+
+function serializeBlankState(blankState) {
+  if (!blankState) {
+    return null;
+  }
+
+  return {
+    id: blankState.id,
+    value: blankState.value,
+    status: blankState.status,
+    wrongCount: blankState.wrongCount,
+    revealed: blankState.revealed,
+    coveredGroups: blankState.coveredGroups,
+    missingGroups: blankState.missingGroups,
+    contradictionHits: blankState.contradictionHits,
+    reviewPriority: blankState.reviewPriority,
+    lastReviewSignalAt: blankState.lastReviewSignalAt,
+    matchState: blankState.matchState,
+  };
+}
+
+function buildPersistedSessionState() {
+  if (!appState.sessionBlankIds.length) {
+    return null;
+  }
+
+  return {
+    version: sessionStorageVersion,
+    selectionKey: buildSessionSelectionKey(),
+    currentBlankId: getActiveBlankId(),
+    lastMainBlankId: resolvePreferredBlankId(appState.sessionBlankIds, [appState.lastMainBlankId]),
+    lastReviewBlankId: resolvePreferredBlankId(appState.reviewQueueBlankIds, [
+      appState.lastReviewBlankId,
+    ]),
+    reviewMode: Boolean(appState.reviewMode && appState.reviewQueueBlankIds.length),
+    interactionTick: appState.interactionTick,
+    blankStates: appState.sessionBlankIds
+      .map((blankId) => serializeBlankState(getBlankState(blankId)))
+      .filter(Boolean),
+  };
+}
+
+function persistSessionStateNow() {
+  const persistedSessionState = buildPersistedSessionState();
+
+  if (!persistedSessionState) {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(
+      getSessionStorageKey(),
+      JSON.stringify(persistedSessionState),
+    );
+  } catch (error) {
+    // Ignore storage failures so practice flow is not blocked.
+  }
+}
+
+function schedulePersistSessionState() {
+  if (persistSessionStateTimeoutId) {
+    window.clearTimeout(persistSessionStateTimeoutId);
+  }
+
+  persistSessionStateTimeoutId = window.setTimeout(() => {
+    persistSessionStateTimeoutId = 0;
+    persistSessionStateNow();
+  }, inputPersistDelayMs);
+}
+
+function flushPersistedSessionState() {
+  if (persistSessionStateTimeoutId) {
+    window.clearTimeout(persistSessionStateTimeoutId);
+    persistSessionStateTimeoutId = 0;
+  }
+
+  persistSessionStateNow();
+}
+
+function clearPersistedSessionState(selection = getSelectionSnapshot()) {
+  try {
+    window.localStorage.removeItem(getSessionStorageKey(selection));
+  } catch (error) {
+    // Ignore storage failures so empty/error states can still render.
+  }
+}
+
+function rebuildRevealedQuestionIds() {
+  appState.revealedQuestionIds = new Set(
+    appState.sessionBlankIds
+      .filter((blankId) => getBlankState(blankId)?.revealed)
+      .map((blankId) => getBlank(blankId)?.questionId)
+      .filter(Boolean),
+  );
+}
+
+function restoreBlankState(blankState, restoredBlankState) {
+  if (!blankState || !restoredBlankState) {
+    return;
+  }
+
+  const blank = getBlank(blankState.id);
+  const validConceptGroupIds = new Set(blank?.answerModel.concept_groups.map((group) => group.id) || []);
+
+  blankState.value = String(restoredBlankState.value || "");
+  blankState.status = ["idle", "correct", "wrong", "revealed"].includes(restoredBlankState.status)
+    ? restoredBlankState.status
+    : "idle";
+  blankState.wrongCount = Math.max(0, Number(restoredBlankState.wrongCount) || 0);
+  blankState.revealed = Boolean(restoredBlankState.revealed || blankState.status === "revealed");
+  blankState.coveredGroups = Array.isArray(restoredBlankState.coveredGroups)
+    ? restoredBlankState.coveredGroups.filter((groupId) => validConceptGroupIds.has(groupId))
+    : [];
+  blankState.missingGroups = Array.isArray(restoredBlankState.missingGroups)
+    ? restoredBlankState.missingGroups.filter((groupId) => validConceptGroupIds.has(groupId))
+    : blankState.missingGroups;
+  blankState.contradictionHits = Array.isArray(restoredBlankState.contradictionHits)
+    ? restoredBlankState.contradictionHits.filter(Boolean)
+    : [];
+  blankState.lastReviewSignalAt = Math.max(0, Number(restoredBlankState.lastReviewSignalAt) || 0);
+  blankState.matchState =
+    typeof restoredBlankState.matchState === "string"
+      ? restoredBlankState.matchState
+      : "untouched";
+  blankState.reviewPriority =
+    Number(restoredBlankState.reviewPriority) || buildReviewPriority(blankState);
+}
+
+function syncPageIndexForBlank(blankId, reviewMode = appState.reviewMode) {
+  if (!blankId) {
+    return;
+  }
+
+  const targetPageIndex = getCurrentModePageIndexForBlank(blankId, reviewMode);
+
+  if (targetPageIndex < 0) {
+    return;
+  }
+
+  if (reviewMode) {
+    appState.reviewPageIndex = targetPageIndex;
+    return;
+  }
+
+  appState.currentPageIndex = targetPageIndex;
+}
+
+function restoreSessionStateFromStorage() {
+  if (!appState.sessionBlankIds.length) {
+    return false;
+  }
+
+  let restoredSessionState = null;
+
+  try {
+    restoredSessionState = JSON.parse(window.localStorage.getItem(getSessionStorageKey()) || "null");
+  } catch (error) {
+    return false;
+  }
+
+  if (
+    !restoredSessionState ||
+    restoredSessionState.version !== sessionStorageVersion ||
+    restoredSessionState.selectionKey !== buildSessionSelectionKey()
+  ) {
+    return false;
+  }
+
+  const restoredBlankStates = Array.isArray(restoredSessionState.blankStates)
+    ? restoredSessionState.blankStates
+    : [];
+
+  restoredBlankStates.forEach((restoredBlankState) => {
+    const blankState = getBlankState(restoredBlankState?.id);
+
+    if (blankState) {
+      restoreBlankState(blankState, restoredBlankState);
+    }
+  });
+
+  appState.interactionTick = Math.max(0, Number(restoredSessionState.interactionTick) || 0);
+  rebuildRevealedQuestionIds();
+  updateReviewQueue();
+
+  appState.lastMainBlankId = resolvePreferredBlankId(appState.sessionBlankIds, [
+    restoredSessionState.lastMainBlankId,
+    restoredSessionState.currentBlankId,
+  ]);
+  appState.lastReviewBlankId = resolvePreferredBlankId(appState.reviewQueueBlankIds, [
+    restoredSessionState.lastReviewBlankId,
+    restoredSessionState.currentBlankId,
+  ]);
+  appState.reviewMode =
+    Boolean(restoredSessionState.reviewMode) && appState.reviewQueueBlankIds.length > 0;
+
+  const restoredActiveBlankId = appState.reviewMode
+    ? resolvePreferredBlankId(appState.reviewQueueBlankIds, [
+        appState.lastReviewBlankId,
+        restoredSessionState.currentBlankId,
+      ])
+    : resolvePreferredBlankId(appState.sessionBlankIds, [
+        appState.lastMainBlankId,
+        restoredSessionState.currentBlankId,
+        findNextIncompleteBlankAfter("", appState.sessionBlankIds),
+      ]);
+
+  appState.pendingFocusBlankId = restoredActiveBlankId;
+  setTrackedBlankId(restoredActiveBlankId, appState.reviewMode);
+
+  syncPageIndexForBlank(appState.lastMainBlankId, false);
+  syncPageIndexForBlank(appState.lastReviewBlankId, true);
+  syncPageIndexForBlank(restoredActiveBlankId, appState.reviewMode);
+
+  return Boolean(restoredActiveBlankId);
 }
 
 function isBlankComplete(blankId) {
@@ -1164,19 +1528,18 @@ function getCurrentModeBlankOrder() {
   return appState.reviewMode ? appState.reviewQueueBlankIds : appState.sessionBlankIds;
 }
 
-function getCurrentModePageIndexForBlank(blankId) {
-  const pages = getPageSet();
+function getCurrentModePageIndexForBlank(blankId, reviewMode = appState.reviewMode) {
+  const pages = reviewMode ? appState.reviewPages : appState.pages;
 
-  if (appState.reviewMode) {
-    return pages.findIndex(page => page.includes(blankId));
+  if (reviewMode) {
+    return pages.findIndex((page) => page.includes(blankId));
   }
 
   const questionId = getBlank(blankId)?.questionId;
   return pages.findIndex(page => page.includes(questionId));
 }
 
-function findNextIncompleteBlankAfter(blankId = "") {
-  const blankOrder = getCurrentModeBlankOrder();
+function findNextIncompleteBlankAfter(blankId = "", blankOrder = getCurrentModeBlankOrder()) {
 
   if (!blankOrder.length) {
     return "";
@@ -1199,7 +1562,7 @@ function findNextIncompleteBlankAfter(blankId = "") {
   return "";
 }
 
-function queueFocusBlank(blankId) {
+function queueFocusBlank(blankId, { includeReveal = false } = {}) {
   if (!blankId) {
     return;
   }
@@ -1211,19 +1574,28 @@ function queueFocusBlank(blankId) {
     }
 
     const field = appState.blankInputRefs.get(blankId);
+    const mirror = appState.blankInputMirrorRefs.get(blankId);
 
-    if (!field) {
+    if (!field || !mirror) {
       return;
     }
 
-    field.focus();
+    scheduleAnswerFieldResize(field, mirror);
+
+    try {
+      field.focus({ preventScroll: true });
+    } catch (error) {
+      field.focus();
+    }
+
     if (typeof field.setSelectionRange === "function") {
       const caretPosition = field.value.length;
       field.setSelectionRange(caretPosition, caretPosition);
     }
 
-    appState.currentBlankId = blankId;
+    setTrackedBlankId(blankId);
     appState.pendingFocusBlankId = "";
+    ensurePracticeViewportForBlank(blankId, { includeReveal });
   });
 }
 
@@ -1232,20 +1604,12 @@ function focusBlank(blankId) {
     return;
   }
 
-  const targetPageIndex = getCurrentModePageIndexForBlank(blankId);
-
-  if (targetPageIndex >= 0) {
-    if (appState.reviewMode) {
-      appState.reviewPageIndex = targetPageIndex;
-    } else {
-      appState.currentPageIndex = targetPageIndex;
-    }
-  }
+  syncPageIndexForBlank(blankId);
 
   renderSession({ focusBlankId: blankId });
 }
 
-function moveToNextBlank(blankId = appState.currentBlankId) {
+function moveToNextBlank(blankId = getActiveBlankId()) {
   const nextBlankId = getAdjacentBlankId(blankId, 1);
 
   if (nextBlankId) {
@@ -1253,7 +1617,7 @@ function moveToNextBlank(blankId = appState.currentBlankId) {
   }
 }
 
-function moveToPreviousBlank(blankId = appState.currentBlankId) {
+function moveToPreviousBlank(blankId = getActiveBlankId()) {
   const previousBlankId = getAdjacentBlankId(blankId, -1);
 
   if (previousBlankId) {
@@ -1321,7 +1685,7 @@ function checkBlank(blankId) {
   return result;
 }
 
-function revealQuestion(questionId) {
+function revealQuestion(questionId, focusBlankId = getActiveBlankId()) {
   const question = getQuestion(questionId);
 
   if (!question) {
@@ -1347,7 +1711,9 @@ function revealQuestion(questionId) {
   });
 
   updateReviewQueue();
-  renderSession({ focusBlankId: appState.currentBlankId });
+  renderSession({
+    focusBlankId: resolvePreferredBlankId(getCurrentModeBlankOrder(), [focusBlankId]),
+  });
 }
 
 function onBlankEnter(blankId) {
@@ -1366,11 +1732,34 @@ function setReviewMode(reviewMode) {
     return;
   }
 
+  const activeBlankId = getActiveBlankId();
+
+  if (appState.reviewMode === reviewMode) {
+    return;
+  }
+
+  if (appState.reviewMode) {
+    appState.lastReviewBlankId = activeBlankId;
+  } else {
+    appState.lastMainBlankId = activeBlankId;
+  }
+
   appState.reviewMode = reviewMode;
-  appState.pendingFocusBlankId = reviewMode
-    ? appState.reviewQueueBlankIds[0] || ""
-    : findNextIncompleteBlankAfter("") || appState.currentBlankId;
-  renderSession({ focusBlankId: appState.pendingFocusBlankId });
+  const nextFocusBlankId = reviewMode
+    ? resolvePreferredBlankId(appState.reviewQueueBlankIds, [appState.lastReviewBlankId])
+    : resolvePreferredBlankId(appState.sessionBlankIds, [
+        appState.lastMainBlankId,
+        findNextIncompleteBlankAfter("", appState.sessionBlankIds),
+        activeBlankId,
+      ]);
+
+  if (reviewMode) {
+    appState.lastReviewBlankId = nextFocusBlankId;
+  } else {
+    appState.lastMainBlankId = nextFocusBlankId;
+  }
+
+  renderSession({ focusBlankId: nextFocusBlankId });
 }
 
 function goToPage(nextPageIndex) {
@@ -1417,7 +1806,7 @@ function setLoadingState(message = "Loading current session...") {
   currentSetCopy.textContent = "Building the current drill set.";
   pageCounter.textContent = "Prompt 0 / 0";
   completionChip.textContent = "0 / 0 blanks completed";
-  reviewChip.textContent = "0 to review";
+  reviewChip.textContent = "Review queue: 0";
   sessionBanner.hidden = true;
   sessionBanner.innerHTML = "";
   sessionPage.innerHTML = `<p class="memorisation-empty">${message}</p>`;
@@ -1551,6 +1940,27 @@ function getReviewReasonSummary(blankId) {
   return reasons.join(" · ");
 }
 
+function getMissingGuidanceItems(blank, blankState, limit = 2) {
+  if (!blank || !blankState) {
+    return [];
+  }
+
+  const seenHints = new Set();
+
+  return blank.answerModel.concept_groups
+    .filter((group) => blankState.missingGroups.includes(group.id))
+    .map((group) => group.hint || "Include the missing chemistry idea.")
+    .filter((hint) => {
+      if (!hint || seenHints.has(hint)) {
+        return false;
+      }
+
+      seenHints.add(hint);
+      return true;
+    })
+    .slice(0, limit);
+}
+
 function getBlankFeedbackDescriptor(blank, blankState) {
   const hasAnswer = Boolean(String(blankState?.value || "").trim());
 
@@ -1559,6 +1969,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
       label: "Accepted",
       tone: "correct",
       message: "Accepted. The required chemistry ideas are in place.",
+      guidanceItems: [],
     };
   }
 
@@ -1567,6 +1978,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
       label: "Answer revealed",
       tone: "revealed",
       message: "Compare your wording with the canonical answer and minimum pass below.",
+      guidanceItems: [],
     };
   }
 
@@ -1580,6 +1992,11 @@ function getBlankFeedbackDescriptor(blank, blankState) {
     const isNearMatch =
       blankState.matchState === "near_miss_preposition" ||
       (blankState.coveredGroups.length > 0 && blankState.missingGroups.length > 0);
+    const nearMatchGuidanceItems = getMissingGuidanceItems(
+      blank,
+      blankState,
+      blankState.matchState === "near_miss_preposition" ? 1 : 2,
+    );
 
     if (isNearMatch) {
       return {
@@ -1590,13 +2007,17 @@ function getBlankFeedbackDescriptor(blank, blankState) {
             ? "The remaining issue looks like a small preposition or phrasing shift."
             : firstMissingGroup?.hint || "Tighten the remaining chemistry wording."
         }${contradictionWarning}`,
+        guidanceItems: nearMatchGuidanceItems,
       };
     }
 
     return {
       label: "Needs revision",
       tone: "wrong",
-      message: `Needs revision. ${firstMissingGroup?.hint || "Add the missing chemistry idea."}${contradictionWarning}`,
+      message: `Needs revision. ${
+        firstMissingGroup?.hint || "Add the missing chemistry idea."
+      }${contradictionWarning}`,
+      guidanceItems: [],
     };
   }
 
@@ -1607,6 +2028,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
       message: blank.multiline
         ? "Type first, then use Check. Shift+Enter adds a new line."
         : "Type first, then use Check.",
+      guidanceItems: [],
     };
   }
 
@@ -1614,6 +2036,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
     label: "Ready to check",
     tone: "neutral",
     message: "Use Check to compare this draft against the minimum pass wording.",
+    guidanceItems: [],
   };
 }
 
@@ -1646,18 +2069,19 @@ function createAnswerField(blank) {
   field.rows = blank.multiline ? 8 : 5;
   field.dataset.status = blankState?.status || "idle";
   field.addEventListener("focus", () => {
-    appState.currentBlankId = blank.id;
+    setTrackedBlankId(blank.id);
   });
   field.addEventListener("input", event => {
     setBlankValue(blank.id, event.target.value);
     updateBlankInlineDisplay(blank, getBlankState(blank.id), mirror, field);
+    schedulePersistSessionState();
   });
   field.addEventListener("scroll", () => {
     syncMirroredFieldScroll(field, mirror);
   });
   field.addEventListener("keydown", event => {
     const isEnter = event.key === "Enter";
-    const allowNewLine = blank.multiline && event.shiftKey;
+    const allowNewLine = event.shiftKey;
 
     if (!isEnter || allowNewLine || event.isComposing || event.keyCode === 229) {
       return;
@@ -1671,6 +2095,7 @@ function createAnswerField(blank) {
   updateBlankInlineDisplay(blank, blankState, mirror, field);
 
   appState.blankInputRefs.set(blank.id, field);
+  appState.blankInputMirrorRefs.set(blank.id, mirror);
   fieldShell.append(label, inputShell);
   return fieldShell;
 }
@@ -1681,6 +2106,8 @@ function createFeedbackCard(blank) {
   const shell = document.createElement("section");
   shell.className = "memorisation-feedback-card";
   shell.dataset.tone = descriptor.tone;
+  shell.setAttribute("aria-live", "polite");
+  shell.setAttribute("aria-atomic", "true");
 
   const label = document.createElement("p");
   label.className = "memorisation-feedback-card__label";
@@ -1696,12 +2123,27 @@ function createFeedbackCard(blank) {
   copy.textContent = descriptor.message;
 
   shell.append(label, title, copy);
+
+  if (descriptor.guidanceItems.length) {
+    const guidanceList = document.createElement("ul");
+    guidanceList.className = "memorisation-feedback__guidance";
+
+    descriptor.guidanceItems.forEach((guidanceItem) => {
+      const listItem = document.createElement("li");
+      listItem.textContent = guidanceItem;
+      guidanceList.append(listItem);
+    });
+
+    shell.append(guidanceList);
+  }
+
   return shell;
 }
 
 function createRevealPanel(question, blank) {
   const shell = document.createElement("section");
   shell.className = "interactive-subtle-panel memorisation-reveal";
+  shell.dataset.blankId = blank.id;
 
   const headerLabel = document.createElement("p");
   headerLabel.className = "memorisation-question-label";
@@ -1755,7 +2197,9 @@ function renderProgressHeader() {
 
   pageCounter.textContent = `${appState.reviewMode ? "Review" : "Prompt"} ${promptLabel} / ${blankOrder.length}`;
   completionChip.textContent = `${completedBlanks} / ${totalBlanks} blanks completed`;
-  reviewChip.textContent = `${reviewCount} to review`;
+  reviewChip.textContent = appState.reviewMode
+    ? `Review queue: ${reviewCount} active`
+    : `Review queue: ${reviewCount}`;
   prevBlankButton.disabled = activeBlankIndex <= 0;
   nextBlankButton.disabled = activeBlankIndex < 0 || activeBlankIndex >= blankOrder.length - 1;
   checkBlankButton.disabled = !activeBlankId;
@@ -1763,10 +2207,10 @@ function renderProgressHeader() {
   revealBlankButton.textContent =
     activeQuestion && appState.revealedQuestionIds.has(activeQuestion.id) ? "Shown" : "Reveal";
 
-  reviewToggleButton.hidden = reviewCount === 0 || (!appState.reviewMode && completedBlanks !== totalBlanks);
+  reviewToggleButton.hidden = reviewCount === 0;
   reviewToggleButton.textContent = appState.reviewMode
     ? "Back to main session"
-    : `Review missed / revealed blanks (${reviewCount})`;
+    : `Review queue (${reviewCount})`;
 }
 
 function renderBanner() {
@@ -1922,6 +2366,7 @@ function renderSessionOutline() {
 function renderActivePractice() {
   sessionPage.replaceChildren();
   appState.blankInputRefs = new Map();
+  appState.blankInputMirrorRefs = new Map();
 
   const activeBlankId = getActiveBlankId();
   const blank = getBlank(activeBlankId);
@@ -1934,6 +2379,7 @@ function renderActivePractice() {
 
   const promptCard = document.createElement("article");
   promptCard.className = "interactive-subtle-panel memorisation-prompt-card";
+  promptCard.dataset.blankId = blank.id;
 
   const promptChips = document.createElement("div");
   promptChips.className = "memorisation-card-chips";
@@ -1950,6 +2396,7 @@ function renderActivePractice() {
 
   if (question.blanks.length > 1) {
     const blankChip = document.createElement("span");
+    blankChip.id = "active-blank-chip";
     blankChip.className = "memorisation-card-chip memorisation-card-chip--muted";
     blankChip.textContent = blank.label;
     promptChips.append(blankChip);
@@ -1960,6 +2407,7 @@ function renderActivePractice() {
   promptLabel.textContent = appState.reviewMode ? "Review prompt" : "Active prompt";
 
   const promptTitle = document.createElement("h3");
+  promptTitle.id = "active-prompt-title";
   promptTitle.textContent = question.question;
 
   const promptMeta = document.createElement("p");
@@ -1977,6 +2425,7 @@ function renderActivePractice() {
     contextLabel.textContent = question.kind === "cloze" ? "Prompt context" : "Prompt";
 
     const contextText = document.createElement("p");
+    contextText.id = "active-prompt-context";
     contextText.className = "memorisation-prompt-context__text";
     contextText.textContent = question.prompt;
 
@@ -1986,6 +2435,7 @@ function renderActivePractice() {
 
   const answerCard = document.createElement("article");
   answerCard.className = "interactive-subtle-panel memorisation-answer-card";
+  answerCard.dataset.blankId = blank.id;
 
   const answerHeader = document.createElement("div");
   answerHeader.className = "memorisation-answer-card__header";
@@ -2019,7 +2469,9 @@ function renderActivePractice() {
     sessionPage.append(createRevealPanel(question, blank));
   }
 
-  queueFocusBlank(appState.pendingFocusBlankId || activeBlankId);
+  queueFocusBlank(appState.pendingFocusBlankId || activeBlankId, {
+    includeReveal: appState.revealedQuestionIds.has(question.id),
+  });
 }
 
 function renderPageContent() {
@@ -2036,7 +2488,7 @@ function renderEmptyState(message) {
   currentSetCopy.textContent = message;
   pageCounter.textContent = "Prompt 0 / 0";
   completionChip.textContent = "0 / 0 blanks completed";
-  reviewChip.textContent = "0 to review";
+  reviewChip.textContent = "Review queue: 0";
   sessionBanner.hidden = true;
   sessionBanner.innerHTML = "";
   renderStatusCard(sessionPage, message);
@@ -2047,6 +2499,7 @@ function renderEmptyState(message) {
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
   updateUrlFromState();
+  clearPersistedSessionState();
 }
 
 function renderCatalogErrorState(message) {
@@ -2074,7 +2527,7 @@ function renderCatalogErrorState(message) {
   currentSetCopy.textContent = "The catalog or its supporting files could not be loaded.";
   pageCounter.textContent = "Prompt 0 / 0";
   completionChip.textContent = "0 / 0 blanks completed";
-  reviewChip.textContent = "0 to review";
+  reviewChip.textContent = "Review queue: 0";
   sessionBanner.hidden = true;
   sessionBanner.innerHTML = "";
   renderStatusCard(sessionPage, message, "Retry loading", () => {
@@ -2109,7 +2562,7 @@ function renderFileErrorState(fileEntry, message) {
   currentSetCopy.textContent = message;
   pageCounter.textContent = "Prompt 0 / 0";
   completionChip.textContent = "0 / 0 blanks completed";
-  reviewChip.textContent = "0 to review";
+  reviewChip.textContent = "Review queue: 0";
   sessionBanner.hidden = true;
   sessionBanner.innerHTML = "";
   renderStatusCard(sessionPage, message, "Retry loading", () => {
@@ -2127,6 +2580,12 @@ function renderFileErrorState(fileEntry, message) {
 function renderSession({ focusBlankId = "" } = {}) {
   if (focusBlankId) {
     appState.pendingFocusBlankId = focusBlankId;
+
+    if (appState.reviewMode) {
+      appState.lastReviewBlankId = focusBlankId;
+    } else {
+      appState.lastMainBlankId = focusBlankId;
+    }
   }
 
   renderStats();
@@ -2137,6 +2596,7 @@ function renderSession({ focusBlankId = "" } = {}) {
   renderPageContent();
   renderSessionOutline();
   updateUrlFromState();
+  persistSessionStateNow();
 }
 
 async function refreshSession({ allowCatalogResync = true } = {}) {
@@ -2187,6 +2647,7 @@ async function refreshSession({ allowCatalogResync = true } = {}) {
     }
 
     rebuildSessionRuntime(sessionQuestions);
+    restoreSessionStateFromStorage();
     renderSession({ focusBlankId: appState.currentBlankId });
   } catch (error) {
     if (renderToken !== appState.renderToken) {
@@ -2257,7 +2718,7 @@ function registerStaticEvents() {
     const questionId = getBlank(activeBlankId)?.questionId;
 
     if (questionId) {
-      revealQuestion(questionId);
+      revealQuestion(questionId, activeBlankId);
     }
   });
 
@@ -2271,6 +2732,13 @@ function registerStaticEvents() {
 
   window.addEventListener("resize", () => {
     setFiltersOpen(appState.filtersOpen);
+    appState.blankInputRefs.forEach((field, blankId) => {
+      scheduleAnswerFieldResize(field, appState.blankInputMirrorRefs.get(blankId));
+    });
+  });
+
+  window.addEventListener("pagehide", () => {
+    flushPersistedSessionState();
   });
 
   appState.staticEventsRegistered = true;
