@@ -80,6 +80,10 @@ const sessionBanner = document.getElementById("session-banner");
 const sessionPage = document.getElementById("session-page");
 const sessionOutline = document.getElementById("session-outline");
 const actionBar = document.querySelector(".memorisation-action-bar");
+const drillRulesDialog = document.getElementById("drill-rules-dialog");
+const drillRulesOpenButton = document.getElementById("drill-rules-open");
+const drillRulesCloseButton = document.getElementById("drill-rules-close");
+let lastDrillRulesTrigger = null;
 
 const appState = {
   catalog: null,
@@ -514,6 +518,57 @@ function setFiltersOpen(nextOpen) {
 
 function closeFilters() {
   setFiltersOpen(false);
+}
+
+function restoreDrillRulesTriggerFocus() {
+  const focusTarget = lastDrillRulesTrigger || drillRulesOpenButton;
+
+  if (focusTarget && typeof focusTarget.focus === "function") {
+    focusTarget.focus();
+  }
+
+  lastDrillRulesTrigger = null;
+}
+
+function openDrillRulesDialog() {
+  if (!drillRulesDialog) {
+    return;
+  }
+
+  lastDrillRulesTrigger =
+    document.activeElement instanceof HTMLElement ? document.activeElement : drillRulesOpenButton;
+
+  if (typeof drillRulesDialog.showModal === "function") {
+    if (!drillRulesDialog.open) {
+      drillRulesDialog.showModal();
+    }
+  } else {
+    drillRulesDialog.hidden = false;
+    drillRulesDialog.setAttribute("open", "");
+  }
+
+  requestAnimationFrame(() => {
+    try {
+      drillRulesCloseButton?.focus({ preventScroll: true });
+    } catch (error) {
+      drillRulesCloseButton?.focus();
+    }
+  });
+}
+
+function closeDrillRulesDialog() {
+  if (!drillRulesDialog) {
+    return;
+  }
+
+  if (typeof drillRulesDialog.close === "function" && drillRulesDialog.open) {
+    drillRulesDialog.close();
+    return;
+  }
+
+  drillRulesDialog.hidden = true;
+  drillRulesDialog.removeAttribute("open");
+  restoreDrillRulesTriggerFocus();
 }
 
 function setTrackedBlankId(blankId, reviewMode = appState.reviewMode) {
@@ -2296,6 +2351,36 @@ function getOutlineStatusLabel(blank, blankState) {
   return getBlankFeedbackDescriptor(blank, blankState).label;
 }
 
+function getOutlinePromptTitle(blankId, blankOrder = getCurrentModeBlankOrder()) {
+  const promptIndex = getBlankOrderIndex(blankId, blankOrder);
+  const promptLabel = appState.reviewMode ? "Review" : "Prompt";
+  return `${promptLabel} ${promptIndex >= 0 ? promptIndex + 1 : 0}`;
+}
+
+function getOutlinePromptMeta(question, blank) {
+  if (!question || !blank) {
+    return "";
+  }
+
+  const parts = [];
+
+  if (question.topicLabel) {
+    parts.push(question.topicLabel);
+  } else if (question.subtopic) {
+    parts.push(formatLabel(question.subtopic));
+  }
+
+  if (question.round) {
+    parts.push(`Round ${question.round}`);
+  }
+
+  if (question.blanks.length > 1) {
+    parts.push(blank.label);
+  }
+
+  return parts.join(" · ") || question.type || "Current prompt";
+}
+
 function renderSessionOutline() {
   sessionOutline.replaceChildren();
 
@@ -2333,17 +2418,21 @@ function renderSessionOutline() {
     item.className = "memorisation-outline__item";
     item.dataset.current = String(blankId === activeBlankId);
     item.dataset.status = blankState.status;
+    item.setAttribute(
+      "aria-label",
+      `${getOutlinePromptTitle(blankId, blankOrder)}. ${question.question}`,
+    );
     item.addEventListener("click", () => {
       focusBlank(blankId);
     });
 
     const title = document.createElement("span");
     title.className = "memorisation-outline__title";
-    title.textContent = question.question;
+    title.textContent = getOutlinePromptTitle(blankId, blankOrder);
 
     const meta = document.createElement("p");
     meta.className = "memorisation-outline__meta";
-    meta.textContent = [blank.label, buildQuestionMeta(question)].filter(Boolean).join(" · ");
+    meta.textContent = getOutlinePromptMeta(question, blank);
 
     const status = document.createElement("span");
     status.className = "memorisation-outline__status";
@@ -2694,7 +2783,25 @@ function registerStaticEvents() {
     closeFilters();
   });
 
-  topicFilter.addEventListener("change", event => {
+  drillRulesOpenButton?.addEventListener("click", () => {
+    openDrillRulesDialog();
+  });
+
+  drillRulesCloseButton?.addEventListener("click", () => {
+    closeDrillRulesDialog();
+  });
+
+  drillRulesDialog?.addEventListener("click", (event) => {
+    if (event.target === drillRulesDialog) {
+      closeDrillRulesDialog();
+    }
+  });
+
+  drillRulesDialog?.addEventListener("close", () => {
+    restoreDrillRulesTriggerFocus();
+  });
+
+  topicFilter.addEventListener("change", (event) => {
     applySelection(
       getSelectionSnapshot({
         topic: normalizeTopicKey(event.target.value || ""),

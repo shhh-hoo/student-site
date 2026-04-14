@@ -217,35 +217,63 @@
             </div>
           </section>
 
-          <details class="interactive-help">
-            <summary>
-              Drill rules
-              <span class="interactive-help-summary-copy">
-                Concept coverage, minimum-pass matching, and review-backed reveals.
-              </span>
-            </summary>
-            <div class="interactive-help-body">
-              <div class="interactive-help-grid">
-                <article class="interactive-note-card">
-                  <span>Level 1</span>
-                  <strong>Syllabus-grounded minimum pass</strong>
-                  <p>
-                    Definition items still anchor to stored syllabus wording when that source is available, but checking
-                    now looks for the required chemistry ideas instead of a single sentence form only.
-                  </p>
-                </article>
-                <article class="interactive-note-card">
-                  <span>Levels 2 to 4</span>
-                  <strong>Blank-first checking with review follow-up</strong>
-                  <p>
-                    Guided cloze, multi-round prompts, and full reconstruction all check per blank, keep the session
-                    continuous across the same drill loop, and send wrong or revealed blanks into the review queue.
-                  </p>
-                </article>
-              </div>
-            </div>
-          </details>
+          <section class="interactive-subtle-panel memorisation-side-card memorisation-rules-card">
+            <p class="memorisation-question-label">Drill rules</p>
+            <h2>Keep the checking model clear</h2>
+            <p class="memorisation-side-card__copy">
+              Concept coverage, minimum-pass matching, and review-backed reveals.
+            </p>
+            <button
+              id="drill-rules-open"
+              class="secondary-link"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="drill-rules-dialog"
+            >
+              Open drill rules
+            </button>
+          </section>
         </aside>
+
+        <dialog
+          id="drill-rules-dialog"
+          class="memorisation-rules-dialog"
+          aria-labelledby="drill-rules-title"
+          aria-describedby="drill-rules-copy"
+        >
+          <div class="memorisation-rules-dialog__panel">
+            <div class="memorisation-rules-dialog__header">
+              <div>
+                <p class="memorisation-question-label">Drill rules</p>
+                <h2 id="drill-rules-title">How checking and review work</h2>
+              </div>
+              <button id="drill-rules-close" class="secondary-link" type="button">Close</button>
+            </div>
+            <p id="drill-rules-copy" class="memorisation-rules-dialog__copy">
+              Concept coverage, minimum-pass matching, and review-backed reveals.
+            </p>
+            <div class="interactive-help-grid memorisation-rules-dialog__grid">
+              <article class="interactive-note-card">
+                <span>Level 1</span>
+                <strong>Syllabus-grounded minimum pass</strong>
+                <p>
+                  Definition items still anchor to stored syllabus wording when that source is
+                  available, but checking now looks for the required chemistry ideas instead of a
+                  single sentence form only.
+                </p>
+              </article>
+              <article class="interactive-note-card">
+                <span>Levels 2 to 4</span>
+                <strong>Blank-first checking with review follow-up</strong>
+                <p>
+                  Guided cloze, multi-round prompts, and full reconstruction all check per blank,
+                  keep the session continuous across the same drill loop, and send wrong or
+                  revealed blanks into the review queue.
+                </p>
+              </article>
+            </div>
+          </div>
+        </dialog>
       </main>
     </div>
 
