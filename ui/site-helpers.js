@@ -103,10 +103,11 @@ function getExplicitTheme() {
 }
 
 function preserveExplicitTheme(destination) {
-  const explicitTheme = getExplicitTheme();
+  const explicitThemePreference =
+    window.StudentSiteTheme?.getExplicitThemePreference?.() || getExplicitTheme();
 
-  if (window.StudentSiteTheme?.isThemeValue?.(explicitTheme)) {
-    destination.searchParams.set(window.StudentSiteTheme.themeQueryKey, explicitTheme);
+  if (window.StudentSiteTheme?.isThemePreferenceValue?.(explicitThemePreference)) {
+    destination.searchParams.set(window.StudentSiteTheme.themeQueryKey, explicitThemePreference);
   }
 
   return destination;
