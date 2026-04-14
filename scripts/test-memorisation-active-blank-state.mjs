@@ -36,7 +36,7 @@ const cases = [
 
 let passed = 0;
 
-cases.forEach((testCase) => {
+cases.forEach(testCase => {
   assert.equal(testCase.actual, testCase.expected, testCase.name);
   passed += 1;
   console.log(`PASS ${passed}: ${testCase.name}`);

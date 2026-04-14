@@ -17,16 +17,17 @@ const expectedPromptContext =
 const configuredWindowSize = process.env.MEMORISATION_WINDOW_SIZE || "1440,1600";
 const runMobileVisibilityCheck = process.env.MEMORISATION_MOBILE_CHECK === "1";
 const browserEnvKeys = ["MEMORISATION_BROWSER_BIN", "CHROME_BIN", "BROWSER_BIN"];
-const browserCommandCandidates = process.platform === "win32"
-  ? ["chrome.exe", "google-chrome.exe", "chromium.exe"]
-  : [
-      "google-chrome",
-      "google-chrome-stable",
-      "chromium",
-      "chromium-browser",
-      "chrome",
-      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    ];
+const browserCommandCandidates =
+  process.platform === "win32"
+    ? ["chrome.exe", "google-chrome.exe", "chromium.exe"]
+    : [
+        "google-chrome",
+        "google-chrome-stable",
+        "chromium",
+        "chromium-browser",
+        "chrome",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      ];
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -39,7 +40,7 @@ const mimeTypes = {
 };
 
 function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function isExecutable(filePath) {
@@ -87,7 +88,7 @@ async function resolveBrowserPath() {
   }
 
   throw new Error(
-    `Could not find a Chrome/Chromium binary. Set one of ${browserEnvKeys.join(", ")} or install one of: ${browserCommandCandidates.join(", ")}.`,
+    `Could not find a Chrome/Chromium binary. Set one of ${browserEnvKeys.join(", ")} or install one of: ${browserCommandCandidates.join(", ")}.`
   );
 }
 
@@ -142,7 +143,7 @@ async function listen(server) {
 
 async function closeServer(server) {
   return new Promise((resolve, reject) => {
-    server.close((error) => {
+    server.close(error => {
       if (error) {
         reject(error);
         return;
@@ -195,9 +196,7 @@ async function getPageWebSocketUrl(devToolsPort, targetUrl) {
 
   while (Date.now() - start < 10_000) {
     const pageTargets = await fetchJson(`http://127.0.0.1:${devToolsPort}/json/list`);
-    const matchingTarget = pageTargets.find(
-      (target) => target.type === "page" && target.url === targetUrl,
-    );
+    const matchingTarget = pageTargets.find(target => target.type === "page" && target.url === targetUrl);
 
     if (matchingTarget?.webSocketDebuggerUrl) {
       return matchingTarget.webSocketDebuggerUrl;
@@ -220,7 +219,7 @@ class CdpClient {
   async connect() {
     this.socket = new WebSocket(this.webSocketUrl);
 
-    this.socket.addEventListener("message", (event) => {
+    this.socket.addEventListener("message", event => {
       const payload = JSON.parse(String(event.data));
 
       if (!payload.id) {
@@ -263,7 +262,7 @@ class CdpClient {
       return;
     }
 
-    await new Promise((resolve) => {
+    await new Promise(resolve => {
       this.socket.addEventListener("close", resolve, { once: true });
       this.socket.close();
     });
@@ -302,7 +301,7 @@ async function getSnapshot(client) {
           ? ""
           : document.getElementById("review-toggle").textContent.trim(),
       pageCounter: document.getElementById("page-counter")?.textContent?.trim() || ""
-    }))()`,
+    }))()`
   );
 }
 
@@ -319,7 +318,7 @@ async function setActiveTextareaValue(client, value) {
       field.value = ${JSON.stringify(value)};
       field.dispatchEvent(new Event("input", { bubbles: true }));
       return field.value;
-    })()`,
+    })()`
   );
 }
 
@@ -369,7 +368,7 @@ async function clickElement(client, elementId) {
 
       element.click();
       return true;
-    })()`,
+    })()`
   );
 }
 
@@ -393,11 +392,11 @@ async function run() {
     ],
     {
       stdio: ["ignore", "ignore", "pipe"],
-    },
+    }
   );
   let chromeStderr = "";
 
-  chromeProcess.stderr.on("data", (chunk) => {
+  chromeProcess.stderr.on("data", chunk => {
     chromeStderr += String(chunk);
   });
 
@@ -412,11 +411,11 @@ async function run() {
 
     const initialSnapshot = await waitForSnapshot(
       client,
-      (snapshot) =>
+      snapshot =>
         snapshot.title === expectedPromptTitle &&
         snapshot.blankChip === "Blank 1" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::0",
-      "Initial active blank did not render with focus.",
+      "Initial active blank did not render with focus."
     );
 
     assert.equal(initialSnapshot.promptContext, expectedPromptContext);
@@ -425,11 +424,11 @@ async function run() {
     await clickElement(client, "next-blank");
     const afterFirstNext = await waitForSnapshot(
       client,
-      (snapshot) =>
+      snapshot =>
         snapshot.title === expectedPromptTitle &&
         snapshot.blankChip === "Blank 2" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1",
-      "Next did not advance to Blank 2 with focus restored.",
+      "Next did not advance to Blank 2 with focus restored."
     );
 
     assert.equal(afterFirstNext.promptContext, expectedPromptContext);
@@ -438,11 +437,11 @@ async function run() {
     await clickElement(client, "next-blank");
     const afterSecondNext = await waitForSnapshot(
       client,
-      (snapshot) =>
+      snapshot =>
         snapshot.title === expectedPromptTitle &&
         snapshot.blankChip === "Blank 3" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::2",
-      "Repeated Next kept stale blank content instead of advancing to Blank 3.",
+      "Repeated Next kept stale blank content instead of advancing to Blank 3."
     );
 
     assert.equal(afterSecondNext.promptContext, expectedPromptContext);
@@ -451,11 +450,11 @@ async function run() {
     await clickElement(client, "prev-blank");
     const afterPrevious = await waitForSnapshot(
       client,
-      (snapshot) =>
+      snapshot =>
         snapshot.title === expectedPromptTitle &&
         snapshot.blankChip === "Blank 2" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1",
-      "Previous did not return to Blank 2 with focus restored.",
+      "Previous did not return to Blank 2 with focus restored."
     );
 
     assert.equal(afterPrevious.promptContext, expectedPromptContext);
@@ -467,12 +466,12 @@ async function run() {
 
     const afterReload = await waitForSnapshot(
       client,
-      (snapshot) =>
+      snapshot =>
         snapshot.title === expectedPromptTitle &&
         snapshot.blankChip === "Blank 2" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1" &&
         snapshot.inputValue === "density draft",
-      "Refresh did not restore the active blank and draft answer.",
+      "Refresh did not restore the active blank and draft answer."
     );
 
     assert.equal(afterReload.promptContext, expectedPromptContext);
@@ -481,12 +480,12 @@ async function run() {
     await clickElement(client, "reveal-blank");
     const afterReveal = await waitForSnapshot(
       client,
-      (snapshot) =>
+      snapshot =>
         snapshot.feedbackTitle === "Answer revealed" &&
         snapshot.revealNote.includes("Current target: Blank 2.") &&
         snapshot.reviewToggleText === "Review queue (3)" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1",
-      "Reveal did not apply to the active blank or expose the review queue correctly.",
+      "Reveal did not apply to the active blank or expose the review queue correctly."
     );
 
     console.log("PASS 6: Reveal applied to Blank 2 and kept focus on the active textarea.");
@@ -494,8 +493,8 @@ async function run() {
     if (runMobileVisibilityCheck) {
       await waitForSnapshot(
         client,
-        (snapshot) => snapshot.revealNote.includes("Current target: Blank 2."),
-        "Reveal note did not stay attached to the active blank during the mobile visibility check.",
+        snapshot => snapshot.revealNote.includes("Current target: Blank 2."),
+        "Reveal note did not stay attached to the active blank during the mobile visibility check."
       );
 
       const mobileVisibilityMetrics = await waitForEvaluation(
@@ -519,11 +518,9 @@ async function run() {
             actionBarTop: actionBarRect.top,
           };
         })()`,
-        (metrics) =>
-          Boolean(metrics) &&
-          metrics.fieldBottom <= metrics.actionBarTop &&
-          metrics.revealTop < metrics.actionBarTop,
-        "Sticky mobile action bar still obscures the focused or revealed content.",
+        metrics =>
+          Boolean(metrics) && metrics.fieldBottom <= metrics.actionBarTop && metrics.revealTop < metrics.actionBarTop,
+        "Sticky mobile action bar still obscures the focused or revealed content."
       );
 
       console.log("PASS 6b: Mobile sticky action bar left the focused field and reveal content visible.");
@@ -532,11 +529,11 @@ async function run() {
     await clickElement(client, "review-toggle");
     const reviewSnapshot = await waitForSnapshot(
       client,
-      (snapshot) =>
+      snapshot =>
         snapshot.pageCounter === "Review 1 / 3" &&
         snapshot.blankChip === "Blank 3" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::2",
-      "Review queue did not open on the expected active blank.",
+      "Review queue did not open on the expected active blank."
     );
 
     assert.equal(reviewSnapshot.title, expectedPromptTitle);
@@ -545,19 +542,18 @@ async function run() {
     await clickElement(client, "review-toggle");
     const backToMainSnapshot = await waitForSnapshot(
       client,
-      (snapshot) =>
+      snapshot =>
         snapshot.pageCounter.startsWith("Prompt ") &&
         snapshot.blankChip === "Blank 2" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1",
-      "Back to main session did not restore the pre-review active blank.",
+      "Back to main session did not restore the pre-review active blank."
     );
 
     assert.equal(backToMainSnapshot.title, expectedPromptTitle);
     console.log("PASS 8: Leaving review restored the main-session active blank.");
     console.log("Browser active-blank regression checks passed: 8");
   } catch (error) {
-    const chromeExitDetails =
-      chromeProcess.exitCode != null ? ` Chrome exit code: ${chromeProcess.exitCode}.` : "";
+    const chromeExitDetails = chromeProcess.exitCode != null ? ` Chrome exit code: ${chromeProcess.exitCode}.` : "";
     const stderrDetails = chromeStderr ? ` Chrome stderr: ${chromeStderr.trim()}` : "";
     throw new Error(`${error.message}${chromeExitDetails}${stderrDetails}`);
   } finally {
@@ -568,7 +564,7 @@ async function run() {
   }
 }
 
-run().catch((error) => {
+run().catch(error => {
   console.error(error.stack || error.message);
   process.exitCode = 1;
 });

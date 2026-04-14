@@ -5,9 +5,7 @@ export function resolvePreferredBlankId(blankOrder = [], candidateBlankIds = [])
     return "";
   }
 
-  const normalizedCandidates = Array.isArray(candidateBlankIds)
-    ? candidateBlankIds
-    : [candidateBlankIds];
+  const normalizedCandidates = Array.isArray(candidateBlankIds) ? candidateBlankIds : [candidateBlankIds];
 
   for (const candidateBlankId of normalizedCandidates) {
     if (normalizedBlankOrder.includes(candidateBlankId)) {
@@ -18,10 +16,6 @@ export function resolvePreferredBlankId(blankOrder = [], candidateBlankIds = [])
   return normalizedBlankOrder[0];
 }
 
-export function resolveActiveBlankId(
-  blankOrder = [],
-  pendingFocusBlankId = "",
-  currentBlankId = "",
-) {
+export function resolveActiveBlankId(blankOrder = [], pendingFocusBlankId = "", currentBlankId = "") {
   return resolvePreferredBlankId(blankOrder, [pendingFocusBlankId, currentBlankId]);
 }

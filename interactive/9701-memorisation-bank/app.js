@@ -536,8 +536,7 @@ function openDrillRulesDialog() {
     return;
   }
 
-  lastDrillRulesTrigger =
-    document.activeElement instanceof HTMLElement ? document.activeElement : drillRulesOpenButton;
+  lastDrillRulesTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : drillRulesOpenButton;
 
   if (typeof drillRulesDialog.showModal === "function") {
     if (!drillRulesDialog.open) {
@@ -1353,14 +1352,10 @@ function buildPersistedSessionState() {
     selectionKey: buildSessionSelectionKey(),
     currentBlankId: getActiveBlankId(),
     lastMainBlankId: resolvePreferredBlankId(appState.sessionBlankIds, [appState.lastMainBlankId]),
-    lastReviewBlankId: resolvePreferredBlankId(appState.reviewQueueBlankIds, [
-      appState.lastReviewBlankId,
-    ]),
+    lastReviewBlankId: resolvePreferredBlankId(appState.reviewQueueBlankIds, [appState.lastReviewBlankId]),
     reviewMode: Boolean(appState.reviewMode && appState.reviewQueueBlankIds.length),
     interactionTick: appState.interactionTick,
-    blankStates: appState.sessionBlankIds
-      .map((blankId) => serializeBlankState(getBlankState(blankId)))
-      .filter(Boolean),
+    blankStates: appState.sessionBlankIds.map(blankId => serializeBlankState(getBlankState(blankId))).filter(Boolean),
   };
 }
 
@@ -1372,10 +1367,7 @@ function persistSessionStateNow() {
   }
 
   try {
-    window.localStorage.setItem(
-      getLocalSessionStorageKey(),
-      JSON.stringify(persistedSessionState),
-    );
+    window.localStorage.setItem(getLocalSessionStorageKey(), JSON.stringify(persistedSessionState));
   } catch (error) {
     // Ignore storage failures so practice flow is not blocked.
   }
@@ -1412,9 +1404,9 @@ function clearPersistedSessionState(selection = getSelectionSnapshot()) {
 function rebuildRevealedQuestionIds() {
   appState.revealedQuestionIds = new Set(
     appState.sessionBlankIds
-      .filter((blankId) => getBlankState(blankId)?.revealed)
-      .map((blankId) => getBlank(blankId)?.questionId)
-      .filter(Boolean),
+      .filter(blankId => getBlankState(blankId)?.revealed)
+      .map(blankId => getBlank(blankId)?.questionId)
+      .filter(Boolean)
   );
 }
 
@@ -1424,7 +1416,7 @@ function restoreBlankState(blankState, restoredBlankState) {
   }
 
   const blank = getBlank(blankState.id);
-  const validConceptGroupIds = new Set(blank?.answerModel.concept_groups.map((group) => group.id) || []);
+  const validConceptGroupIds = new Set(blank?.answerModel.concept_groups.map(group => group.id) || []);
 
   blankState.value = String(restoredBlankState.value || "");
   blankState.status = ["idle", "correct", "wrong", "revealed"].includes(restoredBlankState.status)
@@ -1433,21 +1425,18 @@ function restoreBlankState(blankState, restoredBlankState) {
   blankState.wrongCount = Math.max(0, Number(restoredBlankState.wrongCount) || 0);
   blankState.revealed = Boolean(restoredBlankState.revealed || blankState.status === "revealed");
   blankState.coveredGroups = Array.isArray(restoredBlankState.coveredGroups)
-    ? restoredBlankState.coveredGroups.filter((groupId) => validConceptGroupIds.has(groupId))
+    ? restoredBlankState.coveredGroups.filter(groupId => validConceptGroupIds.has(groupId))
     : [];
   blankState.missingGroups = Array.isArray(restoredBlankState.missingGroups)
-    ? restoredBlankState.missingGroups.filter((groupId) => validConceptGroupIds.has(groupId))
+    ? restoredBlankState.missingGroups.filter(groupId => validConceptGroupIds.has(groupId))
     : blankState.missingGroups;
   blankState.contradictionHits = Array.isArray(restoredBlankState.contradictionHits)
     ? restoredBlankState.contradictionHits.filter(Boolean)
     : [];
   blankState.lastReviewSignalAt = Math.max(0, Number(restoredBlankState.lastReviewSignalAt) || 0);
   blankState.matchState =
-    typeof restoredBlankState.matchState === "string"
-      ? restoredBlankState.matchState
-      : "untouched";
-  blankState.reviewPriority =
-    Number(restoredBlankState.reviewPriority) || buildReviewPriority(blankState);
+    typeof restoredBlankState.matchState === "string" ? restoredBlankState.matchState : "untouched";
+  blankState.reviewPriority = Number(restoredBlankState.reviewPriority) || buildReviewPriority(blankState);
 }
 
 function syncPageIndexForBlank(blankId, reviewMode = appState.reviewMode) {
@@ -1490,11 +1479,9 @@ function restoreSessionStateFromLocalStorage() {
     return false;
   }
 
-  const restoredBlankStates = Array.isArray(restoredSessionState.blankStates)
-    ? restoredSessionState.blankStates
-    : [];
+  const restoredBlankStates = Array.isArray(restoredSessionState.blankStates) ? restoredSessionState.blankStates : [];
 
-  restoredBlankStates.forEach((restoredBlankState) => {
+  restoredBlankStates.forEach(restoredBlankState => {
     const blankState = getBlankState(restoredBlankState?.id);
 
     if (blankState) {
@@ -1514,8 +1501,7 @@ function restoreSessionStateFromLocalStorage() {
     restoredSessionState.lastReviewBlankId,
     restoredSessionState.currentBlankId,
   ]);
-  appState.reviewMode =
-    Boolean(restoredSessionState.reviewMode) && appState.reviewQueueBlankIds.length > 0;
+  appState.reviewMode = Boolean(restoredSessionState.reviewMode) && appState.reviewQueueBlankIds.length > 0;
 
   const restoredActiveBlankId = appState.reviewMode
     ? resolvePreferredBlankId(appState.reviewQueueBlankIds, [
@@ -1588,7 +1574,7 @@ function getCurrentModePageIndexForBlank(blankId, reviewMode = appState.reviewMo
   const pages = reviewMode ? appState.reviewPages : appState.pages;
 
   if (reviewMode) {
-    return pages.findIndex((page) => page.includes(blankId));
+    return pages.findIndex(page => page.includes(blankId));
   }
 
   const questionId = getBlank(blankId)?.questionId;
@@ -1596,7 +1582,6 @@ function getCurrentModePageIndexForBlank(blankId, reviewMode = appState.reviewMo
 }
 
 function findNextIncompleteBlankAfter(blankId = "", blankOrder = getCurrentModeBlankOrder()) {
-
   if (!blankOrder.length) {
     return "";
   }
@@ -2004,9 +1989,9 @@ function getMissingGuidanceItems(blank, blankState, limit = 2) {
   const seenHints = new Set();
 
   return blank.answerModel.concept_groups
-    .filter((group) => blankState.missingGroups.includes(group.id))
-    .map((group) => group.hint || "Include the missing chemistry idea.")
-    .filter((hint) => {
+    .filter(group => blankState.missingGroups.includes(group.id))
+    .map(group => group.hint || "Include the missing chemistry idea.")
+    .filter(hint => {
       if (!hint || seenHints.has(hint)) {
         return false;
       }
@@ -2051,7 +2036,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
     const nearMatchGuidanceItems = getMissingGuidanceItems(
       blank,
       blankState,
-      blankState.matchState === "near_miss_preposition" ? 1 : 2,
+      blankState.matchState === "near_miss_preposition" ? 1 : 2
     );
 
     if (isNearMatch) {
@@ -2070,9 +2055,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
     return {
       label: "Needs revision",
       tone: "wrong",
-      message: `Needs revision. ${
-        firstMissingGroup?.hint || "Add the missing chemistry idea."
-      }${contradictionWarning}`,
+      message: `Needs revision. ${firstMissingGroup?.hint || "Add the missing chemistry idea."}${contradictionWarning}`,
       guidanceItems: [],
     };
   }
@@ -2185,7 +2168,7 @@ function createFeedbackCard(blank) {
     const guidanceList = document.createElement("ul");
     guidanceList.className = "memorisation-feedback__guidance";
 
-    descriptor.guidanceItems.forEach((guidanceItem) => {
+    descriptor.guidanceItems.forEach(guidanceItem => {
       const listItem = document.createElement("li");
       listItem.textContent = guidanceItem;
       guidanceList.append(listItem);
@@ -2254,9 +2237,7 @@ function renderProgressHeader() {
 
   pageCounter.textContent = `${appState.reviewMode ? "Review" : "Prompt"} ${promptLabel} / ${blankOrder.length}`;
   completionChip.textContent = `${completedBlanks} / ${totalBlanks} blanks completed`;
-  reviewChip.textContent = appState.reviewMode
-    ? `Review queue: ${reviewCount} active`
-    : `Review queue: ${reviewCount}`;
+  reviewChip.textContent = appState.reviewMode ? `Review queue: ${reviewCount} active` : `Review queue: ${reviewCount}`;
   prevBlankButton.disabled = activeBlankIndex <= 0;
   nextBlankButton.disabled = activeBlankIndex < 0 || activeBlankIndex >= blankOrder.length - 1;
   checkBlankButton.disabled = !activeBlankId;
@@ -2266,9 +2247,7 @@ function renderProgressHeader() {
 
   // Keep review re-entry available as soon as something is queued, while leaving it outside the main action bar.
   reviewToggleButton.hidden = reviewCount === 0;
-  reviewToggleButton.textContent = appState.reviewMode
-    ? "Back to main session"
-    : `Review queue (${reviewCount})`;
+  reviewToggleButton.textContent = appState.reviewMode ? "Back to main session" : `Review queue (${reviewCount})`;
 }
 
 function renderBanner() {
@@ -2425,10 +2404,7 @@ function renderSessionOutline() {
 
     const metaText = getOutlinePromptMeta(question, blank);
     const accessibleMeta = metaText ? ` ${metaText}.` : "";
-    item.setAttribute(
-      "aria-label",
-      `${question.question}. ${status.textContent}.${accessibleMeta}`,
-    );
+    item.setAttribute("aria-label", `${question.question}. ${status.textContent}.${accessibleMeta}`);
 
     item.append(title, status);
 
@@ -2791,7 +2767,7 @@ function registerStaticEvents() {
     closeDrillRulesDialog();
   });
 
-  drillRulesDialog?.addEventListener("click", (event) => {
+  drillRulesDialog?.addEventListener("click", event => {
     if (event.target === drillRulesDialog) {
       closeDrillRulesDialog();
     }
@@ -2801,7 +2777,7 @@ function registerStaticEvents() {
     restoreDrillRulesTriggerFocus();
   });
 
-  topicFilter.addEventListener("change", (event) => {
+  topicFilter.addEventListener("change", event => {
     applySelection(
       getSelectionSnapshot({
         topic: normalizeTopicKey(event.target.value || ""),
