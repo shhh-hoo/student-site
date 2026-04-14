@@ -40,18 +40,14 @@ async function main() {
     const meta = await readJson(metaPath);
 
     if (meta.status !== "ready") {
-      console.warn(
-        `Skipping ${path.relative(siteRoot, folderPath)} because status is not "ready".`,
-      );
+      console.warn(`Skipping ${path.relative(siteRoot, folderPath)} because status is not "ready".`);
       continue;
     }
 
     const contentFileName = await findSupportedContentFile(folderPath);
 
     if (!contentFileName) {
-      console.warn(
-        `Skipping ${path.relative(siteRoot, folderPath)} because no supported content file was found.`,
-      );
+      console.warn(`Skipping ${path.relative(siteRoot, folderPath)} because no supported content file was found.`);
       continue;
     }
 
@@ -81,12 +77,8 @@ async function main() {
       stage_detail: meta.stage_detail ?? "",
       part: meta.part ?? "",
       syllabus_refs: Array.isArray(meta.syllabus_refs) ? meta.syllabus_refs : [],
-      original_relative_source_path: normalizeSlashes(
-        path.relative(siteRoot, sourceFilePath),
-      ),
-      public_file_path: normalizeSlashes(
-        path.relative(siteRoot, outputFilePath),
-      ),
+      original_relative_source_path: normalizeSlashes(path.relative(siteRoot, sourceFilePath)),
+      public_file_path: normalizeSlashes(path.relative(siteRoot, outputFilePath)),
       document_id: documentId,
       content_file_name: contentFileName,
       content_format: contentFormat,
@@ -94,15 +86,13 @@ async function main() {
     });
   }
 
-  library.sort((left, right) =>
-    (left.display_title || left.title).localeCompare(right.display_title || right.title),
-  );
+  library.sort((left, right) => (left.display_title || left.title).localeCompare(right.display_title || right.title));
 
   const libraryJsonPath = path.join(dataOutputRoot, "library.json");
   await writeFile(libraryJsonPath, `${JSON.stringify(library, null, 2)}\n`, "utf8");
 
   console.log(
-    `Synced ${library.length} document${library.length === 1 ? "" : "s"} to ${path.relative(siteRoot, libraryJsonPath)}.`,
+    `Synced ${library.length} document${library.length === 1 ? "" : "s"} to ${path.relative(siteRoot, libraryJsonPath)}.`
   );
 }
 
@@ -110,9 +100,7 @@ async function findDocumentFolders(startPath) {
   const matches = [];
   const entries = await readdir(startPath, { withFileTypes: true });
 
-  const hasMetaJson = entries.some(
-    (entry) => entry.isFile() && entry.name === "meta.json",
-  );
+  const hasMetaJson = entries.some(entry => entry.isFile() && entry.name === "meta.json");
 
   if (hasMetaJson) {
     matches.push(startPath);
@@ -190,7 +178,7 @@ function normalizeHtmlFragment(sourceHtml) {
   fragment = fragment.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
 
   const contentPanelMatch = fragment.match(
-    /<main[^>]*class=(["'])[^"']*\bcontent-panel\b[^"']*\1[^>]*>([\s\S]*?)<\/main>/i,
+    /<main[^>]*class=(["'])[^"']*\bcontent-panel\b[^"']*\1[^>]*>([\s\S]*?)<\/main>/i
   );
 
   if (contentPanelMatch) {
@@ -209,7 +197,7 @@ function normalizeSlashes(value) {
   return value.split(path.sep).join("/");
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error(error);
   process.exitCode = 1;
 });

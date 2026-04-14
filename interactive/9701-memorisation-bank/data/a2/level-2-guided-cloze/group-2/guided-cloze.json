@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain the trend in the solubilities of the Group 2 sulfates.",
     "prompt": "The solubilities _____ down the group because both lattice enthalpy and hydration enthalpy become less exothermic. The hydration enthalpy decreases more than the lattice enthalpy, so dissolving becomes less favourable.",
-    "answers": [
-      "decrease"
-    ],
+    "answers": ["decrease"],
     "full_answer": "The solubilities decrease down the group because both lattice enthalpy and hydration enthalpy become less exothermic. The hydration enthalpy decreases more than the lattice enthalpy, so dissolving becomes less favourable."
   },
   {
@@ -22,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Describe the trend in the thermal stabilities of the carbonates of the Group 2 elements. Explain your answer.",
     "prompt": "The thermal stability of the Group 2 carbonates _____ down the group. The M2+ ions become larger and have lower charge density, so they polarise the carbonate ion less. The carbonate ion is less distorted and less likely to decompose.",
-    "answers": [
-      "increases"
-    ],
+    "answers": ["increases"],
     "full_answer": "The thermal stability of the Group 2 carbonates increases down the group. The M2+ ions become larger and have lower charge density, so they polarise the carbonate ion less. The carbonate ion is less distorted and less likely to decompose."
   },
   {
@@ -36,9 +32,7 @@
     "type": "guided_cloze",
     "question": "Explain why BaCrO4 is coloured.",
     "prompt": "Chromate(VI) ions absorb light in the _____ region. Electrons are promoted to a higher energy level, so some wavelengths of visible light are absorbed and the compound appears coloured.",
-    "answers": [
-      "visible"
-    ],
+    "answers": ["visible"],
     "full_answer": "Chromate(VI) ions absorb light in the visible region. Electrons are promoted to a higher energy level, so some wavelengths of visible light are absorbed and the compound appears coloured."
   },
   {
@@ -50,9 +44,7 @@
     "type": "guided_cloze",
     "question": "Explain the trend in the solubilities of the Group 2 sulfates.",
     "prompt": "The solubility of the Group 2 sulfates _____ down the group. Both lattice enthalpy and hydration enthalpy become less exothermic as the ions become larger. The hydration enthalpy decreases by a greater amount, so dissolution becomes less favourable.",
-    "answers": [
-      "decreases"
-    ],
+    "answers": ["decreases"],
     "full_answer": "The solubility of the Group 2 sulfates decreases down the group. Both lattice enthalpy and hydration enthalpy become less exothermic as the ions become larger. The hydration enthalpy decreases by a greater amount, so dissolution becomes less favourable."
   },
   {
@@ -64,9 +56,7 @@
     "type": "guided_cloze",
     "question": "Explain the trend in the solubilities of the Group 2 sulfates.",
     "prompt": "Down the group, both lattice enthalpy and hydration enthalpy become less exothermic as the ions become larger. However, hydration enthalpy decreases more _____. So dissolution becomes less favourable and the sulfates become less soluble.",
-    "answers": [
-      "rapidly"
-    ],
+    "answers": ["rapidly"],
     "full_answer": "Down the group, both lattice enthalpy and hydration enthalpy become less exothermic as the ions become larger. However, hydration enthalpy decreases more rapidly. So dissolution becomes less favourable and the sulfates become less soluble."
   },
   {
@@ -78,10 +68,7 @@
     "type": "guided_cloze",
     "question": "Explain the trend in the thermal stabilities of the carbonates of the Group 2 elements.",
     "prompt": "The thermal stability of the Group 2 carbonates increases down the group because the M2+ ion has lower _____ _____. It polarises the carbonate ion less, so the carbonate ion is less distorted and less likely to decompose.",
-    "answers": [
-      "charge",
-      "density"
-    ],
+    "answers": ["charge", "density"],
     "full_answer": "The thermal stability of the Group 2 carbonates increases down the group because the M2+ ion has lower charge density. It polarises the carbonate ion less, so the carbonate ion is less distorted and less likely to decompose."
   }
 ]

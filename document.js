@@ -36,7 +36,7 @@ async function initDocumentView() {
 
   try {
     const library = await fetchLibrary();
-    const documentItem = library.find((item) => item.document_id === documentId);
+    const documentItem = library.find(item => item.document_id === documentId);
 
     if (!documentItem) {
       renderMissingState(`Document "${documentId}" was not found in library.json.`, libraryReturnHref);
@@ -144,12 +144,14 @@ function normalizeFilterParam(value) {
 function normalizeTagParams(values) {
   const tagValues = Array.isArray(values) ? values : [values];
 
-  return [...new Set(
-    tagValues
-      .flatMap((value) => String(value || "").split(","))
-      .map((tag) => tag.trim())
-      .filter(Boolean),
-  )];
+  return [
+    ...new Set(
+      tagValues
+        .flatMap(value => String(value || "").split(","))
+        .map(tag => tag.trim())
+        .filter(Boolean)
+    ),
+  ];
 }
 
 function updateLibraryReturnLink(href) {
@@ -163,7 +165,7 @@ function initializeSidebarDisclosure() {
     return;
   }
 
-  sidebarDisclosurePanels.forEach((panel) => {
+  sidebarDisclosurePanels.forEach(panel => {
     if (panel.hasAttribute("data-mobile-collapsed")) {
       panel.open = false;
     }
@@ -181,9 +183,7 @@ function configureMathJax() {
   const existingMhchemPackages = Array.isArray(existingTexConfig.packages?.["[+]"])
     ? existingTexConfig.packages["[+]"]
     : [];
-  const existingLoaderEntries = Array.isArray(existingLoaderConfig.load)
-    ? existingLoaderConfig.load
-    : [];
+  const existingLoaderEntries = Array.isArray(existingLoaderConfig.load) ? existingLoaderConfig.load : [];
 
   window.MathJax = {
     ...existingConfig,
@@ -225,7 +225,7 @@ function ensureMathJaxReady() {
   };
 
   window[mathJaxPromiseKey] = new Promise((resolve, reject) => {
-    const rejectWithCleanup = (error) => {
+    const rejectWithCleanup = error => {
       cleanupMathJaxFailure();
       reject(error);
     };
@@ -265,7 +265,7 @@ function ensureMathJaxReady() {
     scriptElement.addEventListener("load", resolveWhenReady, { once: true });
     scriptElement.addEventListener("error", rejectWhenUnavailable, { once: true });
     document.head.appendChild(scriptElement);
-  }).catch((error) => {
+  }).catch(error => {
     cleanupMathJaxFailure();
     console.warn("MathJax is unavailable for this fragment.", error);
     window[mathJaxPromiseKey] = null;
@@ -336,14 +336,10 @@ function renderDocumentHeader(documentItem) {
 
   document.title = `${visibleTitle || "Document"} | Student Site`;
   documentTitle.textContent = visibleTitle || "Untitled document";
-  documentDescription.textContent =
-    documentItem.description || "No description is available for this document.";
+  documentDescription.textContent = documentItem.description || "No description is available for this document.";
   documentMeta.innerHTML = metaChips
     .concat(Array.isArray(documentItem.tags) ? documentItem.tags : [])
-    .map(
-      (value) =>
-        `<span class="meta-chip brand-tag brand-tag--outline viewer-meta-chip">${escapeHtml(value)}</span>`,
-    )
+    .map(value => `<span class="meta-chip brand-tag brand-tag--outline viewer-meta-chip">${escapeHtml(value)}</span>`)
     .join("");
   renderSyllabusLinks(documentItem.syllabus_refs);
 
@@ -364,9 +360,7 @@ function renderSyllabusLinks(syllabusRefs) {
     return;
   }
 
-  const refs = Array.isArray(syllabusRefs)
-    ? syllabusRefs.map((value) => String(value || "").trim()).filter(Boolean)
-    : [];
+  const refs = Array.isArray(syllabusRefs) ? syllabusRefs.map(value => String(value || "").trim()).filter(Boolean) : [];
 
   if (refs.length === 0) {
     syllabusLinksSection.hidden = true;
@@ -377,8 +371,8 @@ function renderSyllabusLinks(syllabusRefs) {
   syllabusLinksSection.hidden = false;
   documentSyllabusLinks.innerHTML = refs
     .map(
-      (value) =>
-        `<span class="meta-chip brand-tag brand-tag--soft viewer-meta-chip viewer-meta-chip--syllabus">${escapeHtml(value)}</span>`,
+      value =>
+        `<span class="meta-chip brand-tag brand-tag--soft viewer-meta-chip viewer-meta-chip--syllabus">${escapeHtml(value)}</span>`
     )
     .join("");
 }
@@ -508,13 +502,13 @@ function buildTableOfContents() {
     <ul class="toc-list">
       ${items
         .map(
-          (item) => `
+          item => `
             <li>
               <a class="toc-link" data-depth="${item.depth}" href="#${item.id}">
                 ${escapeHtml(item.label)}
               </a>
             </li>
-          `,
+          `
         )
         .join("")}
     </ul>
@@ -615,9 +609,7 @@ function renderMarkdownToHtml(markdown) {
     if (line.startsWith(">")) {
       flushParagraph();
       closeList();
-      output.push(
-        `<blockquote><p>${renderInlineMarkdown(line.replace(/^>\s?/, ""))}</p></blockquote>`,
-      );
+      output.push(`<blockquote><p>${renderInlineMarkdown(line.replace(/^>\s?/, ""))}</p></blockquote>`);
       continue;
     }
 

@@ -62,9 +62,7 @@ summary:focus-visible {
   padding: clamp(1.4rem, 4vw, 2.35rem);
   border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: calc(var(--radius) + 6px);
-  background:
-    linear-gradient(135deg, rgba(255, 254, 249, 0.96), rgba(255, 255, 255, 0.76)),
-    rgba(255, 255, 255, 0.72);
+  background: linear-gradient(135deg, rgba(255, 254, 249, 0.96), rgba(255, 255, 255, 0.76)), rgba(255, 255, 255, 0.72);
   box-shadow: var(--shadow);
   backdrop-filter: blur(12px);
 }
@@ -76,8 +74,7 @@ summary:focus-visible {
   width: 16rem;
   height: 16rem;
   border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(239, 107, 59, 0.16), transparent 66%);
+  background: radial-gradient(circle, rgba(239, 107, 59, 0.16), transparent 66%);
   pointer-events: none;
 }
 
@@ -199,8 +196,7 @@ summary:focus-visible {
   padding: 1.15rem;
   border: 1px solid rgba(11, 95, 99, 0.16);
   border-radius: 20px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(245, 251, 248, 0.96));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(245, 251, 248, 0.96));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.68);
 }
 
@@ -220,7 +216,10 @@ summary:focus-visible {
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.72);
   box-shadow: var(--shadow-soft);
-  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
 }
 
 .filter-field-primary[data-active="true"] {
@@ -252,7 +251,10 @@ summary:focus-visible {
   border-radius: 10px;
   background: var(--surface-strong);
   color: var(--text);
-  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
 }
 
 .filter-select[data-active="true"] {
@@ -309,7 +311,9 @@ summary:focus-visible {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  transition: color 140ms ease, opacity 140ms ease;
+  transition:
+    color 140ms ease,
+    opacity 140ms ease;
 }
 
 .filter-reset::before {
@@ -442,7 +446,10 @@ summary:focus-visible {
   color: var(--accent-strong);
   cursor: pointer;
   font-weight: 800;
-  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
 }
 
 .filter-toggle::after {
@@ -574,7 +581,9 @@ summary:focus-visible {
   flex-shrink: 0;
   color: var(--muted);
   font-size: 0.82rem;
-  transition: transform 140ms ease, color 140ms ease;
+  transition:
+    transform 140ms ease,
+    color 140ms ease;
 }
 
 .sidebar-summary:hover::after,

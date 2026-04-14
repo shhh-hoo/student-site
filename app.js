@@ -221,13 +221,12 @@ async function fetchLibraryDocuments() {
 function renderHomepage() {
   const currentLibrarySearch = window.location.search.replace(/^\?/, "");
   const helpers = {
-    buildDocumentLinkHref: (linkPath) =>
+    buildDocumentLinkHref: linkPath =>
       buildDocumentLinkHref(linkPath, {
         returnSearch: currentLibrarySearch,
       }),
-    buildLibraryHref: (filters, hashId = "library-panel") =>
-      buildLibraryHref(filters, { hashId }),
-    buildSiteHref: (relativePath) => buildSitePageHref(relativePath),
+    buildLibraryHref: (filters, hashId = "library-panel") => buildLibraryHref(filters, { hashId }),
+    buildSiteHref: relativePath => buildSitePageHref(relativePath),
     getContentFormatLabel,
     getDocumentDisplayTitle,
     getDocumentUiTags,
@@ -239,13 +238,11 @@ function renderHomepage() {
     libraryState.documents,
     homepageState.interactiveResources,
     homepageState.curationBundle,
-    helpers,
+    helpers
   );
   homepageState.viewModel = homepageViewModel;
 
-  homepageState.searchIndex = Array.isArray(homepageViewModel.searchIndex)
-    ? homepageViewModel.searchIndex
-    : [];
+  homepageState.searchIndex = Array.isArray(homepageViewModel.searchIndex) ? homepageViewModel.searchIndex : [];
 
   if (siteHeaderRoot) {
     siteHeaderRoot.innerHTML = createSiteHeaderMarkup(homepageViewModel.header);
@@ -262,9 +259,7 @@ function renderHomepage() {
   renderHomepageOverview();
 
   if (homepageInteractiveRoot) {
-    homepageInteractiveRoot.innerHTML = createInteractiveSectionMarkup(
-      homepageViewModel.interactiveSection,
-    );
+    homepageInteractiveRoot.innerHTML = createInteractiveSectionMarkup(homepageViewModel.interactiveSection);
   }
 
   initializeHomepageSearch();
@@ -304,7 +299,7 @@ function initializeHomepageOverviewFilters() {
     return;
   }
 
-  homepageOverviewRoot.addEventListener("click", (event) => {
+  homepageOverviewRoot.addEventListener("click", event => {
     const filterButton = event.target.closest("[data-filter-key]");
 
     if (!filterButton) {
@@ -435,9 +430,9 @@ function normalizeTagParams(values) {
   return [
     ...new Set(
       tagValues
-        .flatMap((value) => String(value || "").split(","))
+        .flatMap(value => String(value || "").split(","))
         .map(normalizeUiTag)
-        .filter(Boolean),
+        .filter(Boolean)
     ),
   ].sort(sortTagValues);
 }
@@ -488,12 +483,8 @@ function renderFilterControls(documents) {
   populateSelectOptions(stageFilter, stageValues);
   populateSelectOptions(partFilter, partValues);
 
-  stageFilter.value = stageValues.includes(libraryState.filters.stage)
-    ? libraryState.filters.stage
-    : "";
-  partFilter.value = partValues.includes(libraryState.filters.part)
-    ? libraryState.filters.part
-    : "";
+  stageFilter.value = stageValues.includes(libraryState.filters.stage) ? libraryState.filters.stage : "";
+  partFilter.value = partValues.includes(libraryState.filters.part) ? libraryState.filters.part : "";
 
   if (!stageValues.includes(libraryState.filters.stage)) {
     libraryState.filters.stage = "";
@@ -517,7 +508,7 @@ function renderFilterControls(documents) {
     localTagCounts,
     globalTagCounts,
     stageAndPartParts,
-    tagPartMap,
+    tagPartMap
   );
 
   tagFilterList.innerHTML =
@@ -526,7 +517,7 @@ function renderFilterControls(documents) {
           .map(({ title, description, tags, secondary = false }) =>
             createFilterTagGroupMarkup(title, description, tags, {
               secondary,
-            }),
+            })
           )
           .join("")
       : '<span class="tag">No topics or skills available for this Stage and Part.</span>';
@@ -540,21 +531,18 @@ function renderFilterControls(documents) {
 }
 
 function populateSelectOptions(selectElement, values) {
-  const defaultLabel =
-    selectElement.dataset.defaultLabel || selectElement.options[0]?.textContent || "All";
+  const defaultLabel = selectElement.dataset.defaultLabel || selectElement.options[0]?.textContent || "All";
 
   selectElement.innerHTML = [
     `<option value="">${escapeHtml(defaultLabel)}</option>`,
-    ...values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`),
+    ...values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`),
   ].join("");
 }
 
 function getUniqueValues(documents, key) {
-  return [
-    ...new Set(
-      documents.map((documentItem) => String(documentItem[key] || "").trim()).filter(Boolean),
-    ),
-  ].sort(sortText);
+  return [...new Set(documents.map(documentItem => String(documentItem[key] || "").trim()).filter(Boolean))].sort(
+    sortText
+  );
 }
 
 function getUniqueTagValues(documents) {
@@ -562,13 +550,11 @@ function getUniqueTagValues(documents) {
 }
 
 function getDocumentsMatchingStageAndPart(documents) {
-  return documents.filter((documentItem) => {
+  return documents.filter(documentItem => {
     const matchesStage =
-      !libraryState.filters.stage ||
-      String(documentItem.stage || "").trim() === libraryState.filters.stage;
+      !libraryState.filters.stage || String(documentItem.stage || "").trim() === libraryState.filters.stage;
     const matchesPart =
-      !libraryState.filters.part ||
-      String(documentItem.part || "").trim() === libraryState.filters.part;
+      !libraryState.filters.part || String(documentItem.part || "").trim() === libraryState.filters.part;
 
     return matchesStage && matchesPart;
   });
@@ -582,7 +568,7 @@ function getDocumentUiTags(documentItem) {
 
 function getTagCounts(documents) {
   return documents.reduce((counts, documentItem) => {
-    getDocumentUiTags(documentItem).forEach((tag) => {
+    getDocumentUiTags(documentItem).forEach(tag => {
       counts[tag] = (counts[tag] || 0) + 1;
     });
 
@@ -594,7 +580,7 @@ function getTagPartMap(documents) {
   return documents.reduce((tagPartMap, documentItem) => {
     const documentPart = String(documentItem.part || "").trim();
 
-    getDocumentUiTags(documentItem).forEach((tag) => {
+    getDocumentUiTags(documentItem).forEach(tag => {
       if (!tagPartMap[tag]) {
         tagPartMap[tag] = new Set();
       }
@@ -610,24 +596,18 @@ function getTagPartMap(documents) {
 
 function pruneInvalidSelectedTags(tagValues) {
   const availableTags = new Set(tagValues);
-  const nextTags = [...libraryState.filters.tags].filter((tag) => availableTags.has(tag));
+  const nextTags = [...libraryState.filters.tags].filter(tag => availableTags.has(tag));
 
   libraryState.filters.tags = new Set(nextTags);
 }
 
-function getVisibleFilterTagGroups(
-  tagValues,
-  localTagCounts,
-  globalTagCounts,
-  availableParts,
-  tagPartMap,
-) {
+function getVisibleFilterTagGroups(tagValues, localTagCounts, globalTagCounts, availableParts, tagPartMap) {
   const rankedTagValues = [...tagValues].sort((left, right) =>
-    compareFilterTagPriority(left, right, localTagCounts, globalTagCounts),
+    compareFilterTagPriority(left, right, localTagCounts, globalTagCounts)
   );
   const priorityTags = getPriorityFilterTags(rankedTagValues, availableParts, tagPartMap);
-  const secondaryTags = rankedTagValues.filter((tag) => !priorityTags.includes(tag));
-  const selectedSecondaryTags = secondaryTags.filter((tag) => libraryState.filters.tags.has(tag));
+  const secondaryTags = rankedTagValues.filter(tag => !priorityTags.includes(tag));
+  const selectedSecondaryTags = secondaryTags.filter(tag => libraryState.filters.tags.has(tag));
   const groups = [];
 
   if (priorityTags.length > 0) {
@@ -672,18 +652,18 @@ function getPriorityFilterTags(rankedTagValues, availableParts, tagPartMap) {
   if (topOverallTag) {
     priorityTags.push(topOverallTag);
 
-    (tagPartMap[topOverallTag] || []).forEach((part) => {
+    (tagPartMap[topOverallTag] || []).forEach(part => {
       coveredParts.add(part);
     });
   }
 
-  availableParts.forEach((part) => {
+  availableParts.forEach(part => {
     if (priorityTags.length >= collapsedPrimaryFilterTagCount || coveredParts.has(part)) {
       return;
     }
 
     const partCandidate = rankedTagValues.find(
-      (tag) => !priorityTags.includes(tag) && (tagPartMap[tag] || new Set()).has(part),
+      tag => !priorityTags.includes(tag) && (tagPartMap[tag] || new Set()).has(part)
     );
 
     if (!partCandidate) {
@@ -692,12 +672,12 @@ function getPriorityFilterTags(rankedTagValues, availableParts, tagPartMap) {
 
     priorityTags.push(partCandidate);
 
-    (tagPartMap[partCandidate] || []).forEach((tagPart) => {
+    (tagPartMap[partCandidate] || []).forEach(tagPart => {
       coveredParts.add(tagPart);
     });
   });
 
-  rankedTagValues.forEach((tag) => {
+  rankedTagValues.forEach(tag => {
     if (priorityTags.length >= collapsedPrimaryFilterTagCount || priorityTags.includes(tag)) {
       return;
     }
@@ -742,7 +722,7 @@ function createFilterTagGroupMarkup(title, description, tags, { secondary = fals
         <span class="filter-tag-group-copy">${escapeHtml(description)}</span>
       </div>
       <div class="filter-tag-cluster">
-        ${tags.map((tag) => createFilterTagButtonMarkup(tag, { secondary })).join("")}
+        ${tags.map(tag => createFilterTagButtonMarkup(tag, { secondary })).join("")}
       </div>
     </section>
   `;
@@ -766,15 +746,13 @@ function createFilterTagButtonMarkup(tag, { secondary = false } = {}) {
 
 function updateFilterCopy(stageAndPartDocuments, tagValues, tagGroups) {
   if (filterHelper) {
-    filterHelper.textContent =
-      "Stage and Part set the pool first. Topics & Skills then narrows that subset.";
+    filterHelper.textContent = "Stage and Part set the pool first. Topics & Skills then narrows that subset.";
   }
 
   if (filterTopicSummary) {
     const selectedCount = libraryState.filters.tags.size;
     const stageAndPartDocumentLabel = `${stageAndPartDocuments.length} document${stageAndPartDocuments.length === 1 ? "" : "s"}`;
-    const priorityCount =
-      tagGroups.groups.find(({ title }) => title === "Priority topics")?.tags.length || 0;
+    const priorityCount = tagGroups.groups.find(({ title }) => title === "Priority topics")?.tags.length || 0;
 
     filterTopicSummary.textContent =
       selectedCount > 0
@@ -831,31 +809,23 @@ function updateFilterTagToggle(hiddenCount) {
   toggleFilterTagsButton.textContent = libraryState.showAllFilterTags
     ? "Show fewer topics"
     : `Show ${hiddenCount} more topic${hiddenCount === 1 ? "" : "s"}`;
-  toggleFilterTagsButton.setAttribute(
-    "aria-expanded",
-    libraryState.showAllFilterTags ? "true" : "false",
-  );
+  toggleFilterTagsButton.setAttribute("aria-expanded", libraryState.showAllFilterTags ? "true" : "false");
 }
 
 function matchesActiveFilters(documentItem) {
   const matchesStage =
-    !libraryState.filters.stage ||
-    String(documentItem.stage || "").trim() === libraryState.filters.stage;
+    !libraryState.filters.stage || String(documentItem.stage || "").trim() === libraryState.filters.stage;
   const matchesPart =
-    !libraryState.filters.part ||
-    String(documentItem.part || "").trim() === libraryState.filters.part;
+    !libraryState.filters.part || String(documentItem.part || "").trim() === libraryState.filters.part;
   const documentTags = getDocumentUiTags(documentItem);
   const matchesTags =
-    libraryState.filters.tags.size === 0 ||
-    documentTags.some((tag) => libraryState.filters.tags.has(tag));
+    libraryState.filters.tags.size === 0 || documentTags.some(tag => libraryState.filters.tags.has(tag));
 
   return matchesStage && matchesPart && matchesTags;
 }
 
 function hasFiltersApplied() {
-  return Boolean(
-    libraryState.filters.stage || libraryState.filters.part || libraryState.filters.tags.size > 0,
-  );
+  return Boolean(libraryState.filters.stage || libraryState.filters.part || libraryState.filters.tags.size > 0);
 }
 
 function sortText(left, right) {
@@ -922,7 +892,7 @@ function createCardMarkup(documentItem) {
   const resourceCard = createDocumentResourceModel(
     documentItem,
     {
-      buildDocumentLinkHref: (linkPath) =>
+      buildDocumentLinkHref: linkPath =>
         buildDocumentLinkHref(linkPath, {
           returnSearch: currentLibrarySearch,
         }),
@@ -936,7 +906,7 @@ function createCardMarkup(documentItem) {
     {
       eyebrow: "Document",
       tagLimit: cardVisibleTagCount,
-    },
+    }
   );
 
   return createResourceCardMarkup(resourceCard, { layout: "library" });
@@ -973,7 +943,7 @@ function getReadableLabel(value) {
 
   return normalizedValue
     .split(/[\s-]+/)
-    .map((word) => {
+    .map(word => {
       if (word.toLowerCase() === "ai") {
         return "AI";
       }
@@ -996,7 +966,7 @@ function getTagDisplayLabel(tag) {
 
   return normalizedTag
     .split("-")
-    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
     .join(" ");
 }
 
@@ -1030,7 +1000,7 @@ function initializeHomepageSearch() {
     return;
   }
 
-  searchForm.addEventListener("submit", (event) => {
+  searchForm.addEventListener("submit", event => {
     event.preventDefault();
 
     const query = searchInputElement.value.trim();
@@ -1042,9 +1012,7 @@ function initializeHomepageSearch() {
     }
 
     updateHomepageSearchFeedback(
-      query
-        ? "No direct match found. Jumping to the library instead."
-        : "Jumping to the full library.",
+      query ? "No direct match found. Jumping to the library instead." : "Jumping to the full library."
     );
     focusLibraryPanel();
   });
@@ -1059,17 +1027,15 @@ function findHomepageSearchMatch(query) {
     };
   }
 
-  const exactMatch = homepageState.searchIndex.find((entry) =>
-    entry.tokens.some((token) => token === normalizedQuery),
-  );
+  const exactMatch = homepageState.searchIndex.find(entry => entry.tokens.some(token => token === normalizedQuery));
 
   if (exactMatch) {
     updateHomepageSearchFeedback(`Opening ${exactMatch.value}.`);
     return exactMatch;
   }
 
-  const partialMatches = homepageState.searchIndex.filter((entry) =>
-    entry.tokens.some((token) => token.includes(normalizedQuery)),
+  const partialMatches = homepageState.searchIndex.filter(entry =>
+    entry.tokens.some(token => token.includes(normalizedQuery))
   );
 
   if (partialMatches.length === 1) {

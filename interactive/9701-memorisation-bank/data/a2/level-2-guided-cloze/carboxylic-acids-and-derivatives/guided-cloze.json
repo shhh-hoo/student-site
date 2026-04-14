@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain why acyl chlorides are more reactive than esters toward nucleophilic substitution.",
     "prompt": "The C-Cl bond is strongly ____ and chlorine is strongly electron withdrawing. The carbon atom of the carbonyl group is therefore more delta positive and is more readily attacked by nucleophiles.",
-    "answers": [
-      "polar"
-    ],
+    "answers": ["polar"],
     "full_answer": "The C-Cl bond is strongly polar and chlorine is strongly electron withdrawing. The carbon atom of the carbonyl group is therefore more delta positive and is more readily attacked by nucleophiles."
   }
 ]

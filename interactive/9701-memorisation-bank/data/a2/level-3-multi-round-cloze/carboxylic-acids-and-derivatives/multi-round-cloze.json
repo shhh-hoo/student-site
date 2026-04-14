@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "The C-Cl bond is strongly ____ and chlorine is strongly electron withdrawing. The carbon atom of the carbonyl group is therefore more delta positive and is more readily attacked by nucleophiles.",
-        "answers": [
-          "polar"
-        ]
+        "answers": ["polar"]
       },
       {
         "round": 2,
         "prompt": "The C-Cl bond is strongly polar and chlorine is strongly electron withdrawing. The carbon atom of the carbonyl group is therefore more delta _____ and is more readily attacked by nucleophiles.",
-        "answers": [
-          "positive"
-        ]
+        "answers": ["positive"]
       },
       {
         "round": 3,
         "prompt": "The C-Cl bond is strongly polar and chlorine is strongly electron withdrawing. The carbon atom of the carbonyl group is therefore more delta positive and is more readily attacked by _____.",
-        "answers": [
-          "nucleophiles"
-        ]
+        "answers": ["nucleophiles"]
       }
     ]
   }

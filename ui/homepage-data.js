@@ -17,17 +17,13 @@ export { createDocumentResourceModel, loadCurationBundle, loadInteractiveResourc
 const homepageOverviewPreviewLimit = 6;
 
 export function buildHomepageViewModel(documents, interactiveResources, _curationBundle, helpers) {
-  const documentItems = Array.isArray(documents)
-    ? documents.filter((item) => item.type === "document")
-    : [];
+  const documentItems = Array.isArray(documents) ? documents.filter(item => item.type === "document") : [];
   const interactiveCount = interactiveResources.length;
-  const asCount = documentItems.filter((item) => String(item.stage || "").trim() === "AS").length;
-  const a2Count = documentItems.filter((item) => String(item.stage || "").trim() === "A2").length;
+  const asCount = documentItems.filter(item => String(item.stage || "").trim() === "AS").length;
+  const a2Count = documentItems.filter(item => String(item.stage || "").trim() === "A2").length;
   const overviewItems = [
-    ...documentItems.map((documentItem) => createHomepageOverviewItem(documentItem, helpers)),
-    ...interactiveResources.map((interactiveResource) =>
-      createHomepageInteractiveOverviewItem(interactiveResource),
-    ),
+    ...documentItems.map(documentItem => createHomepageOverviewItem(documentItem, helpers)),
+    ...interactiveResources.map(interactiveResource => createHomepageInteractiveOverviewItem(interactiveResource)),
   ].filter(Boolean);
 
   return {
@@ -154,24 +150,21 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
 }
 
 function buildInteractiveSection(interactiveResources, helpers) {
-  const resources = interactiveResources.map((interactiveResource) =>
+  const resources = interactiveResources.map(interactiveResource =>
     createInteractiveResourceModel(interactiveResource, helpers, {
       eyebrow: "Practice tool",
-      title: resourceOrDefault(
-        interactiveResource.display_title,
-        interactiveResource.title || "Interactive practice",
-      ),
+      title: resourceOrDefault(interactiveResource.display_title, interactiveResource.title || "Interactive practice"),
       ctaLabel: "Open tool",
       description: truncateText(
         resourceOrDefault(
           interactiveResource.description,
-          "Open quick drills and return to the document bank when you need fuller notes.",
+          "Open quick drills and return to the document bank when you need fuller notes."
         ),
-        120,
+        120
       ),
       tagLimit: 4,
       note: "Use this for short drills rather than as the main navigation path.",
-    }),
+    })
   );
 
   return {
@@ -197,10 +190,7 @@ function createHomepageOverviewItem(documentItem, helpers) {
     title: helpers.getDocumentDisplayTitle(documentItem, {
       short: true,
     }),
-    description: truncateText(
-      resourceOrDefault(documentItem.description, "No description provided."),
-      112,
-    ),
+    description: truncateText(resourceOrDefault(documentItem.description, "No description provided."), 112),
     href: helpers.buildDocumentLinkHref(linkPath),
     ctaLabel: "Open",
     typeLabel: getOverviewTypeLabel(documentItem),
@@ -216,11 +206,8 @@ function createHomepageInteractiveOverviewItem(resource) {
     eyebrow: "Interactive",
     title: resource.display_title || resource.title || "Interactive practice",
     description: truncateText(
-      resourceOrDefault(
-        resource.description,
-        "Short interactive practice for quick chemistry checks.",
-      ),
-      112,
+      resourceOrDefault(resource.description, "Short interactive practice for quick chemistry checks."),
+      112
     ),
     href: resource.href,
     ctaLabel: "Open",

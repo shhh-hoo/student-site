@@ -76,41 +76,6 @@ body.page-stage::before {
   margin-top: 1.4rem;
 }
 
-.page-stage .site-header {
-  background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(251, 244, 232, 0.94));
-  border-color: var(--stage-border);
-  box-shadow: var(--stage-shadow-lifted);
-}
-
-.page-stage .site-header::before {
-  background: linear-gradient(90deg, var(--stage-accent), var(--stage-secondary));
-}
-
-.page-stage .site-header::after {
-  content: "";
-  position: absolute;
-  inset: auto 12% -1rem auto;
-  width: 6rem;
-  height: 1rem;
-  border: var(--home-border-thin) solid var(--stage-border);
-  border-radius: 999px;
-  background: rgba(255, 251, 244, 0.96);
-  transform: rotate(7deg);
-}
-
-.page-stage .site-header__eyebrow {
-  color: var(--stage-muted);
-}
-
-.page-stage .site-header__nav-link[aria-current="page"],
-.page-stage .site-header__nav-link--current {
-  border-color: var(--stage-border);
-  background: rgba(255, 248, 236, 0.98);
-  box-shadow:
-    4px 4px 0 rgba(42, 34, 27, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.72);
-}
-
 .page-stage .cta-button {
   border-width: var(--home-border-strong);
   border-radius: 18px;
@@ -1110,7 +1075,6 @@ html[data-theme="dark"] body.page-stage .resource-card {
   box-shadow: var(--stage-shadow-soft);
 }
 
-html[data-theme="dark"] body.page-stage .site-header::after,
 html[data-theme="dark"] body.page-stage .stage-hero__pill,
 html[data-theme="dark"] body.page-stage .stage-route-card__count,
 html[data-theme="dark"] body.page-stage .stage-stat,

@@ -1,9 +1,5 @@
 import { createSiteHeaderMarkup } from "./ui/homepage-components.js";
-import {
-  createStageDocumentsMarkup,
-  createStageHeroMarkup,
-  createStageOverviewMarkup,
-} from "./ui/stage-components.js";
+import { createStageDocumentsMarkup, createStageHeroMarkup, createStageOverviewMarkup } from "./ui/stage-components.js";
 import { buildStagePageViewModel } from "./ui/stage-data.js";
 import { fetchLibraryDocuments, loadCurationBundle } from "./ui/site-data.js";
 import {
@@ -50,7 +46,7 @@ function getStageReturnSearch() {
 
 function createStageHelpers() {
   return {
-    buildDocumentLinkHref: (linkPath) =>
+    buildDocumentLinkHref: linkPath =>
       buildDocumentLinkHref(linkPath, {
         sitePrefix,
         returnSearch: getStageReturnSearch(),
@@ -60,7 +56,7 @@ function createStageHelpers() {
         sitePrefix,
         hashId,
       }),
-    buildSiteHref: (relativePath) => buildSitePageHref(relativePath, sitePrefix),
+    buildSiteHref: relativePath => buildSitePageHref(relativePath, sitePrefix),
     getContentFormatLabel,
     getDocumentDisplayTitle,
     getDocumentUiTags,
@@ -167,7 +163,7 @@ function initializeStageOverviewFilters() {
     return;
   }
 
-  stageOverviewRoot.addEventListener("click", (event) => {
+  stageOverviewRoot.addEventListener("click", event => {
     const filterButton = event.target.closest("[data-filter-key]");
 
     if (!filterButton) {

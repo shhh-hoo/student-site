@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "The secondary carbocation is more stable than the primary carbocation. This is because two alkyl groups have a greater positive inductive effect than _____ alkyl group. Therefore the pathway through the secondary carbocation is favoured.",
-        "answers": [
-          "one"
-        ]
+        "answers": ["one"]
       },
       {
         "round": 2,
         "prompt": "The secondary carbocation is more stable than the primary carbocation. This is because two alkyl groups have a greater positive _____ effect than one alkyl group. Therefore the pathway through the secondary carbocation is favoured.",
-        "answers": [
-          "inductive"
-        ]
+        "answers": ["inductive"]
       },
       {
         "round": 3,
         "prompt": "The secondary carbocation is more stable than the primary carbocation. This is because two alkyl groups have a greater positive inductive effect than one alkyl group. Therefore the pathway through the secondary carbocation is _____.",
-        "answers": [
-          "favoured"
-        ]
+        "answers": ["favoured"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "Propan-2-ol is formed via the more stable _____ carbocation. The secondary carbocation is stabilised by the positive inductive effect of the two alkyl groups, so that pathway is favoured.",
-        "answers": [
-          "secondary"
-        ]
+        "answers": ["secondary"]
       },
       {
         "round": 2,
         "prompt": "Propan-2-ol is formed via the more stable secondary carbocation. The secondary carbocation is stabilised by the positive _____ effect of the two alkyl groups, so that pathway is favoured.",
-        "answers": [
-          "inductive"
-        ]
+        "answers": ["inductive"]
       },
       {
         "round": 3,
         "prompt": "Propan-2-ol is formed via the more stable secondary carbocation. The secondary carbocation is stabilised by the positive inductive effect of the two alkyl groups, so that pathway is _____.",
-        "answers": [
-          "favoured"
-        ]
+        "answers": ["favoured"]
       }
     ]
   }

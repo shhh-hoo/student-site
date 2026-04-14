@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain how a buffer resists a change in pH when acid is added.",
     "prompt": "The added hydrogen ions react with the weak _____ present in the buffer. This removes most of the added hydrogen ions. Therefore the pH changes only slightly.",
-    "answers": [
-      "base"
-    ],
+    "answers": ["base"],
     "full_answer": "The added hydrogen ions react with the weak base present in the buffer. This removes most of the added hydrogen ions. Therefore the pH changes only slightly."
   }
 ]

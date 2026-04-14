@@ -8,10 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain why Mg has a higher electrical conductivity than Na.",
     "prompt": "Magnesium has a higher electrical conductivity than sodium because each magnesium atom contributes _____ delocalised electrons whereas each sodium atom contributes only _____. Magnesium therefore has more mobile charge carriers.",
-    "answers": [
-      "two",
-      "one"
-    ],
+    "answers": ["two", "one"],
     "full_answer": "Magnesium has a higher electrical conductivity than sodium because each magnesium atom contributes two delocalised electrons whereas each sodium atom contributes only one. Magnesium therefore has more mobile charge carriers."
   },
   {
@@ -23,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain why CO has a higher boiling point than N2.",
     "prompt": "CO is a _____ molecule and N2 is non-polar. CO has permanent dipole-dipole attractions in addition to instantaneous dipole-induced dipole attractions. Therefore the intermolecular forces in CO are stronger, so its boiling point is higher.",
-    "answers": [
-      "polar"
-    ],
+    "answers": ["polar"],
     "full_answer": "CO is a polar molecule and N2 is non-polar. CO has permanent dipole-dipole attractions in addition to instantaneous dipole-induced dipole attractions. Therefore the intermolecular forces in CO are stronger, so its boiling point is higher."
   },
   {
@@ -37,9 +32,7 @@
     "type": "guided_cloze",
     "question": "Identify all types of van der Waals' forces present between molecules of CH3CH2CHO.",
     "prompt": "Molecules of CH3CH2CHO have permanent _____-dipole attractions and instantaneous dipole-induced dipole attractions.",
-    "answers": [
-      "dipole"
-    ],
+    "answers": ["dipole"],
     "full_answer": "Molecules of CH3CH2CHO have permanent dipole-dipole attractions and instantaneous dipole-induced dipole attractions."
   },
   {
@@ -51,9 +44,7 @@
     "type": "guided_cloze",
     "question": "Explain the difference in the melting points of SiO2 and SiCl4 with reference to structure and bonding.",
     "prompt": "SiO2 has a giant _____ structure with many strong covalent bonds that must be broken. SiCl4 is simple molecular and only weak intermolecular forces are overcome on melting. Therefore SiO2 has the much higher melting point.",
-    "answers": [
-      "covalent"
-    ],
+    "answers": ["covalent"],
     "full_answer": "SiO2 has a giant covalent structure with many strong covalent bonds that must be broken. SiCl4 is simple molecular and only weak intermolecular forces are overcome on melting. Therefore SiO2 has the much higher melting point."
   },
   {
@@ -65,9 +56,7 @@
     "type": "guided_cloze",
     "question": "Explain why CO has a higher boiling point than N2.",
     "prompt": "CO is a _____ molecule, so there are permanent dipole–dipole attractions between its molecules. N2 is non-polar and only has instantaneous dipole–induced dipole forces. The intermolecular forces in CO are stronger, so CO has the higher boiling point.",
-    "answers": [
-      "polar"
-    ],
+    "answers": ["polar"],
     "full_answer": "CO is a polar molecule, so there are permanent dipole–dipole attractions between its molecules. N2 is non-polar and only has instantaneous dipole–induced dipole forces. The intermolecular forces in CO are stronger, so CO has the higher boiling point."
   },
   {
@@ -79,9 +68,7 @@
     "type": "guided_cloze",
     "question": "Explain why water has an unusually high boiling point.",
     "prompt": "There are _____ bonds between water molecules. Hydrogen bonds are stronger than ordinary permanent dipole–dipole attractions. More energy is needed to overcome these intermolecular forces, so water has a high boiling point.",
-    "answers": [
-      "hydrogen"
-    ],
+    "answers": ["hydrogen"],
     "full_answer": "There are hydrogen bonds between water molecules. Hydrogen bonds are stronger than ordinary permanent dipole–dipole attractions. More energy is needed to overcome these intermolecular forces, so water has a high boiling point."
   },
   {
@@ -93,10 +80,7 @@
     "type": "guided_cloze",
     "question": "Explain why Mg has a higher electrical conductivity than Na.",
     "prompt": "Mg has a higher electrical conductivity than Na because each Mg atom contributes two _____ electrons whereas each Na atom contributes one. So Mg has more mobile charge _____.",
-    "answers": [
-      "delocalised",
-      "carriers"
-    ],
+    "answers": ["delocalised", "carriers"],
     "full_answer": "Mg has a higher electrical conductivity than Na because each Mg atom contributes two delocalised electrons whereas each Na atom contributes one. So Mg has more mobile charge carriers."
   },
   {
@@ -108,9 +92,7 @@
     "type": "guided_cloze",
     "question": "Explain why CO has a higher boiling point than N2.",
     "prompt": "CO is a _____ molecule and has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces. The intermolecular forces in CO are therefore stronger.",
-    "answers": [
-      "polar"
-    ],
+    "answers": ["polar"],
     "full_answer": "CO is a polar molecule and has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces. The intermolecular forces in CO are therefore stronger."
   },
   {
@@ -122,9 +104,7 @@
     "type": "guided_cloze",
     "question": "Explain why silicon has a high melting point.",
     "prompt": "Silicon has a giant _____ structure. Many strong covalent bonds must be broken during melting, so a large amount of energy is needed.",
-    "answers": [
-      "covalent"
-    ],
+    "answers": ["covalent"],
     "full_answer": "Silicon has a giant covalent structure. Many strong covalent bonds must be broken during melting, so a large amount of energy is needed."
   },
   {
@@ -136,9 +116,7 @@
     "type": "guided_cloze",
     "question": "Explain why CO has a higher boiling point than N2.",
     "prompt": "CO is a _____ molecule so it has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces. Therefore the intermolecular forces in CO are stronger and it has the higher boiling point.",
-    "answers": [
-      "polar"
-    ],
+    "answers": ["polar"],
     "full_answer": "CO is a polar molecule so it has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces. Therefore the intermolecular forces in CO are stronger and it has the higher boiling point."
   }
 ]

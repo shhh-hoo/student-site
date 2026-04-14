@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one _____. After the first electron has been removed, no electron remains to be removed.",
-        "answers": [
-          "electron"
-        ]
+        "answers": ["electron"]
       },
       {
         "round": 2,
         "prompt": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one electron. After the first electron has been _____, no electron remains to be removed.",
-        "answers": [
-          "removed"
-        ]
+        "answers": ["removed"]
       },
       {
         "round": 3,
         "prompt": "There is no second ionisation energy for hydrogen because a hydrogen atom has only one electron. After the first electron has been removed, no electron _____ to be removed.",
-        "answers": [
-          "remains"
-        ]
+        "answers": ["remains"]
       }
     ]
   }

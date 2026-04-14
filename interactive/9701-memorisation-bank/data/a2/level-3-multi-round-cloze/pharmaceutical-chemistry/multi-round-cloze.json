@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "Biological receptors are _____, so the two enantiomers can interact differently with the body. One enantiomer may have the desired effect while the other may be less active or produce side effects.",
-        "answers": [
-          "chiral"
-        ]
+        "answers": ["chiral"]
       },
       {
         "round": 2,
         "prompt": "Biological receptors are chiral, so the two _____ can interact differently with the body. One enantiomer may have the desired effect while the other may be less active or produce side effects.",
-        "answers": [
-          "enantiomers"
-        ]
+        "answers": ["enantiomers"]
       },
       {
         "round": 3,
         "prompt": "Biological receptors are chiral, so the two enantiomers can interact differently with the body. One enantiomer may have the desired effect while the other may be less active or produce _____ effects.",
-        "answers": [
-          "side"
-        ]
+        "answers": ["side"]
       }
     ]
   },
@@ -45,24 +39,17 @@
       {
         "round": 1,
         "prompt": "Biological receptors are _____, so different enantiomers can interact differently with the body. One enantiomer may have the desired effect while the other may be inactive or cause side effects.",
-        "answers": [
-          "chiral"
-        ]
+        "answers": ["chiral"]
       },
       {
         "round": 2,
         "prompt": "Biological receptors are chiral, so different _____ can interact differently with the body. One enantiomer may have the desired effect while the other may be inactive or cause side effects.",
-        "answers": [
-          "enantiomers"
-        ]
+        "answers": ["enantiomers"]
       },
       {
         "round": 3,
         "prompt": "Biological receptors are chiral, so different enantiomers can interact differently with the body. One enantiomer may have the desired effect while the other may be inactive or cause _____ _____.",
-        "answers": [
-          "side",
-          "effects"
-        ]
+        "answers": ["side", "effects"]
       }
     ]
   }

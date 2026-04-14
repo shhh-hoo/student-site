@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain why transition elements have variable oxidation states.",
     "prompt": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in _____. Therefore different numbers of electrons can be used in bonding or removed.",
-    "answers": [
-      "energy"
-    ],
+    "answers": ["energy"],
     "full_answer": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy. Therefore different numbers of electrons can be used in bonding or removed."
   },
   {
@@ -22,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain what is meant by a bidentate ligand.",
     "prompt": "A bidentate ligand has two atoms with _____ pairs available for donation. It forms two dative covalent bonds to the same metal ion.",
-    "answers": [
-      "lone"
-    ],
+    "answers": ["lone"],
     "full_answer": "A bidentate ligand has two atoms with lone pairs available for donation. It forms two dative covalent bonds to the same metal ion."
   },
   {
@@ -36,9 +32,7 @@
     "type": "guided_cloze",
     "question": "Explain why BaCrO4 is coloured.",
     "prompt": "The chromium species contains partially filled d _____. These are split into different energy levels, and electrons absorb visible light to move between them. The complementary colour is seen.",
-    "answers": [
-      "orbitals"
-    ],
+    "answers": ["orbitals"],
     "full_answer": "The chromium species contains partially filled d orbitals. These are split into different energy levels, and electrons absorb visible light to move between them. The complementary colour is seen."
   },
   {
@@ -50,9 +44,7 @@
     "type": "guided_cloze",
     "question": "Identify one isomer that is polar and explain your answer.",
     "prompt": "The cis isomer is polar because the bond _____ do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
-    "answers": [
-      "dipoles"
-    ],
+    "answers": ["dipoles"],
     "full_answer": "The cis isomer is polar because the bond dipoles do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment."
   },
   {
@@ -64,9 +56,7 @@
     "type": "guided_cloze",
     "question": "Explain why transition elements have variable oxidation states.",
     "prompt": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in _____. Therefore different numbers of electrons can be used in bonding or removed.",
-    "answers": [
-      "energy"
-    ],
+    "answers": ["energy"],
     "full_answer": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy. Therefore different numbers of electrons can be used in bonding or removed."
   },
   {
@@ -78,9 +68,7 @@
     "type": "guided_cloze",
     "question": "Explain what is meant by a bidentate ligand.",
     "prompt": "A bidentate ligand has two atoms with _____ pairs that can bond to the same central metal ion. So one ligand forms two coordinate bonds.",
-    "answers": [
-      "lone"
-    ],
+    "answers": ["lone"],
     "full_answer": "A bidentate ligand has two atoms with lone pairs that can bond to the same central metal ion. So one ligand forms two coordinate bonds."
   },
   {
@@ -92,9 +80,7 @@
     "type": "guided_cloze",
     "question": "Explain why BaCrO4 is coloured.",
     "prompt": "Chromate ions contain partially filled d orbitals on the transition _____. Electrons absorb energy from visible light and are promoted between different energy levels. Therefore some wavelengths are absorbed and the compound appears coloured.",
-    "answers": [
-      "metal"
-    ],
+    "answers": ["metal"],
     "full_answer": "Chromate ions contain partially filled d orbitals on the transition metal. Electrons absorb energy from visible light and are promoted between different energy levels. Therefore some wavelengths are absorbed and the compound appears coloured."
   },
   {
@@ -106,9 +92,7 @@
     "type": "guided_cloze",
     "question": "Explain why one stereoisomer is polar while another is non-polar.",
     "prompt": "The individual bonds are polar, but in one isomer the bond _____ do not cancel because of the three-dimensional arrangement. Therefore that isomer has an overall dipole moment and is polar.",
-    "answers": [
-      "dipoles"
-    ],
+    "answers": ["dipoles"],
     "full_answer": "The individual bonds are polar, but in one isomer the bond dipoles do not cancel because of the three-dimensional arrangement. Therefore that isomer has an overall dipole moment and is polar."
   },
   {
@@ -120,9 +104,7 @@
     "type": "guided_cloze",
     "question": "Explain what is meant by a bidentate ligand.",
     "prompt": "A bidentate ligand has two donor atoms with _____ pairs. It forms two coordinate bonds to the same central metal ion.",
-    "answers": [
-      "lone"
-    ],
+    "answers": ["lone"],
     "full_answer": "A bidentate ligand has two donor atoms with lone pairs. It forms two coordinate bonds to the same central metal ion."
   },
   {
@@ -134,9 +116,7 @@
     "type": "guided_cloze",
     "question": "Explain why a transition-metal complex is coloured.",
     "prompt": "The ligands cause the d orbitals to split into two _____ levels. An electron absorbs visible light and is promoted to the higher energy level. The complementary colour is therefore seen.",
-    "answers": [
-      "energy"
-    ],
+    "answers": ["energy"],
     "full_answer": "The ligands cause the d orbitals to split into two energy levels. An electron absorbs visible light and is promoted to the higher energy level. The complementary colour is therefore seen."
   }
 ]

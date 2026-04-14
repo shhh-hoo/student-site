@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain why ΔS has a large positive value.",
     "prompt": "The reaction forms several _____ molecules from liquid and solid reactants. The number of particles with freedom of movement increases greatly, so disorder increases.",
-    "answers": [
-      "gaseous"
-    ],
+    "answers": ["gaseous"],
     "full_answer": "The reaction forms several gaseous molecules from liquid and solid reactants. The number of particles with freedom of movement increases greatly, so disorder increases."
   },
   {
@@ -22,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain why ΔS has a large positive value in a reaction that forms several gases.",
     "prompt": "The number of gaseous molecules _____. Gases have greater freedom of movement, so the disorder of the system increases significantly.",
-    "answers": [
-      "increases"
-    ],
+    "answers": ["increases"],
     "full_answer": "The number of gaseous molecules increases. Gases have greater freedom of movement, so the disorder of the system increases significantly."
   }
 ]

@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "The number of gas molecules _____. Gas particles have much greater freedom of movement than solids or liquids. Therefore the disorder of the system increases greatly, so ΔS is large and positive.",
-        "answers": [
-          "increases"
-        ]
+        "answers": ["increases"]
       },
       {
         "round": 2,
         "prompt": "The number of gas molecules increases. Gas particles have much greater _____ of movement than solids or liquids. Therefore the disorder of the system increases greatly, so ΔS is large and positive.",
-        "answers": [
-          "freedom"
-        ]
+        "answers": ["freedom"]
       },
       {
         "round": 3,
         "prompt": "The number of gas molecules increases. Gas particles have much greater freedom of movement than solids or liquids. Therefore the _____ of the system increases greatly, so ΔS is large and positive.",
-        "answers": [
-          "disorder"
-        ]
+        "answers": ["disorder"]
       }
     ]
   }

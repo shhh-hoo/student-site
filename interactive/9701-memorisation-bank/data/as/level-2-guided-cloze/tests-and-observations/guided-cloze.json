@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain why the solution formed when magnesium nitride reacts with water is alkaline.",
     "prompt": "Magnesium nitride reacts with water to produce _____. Ammonia reacts with water to form hydroxide ions. Therefore the solution is alkaline.",
-    "answers": [
-      "ammonia"
-    ],
+    "answers": ["ammonia"],
     "full_answer": "Magnesium nitride reacts with water to produce ammonia. Ammonia reacts with water to form hydroxide ions. Therefore the solution is alkaline."
   },
   {
@@ -22,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain why bromine water is decolourised by an alkene.",
     "prompt": "The alkene reacts with bromine in an _____ reaction. Bromine is used up as the carbon-carbon double bond is broken and new carbon-bromine bonds are formed. Therefore the orange colour disappears.",
-    "answers": [
-      "addition"
-    ],
+    "answers": ["addition"],
     "full_answer": "The alkene reacts with bromine in an addition reaction. Bromine is used up as the carbon-carbon double bond is broken and new carbon-bromine bonds are formed. Therefore the orange colour disappears."
   },
   {
@@ -36,9 +32,7 @@
     "type": "guided_cloze",
     "question": "Explain why a carbonate effervesces when dilute acid is added.",
     "prompt": "Carbonate ions react with _____ ions to form carbon dioxide gas and water. The carbon dioxide escapes as bubbles. Therefore effervescence is seen.",
-    "answers": [
-      "hydrogen"
-    ],
+    "answers": ["hydrogen"],
     "full_answer": "Carbonate ions react with hydrogen ions to form carbon dioxide gas and water. The carbon dioxide escapes as bubbles. Therefore effervescence is seen."
   },
   {
@@ -50,9 +44,7 @@
     "type": "guided_cloze",
     "question": "Explain why acidified potassium dichromate(VI) changes from orange to green when it reacts with an aldehyde.",
     "prompt": "The aldehyde is oxidised to a _____ acid. At the same time dichromate(VI) ions are reduced to chromium(III) ions, which are green in solution. Therefore the solution changes from orange to green.",
-    "answers": [
-      "carboxylic"
-    ],
+    "answers": ["carboxylic"],
     "full_answer": "The aldehyde is oxidised to a carboxylic acid. At the same time dichromate(VI) ions are reduced to chromium(III) ions, which are green in solution. Therefore the solution changes from orange to green."
   }
 ]

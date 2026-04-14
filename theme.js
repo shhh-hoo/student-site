@@ -7,8 +7,7 @@
       return new URLSearchParams(source);
     }
 
-    const normalizedSource =
-      typeof source === "string" ? source.replace(/^[^?]*\?/, "") : String(source || "");
+    const normalizedSource = typeof source === "string" ? source.replace(/^[^?]*\?/, "") : String(source || "");
 
     return new URLSearchParams(normalizedSource);
   }
@@ -40,10 +39,7 @@
     return resolvedTheme;
   }
 
-  function preserveThemeInSearchParams(
-    searchParams,
-    explicitTheme = getExplicitTheme(window.location.search),
-  ) {
+  function preserveThemeInSearchParams(searchParams, explicitTheme = getExplicitTheme(window.location.search)) {
     if (searchParams instanceof URLSearchParams && isThemeValue(explicitTheme)) {
       searchParams.set(themeQueryKey, explicitTheme);
     }
@@ -54,23 +50,19 @@
   function preserveThemeOnUrl(
     destination,
     base = window.location.href,
-    explicitTheme = getExplicitTheme(window.location.search),
+    explicitTheme = getExplicitTheme(window.location.search)
   ) {
-    const resolvedDestination =
-      destination instanceof URL ? destination : new URL(String(destination || ""), base);
+    const resolvedDestination = destination instanceof URL ? destination : new URL(String(destination || ""), base);
 
     preserveThemeInSearchParams(resolvedDestination.searchParams, explicitTheme);
     return resolvedDestination;
   }
 
-  function preserveThemeOnAnchors(
-    root = document,
-    explicitTheme = getExplicitTheme(window.location.search),
-  ) {
+  function preserveThemeOnAnchors(root = document, explicitTheme = getExplicitTheme(window.location.search)) {
     const anchorRoot = root && typeof root.querySelectorAll === "function" ? root : document;
     const anchors = anchorRoot.querySelectorAll("[data-preserve-theme]");
 
-    anchors.forEach((anchor) => {
+    anchors.forEach(anchor => {
       if (!(anchor instanceof Element) || anchor.tagName !== "A") {
         return;
       }

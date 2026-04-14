@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "Standard electrode potentials apply only under _____ conditions. If the concentrations are not 1 mol dm-3, the electrode potentials change. Therefore the measured Ecell may be less positive than E°cell.",
-        "answers": [
-          "standard"
-        ]
+        "answers": ["standard"]
       },
       {
         "round": 2,
         "prompt": "Standard electrode potentials apply only under standard conditions. If the concentrations are not 1 mol dm-3, the electrode _____ change. Therefore the measured Ecell may be less positive than E°cell.",
-        "answers": [
-          "potentials"
-        ]
+        "answers": ["potentials"]
       },
       {
         "round": 3,
         "prompt": "Standard electrode potentials apply only under standard conditions. If the concentrations are not 1 mol dm-3, the electrode potentials change. Therefore the measured Ecell may be less _____ than E°cell.",
-        "answers": [
-          "positive"
-        ]
+        "answers": ["positive"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "Adding Ni2+ shifts the equilibrium for dissolving nickel iodate to the left by the common ion effect. This decreases the iodate concentration, so the reduction potential _____ and Ecell becomes less positive.",
-        "answers": [
-          "falls"
-        ]
+        "answers": ["falls"]
       },
       {
         "round": 2,
         "prompt": "Adding Ni2+ shifts the equilibrium for dissolving nickel iodate to the _____ by the common ion effect. This decreases the iodate concentration, so the reduction potential falls and Ecell becomes less positive.",
-        "answers": [
-          "left"
-        ]
+        "answers": ["left"]
       },
       {
         "round": 3,
         "prompt": "Adding Ni2+ shifts the equilibrium for dissolving nickel iodate to the left by the common ion effect. This decreases the iodate concentration, so the reduction potential falls and Ecell becomes less _____.",
-        "answers": [
-          "positive"
-        ]
+        "answers": ["positive"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "Standard electrode potentials apply only under _____ conditions. If the concentration of an ion is lower than 1 mol dm-3, the corresponding electrode potential changes. Therefore the measured Ecell is less positive than E°cell.",
-        "answers": [
-          "standard"
-        ]
+        "answers": ["standard"]
       },
       {
         "round": 2,
         "prompt": "Standard electrode potentials apply only under standard conditions. If the concentration of an ion is lower than 1 mol dm-3, the corresponding electrode _____ changes. Therefore the measured Ecell is less positive than E°cell.",
-        "answers": [
-          "potential"
-        ]
+        "answers": ["potential"]
       },
       {
         "round": 3,
         "prompt": "Standard electrode potentials apply only under standard conditions. If the concentration of an ion is lower than 1 mol dm-3, the corresponding electrode potential changes. Therefore the measured Ecell is less _____ than E°cell.",
-        "answers": [
-          "positive"
-        ]
+        "answers": ["positive"]
       }
     ]
   },
@@ -111,23 +93,17 @@
       {
         "round": 1,
         "prompt": "Standard electrode potentials apply only under _____ conditions. If the concentrations are not 1.0 mol dm-3, the electrode potentials change. Therefore the measured cell potential can be less positive than E°cell.",
-        "answers": [
-          "standard"
-        ]
+        "answers": ["standard"]
       },
       {
         "round": 2,
         "prompt": "Standard electrode potentials apply only under standard conditions. If the concentrations are not 1.0 mol dm-3, the electrode _____ change. Therefore the measured cell potential can be less positive than E°cell.",
-        "answers": [
-          "potentials"
-        ]
+        "answers": ["potentials"]
       },
       {
         "round": 3,
         "prompt": "Standard electrode potentials apply only under standard conditions. If the concentrations are not 1.0 mol dm-3, the electrode potentials change. Therefore the measured _____ potential can be less positive than E°cell.",
-        "answers": [
-          "cell"
-        ]
+        "answers": ["cell"]
       }
     ]
   },
@@ -144,23 +120,17 @@
       {
         "round": 1,
         "prompt": "E°cell is defined under _____ conditions. If the concentrations are not 1.0 mol dm-3, the electrode potentials change, so the measured Ecell can be less positive than E°cell.",
-        "answers": [
-          "standard"
-        ]
+        "answers": ["standard"]
       },
       {
         "round": 2,
         "prompt": "E°cell is defined under standard conditions. If the concentrations are not 1.0 mol dm-3, the electrode _____ change, so the measured Ecell can be less positive than E°cell.",
-        "answers": [
-          "potentials"
-        ]
+        "answers": ["potentials"]
       },
       {
         "round": 3,
         "prompt": "E°cell is defined under standard conditions. If the concentrations are not 1.0 mol dm-3, the electrode potentials change, so the measured Ecell can be less _____. than E°cell.",
-        "answers": [
-          "positive"
-        ]
+        "answers": ["positive"]
       }
     ]
   },
@@ -177,23 +147,17 @@
       {
         "round": 1,
         "prompt": "Adding Ni2+ shifts the dissolution equilibrium of Ni(IO3)2 to the left by the common ion effect. This lowers the concentration of _____, so the reduction potential decreases and Ecell becomes less positive.",
-        "answers": [
-          "IO3-"
-        ]
+        "answers": ["IO3-"]
       },
       {
         "round": 2,
         "prompt": "Adding Ni2+ shifts the dissolution equilibrium of Ni(IO3)2 to the _____ by the common ion effect. This lowers the concentration of IO3-, so the reduction potential decreases and Ecell becomes less positive.",
-        "answers": [
-          "left"
-        ]
+        "answers": ["left"]
       },
       {
         "round": 3,
         "prompt": "Adding Ni2+ shifts the dissolution equilibrium of Ni(IO3)2 to the left by the common ion effect. This lowers the concentration of IO3-, so the reduction potential decreases and Ecell becomes less _____.",
-        "answers": [
-          "positive"
-        ]
+        "answers": ["positive"]
       }
     ]
   }

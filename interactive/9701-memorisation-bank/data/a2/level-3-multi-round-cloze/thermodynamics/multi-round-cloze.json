@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "The reaction forms several _____ molecules from liquid and solid reactants. The number of particles with freedom of movement increases greatly, so disorder increases.",
-        "answers": [
-          "gaseous"
-        ]
+        "answers": ["gaseous"]
       },
       {
         "round": 2,
         "prompt": "The reaction forms several gaseous molecules from liquid and solid reactants. The number of particles with freedom of _____ increases greatly, so disorder increases.",
-        "answers": [
-          "movement"
-        ]
+        "answers": ["movement"]
       },
       {
         "round": 3,
         "prompt": "The reaction forms several gaseous molecules from liquid and solid reactants. The number of particles with freedom of movement increases greatly, so _____ increases.",
-        "answers": [
-          "disorder"
-        ]
+        "answers": ["disorder"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "The number of gaseous molecules _____. Gases have greater freedom of movement, so the disorder of the system increases significantly.",
-        "answers": [
-          "increases"
-        ]
+        "answers": ["increases"]
       },
       {
         "round": 2,
         "prompt": "The number of gaseous molecules increases. Gases have greater freedom of _____, so the disorder of the system increases significantly.",
-        "answers": [
-          "movement"
-        ]
+        "answers": ["movement"]
       },
       {
         "round": 3,
         "prompt": "The number of gaseous molecules increases. Gases have greater freedom of movement, so the _____ of the system increases significantly.",
-        "answers": [
-          "disorder"
-        ]
+        "answers": ["disorder"]
       }
     ]
   }

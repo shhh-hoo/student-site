@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "At high pressure the gas particles are much _____ together. Their own volume is no longer negligible, and intermolecular forces become more significant. Therefore the gas deviates more from ideal behaviour.",
-        "answers": [
-          "closer"
-        ]
+        "answers": ["closer"]
       },
       {
         "round": 2,
         "prompt": "At high pressure the gas particles are much closer together. Their own _____ is no longer negligible, and intermolecular forces become more significant. Therefore the gas deviates more from ideal behaviour.",
-        "answers": [
-          "volume"
-        ]
+        "answers": ["volume"]
       },
       {
         "round": 3,
         "prompt": "At high pressure the gas particles are much closer together. Their own volume is no longer negligible, and intermolecular _____ become more significant. Therefore the gas deviates more from ideal behaviour.",
-        "answers": [
-          "forces"
-        ]
+        "answers": ["forces"]
       }
     ]
   },
@@ -45,25 +39,17 @@
       {
         "round": 1,
         "prompt": "At high pressure the gas particles are much _____ together. Their own volume is no longer _____ and intermolecular forces become significant. Therefore the gas deviates from ideal behaviour.",
-        "answers": [
-          "closer",
-          "negligible"
-        ]
+        "answers": ["closer", "negligible"]
       },
       {
         "round": 2,
         "prompt": "At high pressure the gas particles are much closer together. Their own _____ is no longer negligible and intermolecular _____ become significant. Therefore the gas deviates from ideal behaviour.",
-        "answers": [
-          "volume",
-          "forces"
-        ]
+        "answers": ["volume", "forces"]
       },
       {
         "round": 3,
         "prompt": "At high pressure the gas particles are much closer together. Their own volume is no longer negligible and intermolecular forces become significant. Therefore the gas deviates from _____ behaviour.",
-        "answers": [
-          "ideal"
-        ]
+        "answers": ["ideal"]
       }
     ]
   },
@@ -80,25 +66,17 @@
       {
         "round": 1,
         "prompt": "At high temperature the particles have high _____ energy so intermolecular forces are less important. At low pressure the particles are far _____ so their volume is more negligible. Therefore the gas behaves more ideally.",
-        "answers": [
-          "kinetic",
-          "apart"
-        ]
+        "answers": ["kinetic", "apart"]
       },
       {
         "round": 2,
         "prompt": "At high temperature the particles have high kinetic energy so intermolecular _____ are less important. At low pressure the particles are far apart so their _____ is more negligible. Therefore the gas behaves more ideally.",
-        "answers": [
-          "forces",
-          "volume"
-        ]
+        "answers": ["forces", "volume"]
       },
       {
         "round": 3,
         "prompt": "At high temperature the particles have high kinetic energy so intermolecular forces are less important. At low pressure the particles are far apart so their volume is more negligible. Therefore the gas behaves more _____.",
-        "answers": [
-          "ideally"
-        ]
+        "answers": ["ideally"]
       }
     ]
   },
@@ -115,23 +93,17 @@
       {
         "round": 1,
         "prompt": "The dimerisation is _____ so lowering the temperature favours the forward reaction. By Le Chatelier principle the equilibrium shifts to the side that opposes the temperature decrease. Therefore more N2O4 is formed.",
-        "answers": [
-          "exothermic"
-        ]
+        "answers": ["exothermic"]
       },
       {
         "round": 2,
         "prompt": "The dimerisation is exothermic so lowering the temperature favours the _____ reaction. By Le Chatelier principle the equilibrium shifts to the side that opposes the temperature decrease. Therefore more N2O4 is formed.",
-        "answers": [
-          "forward"
-        ]
+        "answers": ["forward"]
       },
       {
         "round": 3,
         "prompt": "The dimerisation is exothermic so lowering the temperature favours the forward reaction. By Le Chatelier principle the equilibrium shifts to the side that opposes the temperature decrease. Therefore more _____ is formed.",
-        "answers": [
-          "N2O4"
-        ]
+        "answers": ["N2O4"]
       }
     ]
   }

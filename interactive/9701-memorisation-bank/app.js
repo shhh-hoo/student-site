@@ -1,7 +1,4 @@
-import {
-  createAnswerModel as buildAnswerModel,
-  evaluateAnswerModel,
-} from "./matcher.mjs";
+import { createAnswerModel as buildAnswerModel, evaluateAnswerModel } from "./matcher.mjs";
 import { buildSoftHighlightModel } from "./display-feedback.mjs";
 
 const definitionScopeOptions = [
@@ -11,12 +8,7 @@ const definitionScopeOptions = [
   { id: "paper_and_syllabus", label: "Paper + syllabus" },
 ];
 
-const levelOrder = [
-  "level-1-core",
-  "level-2-guided-cloze",
-  "level-3-multi-round-cloze",
-  "level-4-full-reconstruction",
-];
+const levelOrder = ["level-1-core", "level-2-guided-cloze", "level-3-multi-round-cloze", "level-4-full-reconstruction"];
 
 const fileOrder = [
   "core-definitions",
@@ -115,7 +107,7 @@ const appState = {
 };
 
 function fetchJson(path) {
-  return fetch(path, { cache: "no-store" }).then((response) => {
+  return fetch(path, { cache: "no-store" }).then(response => {
     if (!response.ok) {
       throw new Error(`Request failed for ${path} (${response.status}).`);
     }
@@ -129,12 +121,12 @@ function formatLabel(value) {
     .trim()
     .split(/[-\s]+/)
     .filter(Boolean)
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
     .join(" ");
 }
 
 function formatDefinitionScope(scope) {
-  return definitionScopeOptions.find((option) => option.id === scope)?.label || formatLabel(scope);
+  return definitionScopeOptions.find(option => option.id === scope)?.label || formatLabel(scope);
 }
 
 function pluralise(count, singular, plural = `${singular}s`) {
@@ -159,7 +151,7 @@ function renderInlineFeedbackSegments(target, segments) {
 
   const fragment = document.createDocumentFragment();
 
-  segments.forEach((segment) => {
+  segments.forEach(segment => {
     const piece = document.createElement("span");
     piece.className = `memorisation-display-segment memorisation-display-segment--${segment.tone}`;
     piece.textContent = segment.text;
@@ -181,8 +173,8 @@ function updateBlankInlineDisplay(blank, blankState, mirror, field) {
       blankState?.value || "",
       blank.answerModel.full_answer,
       hasBlankBeenChecked(blankState),
-      blank.answerModel.matcherConfig?.type,
-    ).segments,
+      blank.answerModel.matcherConfig?.type
+    ).segments
   );
   syncMirroredFieldScroll(field, mirror);
 }
@@ -233,7 +225,7 @@ function getStageEntries() {
 }
 
 function getStageEntry(stageId = appState.stage) {
-  return getStageEntries().find((stage) => stage.id === stageId) || null;
+  return getStageEntries().find(stage => stage.id === stageId) || null;
 }
 
 function getLevelEntries(stageId = appState.stage) {
@@ -241,33 +233,25 @@ function getLevelEntries(stageId = appState.stage) {
 }
 
 function getLevelEntry(stageId = appState.stage, levelId = appState.level) {
-  return getLevelEntries(stageId).find((level) => level.id === levelId) || null;
+  return getLevelEntries(stageId).find(level => level.id === levelId) || null;
 }
 
 function getTopicEntries(stageId = appState.stage, levelId = appState.level) {
   return getLevelEntry(stageId, levelId)?.topics || [];
 }
 
-function getTopicEntry(
-  stageId = appState.stage,
-  levelId = appState.level,
-  topicId = appState.topic,
-) {
-  return getTopicEntries(stageId, levelId).find((topic) => topic.id === topicId) || null;
+function getTopicEntry(stageId = appState.stage, levelId = appState.level, topicId = appState.topic) {
+  return getTopicEntries(stageId, levelId).find(topic => topic.id === topicId) || null;
 }
 
-function getSelectedTopicEntries(
-  stageId = appState.stage,
-  levelId = appState.level,
-  topicId = appState.topic,
-) {
+function getSelectedTopicEntries(stageId = appState.stage, levelId = appState.level, topicId = appState.topic) {
   const topicEntries = getTopicEntries(stageId, levelId);
 
   if (!topicId) {
     return topicEntries;
   }
 
-  return topicEntries.filter((topic) => topic.id === topicId);
+  return topicEntries.filter(topic => topic.id === topicId);
 }
 
 function aggregateDefinitionSourceCounts(currentCounts, nextCounts) {
@@ -288,15 +272,11 @@ function aggregateDefinitionSourceCounts(currentCounts, nextCounts) {
   return aggregated;
 }
 
-function getFileEntries(
-  stageId = appState.stage,
-  levelId = appState.level,
-  topicId = appState.topic,
-) {
+function getFileEntries(stageId = appState.stage, levelId = appState.level, topicId = appState.topic) {
   const fileMap = new Map();
 
-  getSelectedTopicEntries(stageId, levelId, topicId).forEach((topicEntry) => {
-    (topicEntry.files || []).forEach((fileEntry) => {
+  getSelectedTopicEntries(stageId, levelId, topicId).forEach(topicEntry => {
+    (topicEntry.files || []).forEach(fileEntry => {
       const existing = fileMap.get(fileEntry.id) || {
         id: fileEntry.id,
         label: fileEntry.label,
@@ -311,9 +291,9 @@ function getFileEntries(
       existing.runtime_unit_count += Number(fileEntry.runtime_unit_count || 0);
       existing.definition_source_counts = aggregateDefinitionSourceCounts(
         existing.definition_source_counts,
-        fileEntry.definition_source_counts,
+        fileEntry.definition_source_counts
       );
-      (fileEntry.rounds || []).forEach((roundValue) => {
+      (fileEntry.rounds || []).forEach(roundValue => {
         existing.rounds.add(Number(roundValue));
       });
       existing.sources.push({
@@ -326,7 +306,7 @@ function getFileEntries(
     });
   });
 
-  return Array.from(fileMap.values()).map((fileEntry) => ({
+  return Array.from(fileMap.values()).map(fileEntry => ({
     ...fileEntry,
     rounds: Array.from(fileEntry.rounds).sort((left, right) => left - right),
   }));
@@ -336,23 +316,18 @@ function getFileEntry(
   stageId = appState.stage,
   levelId = appState.level,
   topicId = appState.topic,
-  fileId = appState.file,
+  fileId = appState.file
 ) {
-  return getFileEntries(stageId, levelId, topicId).find((file) => file.id === fileId) || null;
+  return getFileEntries(stageId, levelId, topicId).find(file => file.id === fileId) || null;
 }
 
 function getStageSourceTotal(stageEntry) {
-  return Object.values(stageEntry?.counts || {}).reduce(
-    (sum, count) => sum + Number(count || 0),
-    0,
-  );
+  return Object.values(stageEntry?.counts || {}).reduce((sum, count) => sum + Number(count || 0), 0);
 }
 
 function getDefaultLevelId(stageId) {
   return (
-    getLevelEntries(stageId).find((level) => (level.topics || []).length > 0)?.id ||
-    getLevelEntries(stageId)[0]?.id ||
-    ""
+    getLevelEntries(stageId).find(level => (level.topics || []).length > 0)?.id || getLevelEntries(stageId)[0]?.id || ""
   );
 }
 
@@ -390,30 +365,28 @@ function getInitialSelectionFromUrl() {
 
 function synchroniseSelection(requestedSelection = getSelectionSnapshot()) {
   const stageEntries = getStageEntries();
-  const stageId = stageEntries.some((stage) => stage.id === requestedSelection.stage)
+  const stageId = stageEntries.some(stage => stage.id === requestedSelection.stage)
     ? requestedSelection.stage
     : stageEntries[0]?.id || "";
   const levelEntries = getLevelEntries(stageId);
-  const levelId = levelEntries.some((level) => level.id === requestedSelection.level)
+  const levelId = levelEntries.some(level => level.id === requestedSelection.level)
     ? requestedSelection.level
     : getDefaultLevelId(stageId);
   const topicEntries = getTopicEntries(stageId, levelId);
-  const topicId = topicEntries.some((topic) => topic.id === requestedSelection.topic)
-    ? requestedSelection.topic
-    : "";
+  const topicId = topicEntries.some(topic => topic.id === requestedSelection.topic) ? requestedSelection.topic : "";
   const fileEntries = getFileEntries(stageId, levelId, topicId);
-  const fileId = fileEntries.some((file) => file.id === requestedSelection.file)
+  const fileId = fileEntries.some(file => file.id === requestedSelection.file)
     ? requestedSelection.file
     : getDefaultFileId(stageId, levelId, topicId);
   const fileEntry = getFileEntry(stageId, levelId, topicId, fileId);
   const definitionScope =
     fileId === "core-definitions" &&
-    definitionScopeOptions.some((option) => option.id === requestedSelection.definitionScope)
+    definitionScopeOptions.some(option => option.id === requestedSelection.definitionScope)
       ? requestedSelection.definitionScope
       : "all";
   const round =
     fileId === "multi-round-cloze" &&
-    fileEntry?.rounds?.some((roundNumber) => String(roundNumber) === requestedSelection.round)
+    fileEntry?.rounds?.some(roundNumber => String(roundNumber) === requestedSelection.round)
       ? requestedSelection.round
       : "all";
 
@@ -467,10 +440,7 @@ function setFiltersOpen(nextOpen) {
   filtersSheet.hidden = !appState.filtersOpen;
   filtersBackdrop.hidden = !appState.filtersOpen || !isCompactViewport();
   filtersToggleButton.setAttribute("aria-expanded", String(appState.filtersOpen));
-  document.body.classList.toggle(
-    "memorisation-filters-open",
-    appState.filtersOpen && isCompactViewport(),
-  );
+  document.body.classList.toggle("memorisation-filters-open", appState.filtersOpen && isCompactViewport());
 }
 
 function closeFilters() {
@@ -519,10 +489,7 @@ function getFileCountLabel(fileEntry) {
   }
 
   if (fileEntry.id === "multi-round-cloze") {
-    return `${pluralise(fileEntry.count, "prompt")} · ${pluralise(
-      fileEntry.runtime_unit_count,
-      "round",
-    )}`;
+    return `${pluralise(fileEntry.count, "prompt")} · ${pluralise(fileEntry.runtime_unit_count, "round")}`;
   }
 
   return pluralise(fileEntry.count, "item");
@@ -540,7 +507,7 @@ function applySelection(nextSelection) {
 
 function renderStageSwitcher() {
   stageSwitcher.innerHTML = getStageEntries()
-    .map((stageEntry) => {
+    .map(stageEntry => {
       const countLabel = pluralise(getStageSourceTotal(stageEntry), "source item");
 
       return `
@@ -557,7 +524,7 @@ function renderStageSwitcher() {
     })
     .join("");
 
-  stageSwitcher.querySelectorAll("[data-stage-id]").forEach((button) => {
+  stageSwitcher.querySelectorAll("[data-stage-id]").forEach(button => {
     button.addEventListener("click", () => {
       const nextStage = button.dataset.stageId;
 
@@ -573,7 +540,7 @@ function renderStageSwitcher() {
           file: "",
           definitionScope: "all",
           round: "all",
-        }),
+        })
       );
     });
   });
@@ -584,7 +551,7 @@ function renderLevelSwitcher() {
     .slice()
     .sort((left, right) => levelOrder.indexOf(left.id) - levelOrder.indexOf(right.id))
     .map(
-      (levelEntry) => `
+      levelEntry => `
         <button
           class="memorisation-toggle"
           type="button"
@@ -592,16 +559,13 @@ function renderLevelSwitcher() {
           data-active="${levelEntry.id === appState.level ? "true" : "false"}"
         >
           <span class="memorisation-toggle__label">${levelEntry.label}</span>
-          <span class="memorisation-toggle__count">${pluralise(
-            levelEntry.count,
-            "source item",
-          )}</span>
+          <span class="memorisation-toggle__count">${pluralise(levelEntry.count, "source item")}</span>
         </button>
-      `,
+      `
     )
     .join("");
 
-  levelSwitcher.querySelectorAll("[data-level-id]").forEach((button) => {
+  levelSwitcher.querySelectorAll("[data-level-id]").forEach(button => {
     button.addEventListener("click", () => {
       const nextLevel = button.dataset.levelId;
 
@@ -616,7 +580,7 @@ function renderLevelSwitcher() {
           file: "",
           definitionScope: "all",
           round: "all",
-        }),
+        })
       );
     });
   });
@@ -631,11 +595,11 @@ function renderTopicFilter() {
   topicFilter.innerHTML = topics.length
     ? [
         '<option value="">All topics</option>',
-        ...topics.map((topic) => `<option value="${topic.id}">${topic.label}</option>`),
+        ...topics.map(topic => `<option value="${topic.id}">${topic.label}</option>`),
       ].join("")
     : '<option value="">No topics available</option>';
 
-  if (appState.topic && !topics.some((topic) => topic.id === appState.topic)) {
+  if (appState.topic && !topics.some(topic => topic.id === appState.topic)) {
     appState.topic = "";
   }
 
@@ -647,7 +611,7 @@ function renderFileSwitcher() {
     .slice()
     .sort((left, right) => fileOrder.indexOf(left.id) - fileOrder.indexOf(right.id))
     .map(
-      (fileEntry) => `
+      fileEntry => `
         <button
           class="memorisation-toggle memorisation-toggle--compact"
           type="button"
@@ -657,11 +621,11 @@ function renderFileSwitcher() {
           <span class="memorisation-toggle__label">${fileEntry.label}</span>
           <span class="memorisation-toggle__count">${getFileCountLabel(fileEntry)}</span>
         </button>
-      `,
+      `
     )
     .join("");
 
-  fileSwitcher.querySelectorAll("[data-file-id]").forEach((button) => {
+  fileSwitcher.querySelectorAll("[data-file-id]").forEach(button => {
     button.addEventListener("click", () => {
       const nextFile = button.dataset.fileId;
 
@@ -674,7 +638,7 @@ function renderFileSwitcher() {
           file: nextFile,
           definitionScope: "all",
           round: "all",
-        }),
+        })
       );
     });
   });
@@ -694,9 +658,8 @@ function renderDefinitionFilter() {
 
   const definitionSourceCounts = fileEntry.definition_source_counts || {};
   definitionFilterGrid.innerHTML = definitionScopeOptions
-    .map((option) => {
-      const count =
-        option.id === "all" ? fileEntry.count : Number(definitionSourceCounts[option.id] || 0);
+    .map(option => {
+      const count = option.id === "all" ? fileEntry.count : Number(definitionSourceCounts[option.id] || 0);
 
       return `
         <button
@@ -712,7 +675,7 @@ function renderDefinitionFilter() {
     })
     .join("");
 
-  definitionFilterGrid.querySelectorAll("[data-definition-scope]").forEach((button) => {
+  definitionFilterGrid.querySelectorAll("[data-definition-scope]").forEach(button => {
     button.addEventListener("click", () => {
       const nextScope = button.dataset.definitionScope;
 
@@ -739,14 +702,14 @@ function renderRoundSwitcher() {
   }
 
   roundSwitcherSection.hidden = false;
-  const roundOptions = ["all", ...fileEntry.rounds.map((round) => String(round))];
+  const roundOptions = ["all", ...fileEntry.rounds.map(round => String(round))];
 
   if (!roundOptions.includes(appState.round)) {
     appState.round = "all";
   }
 
   roundSwitcher.innerHTML = roundOptions
-    .map((option) => {
+    .map(option => {
       const label = option === "all" ? "All rounds" : `Round ${option}`;
 
       return `
@@ -762,7 +725,7 @@ function renderRoundSwitcher() {
     })
     .join("");
 
-  roundSwitcher.querySelectorAll("[data-round-value]").forEach((button) => {
+  roundSwitcher.querySelectorAll("[data-round-value]").forEach(button => {
     button.addEventListener("click", () => {
       const nextRound = button.dataset.roundValue;
 
@@ -794,7 +757,7 @@ async function loadFileItems(path) {
 
   const items = await fetchJson(`./data/${path}`);
   const normalizedItems = Array.isArray(items)
-    ? items.map((item) => ({
+    ? items.map(item => ({
         ...item,
         topic: normalizeTopicKey(item.topic),
       }))
@@ -810,24 +773,22 @@ async function loadSessionSourceItems(fileEntry) {
   }
 
   const settledSources = await Promise.all(
-    fileEntry.sources.map(async (source) => {
+    fileEntry.sources.map(async source => {
       const items = await loadFileItems(source.path);
 
-      return items.map((item) => ({
+      return items.map(item => ({
         ...item,
         topic: normalizeTopicKey(item.topic || source.topicId),
         topicLabel: source.topicLabel,
       }));
-    }),
+    })
   );
 
   return settledSources.flat();
 }
 
 async function loadCatalogResources({ preserveSelection = true } = {}) {
-  const fallbackSelection = preserveSelection
-    ? getSelectionSnapshot()
-    : getInitialSelectionFromUrl();
+  const fallbackSelection = preserveSelection ? getSelectionSnapshot() : getInitialSelectionFromUrl();
   const catalog = await fetchJson("./data/catalog.json");
 
   if (!Array.isArray(catalog?.stages) || catalog.stages.length === 0) {
@@ -838,8 +799,7 @@ async function loadCatalogResources({ preserveSelection = true } = {}) {
 
   try {
     const loadedMap = await fetchJson("./data/context/topic_normalization_map.json");
-    topicNormalizationMap =
-      loadedMap && typeof loadedMap === "object" && !Array.isArray(loadedMap) ? loadedMap : {};
+    topicNormalizationMap = loadedMap && typeof loadedMap === "object" && !Array.isArray(loadedMap) ? loadedMap : {};
   } catch (error) {
     topicNormalizationMap = preserveSelection ? appState.topicNormalizationMap : {};
   }
@@ -970,22 +930,22 @@ function buildGuidedClozeQuestion(item, fileEntry) {
       question: item.question,
       type: item.type,
       sourceScope: item.source_scope,
-    }),
+    })
   );
 
   question.fullAnswer = item.full_answer || fillPromptBlanks(item.prompt, answers);
   question.minimalPass = fillPromptBlanks(
     item.prompt,
-    answerModels.map((answerModel) => answerModel.minimal_pass),
+    answerModels.map(answerModel => answerModel.minimal_pass)
   );
-  question.conceptGroups = answerModels.flatMap((answerModel) => answerModel.concept_groups);
-  question.contradictions = answerModels.flatMap((answerModel) => answerModel.contradictions);
+  question.conceptGroups = answerModels.flatMap(answerModel => answerModel.concept_groups);
+  question.contradictions = answerModels.flatMap(answerModel => answerModel.contradictions);
   question.promptParts = String(item.prompt || "").split(blankPattern);
   question.blanks = answerModels.map((answerModel, blankIndex) =>
     createBlankModel(question, blankIndex, answerModel, {
       label: `Blank ${blankIndex + 1}`,
       placeholder: `Blank ${blankIndex + 1}`,
-    }),
+    })
   );
 
   return question;
@@ -995,22 +955,12 @@ function buildMultiRoundQuestions(item, fileEntry) {
   const rounds = Array.isArray(item.rounds) ? item.rounds : [];
 
   return rounds
-    .filter(
-      (round, roundIndex) =>
-        appState.round === "all" || String(round.round ?? roundIndex + 1) === appState.round,
-    )
+    .filter((round, roundIndex) => appState.round === "all" || String(round.round ?? roundIndex + 1) === appState.round)
     .map((round, roundIndex) => {
       const roundNumber = Number(round.round ?? roundIndex + 1);
       const questionId = `${fileEntry.id}::${item.topic}::${item.id}::round-${roundNumber}`;
       const questionText = item.question || round.prompt || "";
-      const question = createQuestionBase(
-        item,
-        fileEntry,
-        questionId,
-        "cloze",
-        questionText,
-        round.prompt,
-      );
+      const question = createQuestionBase(item, fileEntry, questionId, "cloze", questionText, round.prompt);
       const answers = Array.isArray(round.answers) ? round.answers : [];
       const blankPattern = /_{4,}/g;
       const blankCount = (String(round.prompt || "").match(blankPattern) || []).length;
@@ -1029,7 +979,7 @@ function buildMultiRoundQuestions(item, fileEntry) {
           question: item.question,
           type: item.type,
           sourceScope: item.source_scope,
-        }),
+        })
       );
 
       question.round = roundNumber;
@@ -1037,16 +987,16 @@ function buildMultiRoundQuestions(item, fileEntry) {
       question.fullAnswer = item.full_answer || fillPromptBlanks(round.prompt, answers);
       question.minimalPass = fillPromptBlanks(
         round.prompt,
-        answerModels.map((answerModel) => answerModel.minimal_pass),
+        answerModels.map(answerModel => answerModel.minimal_pass)
       );
-      question.conceptGroups = answerModels.flatMap((answerModel) => answerModel.concept_groups);
-      question.contradictions = answerModels.flatMap((answerModel) => answerModel.contradictions);
+      question.conceptGroups = answerModels.flatMap(answerModel => answerModel.concept_groups);
+      question.contradictions = answerModels.flatMap(answerModel => answerModel.contradictions);
       question.promptParts = String(round.prompt || "").split(blankPattern);
       question.blanks = answerModels.map((answerModel, blankIndex) =>
         createBlankModel(question, blankIndex, answerModel, {
           label: `Blank ${blankIndex + 1}`,
           placeholder: `Blank ${blankIndex + 1}`,
-        }),
+        })
       );
 
       return question;
@@ -1057,14 +1007,7 @@ function buildMultiRoundQuestions(item, fileEntry) {
 function buildFullReconstructionQuestion(item, fileEntry) {
   const questionId = `${fileEntry.id}::${item.topic}::${item.id}`;
   const questionText = item.question || item.prompt || "";
-  const question = createQuestionBase(
-    item,
-    fileEntry,
-    questionId,
-    "reconstruction",
-    questionText,
-    questionText,
-  );
+  const question = createQuestionBase(item, fileEntry, questionId, "reconstruction", questionText, questionText);
   const answerModel = buildAnswerModel({
     answer: item.answer,
     fullAnswer: item.answer,
@@ -1095,22 +1038,22 @@ function buildFullReconstructionQuestion(item, fileEntry) {
 function buildSessionQuestions(items, fileEntry) {
   const filteredItems =
     fileEntry.id === "core-definitions" && appState.definitionScope !== "all"
-      ? items.filter((item) => item.source_scope === appState.definitionScope)
+      ? items.filter(item => item.source_scope === appState.definitionScope)
       : items;
 
   if (fileEntry.id === "guided-cloze") {
-    return filteredItems.map((item) => buildGuidedClozeQuestion(item, fileEntry)).filter(Boolean);
+    return filteredItems.map(item => buildGuidedClozeQuestion(item, fileEntry)).filter(Boolean);
   }
 
   if (fileEntry.id === "multi-round-cloze") {
-    return filteredItems.flatMap((item) => buildMultiRoundQuestions(item, fileEntry));
+    return filteredItems.flatMap(item => buildMultiRoundQuestions(item, fileEntry));
   }
 
   if (fileEntry.id === "full-reconstruction") {
-    return filteredItems.map((item) => buildFullReconstructionQuestion(item, fileEntry));
+    return filteredItems.map(item => buildFullReconstructionQuestion(item, fileEntry));
   }
 
-  return filteredItems.map((item) => buildSingleQuestion(item, fileEntry));
+  return filteredItems.map(item => buildSingleQuestion(item, fileEntry));
 }
 
 function createBlankState(blank) {
@@ -1122,9 +1065,7 @@ function createBlankState(blank) {
     wrongCount: 0,
     revealed: false,
     coveredGroups: [],
-    missingGroups: blank.answerModel.concept_groups
-      .filter((group) => group.required)
-      .map((group) => group.id),
+    missingGroups: blank.answerModel.concept_groups.filter(group => group.required).map(group => group.id),
     contradictionHits: [],
     reviewPriority: 0,
     lastReviewSignalAt: 0,
@@ -1143,19 +1084,14 @@ function buildReviewPriority(blankState) {
 
 function rebuildSessionRuntime(sessionQuestions) {
   appState.sessionQuestions = sessionQuestions;
-  appState.sessionQuestionIds = sessionQuestions.map((question) => question.id);
-  appState.sessionQuestionMap = new Map(sessionQuestions.map((question) => [question.id, question]));
-  appState.sessionBlankIds = sessionQuestions.flatMap((question) =>
-    question.blanks.map((blank) => blank.id),
-  );
+  appState.sessionQuestionIds = sessionQuestions.map(question => question.id);
+  appState.sessionQuestionMap = new Map(sessionQuestions.map(question => [question.id, question]));
+  appState.sessionBlankIds = sessionQuestions.flatMap(question => question.blanks.map(blank => blank.id));
   appState.sessionBlankMap = new Map(
-    sessionQuestions.flatMap((question) => question.blanks.map((blank) => [blank.id, blank])),
+    sessionQuestions.flatMap(question => question.blanks.map(blank => [blank.id, blank]))
   );
   appState.blankStates = new Map(
-    appState.sessionBlankIds.map((blankId) => [
-      blankId,
-      createBlankState(appState.sessionBlankMap.get(blankId)),
-    ]),
+    appState.sessionBlankIds.map(blankId => [blankId, createBlankState(appState.sessionBlankMap.get(blankId))])
   );
   appState.pages = chunkIntoPages(appState.sessionQuestionIds, getPageSizeForCurrentFile());
   appState.currentPageIndex = 0;
@@ -1188,7 +1124,7 @@ function isBlankComplete(blankId) {
 }
 
 function getCompletedBlankCount() {
-  return appState.sessionBlankIds.filter((blankId) => isBlankComplete(blankId)).length;
+  return appState.sessionBlankIds.filter(blankId => isBlankComplete(blankId)).length;
 }
 
 function getPageSet() {
@@ -1206,13 +1142,10 @@ function getCurrentPageEntries() {
 
 function updateReviewQueue() {
   appState.reviewQueueBlankIds = appState.sessionBlankIds
-    .filter((blankId) => {
+    .filter(blankId => {
       const blankState = getBlankState(blankId);
 
-      return Boolean(
-        blankState &&
-          (blankState.status === "wrong" || blankState.revealed || blankState.wrongCount > 0),
-      );
+      return Boolean(blankState && (blankState.status === "wrong" || blankState.revealed || blankState.wrongCount > 0));
     })
     .sort((leftBlankId, rightBlankId) => {
       const leftPriority = buildReviewPriority(getBlankState(leftBlankId));
@@ -1235,11 +1168,11 @@ function getCurrentModePageIndexForBlank(blankId) {
   const pages = getPageSet();
 
   if (appState.reviewMode) {
-    return pages.findIndex((page) => page.includes(blankId));
+    return pages.findIndex(page => page.includes(blankId));
   }
 
   const questionId = getBlank(blankId)?.questionId;
-  return pages.findIndex((page) => page.includes(questionId));
+  return pages.findIndex(page => page.includes(questionId));
 }
 
 function findNextIncompleteBlankAfter(blankId = "") {
@@ -1397,7 +1330,7 @@ function revealQuestion(questionId) {
 
   appState.revealedQuestionIds.add(questionId);
 
-  question.blanks.forEach((blank) => {
+  question.blanks.forEach(blank => {
     const blankState = getBlankState(blank.id);
 
     if (!blankState || blankState.status === "correct") {
@@ -1407,9 +1340,7 @@ function revealQuestion(questionId) {
     blankState.status = "revealed";
     blankState.revealed = true;
     blankState.coveredGroups = [];
-    blankState.missingGroups = blank.answerModel.concept_groups
-      .filter((group) => group.required)
-      .map((group) => group.id);
+    blankState.missingGroups = blank.answerModel.concept_groups.filter(group => group.required).map(group => group.id);
     blankState.contradictionHits = [];
     blankState.lastReviewSignalAt = nextInteractionTick();
     blankState.reviewPriority = buildReviewPriority(blankState);
@@ -1548,9 +1479,7 @@ function updateBadges() {
   if (fileEntry?.id === "core-definitions") {
     sourceBadge.hidden = false;
     sourceBadge.textContent =
-      appState.definitionScope === "all"
-        ? "All definition sources"
-        : formatDefinitionScope(appState.definitionScope);
+      appState.definitionScope === "all" ? "All definition sources" : formatDefinitionScope(appState.definitionScope);
   } else {
     sourceBadge.hidden = true;
   }
@@ -1642,8 +1571,8 @@ function getBlankFeedbackDescriptor(blank, blankState) {
   }
 
   if (blankState.status === "wrong") {
-    const firstMissingGroup = blank.answerModel.concept_groups.find((group) =>
-      blankState.missingGroups.includes(group.id),
+    const firstMissingGroup = blank.answerModel.concept_groups.find(group =>
+      blankState.missingGroups.includes(group.id)
     );
     const contradictionWarning = blankState.contradictionHits.length
       ? " Remove the contradictory idea and try again."
@@ -1667,9 +1596,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
     return {
       label: "Needs revision",
       tone: "wrong",
-      message: `Needs revision. ${
-        firstMissingGroup?.hint || "Add the missing chemistry idea."
-      }${contradictionWarning}`,
+      message: `Needs revision. ${firstMissingGroup?.hint || "Add the missing chemistry idea."}${contradictionWarning}`,
     };
   }
 
@@ -1721,14 +1648,14 @@ function createAnswerField(blank) {
   field.addEventListener("focus", () => {
     appState.currentBlankId = blank.id;
   });
-  field.addEventListener("input", (event) => {
+  field.addEventListener("input", event => {
     setBlankValue(blank.id, event.target.value);
     updateBlankInlineDisplay(blank, getBlankState(blank.id), mirror, field);
   });
   field.addEventListener("scroll", () => {
     syncMirroredFieldScroll(field, mirror);
   });
-  field.addEventListener("keydown", (event) => {
+  field.addEventListener("keydown", event => {
     const isEnter = event.key === "Enter";
     const allowNewLine = blank.multiline && event.shiftKey;
 
@@ -1808,10 +1735,7 @@ function createRevealPanel(question, blank) {
 
   const note = document.createElement("p");
   note.className = "memorisation-answer__note";
-  note.textContent = [
-    question.blanks.length > 1 ? `Current target: ${blank.label}.` : "",
-    getRevealNote(question),
-  ]
+  note.textContent = [question.blanks.length > 1 ? `Current target: ${blank.label}.` : "", getRevealNote(question)]
     .filter(Boolean)
     .join(" ");
 
@@ -1829,9 +1753,7 @@ function renderProgressHeader() {
   const reviewCount = appState.reviewQueueBlankIds.length;
   const promptLabel = activeBlankIndex >= 0 ? activeBlankIndex + 1 : 0;
 
-  pageCounter.textContent = `${appState.reviewMode ? "Review" : "Prompt"} ${promptLabel} / ${
-    blankOrder.length
-  }`;
+  pageCounter.textContent = `${appState.reviewMode ? "Review" : "Prompt"} ${promptLabel} / ${blankOrder.length}`;
   completionChip.textContent = `${completedBlanks} / ${totalBlanks} blanks completed`;
   reviewChip.textContent = `${reviewCount} to review`;
   prevBlankButton.disabled = activeBlankIndex <= 0;
@@ -1841,8 +1763,7 @@ function renderProgressHeader() {
   revealBlankButton.textContent =
     activeQuestion && appState.revealedQuestionIds.has(activeQuestion.id) ? "Shown" : "Reveal";
 
-  reviewToggleButton.hidden =
-    reviewCount === 0 || (!appState.reviewMode && completedBlanks !== totalBlanks);
+  reviewToggleButton.hidden = reviewCount === 0 || (!appState.reviewMode && completedBlanks !== totalBlanks);
   reviewToggleButton.textContent = appState.reviewMode
     ? "Back to main session"
     : `Review missed / revealed blanks (${reviewCount})`;
@@ -1866,9 +1787,7 @@ function renderBanner() {
         <p class="memorisation-question-label">Session complete</p>
         <h3>Main pass finished.</h3>
         <p class="memorisation-question-copy">
-          ${completedBlanks} blanks completed. ${reviewCount} blank${
-            reviewCount === 1 ? "" : "s"
-          } queued for review.
+          ${completedBlanks} blanks completed. ${reviewCount} blank${reviewCount === 1 ? "" : "s"} queued for review.
         </p>
       </div>
     `;
@@ -1917,9 +1836,7 @@ function renderSessionHeaderCopy() {
   }
 
   questionLabel.textContent = "Continuous session";
-  questionTitle.textContent = `${fileEntry?.label || "Training file"} · ${
-    levelEntry?.label || "Level"
-  }`;
+  questionTitle.textContent = `${fileEntry?.label || "Training file"} · ${levelEntry?.label || "Level"}`;
   questionCopy.textContent = `Follow the drill loop: read, type, check, then move on. The review queue collects reveals and misses for a second pass.`;
   currentSetSummary.textContent = `${topicText} · ${fileEntry?.label || "Training file"}`;
   currentSetCopy.textContent = `${stageEntry?.id || "Stage"} · ${
@@ -1958,7 +1875,7 @@ function renderSessionOutline() {
     startIndex = Math.max(0, endIndex - maxVisible);
   }
 
-  blankOrder.slice(startIndex, endIndex).forEach((blankId) => {
+  blankOrder.slice(startIndex, endIndex).forEach(blankId => {
     const blank = getBlank(blankId);
     const question = getQuestion(blank?.questionId || "");
     const blankState = getBlankState(blankId);
@@ -2047,9 +1964,7 @@ function renderActivePractice() {
 
   const promptMeta = document.createElement("p");
   promptMeta.className = "memorisation-prompt-card__meta";
-  promptMeta.textContent = [buildQuestionMeta(question), getReviewReasonSummary(blank.id)]
-    .filter(Boolean)
-    .join(" · ");
+  promptMeta.textContent = [buildQuestionMeta(question), getReviewReasonSummary(blank.id)].filter(Boolean).join(" · ");
 
   promptCard.append(promptChips, promptLabel, promptTitle, promptMeta);
 
@@ -2154,8 +2069,7 @@ function renderCatalogErrorState(message) {
   updateBadges();
   questionLabel.textContent = "Memorisation bank unavailable";
   questionTitle.textContent = "Could not load memorisation data.";
-  questionCopy.textContent =
-    "The catalog or its supporting files could not be loaded. Retry this page in a moment.";
+  questionCopy.textContent = "The catalog or its supporting files could not be loaded. Retry this page in a moment.";
   currentSetSummary.textContent = "Memorisation bank unavailable";
   currentSetCopy.textContent = "The catalog or its supporting files could not be loaded.";
   pageCounter.textContent = "Prompt 0 / 0";
@@ -2319,14 +2233,14 @@ function registerStaticEvents() {
     closeFilters();
   });
 
-  topicFilter.addEventListener("change", (event) => {
+  topicFilter.addEventListener("change", event => {
     applySelection(
       getSelectionSnapshot({
         topic: normalizeTopicKey(event.target.value || ""),
         file: "",
         definitionScope: "all",
         round: "all",
-      }),
+      })
     );
   });
 

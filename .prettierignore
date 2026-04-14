@@ -1,2 +1,19 @@
 public/docs/
 public/data/library.json
+
+node_modules
+dist
+build
+coverage
+*.min.js
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# generated / exported content
+sandbox
+tmp
+artifacts
+
+# large data or source packs if present
+content-source/code-assets/**/data/**

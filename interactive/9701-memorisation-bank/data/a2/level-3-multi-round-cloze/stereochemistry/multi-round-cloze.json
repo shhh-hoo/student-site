@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "The cis isomer is polar because the bond _____ do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
-        "answers": [
-          "dipoles"
-        ]
+        "answers": ["dipoles"]
       },
       {
         "round": 2,
         "prompt": "The cis isomer is polar because the bond dipoles do not _____. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
-        "answers": [
-          "cancel"
-        ]
+        "answers": ["cancel"]
       },
       {
         "round": 3,
         "prompt": "The cis isomer is polar because the bond dipoles do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole _____",
-        "answers": [
-          "moment"
-        ]
+        "answers": ["moment"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "Biological receptors are _____. Different enantiomers can interact differently with the body, so one may have the desired effect while the other may be less effective or have unwanted side effects.",
-        "answers": [
-          "chiral"
-        ]
+        "answers": ["chiral"]
       },
       {
         "round": 2,
         "prompt": "Biological receptors are chiral. Different _____ can interact differently with the body, so one may have the desired effect while the other may be less effective or have unwanted side effects.",
-        "answers": [
-          "enantiomers"
-        ]
+        "answers": ["enantiomers"]
       },
       {
         "round": 3,
         "prompt": "Biological receptors are chiral. Different enantiomers can interact differently with the body, so one may have the desired _____ while the other may be less effective or have unwanted side effects.",
-        "answers": [
-          "effect"
-        ]
+        "answers": ["effect"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "The bond dipoles do not _____ because the ligands are arranged asymmetrically in space. So the molecule has an overall dipole moment.",
-        "answers": [
-          "cancel"
-        ]
+        "answers": ["cancel"]
       },
       {
         "round": 2,
         "prompt": "The bond dipoles do not cancel because the ligands are arranged _____ in space. So the molecule has an overall dipole moment.",
-        "answers": [
-          "asymmetrically"
-        ]
+        "answers": ["asymmetrically"]
       },
       {
         "round": 3,
         "prompt": "The bond dipoles do not cancel because the ligands are arranged asymmetrically in space. So the molecule has an overall _____ moment.",
-        "answers": [
-          "dipole"
-        ]
+        "answers": ["dipole"]
       }
     ]
   }

@@ -152,7 +152,7 @@ function normaliseUnicodeText(value) {
 function normaliseVariantToken(token) {
   return token
     .split("-")
-    .map((segment) => britishAmericanVariantMap.get(segment) || segment)
+    .map(segment => britishAmericanVariantMap.get(segment) || segment)
     .join("-");
 }
 
@@ -177,8 +177,8 @@ function buildControlledTextComparable(value, { ignorePrepositions = false } = {
     .split(" ")
     .filter(Boolean)
     .map(normaliseVariantToken)
-    .filter((token) => !articleTokens.has(token))
-    .filter((token) => !(ignorePrepositions && prepositionTokens.has(token)));
+    .filter(token => !articleTokens.has(token))
+    .filter(token => !(ignorePrepositions && prepositionTokens.has(token)));
 
   return {
     text: tokens.join(" "),
@@ -303,14 +303,14 @@ function splitConceptPhrases(text) {
     .replace(/\s+to form\s+/gi, "|form ")
     .replace(/\s+to produce\s+/gi, "|produce ")
     .split("|")
-    .map((phrase) => phrase.trim())
+    .map(phrase => phrase.trim())
     .filter(Boolean);
 
   if (phrases.length === 1 && phrases[0].split(/\s+/).length > 10) {
     phrases = phrases[0]
       .replace(/,\s+(?=(and|which|while)\b)/gi, "|")
       .split("|")
-      .map((phrase) => phrase.trim())
+      .map(phrase => phrase.trim())
       .filter(Boolean);
   }
 
@@ -324,8 +324,8 @@ function buildConceptKeywords(text, matcherConfig) {
 
   return unique(
     buildControlledTextComparable(text).tokens.filter(
-      (token) => token && !conceptKeywordStopwords.has(token) && !prepositionTokens.has(token),
-    ),
+      token => token && !conceptKeywordStopwords.has(token) && !prepositionTokens.has(token)
+    )
   );
 }
 
@@ -334,9 +334,7 @@ function buildRequiredTokens(text, matcherConfig) {
     return [];
   }
 
-  return unique(
-    buildControlledTextComparable(text).tokens.filter((token) => requiredQualifierTokens.has(token)),
-  );
+  return unique(buildControlledTextComparable(text).tokens.filter(token => requiredQualifierTokens.has(token)));
 }
 
 function buildConceptHint(phrase, keywords) {
@@ -403,11 +401,11 @@ function escapeRegExp(value) {
 
 function createContradictionModel(variants, matcherConfig, id) {
   const normalizedVariants = unique(
-    variants.map((variant) =>
+    variants.map(variant =>
       matcherConfig.type === "equation"
         ? buildEquationComparable(variant, matcherConfig)
-        : buildControlledTextComparable(variant).text,
-    ),
+        : buildControlledTextComparable(variant).text
+    )
   );
 
   if (!normalizedVariants.length) {
@@ -437,7 +435,7 @@ function buildTokenContradictionsForPhrase(phrase, matcherConfig, groupId) {
       return createContradictionModel(
         [phrase.replace(tokenPattern, toToken)],
         matcherConfig,
-        `${groupId}::${fromToken}-vs-${toToken}`,
+        `${groupId}::${fromToken}-vs-${toToken}`
       );
     })
     .filter(Boolean);
@@ -484,11 +482,7 @@ function buildNegationContradictionsForPhrase(phrase, matcherConfig, groupId) {
       return;
     }
 
-    const contradictionModel = createContradictionModel(
-      [contradictionText],
-      matcherConfig,
-      `${groupId}::${suffix}`,
-    );
+    const contradictionModel = createContradictionModel([contradictionText], matcherConfig, `${groupId}::${suffix}`);
 
     if (contradictionModel) {
       contradictionModels.push(contradictionModel);
@@ -501,15 +495,16 @@ function buildNegationContradictionsForPhrase(phrase, matcherConfig, groupId) {
 function buildContradictionsForPhrase(phrase, matcherConfig, groupId) {
   const contradictionLookup = new Map();
 
-  [...buildTokenContradictionsForPhrase(phrase, matcherConfig, groupId), ...buildNegationContradictionsForPhrase(phrase, matcherConfig, groupId)].forEach(
-    (contradiction) => {
-      const signature = contradiction.normalized_variants.join("||");
+  [
+    ...buildTokenContradictionsForPhrase(phrase, matcherConfig, groupId),
+    ...buildNegationContradictionsForPhrase(phrase, matcherConfig, groupId),
+  ].forEach(contradiction => {
+    const signature = contradiction.normalized_variants.join("||");
 
-      if (!contradictionLookup.has(signature)) {
-        contradictionLookup.set(signature, contradiction);
-      }
-    },
-  );
+    if (!contradictionLookup.has(signature)) {
+      contradictionLookup.set(signature, contradiction);
+    }
+  });
 
   return Array.from(contradictionLookup.values());
 }
@@ -519,11 +514,11 @@ function normalizeConceptGroups(conceptGroups, matcherConfig) {
     .map((group, groupIndex) => {
       const variants = Array.isArray(group.variants) ? group.variants.filter(Boolean) : [];
       const normalizedVariants = unique(
-        variants.map((variant) =>
+        variants.map(variant =>
           matcherConfig.type === "equation"
             ? buildEquationComparable(variant, matcherConfig)
-            : buildControlledTextComparable(variant).text,
-        ),
+            : buildControlledTextComparable(variant).text
+        )
       );
 
       if (!normalizedVariants.length) {
@@ -553,8 +548,8 @@ function normalizeContradictions(contradictions, matcherConfig) {
       createContradictionModel(
         Array.isArray(contradiction.variants) ? contradiction.variants.filter(Boolean) : [],
         matcherConfig,
-        contradiction.id || `contradiction-${contradictionIndex + 1}`,
-      ),
+        contradiction.id || `contradiction-${contradictionIndex + 1}`
+      )
     )
     .filter(Boolean);
 }
@@ -570,7 +565,7 @@ function deriveConceptGroups(minimalPass, matcherConfig) {
           hint: "Match the stored equation.",
         },
       ],
-      matcherConfig,
+      matcherConfig
     );
   }
 
@@ -581,7 +576,7 @@ function deriveConceptGroups(minimalPass, matcherConfig) {
       variants: [phrase],
       hint: buildConceptHint(phrase, buildConceptKeywords(phrase, matcherConfig)),
     })),
-    matcherConfig,
+    matcherConfig
   );
 }
 
@@ -602,9 +597,7 @@ export function createAnswerModel({
   const resolvedMinimalPass =
     String(
       minimalPass ??
-        (type === "definition" && sourceScope && sourceScope !== "paper_only"
-          ? canonicalValue
-          : canonicalValue),
+        (type === "definition" && sourceScope && sourceScope !== "paper_only" ? canonicalValue : canonicalValue)
     ).trim() || resolvedFullAnswer;
   const matcherConfig = getMatcherConfig({
     fileId,
@@ -619,9 +612,7 @@ export function createAnswerModel({
   const derivedContradictions =
     resolvedContradictions.length > 0
       ? resolvedContradictions
-      : derivedConceptGroups.flatMap((group) =>
-          buildContradictionsForPhrase(group.variants[0], matcherConfig, group.id),
-        );
+      : derivedConceptGroups.flatMap(group => buildContradictionsForPhrase(group.variants[0], matcherConfig, group.id));
 
   return {
     full_answer: resolvedFullAnswer,
@@ -679,24 +670,17 @@ function comparableInputContainsVariant(comparableInput, variant, matcherConfig)
 
 export function evaluateAnswerModel(answerModel, userValue) {
   const comparableInput = buildComparableInput(userValue, answerModel.matcherConfig);
-  const legacyResult = evaluateMatchResult(
-    userValue,
-    answerModel.minimal_pass,
-    answerModel.matcherConfig,
-  );
+  const legacyResult = evaluateMatchResult(userValue, answerModel.minimal_pass, answerModel.matcherConfig);
   const coveredGroups = [];
   const missingGroups = [];
   const missingRequiredTokens = [];
 
-  answerModel.concept_groups.forEach((group) => {
-    const phraseCovered = group.normalized_variants.some(
-      (variant) =>
-        comparableInputContainsVariant(comparableInput, variant, answerModel.matcherConfig),
+  answerModel.concept_groups.forEach(group => {
+    const phraseCovered = group.normalized_variants.some(variant =>
+      comparableInputContainsVariant(comparableInput, variant, answerModel.matcherConfig)
     );
-    const keywordMatches = group.keywords.filter((keyword) => comparableInput.tokenSet.has(keyword));
-    const missingRequiredTokensForGroup = group.required_tokens.filter(
-      (token) => !comparableInput.tokenSet.has(token),
-    );
+    const keywordMatches = group.keywords.filter(keyword => comparableInput.tokenSet.has(keyword));
+    const missingRequiredTokensForGroup = group.required_tokens.filter(token => !comparableInput.tokenSet.has(token));
     const keywordCovered =
       answerModel.matcherConfig.type !== "equation" &&
       group.minimum_keyword_matches > 0 &&
@@ -714,13 +698,12 @@ export function evaluateAnswerModel(answerModel, userValue) {
   });
 
   const contradictionHits = answerModel.contradictions
-    .filter((contradiction) =>
-      contradiction.normalized_variants.some(
-        (variant) =>
-          comparableInputContainsVariant(comparableInput, variant, answerModel.matcherConfig),
-      ),
+    .filter(contradiction =>
+      contradiction.normalized_variants.some(variant =>
+        comparableInputContainsVariant(comparableInput, variant, answerModel.matcherConfig)
+      )
     )
-    .map((contradiction) => contradiction.id);
+    .map(contradiction => contradiction.id);
   const minimumPassSatisfied = missingGroups.length === 0 && contradictionHits.length === 0;
 
   return {

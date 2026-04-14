@@ -56,7 +56,9 @@
 }
 
 .brand-tag--link {
-  transition: transform 140ms ease, box-shadow 140ms ease;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease;
 }
 
 .brand-tag--link:hover,
@@ -123,14 +125,12 @@
 }
 
 .resource-card--document {
-  background:
-    linear-gradient(180deg, rgba(255, 252, 245, 0.96), rgba(252, 247, 238, 0.92));
+  background: linear-gradient(180deg, rgba(255, 252, 245, 0.96), rgba(252, 247, 238, 0.92));
 }
 
 .resource-card--interactive {
   border-color: rgba(180, 87, 42, 0.48);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 227, 0.98), rgba(255, 246, 239, 0.94));
+  background: linear-gradient(180deg, rgba(255, 238, 227, 0.98), rgba(255, 246, 239, 0.94));
 }
 
 .resource-card--spotlight {

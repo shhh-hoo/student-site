@@ -45,7 +45,7 @@ export function createSectionTitleMarkup({ kicker, title, copy, id }) {
 export function createSiteHeaderMarkup(header) {
   const navMarkup = (header.navLinks || [])
     .map(
-      (link) => `
+      link => `
         <a
           class="${joinClasses("site-header__nav-link", link.current && "site-header__nav-link--current")}"
           href="${escapeHtml(link.href)}"
@@ -53,7 +53,7 @@ export function createSiteHeaderMarkup(header) {
         >
           ${escapeHtml(link.label)}
         </a>
-      `,
+      `
     )
     .join("");
 
@@ -88,23 +88,23 @@ export function createSiteHeaderMarkup(header) {
 export function createHomepageHeroMarkup(hero) {
   const statsMarkup = (hero.stats || [])
     .map(
-      (stat) => `
+      stat => `
         <article class="hero-stat">
           <strong>${escapeHtml(stat.value)}</strong>
           <span>${escapeHtml(stat.label)}</span>
         </article>
-      `,
+      `
     )
     .join("");
   const notesMarkup = (hero.notes || [])
     .map(
-      (note) => `
+      note => `
         <article class="hero-note">
           <span>${escapeHtml(note.label)}</span>
           <strong>${escapeHtml(note.title)}</strong>
           <p>${escapeHtml(note.copy)}</p>
         </article>
-      `,
+      `
     )
     .join("");
 
@@ -120,12 +120,12 @@ export function createHomepageHeroMarkup(hero) {
           <p class="homepage-hero__copy">${escapeHtml(hero.copy)}</p>
           <div class="homepage-hero__actions">
             ${(hero.actions || [])
-              .map((action) =>
+              .map(action =>
                 createCTAButtonMarkup({
                   href: action.href,
                   label: action.label,
                   variant: action.variant,
-                }),
+                })
               )
               .join("")}
           </div>
@@ -152,7 +152,7 @@ export function createEntrySectionMarkup(section) {
         id: "homepage-entry-heading",
       })}
       <div class="entry-grid">
-        ${(section.cards || []).map((card) => createEntryCardMarkup(card)).join("")}
+        ${(section.cards || []).map(card => createEntryCardMarkup(card)).join("")}
       </div>
     </section>
   `;
@@ -171,7 +171,7 @@ function createEntryCardMarkup(card) {
         (card.chips || []).length > 0
           ? `
           <div class="entry-card__chips">
-            ${(card.chips || []).map((chip) => createTagMarkup({ label: chip, tone: "outline" })).join("")}
+            ${(card.chips || []).map(chip => createTagMarkup({ label: chip, tone: "outline" })).join("")}
           </div>
         `
           : ""
@@ -199,11 +199,7 @@ export function createOverviewSummaryMarkup(summary) {
         ${summary.label ? `<p class="overview-summary__label">${escapeHtml(summary.label)}</p>` : ""}
         ${summary.copy ? `<p class="overview-summary__copy">${escapeHtml(summary.copy)}</p>` : ""}
       </div>
-      ${
-        summary.countLabel
-          ? `<span class="overview-summary__count">${escapeHtml(summary.countLabel)}</span>`
-          : ""
-      }
+      ${summary.countLabel ? `<span class="overview-summary__count">${escapeHtml(summary.countLabel)}</span>` : ""}
     </div>
   `;
 }
@@ -211,13 +207,13 @@ export function createOverviewSummaryMarkup(summary) {
 export function createOverviewFilterGroupsMarkup(groups) {
   return (groups || [])
     .map(
-      (group) => `
+      group => `
         <div class="directory-filter-group">
           <p class="directory-filter-group__label">${escapeHtml(group.label)}</p>
           <div class="directory-filter-group__options">
             ${(group.options || [])
               .map(
-                (option) => `
+                option => `
                   <button
                     type="button"
                     class="overview-filter"
@@ -229,12 +225,12 @@ export function createOverviewFilterGroupsMarkup(groups) {
                     <span class="overview-filter__label">${escapeHtml(option.label)}</span>
                     <span class="overview-filter__count">${escapeHtml(option.count)}</span>
                   </button>
-                `,
+                `
               )
               .join("")}
           </div>
         </div>
-      `,
+      `
     )
     .join("");
 }
@@ -246,7 +242,7 @@ export function createOverviewResultsMarkup(
     emptyCopy = "Try a different filter.",
     gridClass = "overview-results__grid",
     showStage = false,
-  } = {},
+  } = {}
 ) {
   if (!Array.isArray(results) || results.length === 0) {
     return `
@@ -260,10 +256,10 @@ export function createOverviewResultsMarkup(
   return `
     <div class="${escapeHtml(gridClass)}">
       ${results
-        .map((result) =>
+        .map(result =>
           createOverviewCardMarkup(result, {
             showStage,
-          }),
+          })
         )
         .join("")}
     </div>
@@ -344,7 +340,7 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
       class="${joinClasses(
         "resource-card",
         `resource-card--${resource.kind || "document"}`,
-        `resource-card--${layout}`,
+        `resource-card--${layout}`
       )}"
     >
       <div class="resource-card__header">
@@ -352,18 +348,14 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
           <p class="resource-card__eyebrow">${escapeHtml(resource.eyebrow)}</p>
           <h3>${escapeHtml(resource.title)}</h3>
         </div>
-        ${
-          resource.status
-            ? `<span class="resource-card__status">${escapeHtml(resource.status)}</span>`
-            : ""
-        }
+        ${resource.status ? `<span class="resource-card__status">${escapeHtml(resource.status)}</span>` : ""}
       </div>
       <p class="resource-card__description">${escapeHtml(resource.description)}</p>
       ${
         (resource.chips || []).length > 0
           ? `
           <div class="resource-card__chips">
-            ${(resource.chips || []).map((chip) => createTagMarkup({ label: chip, tone: "outline" })).join("")}
+            ${(resource.chips || []).map(chip => createTagMarkup({ label: chip, tone: "outline" })).join("")}
           </div>
         `
           : ""
@@ -372,7 +364,7 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
         (resource.tags || []).length > 0
           ? `
           <div class="resource-card__tags">
-            ${(resource.tags || []).map((tag) => createTagMarkup({ label: tag, tone: "soft" })).join("")}
+            ${(resource.tags || []).map(tag => createTagMarkup({ label: tag, tone: "soft" })).join("")}
           </div>
         `
           : ""
@@ -404,9 +396,7 @@ function createResourceMetaMarkup(resource, layout) {
 
   return `
     <div class="resource-card__meta-list">
-      ${metaItems
-        .map((metaItem) => `<span class="resource-card__meta">${escapeHtml(metaItem)}</span>`)
-        .join("")}
+      ${metaItems.map(metaItem => `<span class="resource-card__meta">${escapeHtml(metaItem)}</span>`).join("")}
     </div>
   `;
 }
@@ -430,7 +420,7 @@ function getResourceMetaItems(resource, layout) {
   ) {
     return metaLine
       .split(/\s+·\s+/)
-      .map((item) => item.trim())
+      .map(item => item.trim())
       .filter(Boolean);
   }
 
@@ -469,7 +459,7 @@ export function createInteractiveSectionMarkup(section) {
       <div class="overview-results">
         <div class="overview-results__grid homepage-overview__grid">
           ${(section.resources || [])
-            .map((resource) => createResourceCardMarkup(resource, { layout: "standard" }))
+            .map(resource => createResourceCardMarkup(resource, { layout: "standard" }))
             .join("")}
         </div>
       </div>

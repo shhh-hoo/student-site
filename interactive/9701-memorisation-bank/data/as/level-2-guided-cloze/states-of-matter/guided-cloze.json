@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain why a gas deviates more from ideal behaviour at high pressure.",
     "prompt": "At high pressure the gas particles are much _____ together. Their own volume is no longer negligible, and intermolecular forces become more significant. Therefore the gas deviates more from ideal behaviour.",
-    "answers": [
-      "closer"
-    ],
+    "answers": ["closer"],
     "full_answer": "At high pressure the gas particles are much closer together. Their own volume is no longer negligible, and intermolecular forces become more significant. Therefore the gas deviates more from ideal behaviour."
   },
   {
@@ -22,10 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain why real gases deviate from ideal behaviour at high pressure.",
     "prompt": "At high pressure the gas particles are much _____ together. Their own volume is no longer _____ and intermolecular forces become significant. Therefore the gas deviates from ideal behaviour.",
-    "answers": [
-      "closer",
-      "negligible"
-    ],
+    "answers": ["closer", "negligible"],
     "full_answer": "At high pressure the gas particles are much closer together. Their own volume is no longer negligible and intermolecular forces become significant. Therefore the gas deviates from ideal behaviour."
   },
   {
@@ -37,10 +32,7 @@
     "type": "guided_cloze",
     "question": "Explain why a gas behaves most ideally at high temperature and low pressure.",
     "prompt": "At high temperature the particles have high _____ energy so intermolecular forces are less important. At low pressure the particles are far _____ so their volume is more negligible. Therefore the gas behaves more ideally.",
-    "answers": [
-      "kinetic",
-      "apart"
-    ],
+    "answers": ["kinetic", "apart"],
     "full_answer": "At high temperature the particles have high kinetic energy so intermolecular forces are less important. At low pressure the particles are far apart so their volume is more negligible. Therefore the gas behaves more ideally."
   },
   {
@@ -52,9 +44,7 @@
     "type": "guided_cloze",
     "question": "Explain why nitrogen dioxide is more likely to dimerise to N2O4 at lower temperature.",
     "prompt": "The dimerisation is _____ so lowering the temperature favours the forward reaction. By Le Chatelier principle the equilibrium shifts to the side that opposes the temperature decrease. Therefore more N2O4 is formed.",
-    "answers": [
-      "exothermic"
-    ],
+    "answers": ["exothermic"],
     "full_answer": "The dimerisation is exothermic so lowering the temperature favours the forward reaction. By Le Chatelier principle the equilibrium shifts to the side that opposes the temperature decrease. Therefore more N2O4 is formed."
   }
 ]

@@ -8,11 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain the trend in thermal stability of Group 2 carbonates.",
     "prompt": "Down the group the M2+ ion has lower _____ _____. So it polarises the carbonate ion _____. The carbonate ion is less distorted and is less likely to decompose.",
-    "answers": [
-      "charge",
-      "density",
-      "less"
-    ],
+    "answers": ["charge", "density", "less"],
     "full_answer": "Down the group the M2+ ion has lower charge density. So it polarises the carbonate ion less. The carbonate ion is less distorted and is less likely to decompose."
   },
   {
@@ -24,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain the trend in solubility of the Group 2 sulfates.",
     "prompt": "The solubility of the Group 2 sulfates _____ down the group because both lattice enthalpy and hydration enthalpy become less exothermic. The hydration enthalpy decreases by a greater amount, so dissolution becomes less favourable.",
-    "answers": [
-      "decreases"
-    ],
+    "answers": ["decreases"],
     "full_answer": "The solubility of the Group 2 sulfates decreases down the group because both lattice enthalpy and hydration enthalpy become less exothermic. The hydration enthalpy decreases by a greater amount, so dissolution becomes less favourable."
   },
   {
@@ -38,9 +32,7 @@
     "type": "guided_cloze",
     "question": "Explain why the solution formed when magnesium nitride reacts with water has pH greater than 7.",
     "prompt": "Magnesium nitride reacts with water to form ammonia and magnesium _____. Ammonia reacts with water to produce hydroxide ions, so the solution is alkaline.",
-    "answers": [
-      "hydroxide"
-    ],
+    "answers": ["hydroxide"],
     "full_answer": "Magnesium nitride reacts with water to form ammonia and magnesium hydroxide. Ammonia reacts with water to produce hydroxide ions, so the solution is alkaline."
   }
 ]

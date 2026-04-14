@@ -114,7 +114,10 @@ function cx(...parts: Array<string | false | null | undefined>): string {
 function runStaticChecks(): void {
   console.assert(features.length === 3, "Expected three feature cards.");
   console.assert(resources.length === 6, "Expected six resource cards.");
-  console.assert(resources.every((item) => item.tag.length > 0), "Each resource needs a tag.");
+  console.assert(
+    resources.every(item => item.tag.length > 0),
+    "Each resource needs a tag."
+  );
 }
 
 runStaticChecks();
@@ -167,9 +170,17 @@ function DarkResourceCard({ item }: { item: (typeof resources)[number] }) {
         item.glow
       )}
     >
-      <div className={cx("absolute left-0 top-0 h-full w-5 rounded-l-[18px] border-r-[4px] border-white/90", item.accent)} />
+      <div
+        className={cx("absolute left-0 top-0 h-full w-5 rounded-l-[18px] border-r-[4px] border-white/90", item.accent)}
+      />
       <div className="ml-7 flex items-start gap-4">
-        <div className={cx("flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] border-[3px] border-white/90", item.accent, item.glow)}>
+        <div
+          className={cx(
+            "flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] border-[3px] border-white/90",
+            item.accent,
+            item.glow
+          )}
+        >
           <Icon className="h-7 w-7 text-white" strokeWidth={2.4} />
         </div>
         <div className="min-w-0 flex-1">
@@ -191,12 +202,30 @@ export default function ResourceBankHomepageJ2DarkVariant() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,107,222,0.14),transparent_18%),radial-gradient(circle_at_90%_10%,rgba(110,216,255,0.16),transparent_22%),radial-gradient(circle_at_10%_80%,rgba(124,255,178,0.12),transparent_18%),linear-gradient(180deg,#090B14_0%,#101322_52%,#0A0D18_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:34px_34px] opacity-40" />
 
-        <NeonDot className="left-[3%] top-[18%] h-20 w-20 bg-[#2B1842] shadow-[0_0_28px_rgba(255,107,222,0.35)]" color="" />
-        <NeonDot className="left-[14%] top-[29%] h-12 w-12 bg-[#132A42] shadow-[0_0_24px_rgba(110,216,255,0.32)]" color="" />
-        <NeonDot className="right-[8%] top-[15%] h-16 w-16 bg-[#2C2111] shadow-[0_0_24px_rgba(255,216,110,0.28)]" color="" />
-        <NeonDot className="right-[14%] top-[33%] h-10 w-10 bg-[#162C20] shadow-[0_0_22px_rgba(124,255,178,0.3)]" color="" />
-        <NeonBar className="left-[10%] top-[34%] h-12 w-40 -rotate-[16deg] bg-[#291915] shadow-[0_0_26px_rgba(255,158,107,0.3)]" color="" />
-        <NeonBar className="right-[18%] top-[26%] h-12 w-36 rotate-[12deg] bg-[#15263A] shadow-[0_0_26px_rgba(110,216,255,0.28)]" color="" />
+        <NeonDot
+          className="left-[3%] top-[18%] h-20 w-20 bg-[#2B1842] shadow-[0_0_28px_rgba(255,107,222,0.35)]"
+          color=""
+        />
+        <NeonDot
+          className="left-[14%] top-[29%] h-12 w-12 bg-[#132A42] shadow-[0_0_24px_rgba(110,216,255,0.32)]"
+          color=""
+        />
+        <NeonDot
+          className="right-[8%] top-[15%] h-16 w-16 bg-[#2C2111] shadow-[0_0_24px_rgba(255,216,110,0.28)]"
+          color=""
+        />
+        <NeonDot
+          className="right-[14%] top-[33%] h-10 w-10 bg-[#162C20] shadow-[0_0_22px_rgba(124,255,178,0.3)]"
+          color=""
+        />
+        <NeonBar
+          className="left-[10%] top-[34%] h-12 w-40 -rotate-[16deg] bg-[#291915] shadow-[0_0_26px_rgba(255,158,107,0.3)]"
+          color=""
+        />
+        <NeonBar
+          className="right-[18%] top-[26%] h-12 w-36 rotate-[12deg] bg-[#15263A] shadow-[0_0_26px_rgba(110,216,255,0.28)]"
+          color=""
+        />
 
         <div className="relative mx-auto max-w-[1380px] px-6 pb-20 pt-6 md:px-10">
           <header className="flex items-center justify-between gap-6 border-b-[5px] border-white/90 pb-5">
@@ -208,11 +237,21 @@ export default function ResourceBankHomepageJ2DarkVariant() {
                 </div>
               </div>
               <nav className="hidden items-center gap-10 text-2xl font-black uppercase lg:flex">
-                <a href="#" className="text-white/92">Courses</a>
-                <a href="#" className="text-white/92">Books</a>
-                <a href="#" className="text-white/92">Tutorials</a>
-                <a href="#" className="text-white/92">Community</a>
-                <a href="#" className="text-white/92">About</a>
+                <a href="#" className="text-white/92">
+                  Courses
+                </a>
+                <a href="#" className="text-white/92">
+                  Books
+                </a>
+                <a href="#" className="text-white/92">
+                  Tutorials
+                </a>
+                <a href="#" className="text-white/92">
+                  Community
+                </a>
+                <a href="#" className="text-white/92">
+                  About
+                </a>
               </nav>
             </div>
 
@@ -243,12 +282,15 @@ export default function ResourceBankHomepageJ2DarkVariant() {
 
                   <div className="relative z-10">
                     <div className="max-w-[640px]">
-                      <div className="text-sm font-black uppercase tracking-[0.26em] text-white/62">A-Level Chemistry Library</div>
+                      <div className="text-sm font-black uppercase tracking-[0.26em] text-white/62">
+                        A-Level Chemistry Library
+                      </div>
                       <h1 className="mt-5 text-5xl font-black uppercase leading-[0.95] text-white md:text-7xl">
                         Unlock your knowledge. Build a resource library that glows at night.
                       </h1>
                       <p className="mt-6 max-w-[560px] text-lg font-semibold leading-8 text-white/72 md:text-xl">
-                        The same bold paper-cut structure as J2, but translated into a midnight palette with neon edges, luminous tags, and stronger contrast for dark mode.
+                        The same bold paper-cut structure as J2, but translated into a midnight palette with neon edges,
+                        luminous tags, and stronger contrast for dark mode.
                       </p>
                     </div>
 
@@ -282,7 +324,9 @@ export default function ResourceBankHomepageJ2DarkVariant() {
               <div className="rounded-[28px] border-[5px] border-white/90 bg-[#0E1120] p-6 shadow-[8px_8px_0_rgba(0,0,0,0.6),0_0_30px_rgba(155,140,255,0.16)]">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <div className="text-sm font-black uppercase tracking-[0.24em] text-white/50">Popular documents</div>
+                    <div className="text-sm font-black uppercase tracking-[0.24em] text-white/50">
+                      Popular documents
+                    </div>
                     <h2 className="mt-2 text-4xl font-black uppercase leading-none text-white">Top picks</h2>
                   </div>
                   <button className="inline-flex items-center rounded-[16px] border-[4px] border-white/90 bg-[#241A10] px-5 py-3 text-lg font-black uppercase text-white shadow-[4px_4px_0_rgba(0,0,0,0.55),0_0_20px_rgba(255,216,110,0.28)]">
@@ -307,12 +351,15 @@ export default function ResourceBankHomepageJ2DarkVariant() {
                 <div className="mt-8 rounded-[24px] border-[4px] border-white/90 bg-[#121B30] p-5 shadow-[5px_5px_0_rgba(0,0,0,0.55),0_0_22px_rgba(110,216,255,0.18)]">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="text-sm font-black uppercase tracking-[0.24em] text-white/50">Manual code integration</div>
+                      <div className="text-sm font-black uppercase tracking-[0.24em] text-white/50">
+                        Manual code integration
+                      </div>
                       <div className="mt-2 text-2xl font-black uppercase leading-tight text-white">
                         Interactive resources stay separate from documents.
                       </div>
                       <p className="mt-3 text-sm leading-6 text-white/72">
-                        The project logic stays the same in dark mode: documents display directly, while code-based assets enter through isolated interactive routes.
+                        The project logic stays the same in dark mode: documents display directly, while code-based
+                        assets enter through isolated interactive routes.
                       </p>
                     </div>
                     <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] border-[4px] border-white/90 bg-[#15263A] shadow-[0_0_18px_rgba(110,216,255,0.22)]">

@@ -19,27 +19,27 @@ function escapeHtml(value) {
 export function createStageHeroMarkup(hero) {
   const statsMarkup = (hero.stats || [])
     .map(
-      (stat) => `
+      stat => `
         <article class="stage-stat">
           <strong>${escapeHtml(stat.value)}</strong>
           <span>${escapeHtml(stat.label)}</span>
         </article>
-      `,
+      `
     )
     .join("");
   const notesMarkup = (hero.notes || [])
     .map(
-      (note) => `
+      note => `
         <article class="stage-note">
           <span class="stage-note__label">${escapeHtml(note.label)}</span>
           <strong>${escapeHtml(note.title)}</strong>
           <p>${escapeHtml(note.copy)}</p>
         </article>
-      `,
+      `
     )
     .join("");
   const chipMarkup = (hero.supportingChips || [])
-    .map((chip) => createTagMarkup({ label: chip, tone: "outline" }))
+    .map(chip => createTagMarkup({ label: chip, tone: "outline" }))
     .join("");
 
   return `
@@ -70,12 +70,12 @@ export function createStageHeroMarkup(hero) {
         ${chipMarkup ? `<div class="stage-hero__highlights">${chipMarkup}</div>` : ""}
         <div class="stage-hero__actions">
           ${(hero.actions || [])
-            .map((action) =>
+            .map(action =>
               createCTAButtonMarkup({
                 href: action.href,
                 label: action.label,
                 variant: action.variant,
-              }),
+              })
             )
             .join("")}
         </div>

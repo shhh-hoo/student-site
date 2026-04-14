@@ -1,9 +1,6 @@
 import assert from "node:assert/strict";
 
-import {
-  createAnswerModel,
-  evaluateAnswerModel,
-} from "../interactive/9701-memorisation-bank/matcher.mjs";
+import { createAnswerModel, evaluateAnswerModel } from "../interactive/9701-memorisation-bank/matcher.mjs";
 
 const cases = [
   {
@@ -56,19 +53,19 @@ const cases = [
 
 let passed = 0;
 
-cases.forEach((testCase) => {
+cases.forEach(testCase => {
   const result = evaluateAnswerModel(testCase.answerModel, testCase.userValue);
 
   assert.equal(
     result.status,
     testCase.expectedStatus,
-    `${testCase.name}: expected ${testCase.expectedStatus}, got ${result.status}`,
+    `${testCase.name}: expected ${testCase.expectedStatus}, got ${result.status}`
   );
 
   if (testCase.contradiction) {
     assert.ok(
       result.contradictionHits.length > 0,
-      `${testCase.name}: expected a contradiction hit for the polarity flip`,
+      `${testCase.name}: expected a contradiction hit for the polarity flip`
     );
   }
 
