@@ -2351,12 +2351,6 @@ function getOutlineStatusLabel(blank, blankState) {
   return getBlankFeedbackDescriptor(blank, blankState).label;
 }
 
-function getOutlinePromptTitle(blankId, blankOrder = getCurrentModeBlankOrder()) {
-  const promptIndex = getBlankOrderIndex(blankId, blankOrder);
-  const promptLabel = appState.reviewMode ? "Review" : "Prompt";
-  return `${promptLabel} ${promptIndex >= 0 ? promptIndex + 1 : 0}`;
-}
-
 function getOutlinePromptMeta(question, blank) {
   if (!question || !blank) {
     return "";
@@ -2370,15 +2364,11 @@ function getOutlinePromptMeta(question, blank) {
     parts.push(formatLabel(question.subtopic));
   }
 
-  if (question.round) {
-    parts.push(`Round ${question.round}`);
-  }
-
   if (question.blanks.length > 1) {
     parts.push(blank.label);
   }
 
-  return parts.join(" · ") || question.type || "Current prompt";
+  return parts.join(" · ");
 }
 
 function renderSessionOutline() {
@@ -2418,27 +2408,34 @@ function renderSessionOutline() {
     item.className = "memorisation-outline__item";
     item.dataset.current = String(blankId === activeBlankId);
     item.dataset.status = blankState.status;
-    item.setAttribute(
-      "aria-label",
-      `${getOutlinePromptTitle(blankId, blankOrder)}. ${question.question}`,
-    );
     item.addEventListener("click", () => {
       focusBlank(blankId);
     });
 
     const title = document.createElement("span");
     title.className = "memorisation-outline__title";
-    title.textContent = getOutlinePromptTitle(blankId, blankOrder);
-
-    const meta = document.createElement("p");
-    meta.className = "memorisation-outline__meta";
-    meta.textContent = getOutlinePromptMeta(question, blank);
+    title.textContent = question.question;
 
     const status = document.createElement("span");
     status.className = "memorisation-outline__status";
     status.textContent = getOutlineStatusLabel(blank, blankState);
 
-    item.append(title, meta, status);
+    const metaText = getOutlinePromptMeta(question, blank);
+    const accessibleMeta = metaText ? ` ${metaText}.` : "";
+    item.setAttribute(
+      "aria-label",
+      `${question.question}. ${status.textContent}.${accessibleMeta}`,
+    );
+
+    item.append(title, status);
+
+    if (metaText) {
+      const meta = document.createElement("p");
+      meta.className = "memorisation-outline__meta";
+      meta.textContent = metaText;
+      item.append(meta);
+    }
+
     sessionOutline.append(item);
   });
 
