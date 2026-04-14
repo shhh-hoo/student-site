@@ -8,6 +8,9 @@
   --memorisation-surface-soft: rgba(244, 251, 248, 0.92);
   --memorisation-surface-accent: rgba(15, 139, 141, 0.06);
   --memorisation-shadow: 0 18px 36px rgba(15, 139, 141, 0.08);
+  --memorisation-input-min-height: 13rem;
+  --memorisation-input-max-height: 24rem;
+  --memorisation-sticky-bar-space: 1rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
   gap: 1rem;
@@ -271,7 +274,7 @@ body.memorisation-filters-open {
 .memorisation-practice-shell {
   display: grid;
   gap: 1rem;
-  padding-bottom: 0.35rem;
+  padding-bottom: var(--memorisation-sticky-bar-space);
 }
 
 .memorisation-session-page {
@@ -281,9 +284,11 @@ body.memorisation-filters-open {
 
 .memorisation-prompt-card,
 .memorisation-answer-card,
-.memorisation-feedback-card {
+.memorisation-feedback-card,
+.memorisation-reveal {
   display: grid;
   gap: 0.95rem;
+  scroll-margin-bottom: calc(var(--memorisation-sticky-bar-space) + 1.25rem);
 }
 
 .memorisation-card-chips {
@@ -437,6 +442,7 @@ body.memorisation-filters-open {
   width: 100%;
   min-width: 0;
   padding: 1rem 1.1rem;
+  box-sizing: border-box;
   font: inherit;
   line-height: 1.65;
 }
@@ -479,8 +485,10 @@ body.memorisation-filters-open {
 }
 
 textarea.memorisation-input {
-  min-height: 13rem;
-  resize: vertical;
+  min-height: var(--memorisation-input-min-height);
+  max-height: var(--memorisation-input-max-height);
+  overflow-y: hidden;
+  resize: none;
 }
 
 .memorisation-display-segment--word_hit {
@@ -531,6 +539,19 @@ textarea.memorisation-input {
 .memorisation-feedback {
   margin: 0;
   line-height: 1.6;
+}
+
+.memorisation-feedback__guidance {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.memorisation-feedback__guidance li {
+  padding-left: 0.1rem;
 }
 
 .memorisation-feedback[data-tone="correct"] {
@@ -602,11 +623,68 @@ textarea.memorisation-input {
   gap: 0.8rem;
 }
 
+.memorisation-rules-card {
+  align-content: start;
+}
+
+.memorisation-rules-card .secondary-link {
+  justify-content: center;
+  width: 100%;
+}
+
 .memorisation-side-card__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.8rem;
+}
+
+.memorisation-rules-dialog {
+  width: min(44rem, calc(100vw - 1.5rem));
+  max-height: min(82vh, 46rem);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+}
+
+.memorisation-rules-dialog::backdrop {
+  background: rgba(30, 24, 17, 0.42);
+  backdrop-filter: blur(6px);
+}
+
+.memorisation-rules-dialog__panel {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 3vw, 1.3rem);
+  border: 1px solid var(--memorisation-border);
+  border-radius: 28px;
+  background: var(--memorisation-surface-strong);
+  box-shadow: 0 24px 40px rgba(42, 34, 27, 0.18);
+}
+
+.memorisation-rules-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.memorisation-rules-dialog__header h2 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+  line-height: 1.1;
+}
+
+.memorisation-rules-dialog__copy {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.memorisation-rules-dialog__grid {
+  margin-top: 0.15rem;
 }
 
 .memorisation-outline {
@@ -655,8 +733,12 @@ textarea.memorisation-input {
 }
 
 .memorisation-outline__title {
+  display: -webkit-box;
+  overflow: hidden;
   font-weight: 700;
   line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .memorisation-outline__meta,
@@ -805,6 +887,12 @@ html[data-theme="dark"] .memorisation-action-bar {
   box-shadow: 0 22px 38px rgba(0, 0, 0, 0.34);
 }
 
+html[data-theme="dark"] .memorisation-rules-dialog__panel {
+  border-color: rgba(230, 219, 202, 0.16);
+  background: linear-gradient(180deg, rgba(28, 25, 22, 0.98), rgba(23, 20, 18, 0.94));
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.28);
+}
+
 @media (max-width: 1100px) {
   .memorisation-page-header__grid {
     grid-template-columns: 1fr;
@@ -846,6 +934,12 @@ html[data-theme="dark"] .memorisation-action-bar {
 }
 
 @media (max-width: 720px) {
+  .memorisation-layout {
+    --memorisation-input-min-height: 11rem;
+    --memorisation-input-max-height: 18rem;
+    --memorisation-sticky-bar-space: 6.35rem;
+  }
+
   .memorisation-page-header {
     padding: 1rem;
   }
@@ -861,7 +955,8 @@ html[data-theme="dark"] .memorisation-action-bar {
 
   .memorisation-current-row,
   .memorisation-answer-card__header,
-  .memorisation-filters-sheet__header {
+  .memorisation-filters-sheet__header,
+  .memorisation-rules-dialog__header {
     flex-direction: column;
   }
 
@@ -894,9 +989,5 @@ html[data-theme="dark"] .memorisation-action-bar {
   .memorisation-switcher,
   .memorisation-filter-grid {
     grid-template-columns: 1fr;
-  }
-
-  textarea.memorisation-input {
-    min-height: 11rem;
   }
 }
