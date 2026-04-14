@@ -60,7 +60,7 @@ function normalizeWord(word, matcherType = "controlled-text") {
 
   return normalized
     .split("-")
-    .map((segment) => britishAmericanVariantMap.get(segment) || segment)
+    .map(segment => britishAmericanVariantMap.get(segment) || segment)
     .join("-");
 }
 
@@ -110,26 +110,18 @@ function findPhraseWordIndexes(userWords, canonicalWords) {
   return phraseIndexes;
 }
 
-export function buildSoftHighlightModel(
-  user,
-  canonical,
-  checked = false,
-  matcherType = "controlled-text",
-) {
+export function buildSoftHighlightModel(user, canonical, checked = false, matcherType = "controlled-text") {
   const displaySegments = splitIntoDisplaySegments(user);
   const userWords = extractWordUnits(displaySegments, matcherType);
-  const canonicalWords = extractWordUnits(
-    splitIntoDisplaySegments(canonical),
-    matcherType,
-  )
-    .map((unit) => unit.normalized)
+  const canonicalWords = extractWordUnits(splitIntoDisplaySegments(canonical), matcherType)
+    .map(unit => unit.normalized)
     .filter(Boolean);
   const canonicalSet = new Set(canonicalWords);
   const phraseIndexes = findPhraseWordIndexes(userWords, canonicalWords);
 
   if (!checked) {
     return {
-      segments: displaySegments.map((segment) => ({
+      segments: displaySegments.map(segment => ({
         text: segment,
         tone: /^\s+$/.test(segment) ? "plain" : "neutral",
       })),
@@ -140,10 +132,10 @@ export function buildSoftHighlightModel(
 
   const wordHitList = [];
   const phraseHitList = [];
-  const wordUnitBySegment = new Map(userWords.map((unit) => [unit.segmentIndex, unit]));
+  const wordUnitBySegment = new Map(userWords.map(unit => [unit.segmentIndex, unit]));
   const phraseSegmentIndexes = new Set();
 
-  userWords.forEach((unit) => {
+  userWords.forEach(unit => {
     if (phraseIndexes.has(unit.wordIndex)) {
       phraseSegmentIndexes.add(unit.segmentIndex);
     }
@@ -212,7 +204,7 @@ export function buildSoftHighlightModel(
 
   return {
     segments,
-    wordHits: Array.from(new Set(wordHitList.map((word) => word.trim()).filter(Boolean))),
-    phraseHits: Array.from(new Set(phraseHitList.map((word) => word.trim()).filter(Boolean))),
+    wordHits: Array.from(new Set(wordHitList.map(word => word.trim()).filter(Boolean))),
+    phraseHits: Array.from(new Set(phraseHitList.map(word => word.trim()).filter(Boolean))),
   };
 }

@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "At a higher temperature the particles have greater average _____ energy. A greater proportion of particles has energy greater than or equal to the activation energy. Therefore the number of successful collisions per unit time increases.",
-        "answers": [
-          "kinetic"
-        ]
+        "answers": ["kinetic"]
       },
       {
         "round": 2,
         "prompt": "At a higher temperature the particles have greater average kinetic energy. A greater _____ of particles has energy greater than or equal to the activation energy. Therefore the number of successful collisions per unit time increases.",
-        "answers": [
-          "proportion"
-        ]
+        "answers": ["proportion"]
       },
       {
         "round": 3,
         "prompt": "At a higher temperature the particles have greater average kinetic energy. A greater proportion of particles has energy greater than or equal to the _____ energy. Therefore the number of successful collisions per unit time increases.",
-        "answers": [
-          "activation"
-        ]
+        "answers": ["activation"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "A catalyst increases the _____ of reaction by providing an alternative pathway with a lower activation energy. A greater proportion of collisions is therefore successful.",
-        "answers": [
-          "rate"
-        ]
+        "answers": ["rate"]
       },
       {
         "round": 2,
         "prompt": "A catalyst increases the rate of reaction by providing an _____ pathway with a lower activation energy. A greater proportion of collisions is therefore successful.",
-        "answers": [
-          "alternative"
-        ]
+        "answers": ["alternative"]
       },
       {
         "round": 3,
         "prompt": "A catalyst increases the rate of reaction by providing an alternative pathway with a lower _____ energy. A greater proportion of collisions is therefore successful.",
-        "answers": [
-          "activation"
-        ]
+        "answers": ["activation"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "A catalyst increases the rate of reaction by providing an alternative reaction pathway with a lower _____ energy. It does not change the position of equilibrium.",
-        "answers": [
-          "activation"
-        ]
+        "answers": ["activation"]
       },
       {
         "round": 2,
         "prompt": "A catalyst increases the _____ of reaction by providing an alternative reaction pathway with a lower activation energy. It does not change the position of equilibrium.",
-        "answers": [
-          "rate"
-        ]
+        "answers": ["rate"]
       },
       {
         "round": 3,
         "prompt": "A catalyst increases the rate of reaction by providing an alternative reaction pathway with a lower activation energy. It does not change the position of _____.",
-        "answers": [
-          "equilibrium"
-        ]
+        "answers": ["equilibrium"]
       }
     ]
   },
@@ -111,23 +93,17 @@
       {
         "round": 1,
         "prompt": "At a higher temperature, particles have greater _____ energy. A greater proportion of particles therefore has energy greater than or equal to the activation energy. So the number of successful collisions per unit time increases.",
-        "answers": [
-          "kinetic"
-        ]
+        "answers": ["kinetic"]
       },
       {
         "round": 2,
         "prompt": "At a higher temperature, particles have greater kinetic energy. A greater _____ of particles therefore has energy greater than or equal to the activation energy. So the number of successful collisions per unit time increases.",
-        "answers": [
-          "proportion"
-        ]
+        "answers": ["proportion"]
       },
       {
         "round": 3,
         "prompt": "At a higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore has energy greater than or equal to the activation energy. So the number of successful _____ per unit time increases.",
-        "answers": [
-          "collisions"
-        ]
+        "answers": ["collisions"]
       }
     ]
   },
@@ -144,23 +120,17 @@
       {
         "round": 1,
         "prompt": "A catalyst provides an alternative pathway with a lower activation _____. Therefore a greater proportion of collisions is successful. The rate increases.",
-        "answers": [
-          "energy"
-        ]
+        "answers": ["energy"]
       },
       {
         "round": 2,
         "prompt": "A catalyst provides an alternative _____ with a lower activation energy. Therefore a greater proportion of collisions is successful. The rate increases.",
-        "answers": [
-          "pathway"
-        ]
+        "answers": ["pathway"]
       },
       {
         "round": 3,
         "prompt": "A catalyst provides an alternative pathway with a lower activation energy. Therefore a greater proportion of collisions is _____. The rate increases.",
-        "answers": [
-          "successful"
-        ]
+        "answers": ["successful"]
       }
     ]
   },
@@ -177,23 +147,17 @@
       {
         "round": 1,
         "prompt": "At higher temperature, particles have greater _____ energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases.",
-        "answers": [
-          "kinetic"
-        ]
+        "answers": ["kinetic"]
       },
       {
         "round": 2,
         "prompt": "At higher temperature, particles have greater kinetic energy. A greater _____ of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases.",
-        "answers": [
-          "proportion"
-        ]
+        "answers": ["proportion"]
       },
       {
         "round": 3,
         "prompt": "At higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of _____ collisions increases.",
-        "answers": [
-          "successful"
-        ]
+        "answers": ["successful"]
       }
     ]
   }

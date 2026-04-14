@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "Iodide ions are strong _____ agents. The hydrogen iodide formed is oxidised by concentrated sulfuric acid to iodine. So some hydrogen iodide is used up and the yield is low.",
-        "answers": [
-          "reducing"
-        ]
+        "answers": ["reducing"]
       },
       {
         "round": 2,
         "prompt": "Iodide ions are strong reducing agents. The hydrogen iodide formed is _____ by concentrated sulfuric acid to iodine. So some hydrogen iodide is used up and the yield is low.",
-        "answers": [
-          "oxidised"
-        ]
+        "answers": ["oxidised"]
       },
       {
         "round": 3,
         "prompt": "Iodide ions are strong reducing agents. The hydrogen iodide formed is oxidised by concentrated sulfuric acid to _____. So some hydrogen iodide is used up and the yield is low.",
-        "answers": [
-          "iodine"
-        ]
+        "answers": ["iodine"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "Iodide ions are stronger _____ agents than chloride ions. HI is oxidised by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a redox reaction, so the yield of hydrogen halide is lower.",
-        "answers": [
-          "reducing"
-        ]
+        "answers": ["reducing"]
       },
       {
         "round": 2,
         "prompt": "Iodide ions are stronger reducing agents than chloride ions. HI is _____ by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a redox reaction, so the yield of hydrogen halide is lower.",
-        "answers": [
-          "oxidised"
-        ]
+        "answers": ["oxidised"]
       },
       {
         "round": 3,
         "prompt": "Iodide ions are stronger reducing agents than chloride ions. HI is oxidised by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a _____ reaction, so the yield of hydrogen halide is lower.",
-        "answers": [
-          "redox"
-        ]
+        "answers": ["redox"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "Iodide ions lose electrons more _____ than chloride ions. Iodide ions are larger, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily oxidised and are stronger reducing agents.",
-        "answers": [
-          "readily"
-        ]
+        "answers": ["readily"]
       },
       {
         "round": 2,
         "prompt": "Iodide ions lose electrons more readily than chloride ions. Iodide ions are _____, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily oxidised and are stronger reducing agents.",
-        "answers": [
-          "larger"
-        ]
+        "answers": ["larger"]
       },
       {
         "round": 3,
         "prompt": "Iodide ions lose electrons more readily than chloride ions. Iodide ions are larger, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily _____ and are stronger reducing agents.",
-        "answers": [
-          "oxidised"
-        ]
+        "answers": ["oxidised"]
       }
     ]
   },
@@ -111,23 +93,17 @@
       {
         "round": 1,
         "prompt": "From chlorine to bromine to iodine, the molecules contain more electrons and are more _____. The instantaneous dipole-induced dipole forces become stronger. So more energy is needed to separate the molecules and the volatility decreases.",
-        "answers": [
-          "polarisable"
-        ]
+        "answers": ["polarisable"]
       },
       {
         "round": 2,
         "prompt": "From chlorine to bromine to iodine, the molecules contain more electrons and are more polarisable. The instantaneous dipole-induced dipole forces become _____. So more energy is needed to separate the molecules and the volatility decreases.",
-        "answers": [
-          "stronger"
-        ]
+        "answers": ["stronger"]
       },
       {
         "round": 3,
         "prompt": "From chlorine to bromine to iodine, the molecules contain more electrons and are more polarisable. The instantaneous dipole-induced dipole forces become stronger. So more energy is needed to _____ the molecules and the volatility decreases.",
-        "answers": [
-          "separate"
-        ]
+        "answers": ["separate"]
       }
     ]
   },
@@ -144,23 +120,17 @@
       {
         "round": 1,
         "prompt": "Iodide ions are more easily _____ than chloride ions. So HI acts as a stronger reducing agent than HCl.",
-        "answers": [
-          "oxidised"
-        ]
+        "answers": ["oxidised"]
       },
       {
         "round": 2,
         "prompt": "Iodide ions are more easily oxidised than chloride ions. So HI acts as a stronger _____ agent than HCl.",
-        "answers": [
-          "reducing"
-        ]
+        "answers": ["reducing"]
       },
       {
         "round": 3,
         "prompt": "Iodide ions are more easily oxidised than chloride ions. So HI acts as a stronger reducing agent than _____.",
-        "answers": [
-          "HCl"
-        ]
+        "answers": ["HCl"]
       }
     ]
   }

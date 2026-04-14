@@ -1,11 +1,6 @@
 {
   "stage": "A2",
-  "levels": [
-    "level-1-core",
-    "level-2-guided-cloze",
-    "level-3-multi-round-cloze",
-    "level-4-full-reconstruction"
-  ],
+  "levels": ["level-1-core", "level-2-guided-cloze", "level-3-multi-round-cloze", "level-4-full-reconstruction"],
   "topics": [
     "amino-acids-and-proteins",
     "analytical-techniques",

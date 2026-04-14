@@ -6,27 +6,16 @@ import {
   truncateText,
 } from "./site-helpers.js";
 
-export function buildStagePageViewModel({
-  stage,
-  documents,
-  curationBundle: _curationBundle,
-  helpers,
-}) {
+export function buildStagePageViewModel({ stage, documents, curationBundle: _curationBundle, helpers }) {
   const stageKey = String(stage || "")
     .trim()
     .toUpperCase();
   const stageIdentity = getStageIdentity(stageKey);
-  const documentItems = Array.isArray(documents)
-    ? documents.filter((item) => item.type === "document")
-    : [];
-  const stageDocuments = documentItems.filter(
-    (item) => String(item.stage || "").trim() === stageKey,
-  );
-  const overviewItems = stageDocuments.map((documentItem) =>
-    createStageOverviewItem(documentItem, helpers),
-  );
-  const typeCount = new Set(overviewItems.map((item) => item.typeLabel)).size;
-  const topicCount = new Set(overviewItems.map((item) => item.topicLabel)).size;
+  const documentItems = Array.isArray(documents) ? documents.filter(item => item.type === "document") : [];
+  const stageDocuments = documentItems.filter(item => String(item.stage || "").trim() === stageKey);
+  const overviewItems = stageDocuments.map(documentItem => createStageOverviewItem(documentItem, helpers));
+  const typeCount = new Set(overviewItems.map(item => item.typeLabel)).size;
+  const topicCount = new Set(overviewItems.map(item => item.topicLabel)).size;
 
   return {
     header: {
@@ -39,10 +28,6 @@ export function buildStagePageViewModel({
         { href: helpers.buildSiteHref("a2/"), label: "A2", current: stageKey === "A2" },
         { href: helpers.buildSiteHref("interactive/"), label: "Interactive" },
       ],
-      quickAction: {
-        href: helpers.buildLibraryHref({}, "library-panel"),
-        label: "Browse full library",
-      },
     },
     hero: {
       kicker: "Stage directory",
@@ -127,8 +112,7 @@ function getStageIdentity(stageKey) {
       spotlightTitle: "Use overview first, then open a document",
       spotlightCopy:
         "Filter the A2 bank by type and topic first, then open the document you need directly from the current stage view.",
-      directoryCopy:
-        "The A2 page keeps the filters simple and the document set visible at a glance.",
+      directoryCopy: "The A2 page keeps the filters simple and the document set visible at a glance.",
       overviewTitle: "Browse the A2 bank",
       overviewCopy: "Filter the A2 bank by type and topic.",
       documentsTitle: "A2 document set",
@@ -143,8 +127,7 @@ function getStageIdentity(stageKey) {
     spotlightTitle: "Use overview first, then open a document",
     spotlightCopy:
       "Filter the AS bank by type and topic first, then open the document you need directly from the current stage view.",
-    directoryCopy:
-      "The AS page stays focused on overview filters and the full stage document list.",
+    directoryCopy: "The AS page stays focused on overview filters and the full stage document list.",
     overviewTitle: "Browse the AS bank",
     overviewCopy: "Filter the AS bank by type and topic.",
     documentsTitle: "AS document set",
@@ -162,10 +145,7 @@ function createStageOverviewItem(documentItem, helpers) {
     title: helpers.getDocumentDisplayTitle(documentItem, {
       short: true,
     }),
-    description: truncateText(
-      resourceOrDefault(documentItem.description, "No description provided."),
-      112,
-    ),
+    description: truncateText(resourceOrDefault(documentItem.description, "No description provided."), 112),
     href: helpers.buildDocumentLinkHref(linkPath),
     ctaLabel: "Open",
     typeLabel: getOverviewTypeLabel(documentItem),

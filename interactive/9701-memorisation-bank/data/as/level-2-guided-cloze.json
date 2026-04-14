@@ -8,10 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain the difference in the electronegativity values of O and S.",
     "prompt": "O has fewer occupied ____ than S. There is less ____ and a smaller atomic radius, so the bonding pair is attracted more strongly.",
-    "answers": [
-      "shells",
-      "shielding"
-    ],
+    "answers": ["shells", "shielding"],
     "full_answer": "O has fewer occupied shells than S. There is less shielding and a smaller atomic radius, so the bonding pair is attracted more strongly to the nucleus."
   },
   {
@@ -23,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain why Mg has a higher electrical conductivity than Na.",
     "prompt": "Each Mg atom contributes ____ delocalised electrons whereas each Na atom contributes one. So Mg has more mobile charge carriers.",
-    "answers": [
-      "two"
-    ],
+    "answers": ["two"],
     "full_answer": "Each Mg atom contributes two delocalised electrons whereas each Na atom contributes one. So Mg has more mobile charge carriers."
   },
   {
@@ -37,9 +32,7 @@
     "type": "guided_cloze",
     "question": "Explain why CO has a higher boiling point than N2.",
     "prompt": "CO is a ____ molecule so it has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces.",
-    "answers": [
-      "polar"
-    ],
+    "answers": ["polar"],
     "full_answer": "CO is a polar molecule so it has permanent dipole-dipole attractions as well as instantaneous dipole-induced dipole forces. N2 is non-polar and only has instantaneous dipole-induced dipole forces, so the intermolecular forces in CO are stronger."
   },
   {
@@ -51,9 +44,7 @@
     "type": "guided_cloze",
     "question": "Explain why the yield of the gaseous product increases when pressure is increased.",
     "prompt": "Increasing pressure shifts the equilibrium to the side with ____ moles of gas.",
-    "answers": [
-      "fewer"
-    ],
+    "answers": ["fewer"],
     "full_answer": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas."
   },
   {
@@ -65,9 +56,7 @@
     "type": "guided_cloze",
     "question": "Explain why increasing temperature increases the rate of reaction.",
     "prompt": "At higher temperature, particles have greater ____ energy.",
-    "answers": [
-      "kinetic"
-    ],
+    "answers": ["kinetic"],
     "full_answer": "At higher temperature, particles have greater kinetic energy. A greater proportion of particles therefore have energy greater than or equal to the activation energy. So the frequency of successful collisions increases."
   },
   {
@@ -79,9 +68,7 @@
     "type": "guided_cloze",
     "question": "Explain why bromine water is decolourised by an alkene.",
     "prompt": "The alkene reacts with bromine in an ____ reaction.",
-    "answers": [
-      "addition"
-    ],
+    "answers": ["addition"],
     "full_answer": "The alkene reacts with bromine in an addition reaction. Bromine is used up as the carbon-carbon double bond is broken and new carbon-bromine bonds are formed. Therefore the orange colour disappears."
   },
   {
@@ -93,9 +80,7 @@
     "type": "guided_cloze",
     "question": "Explain why sodium iodide gives a smaller percentage yield of hydrogen halide than sodium chloride when reacted with concentrated sulfuric acid.",
     "prompt": "Iodide ions are stronger ____ agents than chloride ions.",
-    "answers": [
-      "reducing"
-    ],
+    "answers": ["reducing"],
     "full_answer": "Iodide ions are stronger reducing agents than chloride ions. The hydrogen iodide formed is oxidised by concentrated sulfuric acid. Therefore some HI is used up and the percentage yield is lower."
   },
   {
@@ -107,9 +92,7 @@
     "type": "guided_cloze",
     "question": "Explain why real gases deviate from ideal behaviour at high pressure.",
     "prompt": "At high pressure the gas particles are much ____ together.",
-    "answers": [
-      "closer"
-    ],
+    "answers": ["closer"],
     "full_answer": "At high pressure the gas particles are much closer together. Their own volume is no longer negligible and intermolecular forces become significant. Therefore the gas deviates from ideal behaviour."
   }
 ]

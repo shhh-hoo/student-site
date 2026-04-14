@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "The added hydrogen ions react with the weak _____ present in the buffer. This removes most of the added hydrogen ions. Therefore the pH changes only slightly.",
-        "answers": [
-          "base"
-        ]
+        "answers": ["base"]
       },
       {
         "round": 2,
         "prompt": "The added hydrogen ions react with the weak base present in the buffer. This _____ most of the added hydrogen ions. Therefore the pH changes only slightly.",
-        "answers": [
-          "removes"
-        ]
+        "answers": ["removes"]
       },
       {
         "round": 3,
         "prompt": "The added hydrogen ions react with the weak base present in the buffer. This removes most of the added hydrogen ions. Therefore the pH changes only _____.",
-        "answers": [
-          "slightly"
-        ]
+        "answers": ["slightly"]
       }
     ]
   }

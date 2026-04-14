@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "Magnesium nitride reacts with water to produce _____. Ammonia reacts with water to form hydroxide ions. Therefore the solution is alkaline.",
-        "answers": [
-          "ammonia"
-        ]
+        "answers": ["ammonia"]
       },
       {
         "round": 2,
         "prompt": "Magnesium nitride reacts with water to produce ammonia. Ammonia reacts with water to form _____ ions. Therefore the solution is alkaline.",
-        "answers": [
-          "hydroxide"
-        ]
+        "answers": ["hydroxide"]
       },
       {
         "round": 3,
         "prompt": "Magnesium nitride reacts with water to produce ammonia. Ammonia reacts with water to form hydroxide ions. Therefore the solution is _____.",
-        "answers": [
-          "alkaline"
-        ]
+        "answers": ["alkaline"]
       }
     ]
   },
@@ -45,24 +39,17 @@
       {
         "round": 1,
         "prompt": "The alkene reacts with bromine in an _____ reaction. Bromine is used up as the carbon-carbon double bond is broken and new carbon-bromine bonds are formed. Therefore the orange colour disappears.",
-        "answers": [
-          "addition"
-        ]
+        "answers": ["addition"]
       },
       {
         "round": 2,
         "prompt": "The alkene reacts with bromine in an addition reaction. Bromine is used up as the carbon-carbon _____ bond is broken and new carbon-bromine bonds are formed. Therefore the orange colour _____.",
-        "answers": [
-          "double",
-          "disappears"
-        ]
+        "answers": ["double", "disappears"]
       },
       {
         "round": 3,
         "prompt": "The alkene reacts with bromine in an addition reaction. _____ is used up as the carbon-carbon double bond is broken and new carbon-bromine bonds are formed. Therefore the orange colour disappears.",
-        "answers": [
-          "Bromine"
-        ]
+        "answers": ["Bromine"]
       }
     ]
   },
@@ -79,24 +66,17 @@
       {
         "round": 1,
         "prompt": "Carbonate ions react with _____ ions to form carbon dioxide gas and water. The carbon dioxide escapes as bubbles. Therefore effervescence is seen.",
-        "answers": [
-          "hydrogen"
-        ]
+        "answers": ["hydrogen"]
       },
       {
         "round": 2,
         "prompt": "Carbonate ions react with hydrogen ions to form _____ _____ gas and water. The carbon dioxide escapes as bubbles. Therefore effervescence is seen.",
-        "answers": [
-          "carbon",
-          "dioxide"
-        ]
+        "answers": ["carbon", "dioxide"]
       },
       {
         "round": 3,
         "prompt": "Carbonate ions react with hydrogen ions to form carbon dioxide gas and water. The carbon dioxide escapes as _____. Therefore effervescence is seen.",
-        "answers": [
-          "bubbles"
-        ]
+        "answers": ["bubbles"]
       }
     ]
   },
@@ -113,24 +93,17 @@
       {
         "round": 1,
         "prompt": "The aldehyde is oxidised to a _____ acid. At the same time dichromate(VI) ions are reduced to chromium(III) ions, which are green in solution. Therefore the solution changes from orange to green.",
-        "answers": [
-          "carboxylic"
-        ]
+        "answers": ["carboxylic"]
       },
       {
         "round": 2,
         "prompt": "The aldehyde is oxidised to a carboxylic acid. At the same time dichromate(VI) ions are reduced to _____ ions, which are green in solution. Therefore the solution changes from orange to green.",
-        "answers": [
-          "chromium(III)"
-        ]
+        "answers": ["chromium(III)"]
       },
       {
         "round": 3,
         "prompt": "The aldehyde is oxidised to a carboxylic acid. At the same time dichromate(VI) ions are reduced to chromium(III) ions, which are green in solution. Therefore the solution changes from _____ to _____.",
-        "answers": [
-          "orange",
-          "green"
-        ]
+        "answers": ["orange", "green"]
       }
     ]
   }

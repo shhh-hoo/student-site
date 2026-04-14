@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Identify one isomer that is polar and explain your answer.",
     "prompt": "The cis isomer is polar because the bond _____ do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
-    "answers": [
-      "dipoles"
-    ],
+    "answers": ["dipoles"],
     "full_answer": "The cis isomer is polar because the bond dipoles do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment."
   },
   {
@@ -22,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain why it may be important to make only one optical isomer of a drug.",
     "prompt": "Biological receptors are _____. Different enantiomers can interact differently with the body, so one may have the desired effect while the other may be less effective or have unwanted side effects.",
-    "answers": [
-      "chiral"
-    ],
+    "answers": ["chiral"],
     "full_answer": "Biological receptors are chiral. Different enantiomers can interact differently with the body, so one may have the desired effect while the other may be less effective or have unwanted side effects."
   },
   {
@@ -36,9 +32,7 @@
     "type": "guided_cloze",
     "question": "Explain why one stereoisomer is polar.",
     "prompt": "The bond dipoles do not _____ because the ligands are arranged asymmetrically in space. So the molecule has an overall dipole moment.",
-    "answers": [
-      "cancel"
-    ],
+    "answers": ["cancel"],
     "full_answer": "The bond dipoles do not cancel because the ligands are arranged asymmetrically in space. So the molecule has an overall dipole moment."
   }
 ]

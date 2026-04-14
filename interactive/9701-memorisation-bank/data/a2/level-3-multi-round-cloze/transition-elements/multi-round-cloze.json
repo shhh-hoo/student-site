@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in _____. Therefore different numbers of electrons can be used in bonding or removed.",
-        "answers": [
-          "energy"
-        ]
+        "answers": ["energy"]
       },
       {
         "round": 2,
         "prompt": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy. Therefore different numbers of electrons can be used in _____ or removed.",
-        "answers": [
-          "bonding"
-        ]
+        "answers": ["bonding"]
       },
       {
         "round": 3,
         "prompt": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy. Therefore different numbers of _____ can be used in bonding or removed.",
-        "answers": [
-          "electrons"
-        ]
+        "answers": ["electrons"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "A bidentate ligand has two atoms with _____ pairs available for donation. It forms two dative covalent bonds to the same metal ion.",
-        "answers": [
-          "lone"
-        ]
+        "answers": ["lone"]
       },
       {
         "round": 2,
         "prompt": "A bidentate ligand has two atoms with lone pairs available for donation. It forms two _____ covalent bonds to the same metal ion.",
-        "answers": [
-          "dative"
-        ]
+        "answers": ["dative"]
       },
       {
         "round": 3,
         "prompt": "A bidentate ligand has two atoms with lone pairs available for donation. It forms two dative covalent bonds to the same _____ ion.",
-        "answers": [
-          "metal"
-        ]
+        "answers": ["metal"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "The chromium species contains partially filled d _____. These are split into different energy levels, and electrons absorb visible light to move between them. The complementary colour is seen.",
-        "answers": [
-          "orbitals"
-        ]
+        "answers": ["orbitals"]
       },
       {
         "round": 2,
         "prompt": "The chromium species contains partially filled d orbitals. These are split into different _____ levels, and electrons absorb visible light to move between them. The complementary colour is seen.",
-        "answers": [
-          "energy"
-        ]
+        "answers": ["energy"]
       },
       {
         "round": 3,
         "prompt": "The chromium species contains partially filled d orbitals. These are split into different energy levels, and electrons absorb visible light to move between them. The _____ colour is seen.",
-        "answers": [
-          "complementary"
-        ]
+        "answers": ["complementary"]
       }
     ]
   },
@@ -111,23 +93,17 @@
       {
         "round": 1,
         "prompt": "The cis isomer is polar because the bond _____ do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
-        "answers": [
-          "dipoles"
-        ]
+        "answers": ["dipoles"]
       },
       {
         "round": 2,
         "prompt": "The cis isomer is polar because the bond dipoles do not _____. The ligands are arranged asymmetrically, so there is an overall dipole moment.",
-        "answers": [
-          "cancel"
-        ]
+        "answers": ["cancel"]
       },
       {
         "round": 3,
         "prompt": "The cis isomer is polar because the bond dipoles do not cancel. The ligands are arranged asymmetrically, so there is an overall dipole _____.",
-        "answers": [
-          "moment"
-        ]
+        "answers": ["moment"]
       }
     ]
   },
@@ -144,23 +120,17 @@
       {
         "round": 1,
         "prompt": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in _____. Therefore different numbers of electrons can be used in bonding or removed.",
-        "answers": [
-          "energy"
-        ]
+        "answers": ["energy"]
       },
       {
         "round": 2,
         "prompt": "Transition elements have variable oxidation states because the 3d and 4s subshells are close in energy. Therefore different numbers of electrons can be used in _____ or removed.",
-        "answers": [
-          "bonding"
-        ]
+        "answers": ["bonding"]
       },
       {
         "round": 3,
         "prompt": "Transition elements have _____ oxidation states because the 3d and 4s subshells are close in energy. Therefore different numbers of electrons can be used in bonding or removed.",
-        "answers": [
-          "variable"
-        ]
+        "answers": ["variable"]
       }
     ]
   },
@@ -177,23 +147,17 @@
       {
         "round": 1,
         "prompt": "A bidentate ligand has two atoms with _____ pairs that can bond to the same central metal ion. So one ligand forms two coordinate bonds.",
-        "answers": [
-          "lone"
-        ]
+        "answers": ["lone"]
       },
       {
         "round": 2,
         "prompt": "A bidentate ligand has two atoms with lone pairs that can bond to the same central _____ ion. So one ligand forms two coordinate bonds.",
-        "answers": [
-          "metal"
-        ]
+        "answers": ["metal"]
       },
       {
         "round": 3,
         "prompt": "A bidentate ligand has two atoms with lone pairs that can bond to the same central metal ion. So one ligand forms two _____ bonds.",
-        "answers": [
-          "coordinate"
-        ]
+        "answers": ["coordinate"]
       }
     ]
   },
@@ -210,23 +174,17 @@
       {
         "round": 1,
         "prompt": "Chromate ions contain partially filled d orbitals on the transition _____. Electrons absorb energy from visible light and are promoted between different energy levels. Therefore some wavelengths are absorbed and the compound appears coloured.",
-        "answers": [
-          "metal"
-        ]
+        "answers": ["metal"]
       },
       {
         "round": 2,
         "prompt": "Chromate ions contain partially filled d orbitals on the transition metal. Electrons absorb energy from _____ light and are promoted between different energy levels. Therefore some wavelengths are absorbed and the compound appears coloured.",
-        "answers": [
-          "visible"
-        ]
+        "answers": ["visible"]
       },
       {
         "round": 3,
         "prompt": "Chromate ions contain partially filled d orbitals on the transition metal. Electrons absorb energy from visible light and are promoted between different energy levels. Therefore some _____ are absorbed and the compound appears coloured.",
-        "answers": [
-          "wavelengths"
-        ]
+        "answers": ["wavelengths"]
       }
     ]
   },
@@ -243,23 +201,17 @@
       {
         "round": 1,
         "prompt": "The individual bonds are polar, but in one isomer the bond _____ do not cancel because of the three-dimensional arrangement. Therefore that isomer has an overall dipole moment and is polar.",
-        "answers": [
-          "dipoles"
-        ]
+        "answers": ["dipoles"]
       },
       {
         "round": 2,
         "prompt": "The individual bonds are polar, but in one isomer the bond dipoles do not _____ because of the three-dimensional arrangement. Therefore that isomer has an overall dipole moment and is polar.",
-        "answers": [
-          "cancel"
-        ]
+        "answers": ["cancel"]
       },
       {
         "round": 3,
         "prompt": "The individual bonds are polar, but in one isomer the bond dipoles do not cancel because of the three-dimensional arrangement. Therefore that isomer has an overall dipole _____ and is polar.",
-        "answers": [
-          "moment"
-        ]
+        "answers": ["moment"]
       }
     ]
   },
@@ -276,23 +228,17 @@
       {
         "round": 1,
         "prompt": "A bidentate ligand has two donor atoms with _____ pairs. It forms two coordinate bonds to the same central metal ion.",
-        "answers": [
-          "lone"
-        ]
+        "answers": ["lone"]
       },
       {
         "round": 2,
         "prompt": "A bidentate ligand has two donor atoms with lone pairs. It forms two _____ bonds to the same central metal ion.",
-        "answers": [
-          "coordinate"
-        ]
+        "answers": ["coordinate"]
       },
       {
         "round": 3,
         "prompt": "A bidentate ligand has two donor atoms with lone pairs. It forms two coordinate bonds to the same central _____ ion.",
-        "answers": [
-          "metal"
-        ]
+        "answers": ["metal"]
       }
     ]
   },
@@ -309,23 +255,17 @@
       {
         "round": 1,
         "prompt": "The ligands cause the d orbitals to split into two _____ levels. An electron absorbs visible light and is promoted to the higher energy level. The complementary colour is therefore seen.",
-        "answers": [
-          "energy"
-        ]
+        "answers": ["energy"]
       },
       {
         "round": 2,
         "prompt": "The ligands cause the d orbitals to split into two energy levels. An electron absorbs _____ light and is promoted to the higher energy level. The complementary colour is therefore seen.",
-        "answers": [
-          "visible"
-        ]
+        "answers": ["visible"]
       },
       {
         "round": 3,
         "prompt": "The ligands cause the d orbitals to split into two energy levels. An electron absorbs visible light and is promoted to the _____ energy level. The complementary colour is therefore seen.",
-        "answers": [
-          "higher"
-        ]
+        "answers": ["higher"]
       }
     ]
   }

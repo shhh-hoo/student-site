@@ -103,7 +103,10 @@ function cx(...parts: Array<string | false | null | undefined>): string {
 function runStaticChecks(): void {
   console.assert(features.length === 3, "Expected three feature cards.");
   console.assert(resources.length === 6, "Expected six resource cards.");
-  console.assert(resources.every((item) => item.tag.length > 0), "Each resource needs a tag.");
+  console.assert(
+    resources.every(item => item.tag.length > 0),
+    "Each resource needs a tag."
+  );
 }
 
 runStaticChecks();
@@ -124,14 +127,21 @@ function J2FeatureCard({ item }: { item: Feature }) {
       whileHover={{ y: -4 }}
       className="relative rounded-[28px] border-[4px] border-black bg-[#FFF9F0] p-5 shadow-[6px_6px_0_#000]"
     >
-      <div className={cx("absolute left-5 top-[-22px] flex h-20 w-20 items-center justify-center rounded-full border-[4px] border-black", item.accent)}>
+      <div
+        className={cx(
+          "absolute left-5 top-[-22px] flex h-20 w-20 items-center justify-center rounded-full border-[4px] border-black",
+          item.accent
+        )}
+      >
         <Icon className="h-9 w-9 text-black" strokeWidth={2.4} />
       </div>
       <div className="pt-12">
         <h3 className="font-sans text-[1.7rem] font-black uppercase leading-none text-black">{item.title}</h3>
         <p className="mt-3 text-sm leading-6 text-black/75">{item.description}</p>
       </div>
-      <div className={cx("absolute bottom-0 left-0 h-4 w-full rounded-b-[22px] border-t-[4px] border-black", item.accent)} />
+      <div
+        className={cx("absolute bottom-0 left-0 h-4 w-full rounded-b-[22px] border-t-[4px] border-black", item.accent)}
+      />
     </motion.article>
   );
 }
@@ -144,9 +154,16 @@ function J2ResourceCard({ item }: { item: Resource }) {
       whileHover={{ y: -3 }}
       className="relative rounded-[22px] border-[4px] border-black bg-[#FFF9F0] p-4 shadow-[5px_5px_0_#000]"
     >
-      <div className={cx("absolute left-0 top-0 h-full w-5 rounded-l-[18px] border-r-[4px] border-black", item.accent)} />
+      <div
+        className={cx("absolute left-0 top-0 h-full w-5 rounded-l-[18px] border-r-[4px] border-black", item.accent)}
+      />
       <div className="ml-7 flex items-start gap-4">
-        <div className={cx("flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] border-[3px] border-black", item.accent)}>
+        <div
+          className={cx(
+            "flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] border-[3px] border-black",
+            item.accent
+          )}
+        >
           <Icon className="h-7 w-7 text-black" strokeWidth={2.4} />
         </div>
         <div className="min-w-0 flex-1">
@@ -219,12 +236,15 @@ export default function ResourceBankHomepageJ2Variant() {
 
                   <div className="relative z-10">
                     <div className="max-w-[640px]">
-                      <div className="text-sm font-black uppercase tracking-[0.26em] text-black/70">A-Level Chemistry Library</div>
+                      <div className="text-sm font-black uppercase tracking-[0.26em] text-black/70">
+                        A-Level Chemistry Library
+                      </div>
                       <h1 className="mt-5 text-5xl font-black uppercase leading-[0.95] text-black md:text-7xl">
                         Unlock your knowledge. Build a resource library that feels alive.
                       </h1>
                       <p className="mt-6 max-w-[560px] text-lg font-semibold leading-8 text-black/72 md:text-xl">
-                        A strong visual homepage for documents, revision packs, practical notes, and interactive tools — with brand memory first, not generic ed-tech UI.
+                        A strong visual homepage for documents, revision packs, practical notes, and interactive tools —
+                        with brand memory first, not generic ed-tech UI.
                       </p>
                     </div>
 
@@ -258,7 +278,9 @@ export default function ResourceBankHomepageJ2Variant() {
               <div className="rounded-[28px] border-[5px] border-black bg-[#FFF9F0] p-6 shadow-[8px_8px_0_#000]">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <div className="text-sm font-black uppercase tracking-[0.24em] text-black/55">Popular documents</div>
+                    <div className="text-sm font-black uppercase tracking-[0.24em] text-black/55">
+                      Popular documents
+                    </div>
                     <h2 className="mt-2 text-4xl font-black uppercase leading-none">Top picks</h2>
                   </div>
                   <button className="inline-flex items-center rounded-[16px] border-[4px] border-black bg-[#FFE081] px-5 py-3 text-lg font-black uppercase shadow-[4px_4px_0_#000]">
@@ -283,10 +305,15 @@ export default function ResourceBankHomepageJ2Variant() {
                 <div className="mt-8 rounded-[24px] border-[4px] border-black bg-[#FFF3D6] p-5 shadow-[5px_5px_0_#000]">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="text-sm font-black uppercase tracking-[0.24em] text-black/55">Manual code integration</div>
-                      <div className="mt-2 text-2xl font-black uppercase leading-tight">Interactive resources stay separate from documents.</div>
+                      <div className="text-sm font-black uppercase tracking-[0.24em] text-black/55">
+                        Manual code integration
+                      </div>
+                      <div className="mt-2 text-2xl font-black uppercase leading-tight">
+                        Interactive resources stay separate from documents.
+                      </div>
                       <p className="mt-3 text-sm leading-6 text-black/72">
-                        This version keeps the current project logic: documents display directly, while code-based assets enter through isolated interactive routes.
+                        This version keeps the current project logic: documents display directly, while code-based
+                        assets enter through isolated interactive routes.
                       </p>
                     </div>
                     <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] border-[4px] border-black bg-[#A8D7FF]">

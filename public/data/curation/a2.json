@@ -13,46 +13,25 @@
       "title": "Physical & Transition",
       "description": "Start here for electrochemistry, buffers, redox, catalysis, and transition elements.",
       "part": "Physical chemistry",
-      "tags": [
-        "electrochemistry",
-        "buffers",
-        "transition-elements",
-        "redox"
-      ]
+      "tags": ["electrochemistry", "buffers", "transition-elements", "redox"]
     },
     {
       "id": "a2-aromatic-organic",
       "title": "Arenes & Phenol",
       "description": "Use this route for arenes, halogenoarenes, phenol, and aromatic reactions.",
       "part": "Organic chemistry",
-      "tags": [
-        "arenes",
-        "phenol",
-        "azo-coupling"
-      ]
+      "tags": ["arenes", "phenol", "azo-coupling"]
     },
     {
       "id": "a2-acyl-nitrogen",
       "title": "Acyl, Nitrogen & Comparisons",
       "description": "Use this route for acyl chemistry, amines, amides, amino acids, polymers, and comparison notes on acidity and basicity.",
       "part": "Organic chemistry",
-      "tags": [
-        "acyl-chlorides",
-        "amines",
-        "amides",
-        "acidity",
-        "basicity"
-      ]
+      "tags": ["acyl-chlorides", "amines", "amides", "acidity", "basicity"]
     }
   ],
   "best_first_cuts": {
-    "topics": [
-      "electrochemistry",
-      "arenes",
-      "amines",
-      "acidity",
-      "basicity"
-    ],
+    "topics": ["electrochemistry", "arenes", "amines", "acidity", "basicity"],
     "documents": [
       "chemistry/9701-equation-bank-a2-physical-transition-elements",
       "chemistry/9701-equation-bank-a2-arenes-phenols",

@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "The O-H proton is _____. It is replaced by deuterium from D2O, and deuterium is not detected in the same way in a proton NMR spectrum. Therefore the O-H peak disappears.",
-        "answers": [
-          "exchangeable"
-        ]
+        "answers": ["exchangeable"]
       },
       {
         "round": 2,
         "prompt": "The O-H proton is exchangeable. It is replaced by _____ from D2O, and deuterium is not detected in the same way in a proton NMR spectrum. Therefore the O-H peak disappears.",
-        "answers": [
-          "deuterium"
-        ]
+        "answers": ["deuterium"]
       },
       {
         "round": 3,
         "prompt": "The O-H proton is exchangeable. It is replaced by deuterium from D2O, and deuterium is not detected in the same way in a proton NMR spectrum. Therefore the O-H _____ disappears.",
-        "answers": [
-          "peak"
-        ]
+        "answers": ["peak"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "Iodine has different _____ in the two solvents because the intermolecular interactions are different. At equilibrium the solute is distributed between the two layers, giving a constant concentration ratio at a fixed temperature.",
-        "answers": [
-          "solubilities"
-        ]
+        "answers": ["solubilities"]
       },
       {
         "round": 2,
         "prompt": "Iodine has different solubilities in the two solvents because the intermolecular _____ are different. At equilibrium the solute is distributed between the two layers, giving a constant concentration ratio at a fixed temperature.",
-        "answers": [
-          "interactions"
-        ]
+        "answers": ["interactions"]
       },
       {
         "round": 3,
         "prompt": "Iodine has different solubilities in the two solvents because the intermolecular interactions are different. At equilibrium the solute is distributed between the two _____, giving a constant concentration ratio at a fixed temperature.",
-        "answers": [
-          "layers"
-        ]
+        "answers": ["layers"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "CHCl3 would give a proton NMR _____ from the solvent. CDCl3 does not give the same proton signal, so it does not interfere with the spectrum of the sample.",
-        "answers": [
-          "signal"
-        ]
+        "answers": ["signal"]
       },
       {
         "round": 2,
         "prompt": "CHCl3 would give a proton NMR signal from the solvent. CDCl3 does not give the same proton signal, so it does not _____ with the spectrum of the sample.",
-        "answers": [
-          "interfere"
-        ]
+        "answers": ["interfere"]
       },
       {
         "round": 3,
         "prompt": "CHCl3 would give a proton NMR signal from the solvent. CDCl3 does not give the same proton signal, so it does not interfere with the spectrum of the _____",
-        "answers": [
-          "sample"
-        ]
+        "answers": ["sample"]
       }
     ]
   },
@@ -111,23 +93,17 @@
       {
         "round": 1,
         "prompt": "The proton on the O-H group is _____. It is replaced by deuterium from D2O, and deuterium is not detected in the proton NMR spectrum in the same way.",
-        "answers": [
-          "exchangeable"
-        ]
+        "answers": ["exchangeable"]
       },
       {
         "round": 2,
         "prompt": "The proton on the O-H group is exchangeable. It is replaced by _____ from D2O, and deuterium is not detected in the proton NMR spectrum in the same way.",
-        "answers": [
-          "deuterium"
-        ]
+        "answers": ["deuterium"]
       },
       {
         "round": 3,
         "prompt": "The proton on the O-H group is exchangeable. It is replaced by deuterium from D2O, and deuterium is not detected in the proton NMR _____ in the same way.",
-        "answers": [
-          "spectrum"
-        ]
+        "answers": ["spectrum"]
       }
     ]
   },
@@ -144,23 +120,17 @@
       {
         "round": 1,
         "prompt": "The O-H proton is _____. It is replaced by deuterium from D2O. Deuterium does not give the same signal in a proton NMR spectrum, so the O-H peak disappears.",
-        "answers": [
-          "exchangeable"
-        ]
+        "answers": ["exchangeable"]
       },
       {
         "round": 2,
         "prompt": "The O-H proton is exchangeable. It is replaced by _____ from D2O. Deuterium does not give the same signal in a proton NMR spectrum, so the O-H peak disappears.",
-        "answers": [
-          "deuterium"
-        ]
+        "answers": ["deuterium"]
       },
       {
         "round": 3,
         "prompt": "The O-H proton is exchangeable. It is replaced by deuterium from D2O. Deuterium does not give the same signal in a proton NMR spectrum, so the O-H _____ disappears.",
-        "answers": [
-          "peak"
-        ]
+        "answers": ["peak"]
       }
     ]
   },
@@ -177,23 +147,17 @@
       {
         "round": 1,
         "prompt": "A solvent containing ordinary hydrogen would give its own _____ NMR peak. A deuterated solvent avoids this because deuterium does not give the same signal in a proton NMR spectrum.",
-        "answers": [
-          "proton"
-        ]
+        "answers": ["proton"]
       },
       {
         "round": 2,
         "prompt": "A solvent containing ordinary hydrogen would give its own proton NMR peak. A _____ solvent avoids this because deuterium does not give the same signal in a proton NMR spectrum.",
-        "answers": [
-          "deuterated"
-        ]
+        "answers": ["deuterated"]
       },
       {
         "round": 3,
         "prompt": "A solvent containing ordinary hydrogen would give its own proton NMR peak. A deuterated solvent avoids this because _____ does not give the same signal in a proton NMR spectrum.",
-        "answers": [
-          "deuterium"
-        ]
+        "answers": ["deuterium"]
       }
     ]
   },
@@ -210,23 +174,17 @@
       {
         "round": 1,
         "prompt": "The O-H proton is exchangeable and is replaced by _____ from D2O. Deuterium is not detected in the proton NMR spectrum in the same way, so the signal disappears.",
-        "answers": [
-          "deuterium"
-        ]
+        "answers": ["deuterium"]
       },
       {
         "round": 2,
         "prompt": "The O-H proton is _____ and is replaced by deuterium from D2O. Deuterium is not detected in the proton NMR spectrum in the same way, so the signal disappears.",
-        "answers": [
-          "exchangeable"
-        ]
+        "answers": ["exchangeable"]
       },
       {
         "round": 3,
         "prompt": "The O-H proton is exchangeable and is replaced by deuterium from D2O. Deuterium is not detected in the proton NMR spectrum in the same way, so the signal _____.",
-        "answers": [
-          "disappears"
-        ]
+        "answers": ["disappears"]
       }
     ]
   }

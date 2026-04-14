@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain why it may be important to make only one optical isomer of a drug.",
     "prompt": "Biological receptors are _____, so the two enantiomers can interact differently with the body. One enantiomer may have the desired effect while the other may be less active or produce side effects.",
-    "answers": [
-      "chiral"
-    ],
+    "answers": ["chiral"],
     "full_answer": "Biological receptors are chiral, so the two enantiomers can interact differently with the body. One enantiomer may have the desired effect while the other may be less active or produce side effects."
   },
   {
@@ -22,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain why it may be important to make only one optical isomer of a drug.",
     "prompt": "Biological receptors are _____, so different enantiomers can interact differently with the body. One enantiomer may have the desired effect while the other may be inactive or cause side effects.",
-    "answers": [
-      "chiral"
-    ],
+    "answers": ["chiral"],
     "full_answer": "Biological receptors are chiral, so different enantiomers can interact differently with the body. One enantiomer may have the desired effect while the other may be inactive or cause side effects."
   }
 ]

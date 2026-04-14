@@ -27,7 +27,7 @@ function formatLabel(value) {
     .trim()
     .split(/[\s-]+/)
     .filter(Boolean)
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
     .join(" ");
 }
 
@@ -54,7 +54,7 @@ function createToolCardMarkup(resource) {
         <p>${escapeHtml(resource.description || "Short chemistry drill.")}</p>
       </div>
       <div class="interactive-hub-card__chips">
-        ${chips.map((chip) => createChipMarkup(chip)).join("")}
+        ${chips.map(chip => createChipMarkup(chip)).join("")}
       </div>
       <div class="interactive-hub-card__footer">
         <p class="interactive-hub-card__meta">${escapeHtml(meta)}</p>

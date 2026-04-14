@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "An absorption at about 1700 cm-1 indicates a carbon oxygen _____ bond. This means the compound contains a carbonyl group.",
-        "answers": [
-          "double"
-        ]
+        "answers": ["double"]
       },
       {
         "round": 2,
         "prompt": "An absorption at about 1700 cm-1 indicates a carbon oxygen double bond. This means the compound contains a _____ group.",
-        "answers": [
-          "carbonyl"
-        ]
+        "answers": ["carbonyl"]
       },
       {
         "round": 3,
         "prompt": "An absorption at about 1700 cm-1 indicates a carbon oxygen double bond. This means the compound _____ a carbonyl group.",
-        "answers": [
-          "contains"
-        ]
+        "answers": ["contains"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "Chlorine has two common isotopes 35Cl and _____. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl. So both an M peak and an M+2 peak are seen.",
-        "answers": [
-          "37Cl"
-        ]
+        "answers": ["37Cl"]
       },
       {
         "round": 2,
         "prompt": "Chlorine has two common isotopes 35Cl and 37Cl. Molecules containing 37Cl have a mass two units _____ than molecules containing 35Cl. So both an M peak and an M+2 peak are seen.",
-        "answers": [
-          "greater"
-        ]
+        "answers": ["greater"]
       },
       {
         "round": 3,
         "prompt": "Chlorine has two common isotopes 35Cl and 37Cl. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl. So both an M peak and an M+2 peak are _____.",
-        "answers": [
-          "seen"
-        ]
+        "answers": ["seen"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "These absorptions are due to _____-H bonds. All of the possible compounds contain C-H bonds, so this region does not distinguish between them.",
-        "answers": [
-          "C"
-        ]
+        "answers": ["C"]
       },
       {
         "round": 2,
         "prompt": "These absorptions are due to C-H bonds. All of the possible compounds contain C-H bonds, so this region does not _____ between them.",
-        "answers": [
-          "distinguish"
-        ]
+        "answers": ["distinguish"]
       },
       {
         "round": 3,
         "prompt": "These absorptions are due to C-H bonds. All of the possible compounds contain C-H bonds, so this _____ does not distinguish between them.",
-        "answers": [
-          "region"
-        ]
+        "answers": ["region"]
       }
     ]
   },
@@ -111,23 +93,17 @@
       {
         "round": 1,
         "prompt": "Chlorine has two common _____, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both an M peak and an M+2 peak are seen.",
-        "answers": [
-          "isotopes"
-        ]
+        "answers": ["isotopes"]
       },
       {
         "round": 2,
         "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass _____ units higher than molecules containing 35Cl. Therefore both an M peak and an M+2 peak are seen.",
-        "answers": [
-          "two"
-        ]
+        "answers": ["two"]
       },
       {
         "round": 3,
         "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both an M peak and an _____ peak are seen.",
-        "answers": [
-          "M+2"
-        ]
+        "answers": ["M+2"]
       }
     ]
   },
@@ -144,23 +120,17 @@
       {
         "round": 1,
         "prompt": "An absorption around 1700 cm-1 indicates a carbon oxygen _____ bond. This suggests that the compound contains a carbonyl group.",
-        "answers": [
-          "double"
-        ]
+        "answers": ["double"]
       },
       {
         "round": 2,
         "prompt": "An absorption around 1700 cm-1 indicates a carbon oxygen double bond. This suggests that the compound contains a _____ group.",
-        "answers": [
-          "carbonyl"
-        ]
+        "answers": ["carbonyl"]
       },
       {
         "round": 3,
         "prompt": "An absorption around 1700 cm-1 _____ a carbon oxygen double bond. This suggests that the compound contains a carbonyl group.",
-        "answers": [
-          "indicates"
-        ]
+        "answers": ["indicates"]
       }
     ]
   },
@@ -177,23 +147,17 @@
       {
         "round": 1,
         "prompt": "The spectrum has a strong absorption around 1700 cm-1 showing a _____ bond. There is no broad absorption due to O-H. So the compound can be identified as a ketone.",
-        "answers": [
-          "C=O"
-        ]
+        "answers": ["C=O"]
       },
       {
         "round": 2,
         "prompt": "The spectrum has a strong absorption around 1700 cm-1 showing a C=O bond. There is no broad absorption due to _____. So the compound can be identified as a ketone.",
-        "answers": [
-          "O-H"
-        ]
+        "answers": ["O-H"]
       },
       {
         "round": 3,
         "prompt": "The spectrum has a strong absorption around 1700 cm-1 showing a C=O bond. There is no broad absorption due to O-H. So the compound can be identified as a _____.",
-        "answers": [
-          "ketone"
-        ]
+        "answers": ["ketone"]
       }
     ]
   },
@@ -210,24 +174,17 @@
       {
         "round": 1,
         "prompt": "Chlorine has two common isotopes, _____ and _____. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl, so an M+2 peak is observed as well as the M peak.",
-        "answers": [
-          "35Cl",
-          "37Cl"
-        ]
+        "answers": ["35Cl", "37Cl"]
       },
       {
         "round": 2,
         "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass _____ units greater than molecules containing 35Cl, so an M+2 peak is observed as well as the M peak.",
-        "answers": [
-          "two"
-        ]
+        "answers": ["two"]
       },
       {
         "round": 3,
         "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units greater than molecules containing 35Cl, so an _____ peak is observed as well as the M peak.",
-        "answers": [
-          "M+2"
-        ]
+        "answers": ["M+2"]
       }
     ]
   },
@@ -244,25 +201,17 @@
       {
         "round": 1,
         "prompt": "Chlorine has two common isotopes, _____ and _____. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both M and M+2 peaks are seen.",
-        "answers": [
-          "35Cl",
-          "37Cl"
-        ]
+        "answers": ["35Cl", "37Cl"]
       },
       {
         "round": 2,
         "prompt": "Chlorine has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass _____ units higher than molecules containing 35Cl. Therefore both M and _____ peaks are seen.",
-        "answers": [
-          "two",
-          "M+2"
-        ]
+        "answers": ["two", "M+2"]
       },
       {
         "round": 3,
         "prompt": "_____ has two common isotopes, 35Cl and 37Cl. Molecules containing 37Cl have a mass two units higher than molecules containing 35Cl. Therefore both M and M+2 peaks are seen.",
-        "answers": [
-          "Chlorine"
-        ]
+        "answers": ["Chlorine"]
       }
     ]
   },
@@ -279,24 +228,17 @@
       {
         "round": 1,
         "prompt": "The C=O bond vibrates and absorbs infrared radiation at around _____. This absorption is strong because the carbonyl bond is highly polar. Therefore a strong peak appears in this region.",
-        "answers": [
-          "1700 cm-1"
-        ]
+        "answers": ["1700 cm-1"]
       },
       {
         "round": 2,
         "prompt": "The C=O bond vibrates and absorbs _____ radiation at around 1700 cm-1. This absorption is strong because the carbonyl bond is highly _____. Therefore a strong peak appears in this region.",
-        "answers": [
-          "infrared",
-          "polar"
-        ]
+        "answers": ["infrared", "polar"]
       },
       {
         "round": 3,
         "prompt": "The C=O bond vibrates and absorbs infrared radiation at around 1700 cm-1. This absorption is strong because the carbonyl bond is highly polar. Therefore a strong _____ appears in this region.",
-        "answers": [
-          "peak"
-        ]
+        "answers": ["peak"]
       }
     ]
   },
@@ -313,24 +255,17 @@
       {
         "round": 1,
         "prompt": "The molecular ion peak is due to the ion formed when one _____ is removed from a molecule without fragmentation. It therefore represents the mass-to-charge ratio of the molecular ion.",
-        "answers": [
-          "electron"
-        ]
+        "answers": ["electron"]
       },
       {
         "round": 2,
         "prompt": "The molecular ion peak is due to the ion formed when one electron is removed from a molecule without _____. It therefore represents the mass-to-charge ratio of the molecular ion.",
-        "answers": [
-          "fragmentation"
-        ]
+        "answers": ["fragmentation"]
       },
       {
         "round": 3,
         "prompt": "The molecular ion peak is due to the ion formed when one electron is removed from a molecule without fragmentation. It therefore represents the _____-to-_____ ratio of the molecular ion.",
-        "answers": [
-          "mass",
-          "charge"
-        ]
+        "answers": ["mass", "charge"]
       }
     ]
   }

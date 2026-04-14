@@ -13,45 +13,25 @@
       "title": "Foundations & Inorganic",
       "description": "Start here for Period 3, Group 2, Group 17, and the core written equations that support the rest of AS chemistry.",
       "part": "Inorganic chemistry",
-      "tags": [
-        "group-2",
-        "group-17",
-        "period-3"
-      ]
+      "tags": ["group-2", "group-17", "period-3"]
     },
     {
       "id": "as-organic-core",
       "title": "Core Organic",
       "description": "Start here for hydrocarbons, halogenoalkanes, alcohols, and carbonyls.",
       "part": "Organic chemistry",
-      "tags": [
-        "hydrocarbons",
-        "halogenoalkanes",
-        "alcohols",
-        "carbonyls"
-      ]
+      "tags": ["hydrocarbons", "halogenoalkanes", "alcohols", "carbonyls"]
     },
     {
       "id": "as-acids-nitrogen-practical",
       "title": "Acids, Nitrogen & Practical",
       "description": "Use this next for carboxylic acids, nitriles, amines, polymers, and common ionic forms.",
       "part": "Organic chemistry",
-      "tags": [
-        "carboxylic-acids",
-        "amines",
-        "nitriles",
-        "practical"
-      ]
+      "tags": ["carboxylic-acids", "amines", "nitriles", "practical"]
     }
   ],
   "best_first_cuts": {
-    "topics": [
-      "alcohols",
-      "carbonyls",
-      "group-2",
-      "halogenoalkanes",
-      "practical"
-    ],
+    "topics": ["alcohols", "carbonyls", "group-2", "halogenoalkanes", "practical"],
     "documents": [
       "chemistry/9701-equation-bank-as-alcohols-carbonyls",
       "chemistry/9701-equation-bank-as-foundations-inorganic",

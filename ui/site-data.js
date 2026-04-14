@@ -43,10 +43,10 @@ export async function fetchLibraryDocuments(sitePrefix = "./") {
 
 export async function loadCurationBundle(sitePrefix = "./") {
   const entries = await Promise.all(
-    curationFileNames.map(async (fileName) => [
+    curationFileNames.map(async fileName => [
       fileName,
       await fetchJson(`public/data/curation/${fileName}.json`, sitePrefix),
-    ]),
+    ])
   );
 
   return Object.fromEntries(entries);
@@ -66,7 +66,7 @@ export async function loadInteractiveResources(sitePrefix = "./") {
   }
 
   const resources = await Promise.all(
-    interactiveEntries.map(async (entry) => {
+    interactiveEntries.map(async entry => {
       try {
         const metaPath = entry.metaPath || entry.meta_path;
 
@@ -86,7 +86,7 @@ export async function loadInteractiveResources(sitePrefix = "./") {
         console.warn("Could not load interactive entry.", error);
         return null;
       }
-    }),
+    })
   );
 
   return resources.filter(Boolean);
@@ -101,7 +101,7 @@ export function createDocumentResourceModel(documentItem, helpers, overrides = {
     documentItem.part,
     helpers.getContentFormatLabel(documentItem.content_format),
   ].filter(Boolean);
-  const defaultTags = uiTags.slice(0, tagLimit).map((tag) => helpers.getTagDisplayLabel(tag));
+  const defaultTags = uiTags.slice(0, tagLimit).map(tag => helpers.getTagDisplayLabel(tag));
   const defaultMetaLine = [
     helpers.getSourceKindLabel(documentItem.source_kind),
     helpers.getContentFormatLabel(documentItem.content_format),
@@ -131,14 +131,10 @@ export function createDocumentResourceModel(documentItem, helpers, overrides = {
 export function createInteractiveResourceModel(resource, helpers, overrides = {}) {
   const tags = Array.isArray(resource.tags) ? resource.tags : [];
   const defaultChips = [resource.stage, resource.part, "Interactive tool"].filter(Boolean);
-  const defaultTags = tags
-    .slice(0, overrides.tagLimit ?? 4)
-    .map((tag) => helpers.getTagDisplayLabel(tag));
+  const defaultTags = tags.slice(0, overrides.tagLimit ?? 4).map(tag => helpers.getTagDisplayLabel(tag));
   const defaultMetaLine = [
     helpers.getSourceKindLabel(resource.source_kind),
-    resource.content_format
-      ? helpers.getContentFormatLabel(resource.content_format)
-      : "Interactive",
+    resource.content_format ? helpers.getContentFormatLabel(resource.content_format) : "Interactive",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -147,8 +143,7 @@ export function createInteractiveResourceModel(resource, helpers, overrides = {}
     kind: "interactive",
     eyebrow: overrides.eyebrow || resource.kicker || "Interactive practice",
     title: overrides.title || resource.display_title || resource.title || "Interactive practice",
-    description:
-      overrides.description || resource.description || "Interactive practice for quick revision.",
+    description: overrides.description || resource.description || "Interactive practice for quick revision.",
     href: overrides.href || resource.href,
     ctaLabel: overrides.ctaLabel || "Open interactive",
     status: overrides.status || helpers.getReadableLabel(resource.status || "ready"),

@@ -4,23 +4,9 @@ export const filterQueryKeys = {
   tags: "tags",
 };
 
-export const overviewTypeOptions = [
-  "Equation",
-  "Explanation",
-  "Experiment",
-  "Mechanism",
-  "Comparison",
-  "Practice",
-];
+export const overviewTypeOptions = ["Equation", "Explanation", "Experiment", "Mechanism", "Comparison", "Practice"];
 
-export const overviewTopicOptions = [
-  "Organic",
-  "Physical",
-  "Inorganic",
-  "Analytical",
-  "Practical",
-  "Revision",
-];
+export const overviewTopicOptions = ["Organic", "Physical", "Inorganic", "Analytical", "Practical", "Revision"];
 
 const structuralUiTags = new Set([
   "9701",
@@ -99,13 +85,7 @@ const sourceKindLabelMap = {
 };
 
 const analyticalOverviewTags = new Set(["ir-spectroscopy", "past-paper", "qualitative-tests"]);
-const inorganicOverviewTags = new Set([
-  "group-2",
-  "group-17",
-  "period-3",
-  "nitrogen-sulfur",
-  "transition-elements",
-]);
+const inorganicOverviewTags = new Set(["group-2", "group-17", "period-3", "nitrogen-sulfur", "transition-elements"]);
 const physicalOverviewTags = new Set(["buffers", "electrochemistry", "redox"]);
 const practicalOverviewTags = new Set(["practical", "qualitative-tests"]);
 
@@ -184,12 +164,12 @@ export function buildDocumentLinkHref(linkPath, { sitePrefix = "./", returnSearc
 
 export function buildLibraryHref(
   { stage = "", part = "", tags = [] } = {},
-  { sitePrefix = "./", hashId = "library-panel" } = {},
+  { sitePrefix = "./", hashId = "library-panel" } = {}
 ) {
   const destination = new URL("index.html", getResolvedBaseUrl(sitePrefix));
-  const normalizedTags = [
-    ...new Set((Array.isArray(tags) ? tags : [tags]).map(normalizeUiTag).filter(Boolean)),
-  ].sort(sortTagValues);
+  const normalizedTags = [...new Set((Array.isArray(tags) ? tags : [tags]).map(normalizeUiTag).filter(Boolean))].sort(
+    sortTagValues
+  );
 
   if (stage) {
     destination.searchParams.set(filterQueryKeys.stage, stage);
@@ -247,11 +227,7 @@ export function normalizeUiTag(value) {
 }
 
 function getNormalizedResourceTags(resource) {
-  return [
-    ...new Set(
-      (Array.isArray(resource?.tags) ? resource.tags : []).map(normalizeTagSlug).filter(Boolean),
-    ),
-  ];
+  return [...new Set((Array.isArray(resource?.tags) ? resource.tags : []).map(normalizeTagSlug).filter(Boolean))];
 }
 
 export function normalizeSearchText(value) {
@@ -271,7 +247,7 @@ export function getReadableLabel(value) {
 
   return normalizedValue
     .split(/[\s-]+/)
-    .map((word) => {
+    .map(word => {
       if (word.toLowerCase() === "ai") {
         return "AI";
       }
@@ -294,7 +270,7 @@ export function getTagDisplayLabel(tag) {
 
   return normalizedTag
     .split("-")
-    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
     .join(" ");
 }
 
@@ -340,12 +316,7 @@ export function getDocumentDisplayTitle(documentItem, { short = false } = {}) {
 
 export function getOverviewTypeLabel(resource) {
   const normalizedTags = new Set(getNormalizedResourceTags(resource));
-  const overviewText = [
-    resource?.title,
-    resource?.display_title,
-    resource?.kicker,
-    resource?.description,
-  ]
+  const overviewText = [resource?.title, resource?.display_title, resource?.kicker, resource?.description]
     .join(" ")
     .toLowerCase();
 
@@ -383,45 +354,30 @@ export function getOverviewTypeLabel(resource) {
 
 export function getOverviewTopicLabel(resource) {
   const normalizedTags = new Set(getNormalizedResourceTags(resource));
-  const overviewText = [resource?.title, resource?.display_title, resource?.description]
-    .join(" ")
-    .toLowerCase();
+  const overviewText = [resource?.title, resource?.display_title, resource?.description].join(" ").toLowerCase();
   const partText = String(resource?.part || "").toLowerCase();
 
-  if (
-    normalizedTags.has("memorisation") ||
-    normalizedTags.has("revision") ||
-    overviewText.includes("memorisation")
-  ) {
+  if (normalizedTags.has("memorisation") || normalizedTags.has("revision") || overviewText.includes("memorisation")) {
     return "Revision";
   }
 
-  if (
-    [...practicalOverviewTags].some((tag) => normalizedTags.has(tag)) ||
-    overviewText.includes("practical")
-  ) {
+  if ([...practicalOverviewTags].some(tag => normalizedTags.has(tag)) || overviewText.includes("practical")) {
     return "Practical";
   }
 
   if (
-    [...analyticalOverviewTags].some((tag) => normalizedTags.has(tag)) ||
+    [...analyticalOverviewTags].some(tag => normalizedTags.has(tag)) ||
     partText.includes("analysis") ||
     overviewText.includes("spectroscopy")
   ) {
     return "Analytical";
   }
 
-  if (
-    partText.includes("physical") ||
-    [...physicalOverviewTags].some((tag) => normalizedTags.has(tag))
-  ) {
+  if (partText.includes("physical") || [...physicalOverviewTags].some(tag => normalizedTags.has(tag))) {
     return "Physical";
   }
 
-  if (
-    partText.includes("inorganic") ||
-    [...inorganicOverviewTags].some((tag) => normalizedTags.has(tag))
-  ) {
+  if (partText.includes("inorganic") || [...inorganicOverviewTags].some(tag => normalizedTags.has(tag))) {
     return "Inorganic";
   }
 
@@ -443,16 +399,13 @@ export function getOverviewStageValue(stage) {
 export function matchesOverviewFilters(item, filters = {}) {
   const matchesType = !filters.type || item.typeLabel === filters.type;
   const matchesTopic = !filters.topic || item.topicLabel === filters.topic;
-  const matchesStage =
-    !filters.stage || item.stageValue === filters.stage || item.stageValue === "All";
+  const matchesStage = !filters.stage || item.stageValue === filters.stage || item.stageValue === "All";
 
   return matchesType && matchesTopic && matchesStage;
 }
 
 export function filterOverviewItems(items, filters = {}) {
-  return (Array.isArray(items) ? items : []).filter((item) =>
-    matchesOverviewFilters(item, filters),
-  );
+  return (Array.isArray(items) ? items : []).filter(item => matchesOverviewFilters(item, filters));
 }
 
 function countOverviewItems(items, filters, key, value) {
@@ -490,15 +443,13 @@ export function buildOverviewFilterGroups(items, filters = {}, { includeStage = 
     {
       key: "type",
       label: "Filter by type",
-      options: ["All", ...overviewTypeOptions].map((label) =>
-        createOverviewFilterOption(items, filters, "type", label),
-      ),
+      options: ["All", ...overviewTypeOptions].map(label => createOverviewFilterOption(items, filters, "type", label)),
     },
     {
       key: "topic",
       label: "Filter by topic",
-      options: ["All", ...overviewTopicOptions].map((label) =>
-        createOverviewFilterOption(items, filters, "topic", label),
+      options: ["All", ...overviewTopicOptions].map(label =>
+        createOverviewFilterOption(items, filters, "topic", label)
       ),
     },
   ];
@@ -507,9 +458,7 @@ export function buildOverviewFilterGroups(items, filters = {}, { includeStage = 
     groups.push({
       key: "stage",
       label: "Filter by stage",
-      options: ["All", "AS", "A2"].map((label) =>
-        createOverviewFilterOption(items, filters, "stage", label),
-      ),
+      options: ["All", "AS", "A2"].map(label => createOverviewFilterOption(items, filters, "stage", label)),
     });
   }
 
@@ -518,11 +467,7 @@ export function buildOverviewFilterGroups(items, filters = {}, { includeStage = 
 
 export function getDistinctValues(items, key) {
   return [
-    ...new Set(
-      (Array.isArray(items) ? items : [])
-        .map((item) => String(item?.[key] || "").trim())
-        .filter(Boolean),
-    ),
+    ...new Set((Array.isArray(items) ? items : []).map(item => String(item?.[key] || "").trim()).filter(Boolean)),
   ].sort(sortText);
 }
 

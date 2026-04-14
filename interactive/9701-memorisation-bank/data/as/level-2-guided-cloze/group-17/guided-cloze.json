@@ -8,9 +8,7 @@
     "type": "guided_cloze",
     "question": "Explain why the yield of hydrogen iodide is low when NaI reacts with concentrated sulfuric acid.",
     "prompt": "Iodide ions are strong _____ agents. The hydrogen iodide formed is oxidised by concentrated sulfuric acid to iodine. So some hydrogen iodide is used up and the yield is low.",
-    "answers": [
-      "reducing"
-    ],
+    "answers": ["reducing"],
     "full_answer": "Iodide ions are strong reducing agents. The hydrogen iodide formed is oxidised by concentrated sulfuric acid to iodine. So some hydrogen iodide is used up and the yield is low."
   },
   {
@@ -22,9 +20,7 @@
     "type": "guided_cloze",
     "question": "Explain why HI gives a lower yield than HCl when sodium halides react with concentrated sulfuric acid.",
     "prompt": "Iodide ions are stronger _____ agents than chloride ions. HI is oxidised by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a redox reaction, so the yield of hydrogen halide is lower.",
-    "answers": [
-      "reducing"
-    ],
+    "answers": ["reducing"],
     "full_answer": "Iodide ions are stronger reducing agents than chloride ions. HI is oxidised by concentrated sulfuric acid, while HCl is not oxidised. Therefore some HI is used up in a redox reaction, so the yield of hydrogen halide is lower."
   },
   {
@@ -36,9 +32,7 @@
     "type": "guided_cloze",
     "question": "Explain why iodide ions are stronger reducing agents than chloride ions.",
     "prompt": "Iodide ions lose electrons more _____ than chloride ions. Iodide ions are larger, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily oxidised and are stronger reducing agents.",
-    "answers": [
-      "readily"
-    ],
+    "answers": ["readily"],
     "full_answer": "Iodide ions lose electrons more readily than chloride ions. Iodide ions are larger, so the outer electrons are further from the nucleus and are less strongly attracted. Therefore iodide ions are more easily oxidised and are stronger reducing agents."
   },
   {
@@ -50,9 +44,7 @@
     "type": "guided_cloze",
     "question": "Explain why the volatility of the halogens decreases from chlorine to bromine to iodine.",
     "prompt": "From chlorine to bromine to iodine, the molecules contain more electrons and are more _____. The instantaneous dipole-induced dipole forces become stronger. So more energy is needed to separate the molecules and the volatility decreases.",
-    "answers": [
-      "polarisable"
-    ],
+    "answers": ["polarisable"],
     "full_answer": "From chlorine to bromine to iodine, the molecules contain more electrons and are more polarisable. The instantaneous dipole-induced dipole forces become stronger. So more energy is needed to separate the molecules and the volatility decreases."
   },
   {
@@ -64,9 +56,7 @@
     "type": "guided_cloze",
     "question": "Explain why HI is a stronger reducing agent than HCl.",
     "prompt": "Iodide ions are more easily _____ than chloride ions. So HI acts as a stronger reducing agent than HCl.",
-    "answers": [
-      "oxidised"
-    ],
+    "answers": ["oxidised"],
     "full_answer": "Iodide ions are more easily oxidised than chloride ions. So HI acts as a stronger reducing agent than HCl."
   }
 ]

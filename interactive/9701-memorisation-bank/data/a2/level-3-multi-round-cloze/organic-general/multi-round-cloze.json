@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "Biological receptors are _____. The two enantiomers can therefore interact differently with the body. One enantiomer may have the desired effect, while the other may be less active or cause side effects.",
-        "answers": [
-          "chiral"
-        ]
+        "answers": ["chiral"]
       },
       {
         "round": 2,
         "prompt": "Biological receptors are chiral. The two _____ can therefore interact differently with the body. One enantiomer may have the desired effect, while the other may be less active or cause side effects.",
-        "answers": [
-          "enantiomers"
-        ]
+        "answers": ["enantiomers"]
       },
       {
         "round": 3,
         "prompt": "Biological receptors are chiral. The two enantiomers can therefore interact differently with the body. One enantiomer may have the desired effect, while the other may be less active or cause _____ effects.",
-        "answers": [
-          "side"
-        ]
+        "answers": ["side"]
       }
     ]
   }

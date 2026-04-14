@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "Benzene contains a stable delocalised pi system. Addition would destroy this _____, so substitution is favoured because the aromatic system is retained.",
-        "answers": [
-          "delocalisation"
-        ]
+        "answers": ["delocalisation"]
       },
       {
         "round": 2,
         "prompt": "Benzene contains a stable delocalised pi system. _____ would destroy this delocalisation, so substitution is favoured because the aromatic system is retained.",
-        "answers": [
-          "Addition"
-        ]
+        "answers": ["Addition"]
       },
       {
         "round": 3,
         "prompt": "Benzene contains a stable delocalised pi system. Addition would destroy this delocalisation, so _____ is favoured because the aromatic system is retained.",
-        "answers": [
-          "substitution"
-        ]
+        "answers": ["substitution"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "Benzene has a delocalised pi electron system which is very _____. Addition would break the delocalisation and reduce the stability. Therefore benzene tends to undergo substitution so that the delocalised system is retained.",
-        "answers": [
-          "stable"
-        ]
+        "answers": ["stable"]
       },
       {
         "round": 2,
         "prompt": "Benzene has a delocalised pi electron system which is very stable. Addition would break the _____ and reduce the stability. Therefore benzene tends to undergo substitution so that the delocalised system is retained.",
-        "answers": [
-          "delocalisation"
-        ]
+        "answers": ["delocalisation"]
       },
       {
         "round": 3,
         "prompt": "Benzene has a delocalised pi electron system which is very stable. Addition would break the delocalisation and reduce the stability. Therefore benzene tends to undergo _____ so that the delocalised system is retained.",
-        "answers": [
-          "substitution"
-        ]
+        "answers": ["substitution"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "Benzene has a _____ pi system and is stabilised by aromaticity. An addition reaction would break this delocalisation, so addition is less favourable than substitution.",
-        "answers": [
-          "delocalised"
-        ]
+        "answers": ["delocalised"]
       },
       {
         "round": 2,
         "prompt": "Benzene has a delocalised pi system and is stabilised by _____. An addition reaction would break this delocalisation, so addition is less favourable than substitution.",
-        "answers": [
-          "aromaticity"
-        ]
+        "answers": ["aromaticity"]
       },
       {
         "round": 3,
         "prompt": "Benzene has a delocalised pi system and is stabilised by aromaticity. An addition reaction would break this _____, so addition is less favourable than substitution.",
-        "answers": [
-          "delocalisation"
-        ]
+        "answers": ["delocalisation"]
       }
     ]
   }

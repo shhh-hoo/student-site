@@ -12,23 +12,17 @@
       {
         "round": 1,
         "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the equilibrium moves to the product side if that side has fewer gaseous molecules, so the yield increases.",
-        "answers": [
-          "fewer"
-        ]
+        "answers": ["fewer"]
       },
       {
         "round": 2,
         "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium _____ to the product side if that side has fewer gaseous molecules, so the yield increases.",
-        "answers": [
-          "moves"
-        ]
+        "answers": ["moves"]
       },
       {
         "round": 3,
         "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the _____ side if that side has fewer gaseous molecules, so the yield increases.",
-        "answers": [
-          "product"
-        ]
+        "answers": ["product"]
       }
     ]
   },
@@ -45,23 +39,17 @@
       {
         "round": 1,
         "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the equilibrium moves to the product side and the yield increases.",
-        "answers": [
-          "fewer"
-        ]
+        "answers": ["fewer"]
       },
       {
         "round": 2,
         "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the _____ to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the yield increases.",
-        "answers": [
-          "equilibrium"
-        ]
+        "answers": ["equilibrium"]
       },
       {
         "round": 3,
         "prompt": "There are three moles of gaseous reactants and one mole of gaseous product. Increasing the pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the equilibrium moves to the product side and the _____ increases.",
-        "answers": [
-          "yield"
-        ]
+        "answers": ["yield"]
       }
     ]
   },
@@ -78,23 +66,17 @@
       {
         "round": 1,
         "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a _____ to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton.",
-        "answers": [
-          "proton"
-        ]
+        "answers": ["proton"]
       },
       {
         "round": 2,
         "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it _____ a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry base because it accepts a proton.",
-        "answers": [
-          "donates"
-        ]
+        "answers": ["donates"]
       },
       {
         "round": 3,
         "prompt": "The ammonium ion acts as a Brønsted-Lowry acid because it donates a proton to hydroxide ions. The hydroxide ion acts as a Brønsted-Lowry _____ because it accepts a proton.",
-        "answers": [
-          "base"
-        ]
+        "answers": ["base"]
       }
     ]
   },
@@ -111,23 +93,17 @@
       {
         "round": 1,
         "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases.",
-        "answers": [
-          "fewer"
-        ]
+        "answers": ["fewer"]
       },
       {
         "round": 2,
         "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This _____ the effect of the pressure increase. Therefore the equilibrium moves towards the products and the yield increases.",
-        "answers": [
-          "reduces"
-        ]
+        "answers": ["reduces"]
       },
       {
         "round": 3,
         "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. This reduces the effect of the pressure increase. Therefore the equilibrium moves towards the _____ and the yield increases.",
-        "answers": [
-          "products"
-        ]
+        "answers": ["products"]
       }
     ]
   },
@@ -144,23 +120,17 @@
       {
         "round": 1,
         "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of _____. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
-        "answers": [
-          "gas"
-        ]
+        "answers": ["gas"]
       },
       {
         "round": 2,
         "prompt": "Increasing pressure shifts the equilibrium to the side with _____ moles of gas. Therefore the yield of the gaseous product increases if the product side has fewer moles of gas.",
-        "answers": [
-          "fewer"
-        ]
+        "answers": ["fewer"]
       },
       {
         "round": 3,
         "prompt": "Increasing pressure shifts the equilibrium to the side with fewer moles of gas. Therefore the _____ of the gaseous product increases if the product side has fewer moles of gas.",
-        "answers": [
-          "yield"
-        ]
+        "answers": ["yield"]
       }
     ]
   },
@@ -177,23 +147,17 @@
       {
         "round": 1,
         "prompt": "A catalyst provides an alternative pathway with lower activation _____. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged.",
-        "answers": [
-          "energy"
-        ]
+        "answers": ["energy"]
       },
       {
         "round": 2,
         "prompt": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the _____ reaction equally, so equilibrium is reached faster but the position of equilibrium is unchanged.",
-        "answers": [
-          "reverse"
-        ]
+        "answers": ["reverse"]
       },
       {
         "round": 3,
         "prompt": "A catalyst provides an alternative pathway with lower activation energy. It increases the rate of the forward reaction and the reverse reaction equally, so equilibrium is reached _____ but the position of equilibrium is unchanged.",
-        "answers": [
-          "faster"
-        ]
+        "answers": ["faster"]
       }
     ]
   }

@@ -23,11 +23,11 @@ async function main() {
   }
 
   console.log(
-    `Synced ${curationFileNames.length} curation file${curationFileNames.length === 1 ? "" : "s"} to ${path.relative(siteRoot, outputRoot)}.`,
+    `Synced ${curationFileNames.length} curation file${curationFileNames.length === 1 ? "" : "s"} to ${path.relative(siteRoot, outputRoot)}.`
   );
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error(error);
   process.exitCode = 1;
 });
