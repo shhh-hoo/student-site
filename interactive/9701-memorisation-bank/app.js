@@ -35,8 +35,9 @@ const collator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: "base",
 });
-const sessionStorageVersion = 1;
-const sessionStoragePrefix = "memorisation-bank-session";
+// Use localStorage intentionally so a learner can resume the same drill after refresh or browser restart.
+const localSessionStateVersion = 1;
+const localSessionStoragePrefix = "memorisation-bank-session";
 const inputPersistDelayMs = 150;
 const answerFieldResizeFrames = new WeakMap();
 let persistSessionStateTimeoutId = 0;
@@ -416,8 +417,8 @@ function buildSessionSelectionKey(selection = getSelectionSnapshot()) {
   ].join("::");
 }
 
-function getSessionStorageKey(selection = getSelectionSnapshot()) {
-  return `${sessionStoragePrefix}::${buildSessionSelectionKey(selection)}`;
+function getLocalSessionStorageKey(selection = getSelectionSnapshot()) {
+  return `${localSessionStoragePrefix}::${buildSessionSelectionKey(selection)}`;
 }
 
 function getInitialSelectionFromUrl() {
@@ -1348,7 +1349,7 @@ function buildPersistedSessionState() {
   }
 
   return {
-    version: sessionStorageVersion,
+    version: localSessionStateVersion,
     selectionKey: buildSessionSelectionKey(),
     currentBlankId: getActiveBlankId(),
     lastMainBlankId: resolvePreferredBlankId(appState.sessionBlankIds, [appState.lastMainBlankId]),
@@ -1372,7 +1373,7 @@ function persistSessionStateNow() {
 
   try {
     window.localStorage.setItem(
-      getSessionStorageKey(),
+      getLocalSessionStorageKey(),
       JSON.stringify(persistedSessionState),
     );
   } catch (error) {
@@ -1402,7 +1403,7 @@ function flushPersistedSessionState() {
 
 function clearPersistedSessionState(selection = getSelectionSnapshot()) {
   try {
-    window.localStorage.removeItem(getSessionStorageKey(selection));
+    window.localStorage.removeItem(getLocalSessionStorageKey(selection));
   } catch (error) {
     // Ignore storage failures so empty/error states can still render.
   }
@@ -1468,7 +1469,7 @@ function syncPageIndexForBlank(blankId, reviewMode = appState.reviewMode) {
   appState.currentPageIndex = targetPageIndex;
 }
 
-function restoreSessionStateFromStorage() {
+function restoreSessionStateFromLocalStorage() {
   if (!appState.sessionBlankIds.length) {
     return false;
   }
@@ -1476,14 +1477,14 @@ function restoreSessionStateFromStorage() {
   let restoredSessionState = null;
 
   try {
-    restoredSessionState = JSON.parse(window.localStorage.getItem(getSessionStorageKey()) || "null");
+    restoredSessionState = JSON.parse(window.localStorage.getItem(getLocalSessionStorageKey()) || "null");
   } catch (error) {
     return false;
   }
 
   if (
     !restoredSessionState ||
-    restoredSessionState.version !== sessionStorageVersion ||
+    restoredSessionState.version !== localSessionStateVersion ||
     restoredSessionState.selectionKey !== buildSessionSelectionKey()
   ) {
     return false;
@@ -2161,6 +2162,7 @@ function createFeedbackCard(blank) {
   const shell = document.createElement("section");
   shell.className = "memorisation-feedback-card";
   shell.dataset.tone = descriptor.tone;
+  shell.setAttribute("role", "status");
   shell.setAttribute("aria-live", "polite");
   shell.setAttribute("aria-atomic", "true");
 
@@ -2262,6 +2264,7 @@ function renderProgressHeader() {
   revealBlankButton.textContent =
     activeQuestion && appState.revealedQuestionIds.has(activeQuestion.id) ? "Shown" : "Reveal";
 
+  // Keep review re-entry available as soon as something is queued, while leaving it outside the main action bar.
   reviewToggleButton.hidden = reviewCount === 0;
   reviewToggleButton.textContent = appState.reviewMode
     ? "Back to main session"
@@ -2733,7 +2736,7 @@ async function refreshSession({ allowCatalogResync = true } = {}) {
     }
 
     rebuildSessionRuntime(sessionQuestions);
-    restoreSessionStateFromStorage();
+    restoreSessionStateFromLocalStorage();
     renderSession({ focusBlankId: appState.currentBlankId });
   } catch (error) {
     if (renderToken !== appState.renderToken) {

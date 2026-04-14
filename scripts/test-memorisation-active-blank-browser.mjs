@@ -1,13 +1,12 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { createReadStream } from "node:fs";
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { constants as fsConstants, createReadStream } from "node:fs";
+import { access, mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const chromePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const studentSiteRoot = path.resolve(scriptDirectory, "..");
 const targetPath =
@@ -17,6 +16,17 @@ const expectedPromptContext =
   "Down the group the M2+ ion has lower _____ _____. So it polarises the carbonate ion _____. The carbonate ion is less distorted and is less likely to decompose.";
 const configuredWindowSize = process.env.MEMORISATION_WINDOW_SIZE || "1440,1600";
 const runMobileVisibilityCheck = process.env.MEMORISATION_MOBILE_CHECK === "1";
+const browserEnvKeys = ["MEMORISATION_BROWSER_BIN", "CHROME_BIN", "BROWSER_BIN"];
+const browserCommandCandidates = process.platform === "win32"
+  ? ["chrome.exe", "google-chrome.exe", "chromium.exe"]
+  : [
+      "google-chrome",
+      "google-chrome-stable",
+      "chromium",
+      "chromium-browser",
+      "chrome",
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    ];
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -30,6 +40,55 @@ const mimeTypes = {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function isExecutable(filePath) {
+  if (!filePath) {
+    return false;
+  }
+
+  try {
+    await access(filePath, fsConstants.X_OK);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+async function resolveBrowserPath() {
+  for (const envKey of browserEnvKeys) {
+    const configuredPath = String(process.env[envKey] || "").trim();
+
+    if (await isExecutable(configuredPath)) {
+      return configuredPath;
+    }
+  }
+
+  const pathEntries = String(process.env.PATH || "")
+    .split(path.delimiter)
+    .filter(Boolean);
+
+  for (const candidate of browserCommandCandidates) {
+    if (path.isAbsolute(candidate)) {
+      if (await isExecutable(candidate)) {
+        return candidate;
+      }
+
+      continue;
+    }
+
+    for (const pathEntry of pathEntries) {
+      const candidatePath = path.join(pathEntry, candidate);
+
+      if (await isExecutable(candidatePath)) {
+        return candidatePath;
+      }
+    }
+  }
+
+  throw new Error(
+    `Could not find a Chrome/Chromium binary. Set one of ${browserEnvKeys.join(", ")} or install one of: ${browserCommandCandidates.join(", ")}.`,
+  );
 }
 
 function createStaticServer(rootDirectory) {
@@ -319,8 +378,9 @@ async function run() {
   const serverPort = await listen(server);
   const targetUrl = `http://127.0.0.1:${serverPort}${targetPath}`;
   const userDataDirectory = await mkdtemp(path.join(os.tmpdir(), "memorisation-bank-chrome-"));
+  const browserPath = await resolveBrowserPath();
   const chromeProcess = spawn(
-    chromePath,
+    browserPath,
     [
       "--headless=new",
       "--disable-gpu",
