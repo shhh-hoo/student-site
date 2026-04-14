@@ -1852,6 +1852,26 @@ function getOutlineStatusLabel(blank, blankState) {
   return getBlankFeedbackDescriptor(blank, blankState).label;
 }
 
+function getOutlinePromptMeta(question, blank) {
+  if (!question || !blank) {
+    return "";
+  }
+
+  const parts = [];
+
+  if (question.topicLabel) {
+    parts.push(question.topicLabel);
+  } else if (question.subtopic) {
+    parts.push(formatLabel(question.subtopic));
+  }
+
+  if (question.blanks.length > 1) {
+    parts.push(blank.label);
+  }
+
+  return parts.join(" · ");
+}
+
 function renderSessionOutline() {
   sessionOutline.replaceChildren();
 
@@ -1889,6 +1909,7 @@ function renderSessionOutline() {
     item.className = "memorisation-outline__item";
     item.dataset.current = String(blankId === activeBlankId);
     item.dataset.status = blankState.status;
+    item.setAttribute("aria-label", `${question.question}. ${getOutlineStatusLabel(blank, blankState)}.`);
     item.addEventListener("click", () => {
       focusBlank(blankId);
     });
@@ -1897,15 +1918,21 @@ function renderSessionOutline() {
     title.className = "memorisation-outline__title";
     title.textContent = question.question;
 
-    const meta = document.createElement("p");
-    meta.className = "memorisation-outline__meta";
-    meta.textContent = [blank.label, buildQuestionMeta(question)].filter(Boolean).join(" · ");
-
     const status = document.createElement("span");
     status.className = "memorisation-outline__status";
     status.textContent = getOutlineStatusLabel(blank, blankState);
 
-    item.append(title, meta, status);
+    item.append(title, status);
+
+    const metaText = getOutlinePromptMeta(question, blank);
+
+    if (metaText) {
+      const meta = document.createElement("p");
+      meta.className = "memorisation-outline__meta";
+      meta.textContent = metaText;
+      item.append(meta);
+    }
+
     sessionOutline.append(item);
   });
 
