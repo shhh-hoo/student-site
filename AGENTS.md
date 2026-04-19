@@ -1,4 +1,33 @@
-# Project Instructions
+# AGENTS.md
+
+## Design system
+
+Before making any student-facing UI changes, read these files in order:
+
+1. `docs/design/LOCKED-DESIGN-SYSTEM.md`
+2. `docs/design/visual-preview-guide.html`
+3. `docs/design/style-guide.md`
+
+These files are the current source of truth for the visual system.
+Do not treat the current site implementation as the final visual target if it conflicts with them.
+Use `docs/design/j2-homepage-light.tsx` and `docs/design/j2-homepage-dark.tsx` as historical composition references only.
+
+Locked route assignments:
+- Homepage = Lilac / Blush / Peach
+- AS = Mint / Apple / Cream
+- A2 = Coral / Apricot / Butter
+- Interactive = Sky / Cyan / Sage
+
+Hard UI rules:
+- Buttons must be flat only.
+- Do not use pseudo-3D depth, glossy highlights, bevels, or shadow-driven volume.
+- Chips must stay soft and must not have card-level visual weight.
+- Strong outline: page shells, major sections, hero frames.
+- Medium outline: cards, major inputs, practice surfaces.
+- Semi outline: chips, pills, tabs, passive controls.
+- Hairline: metadata and separators only.
+- Keep descriptive copy short and secondary.
+- Interactive pages inside `student-site` must not look like external mini-sites.
 
 ## Project baseline
 
@@ -14,16 +43,17 @@ Do not change the content workflow unless explicitly requested.
 
 ## Visual baseline
 
-The binding design baseline is in:
+Use these files as the binding design baseline, in this order:
 
-- `docs/design/style-guide.md`
+1. `docs/design/LOCKED-DESIGN-SYSTEM.md`
+2. `docs/design/visual-preview-guide.html`
+3. `docs/design/style-guide.md`
 
-Canonical homepage prototypes are:
-
+Historical composition references only:
 - `docs/design/j2-homepage-light.tsx`
 - `docs/design/j2-homepage-dark.tsx`
 
-If the current implementation differs from older site structure, prioritize matching the style guide and prototypes for homepage composition.
+If the current implementation differs from older site structure, prioritize the locked design system first, then the visual preview guide, then the structural style guide.
 
 ## Design interpretation rules
 
@@ -46,8 +76,15 @@ If the current implementation differs from older site structure, prioritize matc
 ## Validation
 
 Before finishing:
-
 - run syntax checks for touched JS files
 - run `git diff --check`
 - provide exact run/test commands
 - clearly separate visual changes from behavior changes
+
+## Output
+
+At the end, provide:
+1. summary
+2. changed files
+3. diff
+4. remaining follow-up
