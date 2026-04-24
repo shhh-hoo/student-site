@@ -3711,3 +3711,262 @@ html[data-theme="dark"] body.page-home .overview-results__empty p {
     justify-content: center;
   }
 }
+
+/* Locked design system pass: home route palette and lighter inner hierarchy. */
+
+body.page-home {
+  --site-header-chip-hover-bg: rgba(232, 204, 218, 0.18);
+  --site-header-chip-active-bg: rgba(216, 196, 227, 0.18);
+  --site-header-mark-bg: var(--locked-home-ombre);
+  --button-primary-bg: var(--locked-home-button);
+  --button-interactive-bg: var(--locked-interactive-button);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(216, 196, 227, 0.32), transparent 18%),
+    radial-gradient(circle at 76% 10%, rgba(232, 204, 218, 0.28), transparent 22%),
+    radial-gradient(circle at 88% 28%, rgba(243, 201, 154, 0.24), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 22%),
+    linear-gradient(180deg, var(--locked-paper-base), #eee9e1);
+}
+
+.page-home .homepage-hero__poster,
+.page-home .homepage-section,
+.page-home .library-panel {
+  border-color: var(--locked-line-strong);
+  box-shadow: var(--locked-shadow-shell);
+}
+
+.page-home .homepage-hero__poster {
+  background: linear-gradient(135deg, #d8c4e3 0%, #e8ccda 46%, #f3c99a 100%);
+  transform: none;
+}
+
+.page-home .homepage-hero__poster::before,
+.page-home .homepage-hero__poster::after {
+  border-color: var(--locked-line-strong);
+  box-shadow: none;
+}
+
+.page-home .homepage-hero__poster::before {
+  background: #e8ccda;
+}
+
+.page-home .homepage-hero__poster::after {
+  background: #f3c99a;
+}
+
+.page-home .homepage-hero__pill,
+.page-home .hero-stat,
+.page-home .entry-card__count,
+.page-home .overview-summary__count,
+.page-home .overview-card__stage,
+.page-home .overview-filter {
+  border-color: var(--locked-line-semi);
+  background: var(--locked-flat-chip-bg);
+  box-shadow: none;
+}
+
+.page-home .homepage-hero__pill {
+  padding: 1px 0.88rem 0;
+}
+
+.page-home .overview-filter:hover,
+.page-home .overview-filter:focus-visible {
+  border-color: var(--locked-line-medium);
+  box-shadow: none;
+}
+
+.page-home .overview-filter[aria-pressed="true"] {
+  border-color: var(--locked-line-medium);
+  background: rgba(216, 196, 227, 0.18);
+}
+
+.page-home .homepage-hero__panel,
+.page-home .hero-note,
+.page-home .entry-card,
+.page-home .overview-card,
+.page-home .homepage-library-intro,
+.page-home .resource-card {
+  border-width: 2px;
+  border-color: var(--locked-line-medium);
+  box-shadow: none;
+  background: var(--locked-flat-surface);
+}
+
+.page-home .homepage-hero__panel::before,
+.page-home .workflow-card::before,
+.page-home .interactive-note::before,
+.page-home .overview-card::before,
+.page-home .homepage-library-intro::before {
+  background: var(--locked-home-ombre);
+}
+
+.page-home .homepage-library-intro {
+  background: rgba(255, 250, 243, 0.84);
+}
+
+.page-home .cta-button,
+.page-home .brand-tag,
+.page-home .resource-card__status,
+.page-home .resource-card__meta {
+  box-shadow: none;
+}
+
+.page-home .brand-tag--soft {
+  background: rgba(232, 204, 218, 0.16);
+  border-color: rgba(216, 196, 227, 0.28);
+  color: var(--locked-ink-soft);
+}
+
+html[data-theme="dark"] body.page-home {
+  --site-header-chip-hover-bg: rgba(68, 57, 61, 0.96);
+  --site-header-chip-active-bg: rgba(78, 61, 74, 0.96);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(216, 196, 227, 0.18), transparent 18%),
+    radial-gradient(circle at 76% 10%, rgba(232, 204, 218, 0.14), transparent 22%),
+    radial-gradient(circle at 88% 28%, rgba(243, 201, 154, 0.14), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%), linear-gradient(180deg, #171311, #120f0e 100%);
+}
+
+html[data-theme="dark"] body.page-home .homepage-hero__poster,
+html[data-theme="dark"] body.page-home .homepage-section,
+html[data-theme="dark"] body.page-home .library-panel,
+html[data-theme="dark"] body.page-home .homepage-hero__panel,
+html[data-theme="dark"] body.page-home .hero-note,
+html[data-theme="dark"] body.page-home .entry-card,
+html[data-theme="dark"] body.page-home .overview-card,
+html[data-theme="dark"] body.page-home .homepage-library-intro,
+html[data-theme="dark"] body.page-home .resource-card {
+  box-shadow: none;
+}
+
+/* Destination mapping: homepage route-led surfaces inherit destination colours. */
+
+.page-home .entry-card--route-as,
+.page-home .overview-card--route-as,
+.page-home .resource-card--route-as,
+.page-home .cta-button--route-as,
+.page-home .brand-tag--route-as {
+  --homepage-route-band: var(--locked-as-ombre);
+  --homepage-route-surface: linear-gradient(180deg, rgba(139, 192, 173, 0.18), rgba(247, 241, 232, 0.94) 68%);
+  --homepage-route-border: rgba(139, 192, 173, 0.36);
+  --homepage-route-chip-bg: rgba(239, 247, 242, 0.96);
+  --homepage-route-chip-border: rgba(139, 192, 173, 0.34);
+  --homepage-route-chip-soft-bg: rgba(183, 209, 155, 0.15);
+  --homepage-route-chip-soft-border: rgba(139, 192, 173, 0.28);
+  --homepage-route-cta-bg: var(--locked-as-button);
+  --homepage-route-cta-border: rgba(139, 192, 173, 0.44);
+  --homepage-route-cta-ink: var(--locked-ink);
+}
+
+.page-home .entry-card--route-a2,
+.page-home .overview-card--route-a2,
+.page-home .resource-card--route-a2,
+.page-home .cta-button--route-a2,
+.page-home .brand-tag--route-a2 {
+  --homepage-route-band: var(--locked-a2-ombre);
+  --homepage-route-surface: linear-gradient(180deg, rgba(240, 132, 117, 0.18), rgba(247, 241, 232, 0.94) 68%);
+  --homepage-route-border: rgba(240, 132, 117, 0.34);
+  --homepage-route-chip-bg: rgba(252, 241, 236, 0.96);
+  --homepage-route-chip-border: rgba(240, 132, 117, 0.32);
+  --homepage-route-chip-soft-bg: rgba(244, 175, 126, 0.16);
+  --homepage-route-chip-soft-border: rgba(240, 132, 117, 0.26);
+  --homepage-route-cta-bg: var(--locked-a2-button);
+  --homepage-route-cta-border: rgba(240, 132, 117, 0.42);
+  --homepage-route-cta-ink: var(--locked-ink);
+}
+
+.page-home .entry-card--route-interactive,
+.page-home .overview-card--route-interactive,
+.page-home .resource-card--route-interactive,
+.page-home .cta-button--route-interactive,
+.page-home .brand-tag--route-interactive {
+  --homepage-route-band: var(--locked-interactive-ombre);
+  --homepage-route-surface: linear-gradient(180deg, rgba(142, 190, 227, 0.18), rgba(247, 241, 232, 0.94) 68%);
+  --homepage-route-border: rgba(142, 190, 227, 0.34);
+  --homepage-route-chip-bg: rgba(238, 245, 247, 0.96);
+  --homepage-route-chip-border: rgba(142, 190, 227, 0.32);
+  --homepage-route-chip-soft-bg: rgba(159, 202, 210, 0.16);
+  --homepage-route-chip-soft-border: rgba(142, 190, 227, 0.24);
+  --homepage-route-cta-bg: var(--locked-interactive-button);
+  --homepage-route-cta-border: rgba(142, 190, 227, 0.42);
+  --homepage-route-cta-ink: var(--locked-ink);
+}
+
+.page-home .entry-card[class*="entry-card--route-"],
+.page-home .overview-card[class*="overview-card--route-"],
+.page-home .resource-card[class*="resource-card--route-"] {
+  border-color: var(--homepage-route-border);
+  background: var(--homepage-route-surface);
+}
+
+.page-home .entry-card[class*="entry-card--route-"]::before,
+.page-home .overview-card[class*="overview-card--route-"]::before,
+.page-home .resource-card[class*="resource-card--route-"]::before {
+  background: var(--homepage-route-band);
+}
+
+.page-home .entry-card[class*="entry-card--route-"] .entry-card__count,
+.page-home .overview-card[class*="overview-card--route-"] .overview-card__stage,
+.page-home .resource-card[class*="resource-card--route-"] .resource-card__status,
+.page-home .resource-card[class*="resource-card--route-"] .resource-card__meta {
+  border-color: var(--homepage-route-chip-border);
+  background: var(--homepage-route-chip-bg);
+}
+
+.page-home .cta-button[class*="cta-button--route-"] {
+  border-color: var(--homepage-route-cta-border);
+  background: var(--homepage-route-cta-bg);
+  color: var(--homepage-route-cta-ink);
+}
+
+.page-home .brand-tag[class*="brand-tag--route-"] {
+  border-color: var(--homepage-route-chip-border);
+}
+
+.page-home .brand-tag--outline[class*="brand-tag--route-"] {
+  background: var(--homepage-route-chip-bg);
+}
+
+.page-home .brand-tag--soft[class*="brand-tag--route-"] {
+  background: var(--homepage-route-chip-soft-bg);
+  border-color: var(--homepage-route-chip-soft-border);
+}
+
+html[data-theme="dark"] body.page-home .entry-card--route-as,
+html[data-theme="dark"] body.page-home .overview-card--route-as,
+html[data-theme="dark"] body.page-home .resource-card--route-as,
+html[data-theme="dark"] body.page-home .cta-button--route-as,
+html[data-theme="dark"] body.page-home .brand-tag--route-as {
+  --homepage-route-surface: linear-gradient(180deg, rgba(139, 192, 173, 0.18), rgba(18, 16, 15, 0.94) 72%);
+  --homepage-route-border: rgba(183, 209, 155, 0.28);
+  --homepage-route-chip-bg: rgba(139, 192, 173, 0.16);
+  --homepage-route-chip-border: rgba(183, 209, 155, 0.3);
+  --homepage-route-chip-soft-bg: rgba(183, 209, 155, 0.16);
+  --homepage-route-chip-soft-border: rgba(183, 209, 155, 0.24);
+}
+
+html[data-theme="dark"] body.page-home .entry-card--route-a2,
+html[data-theme="dark"] body.page-home .overview-card--route-a2,
+html[data-theme="dark"] body.page-home .resource-card--route-a2,
+html[data-theme="dark"] body.page-home .cta-button--route-a2,
+html[data-theme="dark"] body.page-home .brand-tag--route-a2 {
+  --homepage-route-surface: linear-gradient(180deg, rgba(240, 132, 117, 0.18), rgba(18, 16, 15, 0.94) 72%);
+  --homepage-route-border: rgba(244, 175, 126, 0.28);
+  --homepage-route-chip-bg: rgba(240, 132, 117, 0.16);
+  --homepage-route-chip-border: rgba(244, 175, 126, 0.3);
+  --homepage-route-chip-soft-bg: rgba(244, 175, 126, 0.16);
+  --homepage-route-chip-soft-border: rgba(244, 175, 126, 0.24);
+}
+
+html[data-theme="dark"] body.page-home .entry-card--route-interactive,
+html[data-theme="dark"] body.page-home .overview-card--route-interactive,
+html[data-theme="dark"] body.page-home .resource-card--route-interactive,
+html[data-theme="dark"] body.page-home .cta-button--route-interactive,
+html[data-theme="dark"] body.page-home .brand-tag--route-interactive {
+  --homepage-route-surface: linear-gradient(180deg, rgba(142, 190, 227, 0.18), rgba(18, 16, 15, 0.94) 72%);
+  --homepage-route-border: rgba(159, 202, 210, 0.28);
+  --homepage-route-chip-bg: rgba(142, 190, 227, 0.16);
+  --homepage-route-chip-border: rgba(159, 202, 210, 0.3);
+  --homepage-route-chip-soft-bg: rgba(159, 202, 210, 0.16);
+  --homepage-route-chip-soft-border: rgba(159, 202, 210, 0.24);
+}

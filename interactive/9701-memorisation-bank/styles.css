@@ -615,7 +615,9 @@ textarea.memorisation-input {
 .memorisation-action-bar .doc-link {
   justify-content: center;
   width: 100%;
-  min-height: 3rem;
+  min-height: 3.05rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
 }
 
 .memorisation-side-card {
@@ -630,6 +632,13 @@ textarea.memorisation-input {
 .memorisation-rules-card .secondary-link {
   justify-content: center;
   width: 100%;
+}
+
+.memorisation-current-row__actions .secondary-link,
+.memorisation-current-row__actions .doc-link,
+.memorisation-rules-card .secondary-link {
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
 }
 
 .memorisation-side-card__header {
@@ -990,4 +999,122 @@ html[data-theme="dark"] .memorisation-rules-dialog__panel {
   .memorisation-filter-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Locked design system pass: flatter drill controls inside the interactive route. */
+
+.memorisation-layout {
+  --memorisation-border: var(--locked-line-medium);
+  --memorisation-border-strong: rgba(159, 202, 210, 0.42);
+  --memorisation-surface: var(--locked-flat-surface);
+  --memorisation-surface-strong: var(--locked-flat-surface-bright);
+  --memorisation-surface-soft: rgba(255, 255, 255, 0.68);
+  --memorisation-surface-accent: rgba(159, 202, 210, 0.12);
+  --memorisation-shadow: none;
+}
+
+.memorisation-session-strip,
+.memorisation-control-band,
+.memorisation-side-card,
+.memorisation-prompt-card,
+.memorisation-answer-card,
+.memorisation-feedback-card,
+.memorisation-reveal,
+.memorisation-status-card,
+.memorisation-rules-dialog__panel,
+.memorisation-action-bar,
+.memorisation-prompt-context,
+.memorisation-input-shell {
+  box-shadow: none;
+}
+
+.memorisation-session-strip,
+.memorisation-control-band,
+.memorisation-side-card,
+.memorisation-prompt-card,
+.memorisation-answer-card,
+.memorisation-feedback-card,
+.memorisation-reveal,
+.memorisation-status-card,
+.memorisation-rules-dialog__panel {
+  border-width: 2px;
+}
+
+.memorisation-toggle,
+.memorisation-outline__item {
+  border-color: var(--locked-line-semi);
+  background: var(--locked-flat-chip-bg);
+  box-shadow: none;
+}
+
+.memorisation-toggle:hover,
+.memorisation-toggle:focus-visible,
+.memorisation-outline__item:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--locked-line-medium);
+}
+
+.memorisation-toggle[data-active="true"],
+.memorisation-outline__item[data-current="true"] {
+  border-color: var(--memorisation-border-strong);
+  background: rgba(159, 202, 210, 0.16);
+  box-shadow: none;
+}
+
+.memorisation-card-chip,
+.memorisation-badge,
+.memorisation-counter-chip,
+.memorisation-status-pill {
+  min-height: 2rem;
+  padding: 1px 0.72rem 0;
+  border: 1.15px solid var(--locked-line-semi);
+  border-radius: 999px;
+  background: var(--locked-flat-chip-bg);
+  color: var(--locked-ink-soft);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.memorisation-card-chip--muted,
+.memorisation-counter-chip,
+.memorisation-counter-chip--soft {
+  background: rgba(159, 202, 210, 0.16);
+  color: var(--locked-ink);
+}
+
+.memorisation-select,
+.memorisation-input-shell,
+.memorisation-prompt-context,
+.memorisation-outline__item,
+.memorisation-rules-dialog__panel {
+  border-color: var(--locked-line-semi);
+}
+
+.memorisation-action-bar {
+  border: 2px solid var(--locked-line-medium);
+  background: rgba(247, 241, 232, 0.96);
+  backdrop-filter: none;
+}
+
+.memorisation-rules-dialog__panel {
+  border-width: 2px;
+}
+
+html[data-theme="dark"] .memorisation-session-strip,
+html[data-theme="dark"] .memorisation-control-band,
+html[data-theme="dark"] .memorisation-side-card,
+html[data-theme="dark"] .memorisation-prompt-card,
+html[data-theme="dark"] .memorisation-answer-card,
+html[data-theme="dark"] .memorisation-feedback-card,
+html[data-theme="dark"] .memorisation-reveal,
+html[data-theme="dark"] .memorisation-status-card,
+html[data-theme="dark"] .memorisation-rules-dialog__panel,
+html[data-theme="dark"] .memorisation-action-bar,
+html[data-theme="dark"] .memorisation-toggle,
+html[data-theme="dark"] .memorisation-outline__item {
+  box-shadow: none;
 }

@@ -17,6 +17,7 @@ body.interactive-shell-page {
 .interactive-shell-page .cta-button {
   border-width: var(--home-border-strong);
   border-radius: 18px;
+  font-size: 0.8rem;
   letter-spacing: 0.06em;
 }
 
@@ -531,4 +532,131 @@ html[data-theme="dark"] body.interactive-shell-page .chem-inline {
   .interactive-routine-list {
     grid-template-columns: 1fr;
   }
+}
+
+/* Locked design system pass: interactive route palette and calmer internal hierarchy. */
+
+body.interactive-shell-page {
+  --site-header-chip-hover-bg: rgba(159, 202, 210, 0.16);
+  --site-header-chip-active-bg: rgba(142, 190, 227, 0.16);
+  --site-header-mark-bg: var(--locked-interactive-ombre);
+  --button-primary-bg: var(--locked-interactive-button);
+  --action-primary-bg: var(--locked-interactive-button);
+  --action-secondary-bg: rgba(255, 250, 243, 0.88);
+  --interactive-route-tint: rgba(159, 202, 210, 0.12);
+  --interactive-route-soft: rgba(142, 190, 227, 0.14);
+  color: var(--locked-ink);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(142, 190, 227, 0.32), transparent 20%),
+    radial-gradient(circle at 86% 10%, rgba(159, 202, 210, 0.24), transparent 24%),
+    radial-gradient(circle at 88% 28%, rgba(168, 192, 162, 0.22), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 22%),
+    linear-gradient(180deg, var(--locked-paper-base), #eee9e1);
+}
+
+.interactive-shell-page .cta-button,
+.interactive-shell-page .interactive-meta-chip {
+  box-shadow: none;
+}
+
+.interactive-hero {
+  border: 3px solid var(--locked-line-strong);
+  background: linear-gradient(180deg, rgba(247, 241, 232, 0.98), rgba(251, 246, 239, 0.94));
+  box-shadow: var(--locked-shadow-shell);
+  backdrop-filter: none;
+}
+
+.interactive-hero::after {
+  background: radial-gradient(circle, rgba(142, 190, 227, 0.2), transparent 70%);
+}
+
+.interactive-return,
+.interactive-kicker {
+  color: var(--locked-ink-soft);
+}
+
+.interactive-summary {
+  color: var(--locked-ink-soft);
+  max-width: 38rem;
+}
+
+.interactive-meta-chip {
+  min-height: 2rem;
+  padding: 1px 0.72rem 0;
+  border: 1.15px solid var(--locked-line-semi);
+  background: var(--locked-flat-chip-bg);
+  color: var(--locked-ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.interactive-meta-card,
+.interactive-panel,
+.interactive-subtle-panel,
+.interactive-accent-panel,
+.interactive-surface-choice,
+.interactive-help,
+.interactive-mini-reveal {
+  border-color: var(--locked-line-medium);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.interactive-panel {
+  border-width: 2px;
+  background: var(--locked-flat-surface);
+}
+
+.interactive-subtle-panel,
+.interactive-surface-choice,
+.interactive-help,
+.interactive-mini-reveal {
+  border-width: 1.15px;
+  background: var(--locked-flat-surface-strong);
+}
+
+.interactive-meta-card,
+.interactive-accent-panel {
+  border-width: 2px;
+  background: linear-gradient(180deg, rgba(255, 250, 243, 0.94), var(--interactive-route-tint));
+}
+
+.interactive-help summary::after,
+.interactive-mini-reveal summary::after {
+  background: var(--locked-flat-chip-bg);
+  box-shadow: none;
+}
+
+.interactive-surface-choice:hover,
+.interactive-surface-choice:focus-visible,
+.interactive-help[open],
+.interactive-help summary:hover,
+.interactive-help summary:focus-visible {
+  box-shadow: none;
+}
+
+html[data-theme="dark"] body.interactive-shell-page {
+  --site-header-chip-hover-bg: rgba(59, 66, 72, 0.96);
+  --site-header-chip-active-bg: rgba(63, 74, 86, 0.96);
+  color: rgba(247, 240, 228, 0.94);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(142, 190, 227, 0.18), transparent 20%),
+    radial-gradient(circle at 86% 10%, rgba(159, 202, 210, 0.14), transparent 24%),
+    radial-gradient(circle at 88% 28%, rgba(168, 192, 162, 0.12), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%), linear-gradient(180deg, #171311, #120f0e 100%);
+}
+
+html[data-theme="dark"] body.interactive-shell-page .interactive-hero,
+html[data-theme="dark"] body.interactive-shell-page .interactive-panel,
+html[data-theme="dark"] body.interactive-shell-page .interactive-subtle-panel,
+html[data-theme="dark"] body.interactive-shell-page .interactive-help,
+html[data-theme="dark"] body.interactive-shell-page .interactive-meta-card,
+html[data-theme="dark"] body.interactive-shell-page .interactive-note-card,
+html[data-theme="dark"] body.interactive-shell-page .interactive-surface-choice,
+html[data-theme="dark"] body.interactive-shell-page .interactive-mini-reveal,
+html[data-theme="dark"] body.interactive-shell-page .interactive-routine-list li {
+  box-shadow: none;
 }

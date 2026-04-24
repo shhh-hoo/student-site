@@ -5,6 +5,7 @@ import {
   loadInteractiveResources,
 } from "./site-data.js";
 import {
+  getRouteFamily,
   getOverviewStageValue,
   getOverviewTopicLabel,
   getOverviewTypeLabel,
@@ -45,19 +46,21 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
     hero: {
       kicker: "Entry page",
       pill: "CAIE Chemistry 9701",
-      title: "Open AS, A2, interactive practice, or the full chemistry library.",
-      copy: "Start here, then move into AS, A2, interactive practice, or the full library with the same shared navigation and browse flow.",
+      title: "Open AS, A2, interactive practice, or the full library.",
+      copy: "Start here, pick a route, and keep moving.",
       panelKicker: "Site snapshot",
       actions: [
         {
           href: helpers.buildSiteHref("as/"),
           label: "Open AS",
           variant: "primary",
+          routeFamily: "as",
         },
         {
           href: helpers.buildSiteHref("a2/"),
           label: "Open A2",
           variant: "secondary",
+          routeFamily: "a2",
         },
       ],
       stats: [
@@ -77,20 +80,20 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
       notes: [
         {
           label: "Page role",
-          title: "Home stays light so the other pages can stay focused",
-          copy: "Use Home as the entry page, then move into AS, A2, interactive, or the full library when you want a more specific browse view.",
+          title: "Home is the route map",
+          copy: "Choose a page, then browse on the page itself.",
         },
         {
           label: "Browse flow",
-          title: "Use overview for a quick scan, then open the full library",
-          copy: "The overview below works like a directory. Open the library when you want the full document set and filters in one place.",
+          title: "Overview first, library when needed",
+          copy: "Use the library when you want the full bank and filters together.",
         },
       ],
     },
     entrySection: {
       kicker: "Directory",
       title: "Open a page",
-      copy: "Choose the page you want, then browse from there.",
+      copy: "Choose a route and start there.",
       cards: [
         {
           eyebrow: "Stage page",
@@ -100,6 +103,7 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
           href: helpers.buildSiteHref("as/"),
           ctaLabel: "Open AS",
           chips: ["AS"],
+          routeFamily: "as",
         },
         {
           eyebrow: "Stage page",
@@ -109,6 +113,7 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
           href: helpers.buildSiteHref("a2/"),
           ctaLabel: "Open A2",
           chips: ["A2"],
+          routeFamily: "a2",
         },
         {
           eyebrow: "Interactive",
@@ -118,6 +123,7 @@ export function buildHomepageViewModel(documents, interactiveResources, _curatio
           href: helpers.buildSiteHref("interactive/"),
           ctaLabel: "Open interactive",
           chips: ["Practice"],
+          routeFamily: "interactive",
         },
         {
           eyebrow: "Browse page",
@@ -156,26 +162,24 @@ function buildInteractiveSection(interactiveResources, helpers) {
       title: resourceOrDefault(interactiveResource.display_title, interactiveResource.title || "Interactive practice"),
       ctaLabel: "Open tool",
       description: truncateText(
-        resourceOrDefault(
-          interactiveResource.description,
-          "Open quick drills and return to the document bank when you need fuller notes."
-        ),
+        resourceOrDefault(interactiveResource.description, "Short drill tools for quick chemistry checks."),
         120
       ),
       tagLimit: 4,
-      note: "Use this for short drills rather than as the main navigation path.",
+      note: "Best for short drills.",
     })
   );
 
   return {
     kicker: "Interactive",
     title: "Choose a drill from the interactive hub",
-    copy: "Interactive tools stay on their own page so the document bank can stay calm and browseable.",
+    copy: "Use the hub for short drills. Use the library for longer note browsing.",
     resources,
     action: {
       href: helpers.buildSiteHref("interactive/"),
       label: "Open hub",
       variant: "secondary",
+      routeFamily: "interactive",
     },
   };
 }
@@ -196,6 +200,7 @@ function createHomepageOverviewItem(documentItem, helpers) {
     typeLabel: getOverviewTypeLabel(documentItem),
     topicLabel: getOverviewTopicLabel(documentItem),
     stageValue: getOverviewStageValue(documentItem.stage),
+    routeFamily: getRouteFamily(documentItem.stage),
   };
 }
 
@@ -214,5 +219,6 @@ function createHomepageInteractiveOverviewItem(resource) {
     typeLabel: getOverviewTypeLabel(resource),
     topicLabel: getOverviewTopicLabel(resource),
     stageValue: getOverviewStageValue(resource.stage),
+    routeFamily: getRouteFamily(resource.stage, "interactive"),
   };
 }

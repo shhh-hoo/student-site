@@ -5,6 +5,7 @@ import {
   getDocumentDisplayTitle,
   getDocumentUiTags,
   getReadableLabel,
+  getRouteFamily,
   getSourceKindLabel,
   getTagDisplayLabel,
 } from "./site-helpers.js";
@@ -111,6 +112,7 @@ export function createDocumentResourceModel(documentItem, helpers, overrides = {
 
   return {
     kind: "document",
+    routeFamily: overrides.routeFamily ?? getRouteFamily(documentItem.stage),
     eyebrow: overrides.eyebrow || documentItem.kicker || "Document",
     title:
       overrides.title ||
@@ -141,6 +143,7 @@ export function createInteractiveResourceModel(resource, helpers, overrides = {}
 
   return {
     kind: "interactive",
+    routeFamily: overrides.routeFamily ?? getRouteFamily(resource.stage, "interactive"),
     eyebrow: overrides.eyebrow || resource.kicker || "Interactive practice",
     title: overrides.title || resource.display_title || resource.title || "Interactive practice",
     description: overrides.description || resource.description || "Interactive practice for quick revision.",

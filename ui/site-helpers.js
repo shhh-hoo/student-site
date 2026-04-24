@@ -396,6 +396,30 @@ export function getOverviewStageValue(stage) {
   return "All";
 }
 
+export function getRouteFamily(stage, kind = "") {
+  const normalizedKind = String(kind || "")
+    .trim()
+    .toLowerCase();
+
+  if (normalizedKind === "interactive") {
+    return "interactive";
+  }
+
+  const normalizedStage = String(stage || "")
+    .trim()
+    .toUpperCase();
+
+  if (normalizedStage === "AS") {
+    return "as";
+  }
+
+  if (normalizedStage === "A2") {
+    return "a2";
+  }
+
+  return "";
+}
+
 export function matchesOverviewFilters(item, filters = {}) {
   const matchesType = !filters.type || item.typeLabel === filters.type;
   const matchesTopic = !filters.topic || item.topicLabel === filters.topic;

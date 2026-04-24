@@ -378,12 +378,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.7rem;
+  min-height: 2.85rem;
   padding: 0.72rem 1rem;
   border: var(--home-border-thin) solid var(--ir-border-strong);
   border-radius: 999px;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -638,4 +639,122 @@ html[data-theme="dark"] body.ir-trainer-page .chem-inline {
   .chart-wrap {
     min-height: 240px;
   }
+}
+
+/* Locked design system pass: flatter trainer controls inside the interactive route. */
+
+.ir-trainer-page {
+  --ir-border-soft: var(--locked-line-semi);
+  --ir-border-strong: var(--locked-line-medium);
+  --ir-surface: var(--locked-flat-surface);
+  --ir-surface-strong: var(--locked-flat-surface-bright);
+  --ir-surface-tint: rgba(159, 202, 210, 0.12);
+  --ir-surface-warm: rgba(159, 202, 210, 0.16);
+  --ir-chip-surface: var(--locked-flat-chip-bg);
+  --ir-shadow-soft: none;
+  --ir-shadow-lifted: none;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(142, 190, 227, 0.22), transparent 20%),
+    radial-gradient(circle at 84% 10%, rgba(159, 202, 210, 0.18), transparent 24%),
+    radial-gradient(circle at 88% 28%, rgba(168, 192, 162, 0.16), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 22%),
+    linear-gradient(180deg, var(--locked-paper-base), #eee9e1);
+}
+
+.ir-trainer-page .interactive-hero,
+.ir-trainer-page .interactive-panel,
+.ir-trainer-page .interactive-subtle-panel,
+.ir-trainer-page .interactive-accent-panel,
+.ir-trainer-page .interactive-help,
+.ir-trainer-page .interactive-note-card,
+.ir-trainer-page .interactive-mini-reveal,
+.ir-trainer-page .interactive-meta-card,
+.ir-trainer-page .interactive-surface-choice,
+.ir-select-card,
+.ir-choice-button,
+.ir-feedback-card,
+.ir-insight-card {
+  box-shadow: none;
+}
+
+.ir-trainer-page .interactive-hero {
+  border-width: 3px;
+}
+
+.ir-trainer-page .interactive-panel,
+.ir-trainer-page .interactive-accent-panel,
+.ir-trainer-page .interactive-help,
+.ir-trainer-page .interactive-meta-card,
+.ir-select-card,
+.ir-choice-button,
+.ir-feedback-card,
+.ir-insight-card {
+  border-width: 2px;
+}
+
+.ir-trainer-page .interactive-subtle-panel,
+.ir-trainer-page .interactive-note-card,
+.ir-trainer-page .interactive-mini-reveal,
+.ir-segmented-control {
+  border-width: 1.15px;
+}
+
+.ir-trainer-page .interactive-accent-panel,
+.ir-insight-card--accent {
+  background: linear-gradient(180deg, rgba(255, 250, 243, 0.94), rgba(159, 202, 210, 0.16));
+}
+
+.ir-segmented-control,
+.ir-select-card,
+.ir-choice-button,
+.ir-feedback-card,
+.ir-insight-card {
+  border-color: var(--locked-line-semi);
+  box-shadow: none;
+}
+
+.ir-segment-button[data-active="true"] {
+  border-color: rgba(63, 48, 43, 0.12);
+  background: var(--locked-interactive-button);
+  box-shadow: none;
+}
+
+.ir-segment-button:hover,
+.ir-segment-button:focus-visible,
+.ir-select-card:hover,
+.ir-select-card:focus-visible,
+.ir-choice-button:hover,
+.ir-choice-button:focus-visible,
+.ir-action-button:hover,
+.ir-action-button:focus-visible {
+  transform: none;
+}
+
+.ir-action-button {
+  box-shadow: none;
+}
+
+.ir-action-button--primary {
+  border-color: rgba(63, 48, 43, 0.12);
+  background: var(--locked-interactive-button);
+}
+
+.ir-action-button--secondary {
+  border-color: var(--locked-line-semi);
+  background: var(--locked-flat-chip-bg);
+}
+
+.ir-result-pill,
+.ir-trainer-page .interactive-meta-chip {
+  border-color: var(--locked-line-semi);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] body.ir-trainer-page {
+  background:
+    radial-gradient(circle at 10% 12%, rgba(142, 190, 227, 0.16), transparent 20%),
+    radial-gradient(circle at 84% 10%, rgba(159, 202, 210, 0.12), transparent 24%),
+    radial-gradient(circle at 88% 28%, rgba(168, 192, 162, 0.1), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%), linear-gradient(180deg, #171311, #120f0e 100%);
 }
