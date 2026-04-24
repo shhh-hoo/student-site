@@ -664,6 +664,7 @@ body.page-home::before {
 .page-home .resource-card:not(.resource-card--library) {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   gap: 0.88rem;
   border-width: 3px;
   border-color: var(--home-outline-strong);
@@ -675,8 +676,10 @@ body.page-home::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
+  z-index: 0;
   height: 0.62rem;
   background: linear-gradient(90deg, var(--home-brand-teal), #ffe081);
+  pointer-events: none;
 }
 
 .page-home .resource-card--document:not(.resource-card--library) {
@@ -1046,11 +1049,12 @@ body.page-home::before {
 .page-home .resource-card--library {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   border-width: var(--home-border-thin);
   border-color: rgba(42, 34, 27, 0.18);
   border-radius: 22px;
   padding: 1rem 1rem 1.05rem;
-  background: linear-gradient(180deg, rgba(255, 253, 248, 0.97), rgba(251, 246, 238, 0.94));
+  background: rgba(255, 252, 246, 0.97);
   box-shadow: 6px 6px 0 rgba(42, 34, 27, 0.08);
   transition:
     transform 140ms ease,
@@ -1062,8 +1066,15 @@ body.page-home::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
+  z-index: 0;
   height: 0.34rem;
   background: linear-gradient(90deg, var(--home-brand-teal), rgba(240, 190, 97, 0.96));
+  pointer-events: none;
+}
+
+.page-home .resource-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .page-home .resource-card--library:hover,
@@ -3128,6 +3139,7 @@ html[data-theme="dark"] body.page-home .empty-state--library code {
 .page-home .interactive-note {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   border: 3px solid var(--home-outline-strong);
   border-radius: 26px;
   background: rgba(255, 251, 245, 0.96);
@@ -3143,8 +3155,10 @@ html[data-theme="dark"] body.page-home .empty-state--library code {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
+  z-index: 0;
   height: 0.56rem;
   background: linear-gradient(90deg, var(--home-brand-teal), var(--home-brand-gold));
+  pointer-events: none;
 }
 
 .page-home .homepage-section {
@@ -3178,6 +3192,12 @@ html[data-theme="dark"] body.page-home .empty-state--library code {
 .page-home .hero-note,
 .page-home .interactive-note {
   padding: 1rem 1rem 1rem 1.15rem;
+}
+
+.page-home .entry-card > *,
+.page-home .overview-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .page-home .hero-note span,
@@ -3839,7 +3859,15 @@ html[data-theme="dark"] body.page-home .resource-card {
   box-shadow: none;
 }
 
+html[data-theme="dark"] body.page-home .resource-card--library {
+  background: rgba(16, 19, 34, 0.96);
+}
+
 /* Destination mapping: homepage route-led surfaces inherit destination colours. */
+
+/* Visual regression check:
+   Homepage library document cards should render as flat AS/A2 surfaces with only a thin top accent.
+   Re-check the A2 organic/comparison cards in Chrome, Safari, and Firefox for any internal peach blocks. */
 
 .page-home .entry-card--route-as,
 .page-home .overview-card--route-as,
@@ -3848,6 +3876,7 @@ html[data-theme="dark"] body.page-home .resource-card {
 .page-home .brand-tag--route-as {
   --homepage-route-band: var(--locked-as-ombre);
   --homepage-route-surface: linear-gradient(180deg, rgba(139, 192, 173, 0.18), rgba(247, 241, 232, 0.94) 68%);
+  --homepage-route-card-bg: #f1f6ef;
   --homepage-route-border: rgba(139, 192, 173, 0.36);
   --homepage-route-chip-bg: rgba(239, 247, 242, 0.96);
   --homepage-route-chip-border: rgba(139, 192, 173, 0.34);
@@ -3865,6 +3894,7 @@ html[data-theme="dark"] body.page-home .resource-card {
 .page-home .brand-tag--route-a2 {
   --homepage-route-band: var(--locked-a2-ombre);
   --homepage-route-surface: linear-gradient(180deg, rgba(240, 132, 117, 0.18), rgba(247, 241, 232, 0.94) 68%);
+  --homepage-route-card-bg: #fbf0e9;
   --homepage-route-border: rgba(240, 132, 117, 0.34);
   --homepage-route-chip-bg: rgba(252, 241, 236, 0.96);
   --homepage-route-chip-border: rgba(240, 132, 117, 0.32);
@@ -3882,6 +3912,7 @@ html[data-theme="dark"] body.page-home .resource-card {
 .page-home .brand-tag--route-interactive {
   --homepage-route-band: var(--locked-interactive-ombre);
   --homepage-route-surface: linear-gradient(180deg, rgba(142, 190, 227, 0.18), rgba(247, 241, 232, 0.94) 68%);
+  --homepage-route-card-bg: #edf5f4;
   --homepage-route-border: rgba(142, 190, 227, 0.34);
   --homepage-route-chip-bg: rgba(238, 245, 247, 0.96);
   --homepage-route-chip-border: rgba(142, 190, 227, 0.32);
@@ -3893,10 +3924,14 @@ html[data-theme="dark"] body.page-home .resource-card {
 }
 
 .page-home .entry-card[class*="entry-card--route-"],
-.page-home .overview-card[class*="overview-card--route-"],
+.page-home .overview-card[class*="overview-card--route-"] {
+  border-color: var(--homepage-route-border);
+  background: var(--homepage-route-card-bg, var(--locked-flat-surface-strong));
+}
+
 .page-home .resource-card[class*="resource-card--route-"] {
   border-color: var(--homepage-route-border);
-  background: var(--homepage-route-surface);
+  background: var(--homepage-route-card-bg, var(--locked-flat-surface-strong));
 }
 
 .page-home .entry-card[class*="entry-card--route-"]::before,
@@ -3938,6 +3973,7 @@ html[data-theme="dark"] body.page-home .resource-card--route-as,
 html[data-theme="dark"] body.page-home .cta-button--route-as,
 html[data-theme="dark"] body.page-home .brand-tag--route-as {
   --homepage-route-surface: linear-gradient(180deg, rgba(139, 192, 173, 0.18), rgba(18, 16, 15, 0.94) 72%);
+  --homepage-route-card-bg: rgba(26, 34, 30, 0.96);
   --homepage-route-border: rgba(183, 209, 155, 0.28);
   --homepage-route-chip-bg: rgba(139, 192, 173, 0.16);
   --homepage-route-chip-border: rgba(183, 209, 155, 0.3);
@@ -3951,6 +3987,7 @@ html[data-theme="dark"] body.page-home .resource-card--route-a2,
 html[data-theme="dark"] body.page-home .cta-button--route-a2,
 html[data-theme="dark"] body.page-home .brand-tag--route-a2 {
   --homepage-route-surface: linear-gradient(180deg, rgba(240, 132, 117, 0.18), rgba(18, 16, 15, 0.94) 72%);
+  --homepage-route-card-bg: rgba(43, 30, 26, 0.96);
   --homepage-route-border: rgba(244, 175, 126, 0.28);
   --homepage-route-chip-bg: rgba(240, 132, 117, 0.16);
   --homepage-route-chip-border: rgba(244, 175, 126, 0.3);
@@ -3964,6 +4001,7 @@ html[data-theme="dark"] body.page-home .resource-card--route-interactive,
 html[data-theme="dark"] body.page-home .cta-button--route-interactive,
 html[data-theme="dark"] body.page-home .brand-tag--route-interactive {
   --homepage-route-surface: linear-gradient(180deg, rgba(142, 190, 227, 0.18), rgba(18, 16, 15, 0.94) 72%);
+  --homepage-route-card-bg: rgba(24, 34, 36, 0.96);
   --homepage-route-border: rgba(159, 202, 210, 0.28);
   --homepage-route-chip-bg: rgba(142, 190, 227, 0.16);
   --homepage-route-chip-border: rgba(159, 202, 210, 0.3);
