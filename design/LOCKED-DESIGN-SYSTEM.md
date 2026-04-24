@@ -63,20 +63,26 @@ Chips must stay soft.
 ## Outline hierarchy
 
 ### Strong outline
+
 Use for:
+
 - page shells
 - major sections
 - hero frames
 
 ### Medium outline
+
 Use for:
+
 - cards
 - major inputs
 - practice surfaces
 - important interaction containers
 
 ### Semi outline
+
 Use for:
+
 - chips
 - pills
 - tabs
@@ -84,7 +90,9 @@ Use for:
 - passive controls
 
 ### Hairline
+
 Use for:
+
 - metadata
 - separators
 - low-priority grouping only

@@ -13,12 +13,14 @@ Do not treat the current site implementation as the final visual target if it co
 Use `docs/design/j2-homepage-light.tsx` and `docs/design/j2-homepage-dark.tsx` as historical composition references only.
 
 Locked route assignments:
+
 - Homepage = Lilac / Blush / Peach
 - AS = Mint / Apple / Cream
 - A2 = Coral / Apricot / Butter
 - Interactive = Sky / Cyan / Sage
 
 Hard UI rules:
+
 - Buttons must be flat only.
 - Do not use pseudo-3D depth, glossy highlights, bevels, or shadow-driven volume.
 - Chips must stay soft and must not have card-level visual weight.
@@ -50,6 +52,7 @@ Use these files as the binding design baseline, in this order:
 3. `docs/design/style-guide.md`
 
 Historical composition references only:
+
 - `docs/design/j2-homepage-light.tsx`
 - `docs/design/j2-homepage-dark.tsx`
 
@@ -76,6 +79,7 @@ If the current implementation differs from older site structure, prioritize the 
 ## Validation
 
 Before finishing:
+
 - run syntax checks for touched JS files
 - run `git diff --check`
 - provide exact run/test commands
@@ -84,6 +88,7 @@ Before finishing:
 ## Output
 
 At the end, provide:
+
 1. summary
 2. changed files
 3. diff
