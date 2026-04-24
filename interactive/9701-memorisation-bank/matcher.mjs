@@ -668,23 +668,83 @@ function comparableInputContainsVariant(comparableInput, variant, matcherConfig)
   );
 }
 
+function getEditDistance(leftValue, rightValue) {
+  const left = String(leftValue || "");
+  const right = String(rightValue || "");
+  const distances = Array.from({ length: left.length + 1 }, (_, index) => [index]);
+
+  for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+    distances[0][rightIndex] = rightIndex;
+  }
+
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const substitutionCost = left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1;
+
+      distances[leftIndex][rightIndex] = Math.min(
+        distances[leftIndex - 1][rightIndex] + 1,
+        distances[leftIndex][rightIndex - 1] + 1,
+        distances[leftIndex - 1][rightIndex - 1] + substitutionCost
+      );
+    }
+  }
+
+  return distances[left.length][right.length];
+}
+
+function hasLikelyMisspelledKeyword(comparableInput, missingKeywords) {
+  return missingKeywords.some(keyword => {
+    if (!keyword || keyword.length < 5) {
+      return false;
+    }
+
+    return comparableInput.tokens.some(userToken => {
+      if (!userToken || userToken === keyword || Math.abs(userToken.length - keyword.length) > 2) {
+        return false;
+      }
+
+      return getEditDistance(userToken, keyword) <= 2;
+    });
+  });
+}
+
 export function evaluateAnswerModel(answerModel, userValue) {
   const comparableInput = buildComparableInput(userValue, answerModel.matcherConfig);
   const legacyResult = evaluateMatchResult(userValue, answerModel.minimal_pass, answerModel.matcherConfig);
   const coveredGroups = [];
   const missingGroups = [];
   const missingRequiredTokens = [];
+  const minimalPassInput = buildComparableInput(answerModel.minimal_pass, answerModel.matcherConfig);
+  const requiresExactShortAnswer =
+    answerModel.matcherConfig.type !== "equation" &&
+    minimalPassInput.tokens.length > 0 &&
+    minimalPassInput.tokens.length <= 3;
+
+  if (requiresExactShortAnswer && !isSuccessfulMatchState(legacyResult.state)) {
+    return {
+      status: "wrong",
+      coveredGroups,
+      missingGroups: answerModel.concept_groups.filter(group => group.required).map(group => group.id),
+      contradictionHits: [],
+      minimumPassSatisfied: false,
+      matchState: legacyResult.state,
+      missingRequiredTokens: [],
+      successfulMatchState: false,
+    };
+  }
 
   answerModel.concept_groups.forEach(group => {
     const phraseCovered = group.normalized_variants.some(variant =>
       comparableInputContainsVariant(comparableInput, variant, answerModel.matcherConfig)
     );
     const keywordMatches = group.keywords.filter(keyword => comparableInput.tokenSet.has(keyword));
+    const missingKeywords = group.keywords.filter(keyword => !comparableInput.tokenSet.has(keyword));
     const missingRequiredTokensForGroup = group.required_tokens.filter(token => !comparableInput.tokenSet.has(token));
     const keywordCovered =
       answerModel.matcherConfig.type !== "equation" &&
       group.minimum_keyword_matches > 0 &&
-      keywordMatches.length >= group.minimum_keyword_matches;
+      keywordMatches.length >= group.minimum_keyword_matches &&
+      !hasLikelyMisspelledKeyword(comparableInput, missingKeywords);
 
     if ((phraseCovered || keywordCovered) && missingRequiredTokensForGroup.length === 0) {
       coveredGroups.push(group.id);

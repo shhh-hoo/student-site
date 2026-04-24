@@ -1,5 +1,6 @@
 import { createAnswerModel as buildAnswerModel, evaluateAnswerModel } from "./matcher.mjs";
 import { buildSoftHighlightModel } from "./display-feedback.mjs";
+import { buildScaffoldModel, diffAnswer, renderDiffTokens } from "./answer-feedback.mjs";
 import { resolveActiveBlankId, resolvePreferredBlankId } from "./active-blank-state.mjs";
 
 const definitionScopeOptions = [
@@ -72,6 +73,9 @@ const filtersBackdrop = document.getElementById("filters-backdrop");
 const filtersSheet = document.getElementById("filters-sheet");
 const filtersToggleButton = document.getElementById("filters-toggle");
 const filtersCloseButton = document.getElementById("filters-close");
+const modeFullButton = document.getElementById("mode-full");
+const modeScaffoldButton = document.getElementById("mode-scaffold");
+const modeReviewButton = document.getElementById("mode-review");
 const prevBlankButton = document.getElementById("prev-blank");
 const checkBlankButton = document.getElementById("check-blank");
 const revealBlankButton = document.getElementById("reveal-blank");
@@ -110,6 +114,7 @@ const appState = {
   reviewPages: [],
   reviewPageIndex: 0,
   reviewMode: false,
+  learningMode: "full",
   currentBlankId: "",
   pendingFocusBlankId: "",
   lastMainBlankId: "",
@@ -119,6 +124,9 @@ const appState = {
   revealedQuestionIds: new Set(),
   blankInputRefs: new Map(),
   blankInputMirrorRefs: new Map(),
+  wordBankOpen: false,
+  wordBankMessage: "",
+  wordBankMessageTimeoutId: 0,
 };
 
 function fetchJson(path) {
@@ -521,6 +529,25 @@ function closeFilters() {
   setFiltersOpen(false);
 }
 
+function setWordBankMessage(message) {
+  appState.wordBankMessage = message;
+
+  if (appState.wordBankMessageTimeoutId) {
+    window.clearTimeout(appState.wordBankMessageTimeoutId);
+  }
+
+  if (!message) {
+    appState.wordBankMessageTimeoutId = 0;
+    return;
+  }
+
+  appState.wordBankMessageTimeoutId = window.setTimeout(() => {
+    appState.wordBankMessage = "";
+    appState.wordBankMessageTimeoutId = 0;
+    renderSession({ focusBlankId: getActiveBlankId() });
+  }, 1800);
+}
+
 function restoreDrillRulesTriggerFocus() {
   const focusTarget = lastDrillRulesTrigger || drillRulesOpenButton;
 
@@ -691,6 +718,63 @@ function getFileCountLabel(fileEntry) {
   }
 
   return pluralise(fileEntry.count, "item");
+}
+
+function getDefaultLearningModeForFile(fileId = appState.file) {
+  return fileId === "guided-cloze" || fileId === "multi-round-cloze" ? "scaffold" : "full";
+}
+
+function getLearningMode() {
+  if (appState.reviewMode) {
+    return "review";
+  }
+
+  return appState.learningMode || getDefaultLearningModeForFile();
+}
+
+function canScaffoldCurrentBlank() {
+  const activeBlank = getBlank(getActiveBlankId(appState.sessionBlankIds));
+  return Boolean(activeBlank?.answerModel?.full_answer);
+}
+
+function switchLearningMode(mode) {
+  if (mode === "review") {
+    setReviewMode(true);
+    return;
+  }
+
+  if (appState.reviewMode) {
+    setReviewMode(false);
+  }
+
+  if (mode === "scaffold" && !canScaffoldCurrentBlank()) {
+    return;
+  }
+
+  appState.learningMode = mode;
+  appState.wordBankOpen = false;
+  setWordBankMessage("");
+  renderSession({ focusBlankId: getActiveBlankId() });
+}
+
+function renderModeSwitcher() {
+  const mode = getLearningMode();
+  const scaffoldAvailable = canScaffoldCurrentBlank();
+  const reviewCount = appState.reviewQueueBlankIds.length;
+
+  modeFullButton.disabled = appState.sessionBlankIds.length === 0;
+  modeFullButton.dataset.active = String(mode === "full");
+  modeFullButton.setAttribute("aria-pressed", String(mode === "full"));
+
+  modeScaffoldButton.disabled = !scaffoldAvailable;
+  modeScaffoldButton.dataset.active = String(mode === "scaffold");
+  modeScaffoldButton.setAttribute("aria-pressed", String(mode === "scaffold"));
+
+  modeReviewButton.disabled = reviewCount === 0;
+  modeReviewButton.dataset.active = String(mode === "review");
+  modeReviewButton.setAttribute("aria-pressed", String(mode === "review"));
+  modeReviewButton.querySelector("small").textContent =
+    reviewCount === 0 ? "Missed or revealed items" : `${pluralise(reviewCount, "item")} queued`;
 }
 
 function applySelection(nextSelection) {
@@ -949,6 +1033,7 @@ function renderControls() {
   renderFileSwitcher();
   renderDefinitionFilter();
   renderRoundSwitcher();
+  renderModeSwitcher();
 }
 
 async function loadFileItems(path) {
@@ -1300,6 +1385,7 @@ function rebuildSessionRuntime(sessionQuestions) {
   appState.reviewPages = [];
   appState.reviewPageIndex = 0;
   appState.reviewMode = false;
+  appState.learningMode = getDefaultLearningModeForFile(appState.file);
   appState.currentBlankId = appState.sessionBlankIds[0] || "";
   appState.pendingFocusBlankId = appState.currentBlankId;
   appState.lastMainBlankId = appState.currentBlankId;
@@ -1307,6 +1393,8 @@ function rebuildSessionRuntime(sessionQuestions) {
   appState.revealedQuestionIds = new Set();
   appState.blankInputRefs = new Map();
   appState.blankInputMirrorRefs = new Map();
+  appState.wordBankOpen = false;
+  setWordBankMessage("");
   updateReviewQueue();
 }
 
@@ -1670,6 +1758,18 @@ function checkCurrentBlank() {
   const activeBlankId = getActiveBlankId();
 
   if (!activeBlankId) {
+    return;
+  }
+
+  const blankState = getBlankState(activeBlankId);
+
+  if (blankState?.status === "correct") {
+    moveToNextBlank(activeBlankId);
+    return;
+  }
+
+  if (blankState?.status === "revealed" && appState.reviewMode) {
+    moveToNextBlank(activeBlankId);
     return;
   }
 
@@ -2112,6 +2212,7 @@ function createAnswerField(blank) {
   });
   field.addEventListener("input", event => {
     setBlankValue(blank.id, event.target.value);
+    appState.wordBankMessage = "";
     updateBlankInlineDisplay(blank, getBlankState(blank.id), mirror, field);
     schedulePersistSessionState();
   });
@@ -2137,6 +2238,87 @@ function createAnswerField(blank) {
   appState.blankInputMirrorRefs.set(blank.id, mirror);
   fieldShell.append(label, inputShell);
   return fieldShell;
+}
+
+function shouldShowScaffoldSupport(question, blankState) {
+  return (
+    getLearningMode() === "scaffold" &&
+    Boolean(question) &&
+    canScaffoldCurrentBlank() &&
+    blankState.status !== "correct"
+  );
+}
+
+function createWordBankPanel(question, blank) {
+  const blankState = getBlankState(blank.id);
+  const scaffoldModel = buildScaffoldModel(question.fullAnswer || blank.answerModel.full_answer, {
+    keyTerms: blank.answerModel.concept_groups.flatMap(group => group.keywords || []),
+  });
+  const shell = document.createElement("section");
+  shell.className = "memorisation-word-bank";
+  shell.dataset.open = String(appState.wordBankOpen);
+  shell.setAttribute("aria-label", "Word bank hint");
+
+  if (appState.wordBankOpen) {
+    shell.setAttribute("role", "dialog");
+    shell.setAttribute("aria-labelledby", "word-bank-title");
+  }
+
+  const header = document.createElement("div");
+  header.className = "memorisation-word-bank__header";
+
+  const label = document.createElement("p");
+  label.id = "word-bank-title";
+  label.className = "memorisation-answer__label";
+  label.textContent = "Word Bank";
+
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "secondary-link";
+  toggle.textContent = appState.wordBankOpen ? "Close Word Bank" : "Hint / Word Bank";
+  toggle.setAttribute("aria-expanded", String(appState.wordBankOpen));
+  toggle.addEventListener("click", () => {
+    appState.wordBankOpen = !appState.wordBankOpen;
+    setWordBankMessage("");
+    renderSession({ focusBlankId: blank.id });
+  });
+
+  header.append(label, toggle);
+  shell.append(header);
+
+  if (appState.wordBankMessage) {
+    const message = document.createElement("p");
+    message.className = "memorisation-word-bank__message";
+    message.setAttribute("role", "status");
+    message.textContent = appState.wordBankMessage;
+    shell.append(message);
+  }
+
+  if (!appState.wordBankOpen) {
+    return shell;
+  }
+
+  const copy = document.createElement("p");
+  copy.className = "memorisation-word-bank__copy";
+  copy.textContent = "Use these shuffled words as a hint, then type the answer manually.";
+
+  const list = document.createElement("div");
+  list.className = "memorisation-word-bank__list";
+
+  scaffoldModel.wordBank.forEach(word => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "memorisation-word-bank__chip";
+    chip.textContent = word;
+    chip.addEventListener("click", () => {
+      setWordBankMessage("Please type it manually to strengthen recall.");
+      renderSession({ focusBlankId: blank.id });
+    });
+    list.append(chip);
+  });
+
+  shell.append(copy, list);
+  return shell;
 }
 
 function createFeedbackCard(blank) {
@@ -2177,7 +2359,56 @@ function createFeedbackCard(blank) {
     shell.append(guidanceList);
   }
 
+  if (blankState.status === "wrong") {
+    shell.append(createDiffComparisonPanel(blank, blankState));
+  }
+
   return shell;
+}
+
+function createDiffComparisonPanel(blank, blankState) {
+  const diffModel = diffAnswer(blankState.value, blank.answerModel.full_answer);
+  const renderedTokens = renderDiffTokens(diffModel);
+  const panel = document.createElement("div");
+  panel.className = "memorisation-diff";
+
+  const heading = document.createElement("div");
+  heading.className = "memorisation-diff__heading";
+
+  const label = document.createElement("span");
+  label.className = "memorisation-answer__label";
+  label.textContent = "Answer comparison";
+
+  const summary = document.createElement("span");
+  summary.className = "memorisation-diff__summary";
+  const summaryParts = [
+    diffModel.summary.missing ? `${diffModel.summary.missing} missing` : "",
+    diffModel.summary.wrong ? `${diffModel.summary.wrong} wrong` : "",
+    diffModel.summary.extra ? `${diffModel.summary.extra} extra` : "",
+  ].filter(Boolean);
+  summary.textContent = summaryParts.length ? summaryParts.join(" · ") : "Check wording and order";
+
+  heading.append(label, summary);
+
+  const tokenList = document.createElement("div");
+  tokenList.className = "memorisation-diff__tokens";
+  tokenList.setAttribute("aria-label", "Word-level comparison against the canonical answer");
+
+  renderedTokens.forEach(token => {
+    const tokenElement = document.createElement("span");
+    tokenElement.className = "memorisation-diff-token";
+    tokenElement.dataset.tone = token.tone;
+    tokenElement.textContent = token.text;
+    tokenElement.setAttribute("aria-label", token.label);
+    tokenList.append(tokenElement);
+  });
+
+  const legend = document.createElement("p");
+  legend.className = "memorisation-diff__legend";
+  legend.textContent = "Green words match. Soft red marks missing or wrong wording. Amber marks extra wording.";
+
+  panel.append(heading, tokenList, legend);
+  return panel;
 }
 
 function createRevealPanel(question, blank) {
@@ -2230,6 +2461,7 @@ function renderProgressHeader() {
   const activeBlankId = getActiveBlankId();
   const activeBlankIndex = getBlankOrderIndex(activeBlankId, blankOrder);
   const activeQuestion = getQuestion(getBlank(activeBlankId)?.questionId || "");
+  const activeBlankState = getBlankState(activeBlankId);
   const totalBlanks = appState.sessionBlankIds.length;
   const completedBlanks = getCompletedBlankCount();
   const reviewCount = appState.reviewQueueBlankIds.length;
@@ -2244,10 +2476,32 @@ function renderProgressHeader() {
   revealBlankButton.disabled = !activeQuestion || appState.revealedQuestionIds.has(activeQuestion.id);
   revealBlankButton.textContent =
     activeQuestion && appState.revealedQuestionIds.has(activeQuestion.id) ? "Shown" : "Reveal";
+  actionBar.dataset.state = activeBlankState?.status || "idle";
+  actionBar.dataset.mode = getLearningMode();
+  prevBlankButton.textContent = "Previous";
+  checkBlankButton.textContent = "Check";
+  nextBlankButton.textContent = "Next";
+  checkBlankButton.className = "doc-link";
+  nextBlankButton.className = "secondary-link";
+  revealBlankButton.className = "secondary-link";
+  checkBlankButton.setAttribute("aria-label", "Check current answer");
+
+  if (activeBlankState?.status === "wrong") {
+    checkBlankButton.textContent = "Try again";
+    nextBlankButton.textContent = appState.reviewMode ? "Again later" : "Continue later";
+  } else if (activeBlankState?.status === "correct") {
+    checkBlankButton.textContent = appState.reviewMode ? "Got it" : "Continue";
+    checkBlankButton.setAttribute("aria-label", "Continue to the next prompt");
+  } else if (activeBlankState?.status === "revealed") {
+    checkBlankButton.textContent = appState.reviewMode ? "Again" : "Review later";
+  } else {
+    checkBlankButton.setAttribute("aria-label", "Check current answer");
+  }
 
   // Keep review re-entry available as soon as something is queued, while leaving it outside the main action bar.
   reviewToggleButton.hidden = reviewCount === 0;
   reviewToggleButton.textContent = appState.reviewMode ? "Back to main session" : `Review queue (${reviewCount})`;
+  renderModeSwitcher();
 }
 
 function renderBanner() {
@@ -2436,8 +2690,9 @@ function renderActivePractice() {
   const activeBlankId = getActiveBlankId();
   const blank = getBlank(activeBlankId);
   const question = getQuestion(blank?.questionId || "");
+  const blankState = getBlankState(activeBlankId);
 
-  if (!blank || !question) {
+  if (!blank || !question || !blankState) {
     renderStatusCard(sessionPage, "No active prompt is available for the current session.");
     return;
   }
@@ -2520,13 +2775,17 @@ function renderActivePractice() {
   answerHeaderCopy.append(answerLabel, answerCopy);
 
   const statusPill = document.createElement("span");
-  const descriptor = getBlankFeedbackDescriptor(blank, getBlankState(blank.id));
+  const descriptor = getBlankFeedbackDescriptor(blank, blankState);
   statusPill.className = "memorisation-status-pill";
   statusPill.dataset.tone = descriptor.tone;
   statusPill.textContent = descriptor.label;
 
   answerHeader.append(answerHeaderCopy, statusPill);
   answerCard.append(answerHeader, createAnswerField(blank));
+
+  if (shouldShowScaffoldSupport(question, blankState)) {
+    answerCard.append(createWordBankPanel(question, blank));
+  }
 
   sessionPage.append(promptCard, answerCard, createFeedbackCard(blank));
 
@@ -2757,6 +3016,18 @@ function registerStaticEvents() {
 
   filtersBackdrop.addEventListener("click", () => {
     closeFilters();
+  });
+
+  modeFullButton.addEventListener("click", () => {
+    switchLearningMode("full");
+  });
+
+  modeScaffoldButton.addEventListener("click", () => {
+    switchLearningMode("scaffold");
+  });
+
+  modeReviewButton.addEventListener("click", () => {
+    switchLearningMode("review");
   });
 
   drillRulesOpenButton?.addEventListener("click", () => {

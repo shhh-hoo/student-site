@@ -11,11 +11,14 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const studentSiteRoot = path.resolve(scriptDirectory, "..");
 const targetPath =
   "/interactive/9701-memorisation-bank/?stage=AS&level=level-2-guided-cloze&topic=group-2&file=guided-cloze";
+const coreDefinitionPath =
+  "/interactive/9701-memorisation-bank/?stage=AS&level=level-1-core&topic=atomic-structure&file=core-definitions";
 const expectedPromptTitle = "Explain the trend in thermal stability of Group 2 carbonates.";
 const expectedPromptContext =
   "Down the group the M2+ ion has lower _____ _____. So it polarises the carbonate ion _____. The carbonate ion is less distorted and is less likely to decompose.";
-const configuredWindowSize = process.env.MEMORISATION_WINDOW_SIZE || "1440,1600";
 const runMobileVisibilityCheck = process.env.MEMORISATION_MOBILE_CHECK === "1";
+const configuredWindowSize =
+  process.env.MEMORISATION_WINDOW_SIZE || (runMobileVisibilityCheck ? "390,900" : "1440,1600");
 const browserEnvKeys = ["MEMORISATION_BROWSER_BIN", "CHROME_BIN", "BROWSER_BIN"];
 const browserCommandCandidates =
   process.platform === "win32"
@@ -277,7 +280,7 @@ async function evaluate(client, expression) {
   });
 
   if (exceptionDetails) {
-    throw new Error(exceptionDetails.text || "Runtime evaluation failed.");
+    throw new Error(exceptionDetails.exception?.description || exceptionDetails.text || "Runtime evaluation failed.");
   }
 
   return result.value;
@@ -288,6 +291,7 @@ async function getSnapshot(client) {
     client,
     `(() => ({
       title: document.getElementById("active-prompt-title")?.textContent?.trim() || "",
+      currentUrl: location.href,
       blankChip: document.getElementById("active-blank-chip")?.textContent?.trim() || "",
       promptContext: document.getElementById("active-prompt-context")?.textContent?.trim() || "",
       activeElementId: document.activeElement?.id || "",
@@ -296,12 +300,108 @@ async function getSnapshot(client) {
         document.querySelector(".memorisation-feedback-card__title")?.textContent?.trim() || "",
       revealNote:
         document.querySelector(".memorisation-reveal .memorisation-answer__note")?.textContent?.trim() || "",
+      modeScaffoldActive:
+        document.getElementById("mode-scaffold")?.dataset.active === "true",
+      modeFullActive:
+        document.getElementById("mode-full")?.dataset.active === "true",
+      modeScaffoldDisabled:
+        document.getElementById("mode-scaffold")?.disabled ?? true,
+      actionBarState:
+        document.querySelector(".memorisation-action-bar")?.dataset.state || "",
+      actionLabels: Array.from(document.querySelectorAll(".memorisation-action-bar button")).map(button =>
+        button.textContent.trim()
+      ),
+      wordBankToggle:
+        document.querySelector(".memorisation-word-bank .secondary-link")?.textContent?.trim() || "",
+      wordBankMessage:
+        document.querySelector(".memorisation-word-bank__message")?.textContent?.trim() || "",
+      wordBankOpen:
+        document.querySelector(".memorisation-word-bank")?.dataset.open === "true",
+      wordBankPosition:
+        document.querySelector(".memorisation-word-bank")
+          ? window.getComputedStyle(document.querySelector(".memorisation-word-bank")).position
+          : "",
+      hasHorizontalScroll:
+        document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       reviewToggleText:
-        document.getElementById("review-toggle")?.hidden
+        !document.getElementById("review-toggle") || document.getElementById("review-toggle").hidden
           ? ""
           : document.getElementById("review-toggle").textContent.trim(),
       pageCounter: document.getElementById("page-counter")?.textContent?.trim() || ""
     }))()`
+  );
+}
+
+async function getMobileLayoutSnapshot(client) {
+  return evaluate(
+    client,
+    `(() => {
+      const rectFor = selector => {
+        const element = document.querySelector(selector);
+
+        if (!element) {
+          return null;
+        }
+
+        const rect = element.getBoundingClientRect();
+        return {
+          top: rect.top,
+          bottom: rect.bottom,
+          left: rect.left,
+          right: rect.right,
+          width: rect.width,
+          height: rect.height,
+          offsetTop: element.offsetTop,
+        };
+      };
+      const visibleActionButtons = Array.from(document.querySelectorAll(".memorisation-action-bar button")).filter(
+        button => {
+          const styles = window.getComputedStyle(button);
+          const rect = button.getBoundingClientRect();
+          return styles.display !== "none" && styles.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+        }
+      );
+      const modeButtons = Array.from(document.querySelectorAll(".memorisation-mode-button"));
+      const modeRects = modeButtons.map(button => button.getBoundingClientRect());
+      const modeDescriptionVisible = modeButtons.some(button => {
+        const small = button.querySelector("small");
+        return small && window.getComputedStyle(small).display !== "none";
+      });
+      const wordBank = document.querySelector(".memorisation-word-bank");
+      const wordBankRect = wordBank?.getBoundingClientRect();
+      const wordBankStyles = wordBank ? window.getComputedStyle(wordBank) : null;
+
+      return {
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        hasHorizontalScroll: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+        prompt: rectFor(".memorisation-prompt-card"),
+        answer: rectFor(".memorisation-answer-card"),
+        textarea: rectFor("textarea.memorisation-input"),
+        actionBar: rectFor(".memorisation-action-bar"),
+        feedback: rectFor(".memorisation-feedback-card"),
+        mobileStudyHeader: rectFor(".memorisation-page-header"),
+        mobileStudyHeaderVisible:
+          window.getComputedStyle(document.querySelector(".memorisation-page-header") || document.body).display !==
+          "none",
+        modeTopSpread: modeRects.length
+          ? Math.max(...modeRects.map(rect => rect.top)) - Math.min(...modeRects.map(rect => rect.top))
+          : 0,
+        modeMaxHeight: modeRects.length ? Math.max(...modeRects.map(rect => rect.height)) : 0,
+        modeDescriptionVisible,
+        visibleActionLabels: visibleActionButtons.map(button => button.textContent.trim()),
+        primaryActionWidth:
+          document.getElementById("check-blank")?.getBoundingClientRect().width || 0,
+        wordBankPosition: wordBankStyles?.position || "",
+        wordBankRect: wordBankRect
+          ? {
+              top: wordBankRect.top,
+              bottom: wordBankRect.bottom,
+              height: wordBankRect.height,
+            }
+          : null,
+      };
+    })()`
   );
 }
 
@@ -372,10 +472,27 @@ async function clickElement(client, elementId) {
   );
 }
 
+async function clickSelector(client, selector) {
+  await evaluate(
+    client,
+    `(() => {
+      const element = document.querySelector(${JSON.stringify(selector)});
+
+      if (!element) {
+        throw new Error(${JSON.stringify(`Missing selector: ${selector}`)});
+      }
+
+      element.click();
+      return true;
+    })()`
+  );
+}
+
 async function run() {
   const server = createStaticServer(studentSiteRoot);
   const serverPort = await listen(server);
   const targetUrl = `http://127.0.0.1:${serverPort}${targetPath}`;
+  const coreDefinitionUrl = `http://127.0.0.1:${serverPort}${coreDefinitionPath}`;
   const userDataDirectory = await mkdtemp(path.join(os.tmpdir(), "memorisation-bank-chrome-"));
   const browserPath = await resolveBrowserPath();
   const chromeProcess = spawn(
@@ -409,6 +526,16 @@ async function run() {
     await client.send("Page.enable");
     await client.send("Runtime.enable");
 
+    if (runMobileVisibilityCheck) {
+      await client.send("Emulation.setDeviceMetricsOverride", {
+        width: 390,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: true,
+      });
+      await client.send("Page.reload");
+    }
+
     const initialSnapshot = await waitForSnapshot(
       client,
       snapshot =>
@@ -420,6 +547,115 @@ async function run() {
 
     assert.equal(initialSnapshot.promptContext, expectedPromptContext);
     console.log("PASS 1: Initial prompt rendered with Blank 1 focused.");
+
+    assert.equal(initialSnapshot.modeScaffoldActive, true);
+    assert.equal(initialSnapshot.wordBankToggle, "Hint / Word Bank");
+    console.log("PASS 1b: Scaffold mode and hidden word bank hint rendered for guided cloze.");
+
+    await clickSelector(client, ".memorisation-word-bank .secondary-link");
+    await clickSelector(client, ".memorisation-word-bank__chip");
+    const afterWordBankClick = await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.wordBankMessage === "Please type it manually to strengthen recall." &&
+        snapshot.inputValue === "" &&
+        snapshot.wordBankOpen,
+      "Word bank chip click should show a manual-typing message without filling the textarea."
+    );
+
+    assert.equal(afterWordBankClick.inputValue, "");
+    console.log("PASS 1c: Word bank chips did not auto-fill the active answer.");
+
+    if (!runMobileVisibilityCheck) {
+      await client.send("Page.navigate", { url: coreDefinitionUrl });
+      const coreDefinitionSnapshot = await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.currentUrl.includes("file=core-definitions") &&
+          snapshot.modeFullActive &&
+          snapshot.modeScaffoldDisabled === false &&
+          snapshot.wordBankToggle === "",
+        "Core definitions should open in Full Dictation with Scaffold available but not active."
+      );
+
+      assert.equal(coreDefinitionSnapshot.currentUrl.includes("file=core-definitions"), true);
+      assert.equal(coreDefinitionSnapshot.modeScaffoldDisabled, false);
+
+      await clickElement(client, "mode-scaffold");
+      const coreScaffoldSnapshot = await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.currentUrl.includes("file=core-definitions") &&
+          snapshot.modeScaffoldActive &&
+          snapshot.modeScaffoldDisabled === false &&
+          snapshot.wordBankToggle === "Hint / Word Bank",
+        "Scaffold should activate on a core definition without switching the selected file."
+      );
+
+      assert.equal(coreScaffoldSnapshot.currentUrl.includes("file=core-definitions"), true);
+      await clickSelector(client, ".memorisation-word-bank .secondary-link");
+      await clickSelector(client, ".memorisation-word-bank__chip");
+      const afterCoreWordBankClick = await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.currentUrl.includes("file=core-definitions") &&
+          snapshot.wordBankMessage === "Please type it manually to strengthen recall." &&
+          snapshot.inputValue === "" &&
+          snapshot.wordBankOpen,
+        "Core-definition Scaffold word bank should not auto-fill the full-answer textarea."
+      );
+
+      assert.equal(afterCoreWordBankClick.inputValue, "");
+      console.log("PASS 1d: Core definitions can use Scaffold without changing file or auto-filling answers.");
+
+      await client.send("Page.navigate", { url: targetUrl });
+      await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.title === expectedPromptTitle &&
+          snapshot.blankChip === "Blank 1" &&
+          snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::0",
+        "Guided cloze did not restore after the core-definition Scaffold regression."
+      );
+    }
+
+    if (runMobileVisibilityCheck) {
+      const mobileInitialLayout = await getMobileLayoutSnapshot(client);
+
+      assert.equal(mobileInitialLayout.viewportWidth, 390);
+      assert.equal(mobileInitialLayout.hasHorizontalScroll, false);
+      assert.equal(mobileInitialLayout.mobileStudyHeaderVisible, true);
+      assert.ok(
+        mobileInitialLayout.mobileStudyHeader.height < 170,
+        `Mobile study header should preserve context without becoming a tall hero: ${JSON.stringify(mobileInitialLayout)}`
+      );
+      assert.ok(
+        mobileInitialLayout.prompt.offsetTop < 560,
+        `Active prompt should appear before excessive setup UI: ${JSON.stringify(mobileInitialLayout)}`
+      );
+      assert.ok(
+        mobileInitialLayout.answer.top < 760,
+        "Answer surface should be reached quickly in the mobile study flow."
+      );
+      assert.ok(mobileInitialLayout.modeTopSpread < 8, "Mode controls should be compact horizontal chips.");
+      assert.ok(mobileInitialLayout.modeMaxHeight <= 48, "Mode controls should not render as stacked cards.");
+      assert.equal(mobileInitialLayout.modeDescriptionVisible, false);
+      assert.ok(
+        mobileInitialLayout.visibleActionLabels.length <= 2 &&
+          mobileInitialLayout.visibleActionLabels.includes("Check"),
+        "Mobile action bar should expose one primary action and at most one secondary action."
+      );
+      assert.ok(
+        mobileInitialLayout.primaryActionWidth > mobileInitialLayout.viewportWidth * 0.82,
+        "Primary mobile action should be thumb-friendly and visually dominant."
+      );
+      assert.equal(mobileInitialLayout.wordBankPosition, "fixed");
+      assert.ok(
+        mobileInitialLayout.wordBankRect.height <= mobileInitialLayout.viewportHeight * 0.55,
+        "Open Word Bank should be a bounded mobile sheet, not inline page expansion."
+      );
+      console.log("PASS 1e: Mobile first screen uses compact mode chips, primary action, and sheet word bank.");
+    }
 
     await clickElement(client, "next-blank");
     const afterFirstNext = await waitForSnapshot(
@@ -477,6 +713,35 @@ async function run() {
     assert.equal(afterReload.promptContext, expectedPromptContext);
     console.log("PASS 5: Refresh restored the active blank and draft answer.");
 
+    await clickElement(client, "check-blank");
+    const afterWrongCheck = await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.feedbackTitle === "Needs revision" &&
+        snapshot.actionBarState === "wrong" &&
+        snapshot.actionLabels.includes("Try again"),
+      "Incorrect answer did not switch the bottom action bar into the try-again state."
+    );
+
+    assert.equal(afterWrongCheck.hasHorizontalScroll, false);
+    assert.ok(afterWrongCheck.actionLabels.includes("Continue later"));
+    console.log("PASS 5b: Incorrect answer showed state-based action controls without horizontal scrolling.");
+
+    if (runMobileVisibilityCheck) {
+      const mobileWrongLayout = await getMobileLayoutSnapshot(client);
+
+      assert.deepEqual(
+        mobileWrongLayout.visibleActionLabels,
+        ["Try again", "Continue later"],
+        "Wrong-state mobile action bar should expose Try again plus Continue later."
+      );
+      assert.ok(
+        mobileWrongLayout.primaryActionWidth > mobileWrongLayout.viewportWidth * 0.82,
+        "Try again should remain the dominant wrong-state action."
+      );
+      console.log("PASS 5c: Wrong-state mobile action bar keeps Continue later visible.");
+    }
+
     await clickElement(client, "reveal-blank");
     const afterReveal = await waitForSnapshot(
       client,
@@ -516,10 +781,14 @@ async function run() {
             fieldBottom: fieldRect.bottom,
             revealTop: revealRect.top,
             actionBarTop: actionBarRect.top,
+            feedbackBottom: document.querySelector(".memorisation-feedback-card")?.getBoundingClientRect().bottom || 0,
           };
         })()`,
         metrics =>
-          Boolean(metrics) && metrics.fieldBottom <= metrics.actionBarTop && metrics.revealTop < metrics.actionBarTop,
+          Boolean(metrics) &&
+          metrics.fieldBottom <= metrics.actionBarTop &&
+          metrics.revealTop < metrics.actionBarTop &&
+          metrics.feedbackBottom <= metrics.actionBarTop,
         "Sticky mobile action bar still obscures the focused or revealed content."
       );
 
@@ -531,8 +800,8 @@ async function run() {
       client,
       snapshot =>
         snapshot.pageCounter === "Review 1 / 3" &&
-        snapshot.blankChip === "Blank 3" &&
-        snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::2",
+        snapshot.blankChip === "Blank 2" &&
+        snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1",
       "Review queue did not open on the expected active blank."
     );
 
@@ -551,7 +820,7 @@ async function run() {
 
     assert.equal(backToMainSnapshot.title, expectedPromptTitle);
     console.log("PASS 8: Leaving review restored the main-session active blank.");
-    console.log("Browser active-blank regression checks passed: 8");
+    console.log("Browser active-blank regression checks passed.");
   } catch (error) {
     const chromeExitDetails = chromeProcess.exitCode != null ? ` Chrome exit code: ${chromeProcess.exitCode}.` : "";
     const stderrDetails = chromeStderr ? ` Chrome stderr: ${chromeStderr.trim()}` : "";

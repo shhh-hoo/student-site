@@ -26,6 +26,60 @@ const cases = [
     contradiction: false,
   },
   {
+    name: "case punctuation and extra spaces do not block exact definition recall",
+    answerModel: createAnswerModel({
+      answer: "The time taken for the concentration of a reactant to decrease to half of its initial value.",
+      type: "definition",
+      sourceScope: "syllabus_only",
+    }),
+    userValue: "  the TIME taken, for the concentration of a reactant to decrease to half of its initial value  ",
+    expectedStatus: "correct",
+    contradiction: false,
+  },
+  {
+    name: "misspelled core words are rejected",
+    answerModel: createAnswerModel({
+      answer: "The time taken for the concentration of a reactant to decrease to half of its initial value.",
+      type: "definition",
+      sourceScope: "syllabus_only",
+    }),
+    userValue: "The time taken for the concentrasion of a reactant to decrease to half of its initial value.",
+    expectedStatus: "wrong",
+    contradiction: false,
+  },
+  {
+    name: "equation matcher preserves chemistry-critical formula and charge tokens",
+    answerModel: createAnswerModel({
+      answer: "Ni2+ + 2e- -> Ni",
+      fileId: "core-equations",
+      prompt: "Write the equation.",
+    }),
+    userValue: "Ni+ + 2e- -> Ni",
+    expectedStatus: "wrong",
+    contradiction: false,
+  },
+  {
+    name: "short cloze blanks reject extra words",
+    answerModel: createAnswerModel({
+      answer: "density",
+      type: "guided_cloze",
+    }),
+    userValue: "density draft",
+    expectedStatus: "wrong",
+    contradiction: false,
+  },
+  {
+    name: "equation matcher tolerates arrow and spacing variants without changing formula tokens",
+    answerModel: createAnswerModel({
+      answer: "Ni2+ + 2e- -> Ni",
+      fileId: "core-equations",
+      prompt: "Write the equation.",
+    }),
+    userValue: " Ni2+  + 2e-  →  Ni ",
+    expectedStatus: "correct",
+    contradiction: false,
+  },
+  {
     name: "negation flip fails for ketone IR elimination wording",
     answerModel: createAnswerModel({
       answer:
