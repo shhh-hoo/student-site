@@ -11,8 +11,13 @@ function joinClasses(...classNames) {
   return classNames.filter(Boolean).join(" ");
 }
 
-export function createTagMarkup({ label, tone = "neutral", href = "" }) {
-  const className = joinClasses("brand-tag", `brand-tag--${tone}`, href && "brand-tag--link");
+export function createTagMarkup({ label, tone = "neutral", href = "", routeFamily = "" }) {
+  const className = joinClasses(
+    "brand-tag",
+    `brand-tag--${tone}`,
+    routeFamily && `brand-tag--route-${routeFamily}`,
+    href && "brand-tag--link"
+  );
 
   if (href) {
     return `<a class="${className}" href="${escapeHtml(href)}">${escapeHtml(label)}</a>`;
@@ -21,10 +26,15 @@ export function createTagMarkup({ label, tone = "neutral", href = "" }) {
   return `<span class="${className}">${escapeHtml(label)}</span>`;
 }
 
-export function createCTAButtonMarkup({ href, label, variant = "primary", compact = false }) {
+export function createCTAButtonMarkup({ href, label, variant = "primary", compact = false, routeFamily = "" }) {
   return `
     <a
-      class="${joinClasses("cta-button", `cta-button--${variant}`, compact && "cta-button--compact")}"
+      class="${joinClasses(
+        "cta-button",
+        `cta-button--${variant}`,
+        routeFamily && `cta-button--route-${routeFamily}`,
+        compact && "cta-button--compact"
+      )}"
       href="${escapeHtml(href)}"
     >
       ${escapeHtml(label)}
@@ -125,6 +135,7 @@ export function createHomepageHeroMarkup(hero) {
                   href: action.href,
                   label: action.label,
                   variant: action.variant,
+                  routeFamily: action.routeFamily,
                 })
               )
               .join("")}
@@ -160,7 +171,7 @@ export function createEntrySectionMarkup(section) {
 
 function createEntryCardMarkup(card) {
   return `
-    <article class="entry-card">
+    <article class="${joinClasses("entry-card", card.routeFamily && `entry-card--route-${card.routeFamily}`)}">
       <div class="entry-card__topline">
         <span class="entry-card__eyebrow">${escapeHtml(card.eyebrow)}</span>
         <span class="entry-card__count">${escapeHtml(card.countLabel || "")}</span>
@@ -171,7 +182,9 @@ function createEntryCardMarkup(card) {
         (card.chips || []).length > 0
           ? `
           <div class="entry-card__chips">
-            ${(card.chips || []).map(chip => createTagMarkup({ label: chip, tone: "outline" })).join("")}
+            ${(card.chips || [])
+              .map(chip => createTagMarkup({ label: chip, tone: "outline", routeFamily: card.routeFamily }))
+              .join("")}
           </div>
         `
           : ""
@@ -182,6 +195,7 @@ function createEntryCardMarkup(card) {
           label: card.ctaLabel,
           variant: "primary",
           compact: true,
+          routeFamily: card.routeFamily,
         })}
       </div>
     </article>
@@ -268,7 +282,13 @@ export function createOverviewResultsMarkup(
 
 function createOverviewCardMarkup(result, { showStage = false } = {}) {
   return `
-    <article class="${joinClasses("overview-card", result.kind === "interactive" && "overview-card--interactive")}">
+    <article
+      class="${joinClasses(
+        "overview-card",
+        result.kind === "interactive" && "overview-card--interactive",
+        result.routeFamily && `overview-card--route-${result.routeFamily}`
+      )}"
+    >
       <div class="overview-card__topline">
         <p class="overview-card__eyebrow">${escapeHtml(result.eyebrow)}</p>
         ${showStage ? `<span class="overview-card__stage">${escapeHtml(result.stageValue)}</span>` : ""}
@@ -276,8 +296,8 @@ function createOverviewCardMarkup(result, { showStage = false } = {}) {
       <h3>${escapeHtml(result.title)}</h3>
       <p class="overview-card__copy">${escapeHtml(result.description)}</p>
       <div class="overview-card__tags">
-        ${createTagMarkup({ label: result.typeLabel, tone: "outline" })}
-        ${createTagMarkup({ label: result.topicLabel, tone: "soft" })}
+        ${createTagMarkup({ label: result.typeLabel, tone: "outline", routeFamily: result.routeFamily })}
+        ${createTagMarkup({ label: result.topicLabel, tone: "soft", routeFamily: result.routeFamily })}
       </div>
       <div class="overview-card__footer">
         ${createCTAButtonMarkup({
@@ -285,6 +305,7 @@ function createOverviewCardMarkup(result, { showStage = false } = {}) {
           label: result.ctaLabel,
           variant: result.kind === "interactive" ? "interactive" : "primary",
           compact: true,
+          routeFamily: result.routeFamily,
         })}
       </div>
     </article>
@@ -340,7 +361,8 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
       class="${joinClasses(
         "resource-card",
         `resource-card--${resource.kind || "document"}`,
-        `resource-card--${layout}`
+        `resource-card--${layout}`,
+        resource.routeFamily && `resource-card--route-${resource.routeFamily}`
       )}"
     >
       <div class="resource-card__header">
@@ -355,7 +377,9 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
         (resource.chips || []).length > 0
           ? `
           <div class="resource-card__chips">
-            ${(resource.chips || []).map(chip => createTagMarkup({ label: chip, tone: "outline" })).join("")}
+            ${(resource.chips || [])
+              .map(chip => createTagMarkup({ label: chip, tone: "outline", routeFamily: resource.routeFamily }))
+              .join("")}
           </div>
         `
           : ""
@@ -364,7 +388,9 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
         (resource.tags || []).length > 0
           ? `
           <div class="resource-card__tags">
-            ${(resource.tags || []).map(tag => createTagMarkup({ label: tag, tone: "soft" })).join("")}
+            ${(resource.tags || [])
+              .map(tag => createTagMarkup({ label: tag, tone: "soft", routeFamily: resource.routeFamily }))
+              .join("")}
           </div>
         `
           : ""
@@ -377,6 +403,7 @@ export function createResourceCardMarkup(resource, { layout = "standard" } = {})
           label: resource.ctaLabel,
           variant: resource.kind === "interactive" ? "interactive" : "primary",
           compact: true,
+          routeFamily: resource.routeFamily,
         })}
       </div>
     </article>
@@ -452,6 +479,7 @@ export function createInteractiveSectionMarkup(section) {
                 label: section.action.label,
                 variant: section.action.variant || "secondary",
                 compact: true,
+                routeFamily: section.action.routeFamily,
               })
             : ""
         }

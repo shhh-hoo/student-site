@@ -111,16 +111,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.85rem;
-  padding: 0.72rem 1.02rem;
+  min-height: 3rem;
+  min-width: 6.4rem;
+  padding: 1px 1.05rem 0;
   border: var(--home-border-strong) solid var(--home-outline-strong);
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(255, 244, 221, 0.98), rgba(255, 236, 202, 0.94));
   box-shadow: 5px 5px 0 rgba(42, 34, 27, 0.1);
   color: var(--home-ink-strong);
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
@@ -245,4 +246,64 @@ html[data-theme="dark"] .interactive-hub-card__cta:focus-visible {
   .interactive-hub-grid {
     grid-template-columns: 1fr;
   }
+
+  .interactive-hub-card__footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .interactive-hub-card__cta {
+    width: 100%;
+  }
+}
+
+/* Locked design system pass: softer hub chips and flat route-tinted CTAs. */
+
+.interactive-hub-card,
+.interactive-hub-note__shortcut {
+  border-width: 2px;
+  border-color: var(--locked-line-medium);
+  box-shadow: none;
+  transform: none;
+}
+
+.interactive-hub-card {
+  background: var(--locked-flat-surface);
+}
+
+.interactive-hub-card__chip {
+  min-height: 2rem;
+  padding: 1px 0.72rem 0;
+  border: 1.15px solid var(--locked-line-semi);
+  border-radius: 999px;
+  background: var(--locked-flat-chip-bg);
+  box-shadow: none;
+  color: var(--locked-ink-soft);
+  line-height: 1;
+}
+
+.interactive-hub-card__cta {
+  border: 1.1px solid rgba(63, 48, 43, 0.12);
+  background: var(--locked-interactive-button);
+  box-shadow: none;
+  color: #fffaf3;
+}
+
+.interactive-hub-card__cta:hover,
+.interactive-hub-card__cta:focus-visible,
+.interactive-hub-note__shortcut:hover,
+.interactive-hub-note__shortcut:focus-visible {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--locked-line-medium);
+}
+
+.interactive-hub-note__shortcut {
+  border: 1.15px solid var(--locked-line-semi);
+  background: var(--locked-flat-chip-bg);
+}
+
+html[data-theme="dark"] .interactive-hub-card,
+html[data-theme="dark"] .interactive-hub-note__shortcut {
+  box-shadow: none;
 }

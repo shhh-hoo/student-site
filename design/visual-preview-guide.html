@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Locked Design Preview Guide</title>
+    <style>
+      :root {
+        --bg: #ede6dd;
+        --paper: #f7f1e8;
+        --ink: #302520;
+        --ink-soft: #655750;
+        --line-strong: #3f302b;
+        --line-medium: rgba(63, 48, 43, 0.38);
+        --line-semi: rgba(63, 48, 43, 0.18);
+        --line-hair: rgba(63, 48, 43, 0.09);
+        --radius-xl: 28px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+        --radius-sm: 999px;
+        --shadow-strong: 8px 8px 0 rgba(63, 48, 43, 0.08);
+
+        --home: linear-gradient(90deg, #d8c4e3 0%, #e8ccda 40%, #f3c99a 100%);
+        --as: linear-gradient(90deg, #8bc0ad 0%, #b7d19b 48%, #ecd98e 100%);
+        --a2: linear-gradient(90deg, #f08475 0%, #f4af7e 48%, #ead27f 100%);
+        --interactive: linear-gradient(90deg, #8ebee3 0%, #9fcad2 44%, #a8c0a2 100%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(180deg, #eee7de 0%, #e9e1d7 48%, #eee9e1 100%);
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      body {
+        padding: 28px;
+        line-height: 1.5;
+      }
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        gap: 24px;
+      }
+      .panel {
+        background: var(--paper);
+        border: 3px solid var(--line-strong);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-strong);
+        padding: 24px;
+      }
+
+      h1,
+      h2 {
+        font-family:
+          Iowan Old Style,
+          "Palatino Linotype",
+          Georgia,
+          serif;
+        letter-spacing: -0.03em;
+        line-height: 0.98;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 5vw, 4.8rem);
+      }
+      h2 {
+        font-size: clamp(1.8rem, 3vw, 2.4rem);
+        margin-bottom: 10px;
+      }
+
+      p {
+        margin: 0;
+        color: var(--ink-soft);
+      }
+      .eyebrow,
+      .chip,
+      .chip-soft,
+      .button,
+      .tiny {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        border-radius: var(--radius-sm);
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow,
+      .chip-soft,
+      .tiny {
+        min-height: 34px;
+        padding: 1px 14px 0;
+        border: 1.15px solid var(--line-semi);
+        background: rgba(255, 255, 255, 0.6);
+        color: var(--ink-soft);
+        font-size: 0.78rem;
+      }
+
+      .button {
+        min-height: 46px;
+        padding: 1px 18px 0;
+        border: 1.1px solid rgba(63, 48, 43, 0.18);
+        background: rgba(255, 250, 243, 0.88);
+        color: var(--ink);
+        text-decoration: none;
+        box-shadow: none;
+      }
+
+      .button.primary-home {
+        background: #c79aac;
+        color: #fffaf3;
+        border-color: rgba(63, 48, 43, 0.12);
+      }
+      .button.primary-as {
+        background: #a8c2ab;
+        color: #fffaf3;
+        border-color: rgba(63, 48, 43, 0.12);
+      }
+      .button.primary-a2 {
+        background: #dea281;
+        color: #fffaf3;
+        border-color: rgba(63, 48, 43, 0.12);
+      }
+      .button.primary-interactive {
+        background: #a7c0c2;
+        color: #fffaf3;
+        border-color: rgba(63, 48, 43, 0.12);
+      }
+
+      .grid-4,
+      .grid-2,
+      .palette-grid {
+        display: grid;
+        gap: 16px;
+      }
+      .grid-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .palette-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .swatch,
+      .card {
+        border-radius: var(--radius-md);
+        border: 1.35px solid var(--line-semi);
+        background: rgba(255, 255, 255, 0.48);
+      }
+
+      .swatch {
+        min-height: 108px;
+        display: flex;
+        align-items: end;
+        padding: 12px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: rgba(48, 37, 32, 0.8);
+      }
+
+      .home {
+        background: var(--home);
+      }
+      .as {
+        background: var(--as);
+      }
+      .a2 {
+        background: var(--a2);
+      }
+      .interactive {
+        background: var(--interactive);
+      }
+
+      .card {
+        padding: 16px;
+        display: grid;
+        gap: 12px;
+      }
+      .mini-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .outline-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .outline {
+        background: #fff9f2;
+        border-radius: 18px;
+        padding: 16px;
+        display: grid;
+        gap: 8px;
+      }
+      .strong {
+        border: 3px solid var(--line-strong);
+      }
+      .medium {
+        border: 2.2px solid var(--line-medium);
+      }
+      .semi {
+        border: 1.15px solid var(--line-semi);
+      }
+      .hair {
+        border: 1px solid var(--line-hair);
+      }
+
+      @media (max-width: 900px) {
+        .grid-4,
+        .grid-2,
+        .palette-grid,
+        .outline-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="panel">
+        <div class="eyebrow">Locked design preview</div>
+        <h1 style="margin-top: 14px">Current approved direction</h1>
+        <p style="max-width: 62ch; margin-top: 14px">
+          This preview is a visual companion to the locked design system. It shows the current route assignments, flat
+          buttons, soft chips, and outline hierarchy expected in implementation.
+        </p>
+        <div class="mini-row" style="margin-top: 16px">
+          <span class="chip-soft">Airy ombre</span>
+          <span class="chip-soft">Paper base</span>
+          <span class="chip-soft">Flat buttons</span>
+          <span class="chip-soft">Soft chips</span>
+          <span class="chip-soft">Strong outer shells</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Locked route assignments</h2>
+        <div class="grid-4">
+          <div class="swatch home">Homepage · Lilac / Blush / Peach</div>
+          <div class="swatch as">AS · Mint / Apple / Cream</div>
+          <div class="swatch a2">A2 · Coral / Apricot / Butter</div>
+          <div class="swatch interactive">Interactive · Sky / Cyan / Sage</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Flat buttons only</h2>
+        <div class="palette-grid">
+          <div class="card">
+            <div class="mini-row">
+              <span class="button primary-home">Homepage primary</span>
+              <span class="button">Secondary</span>
+            </div>
+            <p>No glossy highlight, no bevel, no pseudo-3D depth.</p>
+          </div>
+          <div class="card">
+            <div class="mini-row">
+              <span class="button primary-as">AS primary</span>
+              <span class="button primary-a2">A2 primary</span>
+              <span class="button primary-interactive">Interactive primary</span>
+            </div>
+            <p>Primary buttons inherit route colour. Borders stay light.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Soft chips</h2>
+        <div class="mini-row">
+          <span class="chip-soft">Organic</span>
+          <span class="chip-soft">Inorganic</span>
+          <span class="chip-soft">Practical</span>
+          <span class="chip-soft">AS</span>
+          <span class="chip-soft">Interactive</span>
+        </div>
+        <p style="margin-top: 12px">Chips use semi-outline treatment and must not carry card-level visual weight.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Outline hierarchy</h2>
+        <div class="outline-grid">
+          <div class="outline strong">
+            <div class="tiny">Strong outline</div>
+            <p>Page shells, major sections, hero frames.</p>
+          </div>
+          <div class="outline medium">
+            <div class="tiny">Medium outline</div>
+            <p>Cards, large inputs, practice surfaces.</p>
+          </div>
+          <div class="outline semi">
+            <div class="tiny">Semi outline</div>
+            <p>Chips, pills, tabs, helper boxes, passive controls.</p>
+          </div>
+          <div class="outline hair">
+            <div class="tiny">Hairline</div>
+            <p>Metadata and separators only.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

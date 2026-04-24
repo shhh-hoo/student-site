@@ -748,3 +748,53 @@ summary:focus-visible {
     min-height: 2.5rem;
   }
 }
+
+/* Locked design system pass: shared flat action controls. */
+
+:root {
+  --action-primary-bg: var(--button-primary-bg, var(--locked-home-button));
+  --action-primary-border: rgba(63, 48, 43, 0.12);
+  --action-primary-ink: #fffaf3;
+  --action-secondary-bg: rgba(255, 250, 243, 0.88);
+  --action-secondary-border: rgba(63, 48, 43, 0.18);
+  --action-secondary-ink: var(--locked-ink);
+}
+
+.doc-link,
+.secondary-link {
+  min-height: 2.75rem;
+  padding: 1px 1rem 0;
+  border-radius: 18px;
+  box-shadow: none;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.doc-link {
+  border: 1.1px solid var(--action-primary-border);
+  background: var(--action-primary-bg);
+  color: var(--action-primary-ink);
+}
+
+.doc-link:hover,
+.doc-link:focus-visible {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--locked-line-medium);
+}
+
+.secondary-link {
+  border: 1.15px solid var(--action-secondary-border);
+  background: var(--action-secondary-bg);
+  color: var(--action-secondary-ink);
+}
+
+.secondary-link:hover,
+.secondary-link:focus-visible {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--locked-line-medium);
+}
