@@ -394,8 +394,19 @@ async function getSnapshot(client) {
         document.querySelector(".memorisation-active-status")?.textContent?.replace(/\\s+/g, " ").trim() || "",
       setupHidden:
         document.getElementById("session-setup")?.hidden ?? false,
+      setupInert:
+        Boolean(document.getElementById("session-setup")?.inert),
+      setupAriaHidden:
+        document.getElementById("session-setup")?.getAttribute("aria-hidden") || "",
       practiceHidden:
         document.getElementById("practice-shell")?.hidden ?? false,
+      practiceInert:
+        Boolean(document.getElementById("practice-shell")?.inert),
+      modeControlsFocusable:
+        Array.from(document.querySelectorAll(".memorisation-mode-button")).some(button => {
+          const hiddenAncestor = button.closest("[hidden], [aria-hidden='true']");
+          return !hiddenAncestor && !button.disabled && button.tabIndex >= 0;
+        }),
       startButtonText:
         document.getElementById("session-start")?.textContent?.trim() || "",
       activeSetupButtonText:
@@ -505,6 +516,8 @@ async function getMobileLayoutSnapshot(client) {
         easySkeleton: rectFor(".memorisation-easy-skeleton"),
         easyPanel: rectFor(".memorisation-easy-panel"),
         actionBar: rectFor(".memorisation-action-bar"),
+        actionBarPosition: window.getComputedStyle(document.querySelector(".memorisation-action-bar") || document.body)
+          .position,
         feedback: rectFor(".memorisation-feedback-card"),
         mobileStudyHeader: rectFor(".memorisation-page-header"),
         mobileStudyHeaderVisible:
@@ -791,6 +804,18 @@ async function run() {
     assert.equal(initialSnapshot.textareaCount, 0, "Easy Mode Step 1 should not render a textarea.");
     assert.equal(initialSnapshot.actionBarVisible, false, "Easy Mode should not render the bottom session actions.");
     assert.equal(initialSnapshot.modeControlsVisible, false, "Active practice should not expose setup mode buttons.");
+    assert.equal(
+      initialSnapshot.modeControlsFocusable,
+      false,
+      "Setup mode buttons should not be focusable in practice."
+    );
+    assert.equal(initialSnapshot.setupInert, true, "Setup region should be inert in practice.");
+    assert.equal(
+      initialSnapshot.setupAriaHidden,
+      "true",
+      "Setup region should be hidden from assistive tech in practice."
+    );
+    assert.equal(initialSnapshot.practiceInert, false, "Practice region should be interactive after Start.");
     assert.equal(initialSnapshot.activeElementId, "", "Easy Mode Step 1 should not focus a typing field.");
     assert.ok(initialSnapshot.easyKeywordCount > 0, "Easy Mode Step 1 should render keyword chips.");
     assert.equal(initialSnapshot.skeletonExists, true, "Easy Mode Step 1 should render the answer skeleton.");
@@ -808,6 +833,20 @@ async function run() {
         snapshot.easyStep === "keywords" &&
         snapshot.pageText.includes("Select every expected key word before moving to copy practice."),
       "Enter did not trigger Easy Step 1 keyword checking."
+    );
+
+    await evaluate(
+      client,
+      `(() => {
+        document.querySelector(".memorisation-easy-keyword")?.focus();
+        return true;
+      })()`
+    );
+    await pressEnter(client);
+    await waitForSnapshot(
+      client,
+      snapshot => snapshot.easyStep === "keywords" && snapshot.easySelectedKeywordCount === 1,
+      "Focused keyword chip Enter should toggle the chip without global pre-check interference."
     );
 
     await clickElement(client, "mode-full");
@@ -1164,12 +1203,10 @@ async function run() {
     if (runMobileVisibilityCheck) {
       const mobileWrongLayout = await getMobileLayoutSnapshot(client);
 
-      assert.deepEqual(
-        mobileWrongLayout.visibleActionLabels,
-        ["Try again", "Continue later"],
-        "Wrong-state mobile action bar should expose Try again plus Continue later."
-      );
-      console.log("PASS 5c: Wrong-state mobile action bar keeps Continue later visible.");
+      assert.equal(mobileWrongLayout.actionBarPosition, "static");
+      assert.equal(mobileWrongLayout.visibleActionLabels.includes("Try again"), true);
+      assert.equal(mobileWrongLayout.visibleActionLabels.includes("Continue later"), true);
+      console.log("PASS 5c: Wrong-state mobile action bar stays lightweight and keeps Continue later available.");
     }
 
     await clickElement(client, "reveal-blank");
@@ -1225,10 +1262,10 @@ async function run() {
           metrics.fieldBottom <= metrics.actionBarTop &&
           metrics.revealTop < metrics.actionBarTop &&
           metrics.feedbackBottom <= metrics.actionBarTop,
-        "Sticky mobile action bar still obscures the focused or revealed content."
+        "Mobile action footer still obscures the focused or revealed content."
       );
 
-      console.log("PASS 6b: Mobile sticky action bar left the focused field and reveal content visible.");
+      console.log("PASS 6b: Mobile action footer left the focused field and reveal content visible.");
     }
 
     await clickSelector(client, ".memorisation-practice-refine");
@@ -1249,7 +1286,11 @@ async function run() {
       snapshot =>
         snapshot.pageCounter === "Review 1 / 3" &&
         snapshot.blankChip === "Blank 2" &&
-        snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1",
+        snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1" &&
+        snapshot.modeReviewActive &&
+        snapshot.setupInert &&
+        !snapshot.modeControlsFocusable &&
+        !snapshot.visibleActionLabels.includes("Check copy"),
       "Review queue did not open on the expected active blank."
     );
 

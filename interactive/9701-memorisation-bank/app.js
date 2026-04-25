@@ -920,14 +920,20 @@ function updateSessionViewChrome() {
 
   if (memorisationPageHeader) {
     memorisationPageHeader.hidden = inPractice;
+    memorisationPageHeader.inert = inPractice;
+    memorisationPageHeader.setAttribute("aria-hidden", String(inPractice));
   }
 
   if (sessionSetup) {
     sessionSetup.hidden = inPractice;
+    sessionSetup.inert = inPractice;
+    sessionSetup.setAttribute("aria-hidden", String(inPractice));
   }
 
   if (practiceShell) {
     practiceShell.hidden = !inPractice;
+    practiceShell.inert = !inPractice;
+    practiceShell.setAttribute("aria-hidden", String(!inPractice));
   }
 
   if (sessionStartButton) {
@@ -2218,6 +2224,7 @@ function shouldIgnoreGlobalSessionEnter(event) {
     activeElement instanceof HTMLInputElement ||
     activeElement instanceof HTMLSelectElement ||
     activeElement?.isContentEditable;
+  const isButton = activeElement instanceof HTMLButtonElement || Boolean(activeElement?.closest?.("button"));
 
   return (
     event.key !== "Enter" ||
@@ -2227,7 +2234,8 @@ function shouldIgnoreGlobalSessionEnter(event) {
     event.altKey ||
     event.isComposing ||
     event.keyCode === 229 ||
-    isTypingField
+    isTypingField ||
+    isButton
   );
 }
 
@@ -2840,7 +2848,7 @@ function createEasyKeywordPanel(question) {
     chip.dataset.selected = String(selectedIds.has(chipModel.id));
     chip.textContent = chipModel.text;
     chip.setAttribute("aria-pressed", String(selectedIds.has(chipModel.id)));
-    chip.addEventListener("click", () => {
+    const toggleKeyword = () => {
       const nextSelectedIds = new Set(getEasyQuestionState(question.id)?.selectedKeywordIds || []);
 
       if (nextSelectedIds.has(chipModel.id)) {
@@ -2859,6 +2867,23 @@ function createEasyKeywordPanel(question) {
       }
 
       renderSession({ focusBlankId: getQuestionPrimaryBlankId(question) });
+    };
+    chip.addEventListener("click", toggleKeyword);
+    chip.addEventListener("keydown", event => {
+      if (
+        (event.key !== "Enter" && event.key !== " ") ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        event.isComposing ||
+        event.keyCode === 229
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      toggleKeyword();
     });
     list.append(chip);
   });

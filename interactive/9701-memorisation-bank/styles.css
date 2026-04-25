@@ -981,32 +981,35 @@ textarea.memorisation-easy-copy-input {
 }
 
 .memorisation-action-bar {
-  position: sticky;
-  bottom: 0.85rem;
-  z-index: 5;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.7rem;
-  padding: 0.68rem;
-  border: 1px solid var(--memorisation-border);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 20px 30px rgba(42, 34, 27, 0.12);
-  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  padding: 0.2rem 0.35rem 0;
 }
 
 .memorisation-action-bar .secondary-link,
 .memorisation-action-bar .doc-link {
   justify-content: center;
-  width: 100%;
-  min-height: 2.72rem;
-  font-size: 0.82rem;
+  width: auto;
+  min-height: 2rem;
+  padding: 0.28rem 0.62rem;
+  font-size: 0.72rem;
   letter-spacing: 0.05em;
 }
 
+.memorisation-action-bar .doc-link {
+  border-color: var(--memorisation-border);
+  background: var(--memorisation-surface-soft);
+  color: var(--accent-strong);
+  box-shadow: none;
+}
+
 .memorisation-action-hint {
-  grid-column: 1 / -1;
-  margin: -0.12rem 0 0;
+  flex: 1 0 100%;
+  order: -1;
+  margin: 0 0 0.05rem;
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 800;
@@ -1016,21 +1019,8 @@ textarea.memorisation-easy-copy-input {
   text-transform: uppercase;
 }
 
-.memorisation-action-bar[data-state="correct"] {
-  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 0.8fr);
-}
-
-.memorisation-action-bar[data-state="correct"] #check-blank,
-.memorisation-action-bar[data-state="wrong"] #check-blank {
-  grid-column: span 2;
-}
-
 .memorisation-action-bar[data-state="correct"] #reveal-blank {
   display: none;
-}
-
-.memorisation-action-bar[data-mode="easy"] {
-  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.5fr) minmax(0, 0.75fr);
 }
 
 .memorisation-action-bar[data-mode="easy"] #reveal-blank {
@@ -1381,8 +1371,8 @@ html[data-theme="dark"] .memorisation-filter-backdrop {
 }
 
 html[data-theme="dark"] .memorisation-action-bar {
-  background: rgba(24, 22, 20, 0.94);
-  box-shadow: 0 22px 38px rgba(0, 0, 0, 0.34);
+  background: transparent;
+  box-shadow: none;
 }
 
 html[data-theme="dark"] .memorisation-rules-dialog__panel {
@@ -1786,35 +1776,25 @@ html[data-theme="dark"] .memorisation-rules-dialog__panel {
   }
 
   .memorisation-action-bar {
-    grid-template-columns: 1fr;
-    bottom: 0;
-    gap: 0.45rem;
-    width: calc(100% + 1.3rem);
-    margin: 0 -0.65rem;
-    padding: 0.55rem 0.7rem calc(0.7rem + env(safe-area-inset-bottom, 0));
-    border-radius: 20px 20px 0 0;
-  }
-
-  .memorisation-action-bar #prev-blank,
-  .memorisation-action-bar #next-blank {
-    display: none;
+    gap: 0.35rem;
+    padding-top: 0.15rem;
   }
 
   .memorisation-action-bar #reveal-blank {
-    order: 1;
-    justify-self: center;
-    width: auto;
-    min-height: 2.15rem;
-    padding-inline: 0.85rem;
     border-color: transparent;
     background: transparent;
   }
 
   .memorisation-action-bar #check-blank {
-    order: 2;
-    min-height: 3.35rem;
-    font-size: 1rem;
-    letter-spacing: 0.08em;
+    min-height: 2rem;
+    font-size: 0.72rem;
+  }
+
+  .memorisation-action-bar #prev-blank,
+  .memorisation-action-bar #next-blank {
+    display: inline-flex;
+    border-color: transparent;
+    background: transparent;
   }
 
   .memorisation-action-bar[data-state="correct"] #reveal-blank {
@@ -1827,21 +1807,8 @@ html[data-theme="dark"] .memorisation-rules-dialog__panel {
 
   .memorisation-action-bar[data-state="wrong"] #next-blank {
     display: inline-flex;
-    order: 1;
-    justify-self: center;
-    width: auto;
-    min-height: 2.15rem;
-    padding-inline: 0.85rem;
     border-color: transparent;
     background: transparent;
-  }
-
-  .memorisation-action-bar[data-state="wrong"] #check-blank {
-    order: 2;
-  }
-
-  .memorisation-action-bar[data-mode="easy"] {
-    grid-template-columns: 1fr;
   }
 
   .memorisation-word-bank[data-open="true"] {
@@ -1983,8 +1950,8 @@ html[data-theme="dark"] .memorisation-rules-dialog__panel {
 }
 
 .memorisation-action-bar {
-  border: 2px solid var(--locked-line-medium);
-  background: rgba(247, 241, 232, 0.96);
+  border: 0;
+  background: transparent;
   backdrop-filter: none;
 }
 
