@@ -43,7 +43,7 @@
         </div>
       </header>
 
-      <header class="interactive-hero memorisation-page-header">
+      <header id="memorisation-page-header" class="interactive-hero memorisation-page-header">
         <a class="interactive-return" href="../index.html" data-preserve-theme>Back to Interactive</a>
         <div class="memorisation-page-header__grid">
           <div class="memorisation-page-header__copy">
@@ -110,7 +110,7 @@
 
       <main class="interactive-app-shell memorisation-layout">
         <section class="interactive-panel memorisation-workspace">
-          <section class="interactive-subtle-panel memorisation-control-band">
+          <section id="session-setup" class="interactive-subtle-panel memorisation-control-band">
             <div class="memorisation-current-row">
               <div>
                 <p class="memorisation-question-label">Current set</p>
@@ -141,12 +141,15 @@
               </button>
               <button id="mode-scaffold" class="memorisation-mode-button" type="button">
                 <span data-compact-label="Easy">Easy Mode</span>
-                <small>Blanks and hints, still typed by hand</small>
+                <small>Key words, then visible copy</small>
               </button>
               <button id="mode-review" class="memorisation-mode-button" type="button" disabled>
                 <span data-compact-label="Review">Review</span>
                 <small>Missed or revealed items</small>
               </button>
+            </div>
+            <div class="memorisation-launcher-actions">
+              <button id="session-start" class="doc-link" type="button">Start session</button>
             </div>
           </section>
 
@@ -201,16 +204,21 @@
             </div>
           </section>
 
-          <section class="memorisation-practice-shell">
+          <section id="practice-shell" class="memorisation-practice-shell" hidden>
             <section id="session-banner" class="interactive-accent-panel memorisation-banner" hidden></section>
 
             <section id="session-page" class="memorisation-session-page"></section>
+
+            <button id="practice-refine" class="secondary-link memorisation-practice-refine" type="button">
+              Return
+            </button>
 
             <div class="memorisation-action-bar" role="group" aria-label="Session actions">
               <button id="prev-blank" class="secondary-link" type="button">Previous</button>
               <button id="check-blank" class="doc-link" type="button">Check</button>
               <button id="reveal-blank" class="secondary-link" type="button">Reveal</button>
               <button id="next-blank" class="secondary-link" type="button">Next</button>
+              <p id="session-action-hint" class="memorisation-action-hint">Enter ↵ to check</p>
             </div>
           </section>
         </section>

@@ -25,7 +25,6 @@ const fileOrder = [
 ];
 
 const reviewPageSize = 4;
-const wordBankHintLimit = 8;
 const questionPageSizeByFile = {
   "full-reconstruction": 2,
   "guided-cloze": 3,
@@ -38,7 +37,7 @@ const collator = new Intl.Collator(undefined, {
   sensitivity: "base",
 });
 // Use localStorage intentionally so a learner can resume the same drill after refresh or browser restart.
-const localSessionStateVersion = 1;
+const localSessionStateVersion = 2;
 const localSessionStoragePrefix = "memorisation-bank-session";
 const inputPersistDelayMs = 150;
 const answerFieldResizeFrames = new WeakMap();
@@ -84,10 +83,16 @@ const checkBlankButton = document.getElementById("check-blank");
 const revealBlankButton = document.getElementById("reveal-blank");
 const nextBlankButton = document.getElementById("next-blank");
 const reviewToggleButton = document.getElementById("review-toggle");
+const sessionActionHint = document.getElementById("session-action-hint");
 const sessionBanner = document.getElementById("session-banner");
 const sessionPage = document.getElementById("session-page");
 const sessionOutline = document.getElementById("session-outline");
 const actionBar = document.querySelector(".memorisation-action-bar");
+const sessionSetup = document.getElementById("session-setup");
+const practiceShell = document.getElementById("practice-shell");
+const sessionStartButton = document.getElementById("session-start");
+const practiceRefineButton = document.getElementById("practice-refine");
+const memorisationPageHeader = document.getElementById("memorisation-page-header");
 const drillRulesDialog = document.getElementById("drill-rules-dialog");
 const drillRulesOpenButton = document.getElementById("drill-rules-open");
 const drillRulesCloseButton = document.getElementById("drill-rules-close");
@@ -118,8 +123,11 @@ const appState = {
   reviewPageIndex: 0,
   reviewMode: false,
   learningMode: "full",
+  selectedMode: "full",
+  sessionView: "setup",
   currentBlankId: "",
   pendingFocusBlankId: "",
+  setupReturnBlankId: "",
   lastMainBlankId: "",
   lastReviewBlankId: "",
   interactionTick: 0,
@@ -127,6 +135,7 @@ const appState = {
   revealedQuestionIds: new Set(),
   blankInputRefs: new Map(),
   blankInputMirrorRefs: new Map(),
+  easyQuestionStates: new Map(),
   wordBankOpen: false,
   wordBankMessage: "",
   wordBankMessageTimeoutId: 0,
@@ -157,6 +166,39 @@ function formatDefinitionScope(scope) {
 
 function pluralise(count, singular, plural = `${singular}s`) {
   return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function normalizeCopyText(value) {
+  return String(value ?? "")
+    .normalize("NFC")
+    .replace(/[‐‑‒–—−]/g, "-")
+    .replace(/[‘’‚‛`´]/g, "'")
+    .replace(/[“”„‟]/g, '"')
+    .replace(/\u00a0/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getStableShuffleHash(value, seed = "") {
+  const text = `${seed}::${value}`;
+  let hash = 0;
+
+  for (let index = 0; index < text.length; index += 1) {
+    hash = (hash * 31 + text.charCodeAt(index)) % 9973;
+  }
+
+  return hash;
+}
+
+function stableShuffleEntries(entries, seed = "") {
+  return entries
+    .map((entry, index) => ({
+      entry,
+      index,
+      hash: getStableShuffleHash(entry.normalized || entry.text || String(index), seed),
+    }))
+    .sort((left, right) => left.hash - right.hash || left.index - right.index)
+    .map(({ entry }) => entry);
 }
 
 function setFeedbackMessage(element, message, tone = "neutral") {
@@ -724,6 +766,16 @@ function getFileCountLabel(fileEntry) {
   return pluralise(fileEntry.count, "item");
 }
 
+function getCompactFileLabel(fileEntry = getFileEntry()) {
+  const rawLabel = fileEntry?.label || "Practice";
+  return rawLabel
+    .replace(/\bcore\b/gi, "")
+    .replace(/\bguided\b/gi, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toUpperCase();
+}
+
 function normalizeLearningMode(mode, fallback = "full") {
   if (mode === "easy" || mode === "scaffold") {
     return "easy";
@@ -740,6 +792,10 @@ function getDefaultLearningModeForFile(fileId = appState.file) {
   return fileId === "guided-cloze" || fileId === "multi-round-cloze" ? "easy" : "full";
 }
 
+function getDefaultSelectedModeForFile(fileId = appState.file) {
+  return getDefaultLearningModeForFile(fileId);
+}
+
 function getLearningMode() {
   if (appState.reviewMode) {
     return "review";
@@ -754,6 +810,25 @@ function canScaffoldCurrentBlank() {
 }
 
 function switchLearningMode(mode) {
+  if (appState.sessionView !== "practice") {
+    const nextMode = mode === "review" ? "review" : normalizeLearningMode(mode);
+
+    if (nextMode === "review" && appState.reviewQueueBlankIds.length === 0) {
+      return;
+    }
+
+    if (nextMode === "easy" && !canScaffoldCurrentBlank()) {
+      return;
+    }
+
+    appState.selectedMode = nextMode;
+    renderModeSwitcher();
+    updateSessionViewChrome();
+    renderSetupLauncher();
+    persistSessionStateNow();
+    return;
+  }
+
   if (mode === "review") {
     setReviewMode(true);
     return;
@@ -772,11 +847,13 @@ function switchLearningMode(mode) {
   appState.learningMode = nextMode;
   appState.wordBankOpen = false;
   setWordBankMessage("");
-  renderSession({ focusBlankId: getActiveBlankId() });
+  renderSession({
+    focusBlankId: nextMode === "easy" ? getPrimaryBlankIdForBlank(getActiveBlankId()) : getActiveBlankId(),
+  });
 }
 
 function renderModeSwitcher() {
-  const mode = getLearningMode();
+  const mode = appState.sessionView === "practice" ? getLearningMode() : appState.selectedMode;
   const scaffoldAvailable = canScaffoldCurrentBlank();
   const reviewCount = appState.reviewQueueBlankIds.length;
 
@@ -793,6 +870,103 @@ function renderModeSwitcher() {
   modeReviewButton.setAttribute("aria-pressed", String(mode === "review"));
   modeReviewButton.querySelector("small").textContent =
     reviewCount === 0 ? "Missed or revealed items" : `${pluralise(reviewCount, "item")} queued`;
+}
+
+function applySelectedModeToPractice() {
+  if (appState.selectedMode === "review") {
+    if (appState.reviewQueueBlankIds.length === 0) {
+      appState.selectedMode = normalizeLearningMode(appState.learningMode, getDefaultLearningModeForFile());
+      appState.reviewMode = false;
+      return;
+    }
+
+    appState.lastMainBlankId = resolvePreferredBlankId(appState.sessionBlankIds, [
+      appState.setupReturnBlankId,
+      appState.currentBlankId,
+      appState.lastMainBlankId,
+    ]);
+    appState.reviewMode = true;
+    return;
+  }
+
+  appState.reviewMode = false;
+  appState.learningMode = normalizeLearningMode(appState.selectedMode, getDefaultLearningModeForFile());
+}
+
+function startSession() {
+  if (!appState.sessionBlankIds.length) {
+    return;
+  }
+
+  applySelectedModeToPractice();
+  appState.sessionView = "practice";
+  appState.wordBankOpen = false;
+  setWordBankMessage("");
+
+  const blankOrder = getCurrentModeBlankOrder();
+  const focusBlankId =
+    appState.reviewMode && appState.reviewQueueBlankIds.length
+      ? resolvePreferredBlankId(appState.reviewQueueBlankIds, [appState.lastReviewBlankId])
+      : resolvePreferredBlankId(blankOrder, [
+          appState.setupReturnBlankId,
+          appState.lastMainBlankId,
+          appState.currentBlankId,
+          blankOrder[0],
+        ]);
+
+  appState.setupReturnBlankId = "";
+  renderSession({ focusBlankId });
+}
+
+function returnToSetup() {
+  const setupFocusBlankId = appState.reviewMode
+    ? resolvePreferredBlankId(appState.sessionBlankIds, [appState.lastMainBlankId, appState.currentBlankId])
+    : resolvePreferredBlankId(appState.sessionBlankIds, [
+        appState.currentBlankId,
+        appState.lastMainBlankId,
+        getPrimaryBlankIdForBlank(getActiveBlankId(appState.sessionBlankIds)),
+      ]);
+
+  appState.selectedMode = getLearningMode();
+  appState.reviewMode = false;
+  appState.sessionView = "setup";
+  appState.setupReturnBlankId = setupFocusBlankId;
+  appState.wordBankOpen = false;
+  setWordBankMessage("");
+  renderSession({ focusBlankId: setupFocusBlankId });
+}
+
+function updateSessionViewChrome() {
+  const inPractice = appState.sessionView === "practice";
+
+  if (memorisationPageHeader) {
+    memorisationPageHeader.hidden = inPractice;
+  }
+
+  if (sessionSetup) {
+    sessionSetup.hidden = inPractice;
+  }
+
+  if (practiceShell) {
+    practiceShell.hidden = !inPractice;
+  }
+
+  if (sessionStartButton) {
+    sessionStartButton.disabled =
+      !appState.sessionBlankIds.length ||
+      (appState.selectedMode === "easy" && !canScaffoldCurrentBlank()) ||
+      (appState.selectedMode === "review" && appState.reviewQueueBlankIds.length === 0);
+    sessionStartButton.textContent =
+      appState.selectedMode === "review"
+        ? "Start review"
+        : appState.selectedMode === "easy"
+          ? "Start Easy Mode"
+          : "Start Full Dictation";
+  }
+
+  if (practiceRefineButton) {
+    practiceRefineButton.hidden = !inPractice;
+  }
 }
 
 function applySelection(nextSelection) {
@@ -1377,6 +1551,35 @@ function createBlankState(blank) {
   };
 }
 
+function createEasyQuestionState(question) {
+  return {
+    questionId: question.id,
+    easyStep: "keywords",
+    selectedKeywordIds: [],
+    keywordStatus: "idle",
+    copyValue: "",
+    copyStatus: "idle",
+  };
+}
+
+function getEasyQuestionState(questionId) {
+  if (!questionId) {
+    return null;
+  }
+
+  if (!appState.easyQuestionStates.has(questionId)) {
+    const question = getQuestion(questionId);
+
+    if (!question) {
+      return null;
+    }
+
+    appState.easyQuestionStates.set(questionId, createEasyQuestionState(question));
+  }
+
+  return appState.easyQuestionStates.get(questionId);
+}
+
 function buildReviewPriority(blankState) {
   return (
     (blankState.revealed ? 1_000_000 : 0) +
@@ -1394,6 +1597,9 @@ function rebuildSessionRuntime(sessionQuestions) {
   appState.sessionBlankMap = new Map(
     sessionQuestions.flatMap(question => question.blanks.map(blank => [blank.id, blank]))
   );
+  appState.easyQuestionStates = new Map(
+    sessionQuestions.map(question => [question.id, createEasyQuestionState(question)])
+  );
   appState.blankStates = new Map(
     appState.sessionBlankIds.map(blankId => [blankId, createBlankState(appState.sessionBlankMap.get(blankId))])
   );
@@ -1404,6 +1610,8 @@ function rebuildSessionRuntime(sessionQuestions) {
   appState.reviewPageIndex = 0;
   appState.reviewMode = false;
   appState.learningMode = getDefaultLearningModeForFile(appState.file);
+  appState.selectedMode = getDefaultSelectedModeForFile(appState.file);
+  appState.sessionView = "setup";
   appState.currentBlankId = appState.sessionBlankIds[0] || "";
   appState.pendingFocusBlankId = appState.currentBlankId;
   appState.lastMainBlankId = appState.currentBlankId;
@@ -1448,6 +1656,21 @@ function serializeBlankState(blankState) {
   };
 }
 
+function serializeEasyQuestionState(easyState) {
+  if (!easyState) {
+    return null;
+  }
+
+  return {
+    questionId: easyState.questionId,
+    easyStep: easyState.easyStep,
+    selectedKeywordIds: easyState.selectedKeywordIds,
+    keywordStatus: easyState.keywordStatus,
+    copyValue: easyState.copyValue,
+    copyStatus: easyState.copyStatus,
+  };
+}
+
 function buildPersistedSessionState() {
   if (!appState.sessionBlankIds.length) {
     return null;
@@ -1460,8 +1683,14 @@ function buildPersistedSessionState() {
     lastMainBlankId: resolvePreferredBlankId(appState.sessionBlankIds, [appState.lastMainBlankId]),
     lastReviewBlankId: resolvePreferredBlankId(appState.reviewQueueBlankIds, [appState.lastReviewBlankId]),
     reviewMode: Boolean(appState.reviewMode && appState.reviewQueueBlankIds.length),
+    learningMode: normalizeLearningMode(appState.learningMode, getDefaultLearningModeForFile()),
+    selectedMode: appState.selectedMode === "review" ? "review" : normalizeLearningMode(appState.selectedMode),
+    sessionView: appState.sessionView,
     interactionTick: appState.interactionTick,
     blankStates: appState.sessionBlankIds.map(blankId => serializeBlankState(getBlankState(blankId))).filter(Boolean),
+    easyQuestionStates: appState.sessionQuestionIds
+      .map(questionId => serializeEasyQuestionState(getEasyQuestionState(questionId)))
+      .filter(Boolean),
   };
 }
 
@@ -1545,6 +1774,26 @@ function restoreBlankState(blankState, restoredBlankState) {
   blankState.reviewPriority = Number(restoredBlankState.reviewPriority) || buildReviewPriority(blankState);
 }
 
+function restoreEasyQuestionState(easyState, restoredEasyState) {
+  if (!easyState || !restoredEasyState) {
+    return;
+  }
+
+  const validKeywordIds = new Set(getEasyKeywordChips(getQuestion(easyState.questionId)).map(chip => chip.id));
+
+  easyState.easyStep = restoredEasyState.easyStep === "copy" ? "copy" : "keywords";
+  easyState.selectedKeywordIds = Array.isArray(restoredEasyState.selectedKeywordIds)
+    ? restoredEasyState.selectedKeywordIds.filter(keywordId => validKeywordIds.has(keywordId))
+    : [];
+  easyState.keywordStatus = ["idle", "wrong", "correct"].includes(restoredEasyState.keywordStatus)
+    ? restoredEasyState.keywordStatus
+    : "idle";
+  easyState.copyValue = String(restoredEasyState.copyValue || "");
+  easyState.copyStatus = ["idle", "wrong", "correct"].includes(restoredEasyState.copyStatus)
+    ? restoredEasyState.copyStatus
+    : "idle";
+}
+
 function syncPageIndexForBlank(blankId, reviewMode = appState.reviewMode) {
   if (!blankId) {
     return;
@@ -1595,7 +1844,22 @@ function restoreSessionStateFromLocalStorage() {
     }
   });
 
+  const restoredEasyStates = Array.isArray(restoredSessionState.easyQuestionStates)
+    ? restoredSessionState.easyQuestionStates
+    : [];
+
+  restoredEasyStates.forEach(restoredEasyState => {
+    const easyState = getEasyQuestionState(restoredEasyState?.questionId);
+    restoreEasyQuestionState(easyState, restoredEasyState);
+  });
+
   appState.interactionTick = Math.max(0, Number(restoredSessionState.interactionTick) || 0);
+  appState.learningMode = normalizeLearningMode(restoredSessionState.learningMode, getDefaultLearningModeForFile());
+  appState.selectedMode =
+    restoredSessionState.selectedMode === "review"
+      ? "review"
+      : normalizeLearningMode(restoredSessionState.selectedMode, appState.learningMode);
+  appState.sessionView = restoredSessionState.sessionView === "practice" ? "practice" : "setup";
   rebuildRevealedQuestionIds();
   updateReviewQueue();
 
@@ -1672,7 +1936,27 @@ function updateReviewQueue() {
   }
 }
 
+function isEasyLearningMode() {
+  return !appState.reviewMode && getLearningMode() === "easy";
+}
+
+function getQuestionPrimaryBlankId(question) {
+  return question?.blanks?.[0]?.id || "";
+}
+
+function getEasyQuestionBlankOrder() {
+  return appState.sessionQuestions.map(question => getQuestionPrimaryBlankId(question)).filter(Boolean);
+}
+
+function getPrimaryBlankIdForBlank(blankId) {
+  return getQuestionPrimaryBlankId(getQuestion(getBlank(blankId)?.questionId || "")) || blankId;
+}
+
 function getCurrentModeBlankOrder() {
+  if (isEasyLearningMode()) {
+    return getEasyQuestionBlankOrder();
+  }
+
   return appState.reviewMode ? appState.reviewQueueBlankIds : appState.sessionBlankIds;
 }
 
@@ -1723,11 +2007,13 @@ function queueFocusBlank(blankId, { includeReveal = false } = {}) {
     const field = appState.blankInputRefs.get(blankId);
     const mirror = appState.blankInputMirrorRefs.get(blankId);
 
-    if (!field || !mirror) {
+    if (!field) {
       return;
     }
 
-    scheduleAnswerFieldResize(field, mirror);
+    if (mirror) {
+      scheduleAnswerFieldResize(field, mirror);
+    }
 
     try {
       field.focus({ preventScroll: true });
@@ -1779,6 +2065,11 @@ function checkCurrentBlank() {
     return;
   }
 
+  if (isEasyLearningMode()) {
+    checkEasyQuestion(getBlank(activeBlankId)?.questionId || "");
+    return;
+  }
+
   const blankState = getBlankState(activeBlankId);
 
   if (blankState?.status === "correct") {
@@ -1793,6 +2084,62 @@ function checkCurrentBlank() {
 
   checkBlank(activeBlankId);
   renderSession({ focusBlankId: activeBlankId });
+}
+
+function markQuestionCorrectFromEasy(question) {
+  question.blanks.forEach(blank => {
+    const blankState = getBlankState(blank.id);
+
+    if (!blankState) {
+      return;
+    }
+
+    blankState.value = blank.answerModel.full_answer;
+    blankState.status = "correct";
+    blankState.coveredGroups = blank.answerModel.concept_groups.filter(group => group.required).map(group => group.id);
+    blankState.missingGroups = [];
+    blankState.contradictionHits = [];
+    blankState.matchState = "exact";
+    blankState.reviewPriority = buildReviewPriority(blankState);
+  });
+
+  updateReviewQueue();
+}
+
+function checkEasyQuestion(questionId) {
+  const question = getQuestion(questionId);
+  const easyState = getEasyQuestionState(questionId);
+
+  if (!question || !easyState) {
+    return;
+  }
+
+  if (easyState.easyStep === "keywords") {
+    if (hasSelectedAllEasyKeywords(question, easyState)) {
+      easyState.keywordStatus = "correct";
+      easyState.easyStep = "copy";
+    } else {
+      easyState.keywordStatus = "wrong";
+    }
+
+    renderSession({ focusBlankId: getQuestionPrimaryBlankId(question) });
+    return;
+  }
+
+  if (normalizeCopyText(easyState.copyValue) === normalizeCopyText(question.fullAnswer)) {
+    easyState.copyStatus = "correct";
+    markQuestionCorrectFromEasy(question);
+    const nextBlankId = getAdjacentBlankId(getQuestionPrimaryBlankId(question), 1);
+
+    if (nextBlankId) {
+      focusBlank(nextBlankId);
+      return;
+    }
+  } else {
+    easyState.copyStatus = "wrong";
+  }
+
+  renderSession({ focusBlankId: getQuestionPrimaryBlankId(question) });
 }
 
 function setBlankValue(blankId, value) {
@@ -1882,8 +2229,38 @@ function onBlankEnter(blankId) {
     return;
   }
 
-  checkBlank(blankId);
-  renderSession({ focusBlankId: blankId });
+  checkCurrentBlank();
+}
+
+function shouldIgnoreGlobalSessionEnter(event) {
+  const activeElement = document.activeElement;
+  const isTypingField =
+    activeElement instanceof HTMLTextAreaElement ||
+    activeElement instanceof HTMLInputElement ||
+    activeElement instanceof HTMLSelectElement ||
+    activeElement?.isContentEditable;
+
+  return (
+    event.key !== "Enter" ||
+    event.shiftKey ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.altKey ||
+    event.isComposing ||
+    event.keyCode === 229 ||
+    isTypingField
+  );
+}
+
+function onGlobalSessionKeydown(event) {
+  if (shouldIgnoreGlobalSessionEnter(event)) {
+    return;
+  }
+
+  if (isEasyLearningMode()) {
+    event.preventDefault();
+    checkCurrentBlank();
+  }
 }
 
 function setReviewMode(reviewMode) {
@@ -1915,10 +2292,14 @@ function setReviewMode(reviewMode) {
   if (reviewMode) {
     appState.lastReviewBlankId = nextFocusBlankId;
   } else {
-    appState.lastMainBlankId = nextFocusBlankId;
+    appState.lastMainBlankId =
+      getLearningMode() === "easy" ? getPrimaryBlankIdForBlank(nextFocusBlankId) : nextFocusBlankId;
   }
 
-  renderSession({ focusBlankId: nextFocusBlankId });
+  renderSession({
+    focusBlankId:
+      !reviewMode && getLearningMode() === "easy" ? getPrimaryBlankIdForBlank(nextFocusBlankId) : nextFocusBlankId,
+  });
 }
 
 function goToPage(nextPageIndex) {
@@ -2281,6 +2662,81 @@ function getScaffoldModel(question, blank) {
   return buildScaffoldModel(getScaffoldAnswerText(question, blank), getScaffoldConfig(blank));
 }
 
+function getQuestionScaffoldConfig(question) {
+  return {
+    keyTerms: question?.conceptGroups?.flatMap(group => group.keywords || []) || [],
+  };
+}
+
+function getEasyKeywordModel(question) {
+  if (!question?.fullAnswer) {
+    return {
+      chips: [],
+      parts: [],
+    };
+  }
+
+  const scaffoldModel = buildScaffoldModel(question.fullAnswer, getQuestionScaffoldConfig(question));
+  const chipsByNormalized = new Map();
+  const parts = [];
+
+  scaffoldModel.words.forEach(word => {
+    if (!word.isCore) {
+      parts.push({
+        type: "word",
+        text: word.text,
+      });
+      return;
+    }
+
+    const normalized = normalizeCopyText(word.text).toLowerCase();
+
+    if (!normalized) {
+      parts.push({
+        type: "word",
+        text: word.text,
+      });
+      return;
+    }
+
+    if (!chipsByNormalized.has(normalized)) {
+      chipsByNormalized.set(normalized, {
+        id: `keyword-${chipsByNormalized.size}`,
+        text: word.text,
+        normalized,
+      });
+    }
+
+    const chipModel = chipsByNormalized.get(normalized);
+    parts.push({
+      type: "slot",
+      id: chipModel.id,
+      text: word.text,
+      normalized,
+    });
+  });
+
+  return {
+    chips: stableShuffleEntries(Array.from(chipsByNormalized.values()), question.id),
+    parts,
+  };
+}
+
+function getEasyKeywordChips(question) {
+  return getEasyKeywordModel(question).chips;
+}
+
+function hasSelectedAllEasyKeywords(question, easyState = getEasyQuestionState(question?.id || "")) {
+  const chips = getEasyKeywordChips(question);
+
+  if (!chips.length) {
+    return true;
+  }
+
+  const selectedIds = new Set(easyState?.selectedKeywordIds || []);
+  return chips.every(chip => selectedIds.has(chip.id));
+}
+
 function getWordBankHintScore(word) {
   const normalized = String(word || "");
   const chemistryTokenBonus = /[0-9+()[\]{}=<>/-]/u.test(normalized) ? 4 : 0;
@@ -2297,7 +2753,6 @@ function getLimitedWordBankHints(scaffoldModel) {
       score: getWordBankHintScore(word),
     }))
     .sort((left, right) => right.score - left.score || left.index - right.index || left.word.localeCompare(right.word))
-    .slice(0, wordBankHintLimit)
     .map(entry => entry.word);
 }
 
@@ -2334,6 +2789,210 @@ function createEasyModeSkeleton(question, blank) {
 
   shell.append(label, skeletonLine, copy);
   return shell;
+}
+
+function createEasyKeywordSkeleton(question, selectedIds) {
+  const keywordModel = getEasyKeywordModel(question);
+  const shell = document.createElement("section");
+  shell.className = "memorisation-easy-skeleton memorisation-easy-skeleton--keywords";
+  shell.setAttribute("aria-label", "Easy Mode answer skeleton");
+
+  const label = document.createElement("p");
+  label.className = "memorisation-answer__label";
+  label.textContent = "Answer skeleton";
+
+  const skeletonLine = document.createElement("div");
+  skeletonLine.className = "memorisation-easy-skeleton__line";
+
+  keywordModel.parts.forEach(part => {
+    const partElement = document.createElement("span");
+
+    if (part.type === "slot") {
+      const isSelected = selectedIds.has(part.id);
+      partElement.className = "memorisation-easy-skeleton__blank";
+      partElement.dataset.filled = String(isSelected);
+      partElement.setAttribute("aria-label", isSelected ? `Selected ${part.text}` : "blank");
+      partElement.textContent = isSelected ? part.text : "";
+    } else {
+      partElement.className = "memorisation-easy-skeleton__word";
+      partElement.textContent = part.text;
+    }
+
+    skeletonLine.append(partElement);
+  });
+
+  const copy = document.createElement("p");
+  copy.className = "memorisation-easy-skeleton__copy";
+  copy.textContent = "Selected words appear in the skeleton before copy practice.";
+
+  shell.append(label, skeletonLine, copy);
+  return shell;
+}
+
+function createEasyKeywordPanel(question) {
+  const easyState = getEasyQuestionState(question.id);
+  const chips = getEasyKeywordChips(question);
+  const selectedIds = new Set(easyState?.selectedKeywordIds || []);
+  const readyForCopy = hasSelectedAllEasyKeywords(question, easyState);
+  const shell = document.createElement("section");
+  shell.className = "memorisation-easy-panel";
+  shell.dataset.step = "keywords";
+  shell.setAttribute("aria-label", "Easy Mode key words");
+
+  const label = document.createElement("p");
+  label.className = "memorisation-answer__label";
+  label.textContent = "Easy Mode · Step 1";
+
+  const copy = document.createElement("p");
+  copy.className = "memorisation-easy-panel__copy";
+  copy.textContent = "Pick the key chemistry words that belong in the answer.";
+
+  const list = document.createElement("div");
+  list.className = "memorisation-easy-keywords";
+
+  chips.forEach(chipModel => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "memorisation-easy-keyword";
+    chip.dataset.selected = String(selectedIds.has(chipModel.id));
+    chip.textContent = chipModel.text;
+    chip.setAttribute("aria-pressed", String(selectedIds.has(chipModel.id)));
+    chip.addEventListener("click", () => {
+      const nextSelectedIds = new Set(getEasyQuestionState(question.id)?.selectedKeywordIds || []);
+
+      if (nextSelectedIds.has(chipModel.id)) {
+        nextSelectedIds.delete(chipModel.id);
+      } else {
+        nextSelectedIds.add(chipModel.id);
+      }
+
+      easyState.selectedKeywordIds = Array.from(nextSelectedIds);
+      easyState.keywordStatus = hasSelectedAllEasyKeywords(question, easyState) ? "correct" : "idle";
+      renderSession({ focusBlankId: getQuestionPrimaryBlankId(question) });
+    });
+    list.append(chip);
+  });
+
+  const actionRow = document.createElement("div");
+  actionRow.className = "memorisation-easy-action-row";
+
+  const actionButton = document.createElement("button");
+  actionButton.type = "button";
+  actionButton.className = "doc-link memorisation-easy-action";
+  actionButton.textContent = readyForCopy ? "Continue to copy" : "Check key words";
+  actionButton.addEventListener("click", () => {
+    checkCurrentBlank();
+  });
+  actionRow.append(actionButton);
+
+  shell.append(label, copy, createEasyKeywordSkeleton(question, selectedIds), list, actionRow);
+
+  if (easyState?.keywordStatus === "wrong") {
+    const message = document.createElement("p");
+    message.className = "memorisation-easy-panel__message";
+    message.textContent = "Select every expected key word before moving to copy practice.";
+    shell.append(message);
+  }
+
+  return shell;
+}
+
+function createEasyCopyField(question) {
+  const easyState = getEasyQuestionState(question.id);
+  const fieldShell = document.createElement("div");
+  fieldShell.className = "memorisation-answer-card__field";
+
+  const label = document.createElement("label");
+  label.className = "memorisation-field__label";
+  label.textContent = "Copy the full answer";
+  label.setAttribute("for", `easy-copy-${question.id}`);
+
+  const field = document.createElement("textarea");
+  field.id = `easy-copy-${question.id}`;
+  field.className = "memorisation-input memorisation-easy-copy-input";
+  field.spellcheck = false;
+  field.autocomplete = "off";
+  field.autocapitalize = "off";
+  field.placeholder = "Type the visible answer exactly.";
+  field.value = easyState?.copyValue || "";
+  field.rows = 7;
+  field.addEventListener("input", event => {
+    easyState.copyValue = event.target.value;
+    easyState.copyStatus = "idle";
+    schedulePersistSessionState();
+  });
+  field.addEventListener("keydown", event => {
+    const isEnter = event.key === "Enter";
+    const allowNewLine = event.shiftKey;
+
+    if (!isEnter || allowNewLine || event.isComposing || event.keyCode === 229) {
+      return;
+    }
+
+    event.preventDefault();
+    checkCurrentBlank();
+  });
+
+  appState.blankInputRefs.set(getQuestionPrimaryBlankId(question), field);
+  fieldShell.append(label, field);
+  return fieldShell;
+}
+
+function createEasyCopyPanel(question) {
+  const easyState = getEasyQuestionState(question.id);
+  const shell = document.createElement("section");
+  shell.className = "memorisation-easy-panel";
+  shell.dataset.step = "copy";
+  shell.setAttribute("aria-label", "Easy Mode copy practice");
+
+  const label = document.createElement("p");
+  label.className = "memorisation-answer__label";
+  label.textContent = "Easy Mode · Step 2";
+
+  const copy = document.createElement("p");
+  copy.className = "memorisation-easy-panel__copy";
+  copy.textContent = "Copy the visible canonical answer manually.";
+
+  const answerBlock = document.createElement("div");
+  answerBlock.className = "memorisation-easy-copy-answer";
+
+  const answerLabel = document.createElement("span");
+  answerLabel.className = "memorisation-answer__label";
+  answerLabel.textContent = "Full answer";
+
+  const answerText = document.createElement("p");
+  answerText.className = "memorisation-answer__text";
+  answerText.textContent = question.fullAnswer;
+
+  answerBlock.append(answerLabel, answerText);
+  const actionRow = document.createElement("div");
+  actionRow.className = "memorisation-easy-action-row";
+
+  const actionButton = document.createElement("button");
+  actionButton.type = "button";
+  actionButton.className = "doc-link memorisation-easy-action";
+  actionButton.textContent = "Check copy";
+  actionButton.addEventListener("click", () => {
+    checkCurrentBlank();
+  });
+
+  actionRow.append(actionButton);
+  shell.append(label, copy, answerBlock, createEasyCopyField(question));
+
+  if (easyState?.copyStatus === "wrong") {
+    const message = document.createElement("p");
+    message.className = "memorisation-easy-panel__message";
+    message.textContent = "Copy does not match the visible answer yet. Check words, order, and chemistry symbols.";
+    shell.append(message);
+  }
+
+  shell.append(actionRow);
+  return shell;
+}
+
+function createEasyPracticePanel(question) {
+  const easyState = getEasyQuestionState(question.id);
+  return easyState?.easyStep === "copy" ? createEasyCopyPanel(question) : createEasyKeywordPanel(question);
 }
 
 function createWordBankPanel(question, blank) {
@@ -2661,6 +3320,7 @@ function renderProgressHeader() {
   const completedBlanks = getCompletedBlankCount();
   const reviewCount = appState.reviewQueueBlankIds.length;
   const promptLabel = activeBlankIndex >= 0 ? activeBlankIndex + 1 : 0;
+  const mode = getLearningMode();
 
   pageCounter.textContent = `${appState.reviewMode ? "Review" : "Prompt"} ${promptLabel} / ${blankOrder.length}`;
   completionChip.textContent = `${completedBlanks} / ${totalBlanks} blanks completed`;
@@ -2672,7 +3332,8 @@ function renderProgressHeader() {
   revealBlankButton.textContent =
     activeQuestion && appState.revealedQuestionIds.has(activeQuestion.id) ? "Shown" : "Reveal";
   actionBar.dataset.state = activeBlankState?.status || "idle";
-  actionBar.dataset.mode = getLearningMode();
+  actionBar.dataset.mode = mode;
+  actionBar.hidden = mode === "easy";
   prevBlankButton.textContent = "Previous";
   checkBlankButton.textContent = "Check";
   nextBlankButton.textContent = "Next";
@@ -2681,7 +3342,16 @@ function renderProgressHeader() {
   revealBlankButton.className = "secondary-link";
   checkBlankButton.setAttribute("aria-label", "Check current answer");
 
-  if (activeBlankState?.status === "wrong") {
+  if (mode === "easy" && activeQuestion) {
+    const easyState = getEasyQuestionState(activeQuestion.id);
+    const readyForCopy = hasSelectedAllEasyKeywords(activeQuestion, easyState);
+    checkBlankButton.textContent =
+      easyState?.easyStep === "copy" ? "Check copy" : readyForCopy ? "Continue to copy" : "Check key words";
+    checkBlankButton.setAttribute(
+      "aria-label",
+      easyState?.easyStep === "copy" ? "Check copied answer" : "Check selected key words"
+    );
+  } else if (activeBlankState?.status === "wrong") {
     checkBlankButton.textContent = "Try again";
     nextBlankButton.textContent = appState.reviewMode ? "Again later" : "Continue later";
   } else if (activeBlankState?.status === "correct") {
@@ -2695,12 +3365,23 @@ function renderProgressHeader() {
 
   // Keep review re-entry available as soon as something is queued, while leaving it outside the main action bar.
   const reviewToggleText = appState.reviewMode ? "Back to main session" : `Review queue (${reviewCount})`;
-  reviewToggleButton.hidden = reviewCount === 0;
+  reviewToggleButton.hidden = appState.sessionView === "practice" || reviewCount === 0;
   reviewToggleButton.textContent = reviewToggleText;
 
   if (mobileReviewToggleButton) {
-    mobileReviewToggleButton.hidden = reviewCount === 0;
+    mobileReviewToggleButton.hidden = appState.sessionView === "practice" || reviewCount === 0;
     mobileReviewToggleButton.textContent = appState.reviewMode ? "Main" : `Review (${reviewCount})`;
+  }
+
+  if (sessionActionHint) {
+    if (activeBlankState?.status === "correct") {
+      sessionActionHint.textContent = "Enter ↵ to continue";
+    } else if (mode === "easy" && activeQuestion) {
+      const easyState = getEasyQuestionState(activeQuestion.id);
+      sessionActionHint.textContent = easyState?.easyStep === "copy" ? "Enter ↵ to check copy" : "Enter ↵ to check";
+    } else {
+      sessionActionHint.textContent = "Enter ↵ to check";
+    }
   }
 
   renderModeSwitcher();
@@ -2779,6 +3460,26 @@ function renderSessionHeaderCopy() {
   currentSetCopy.textContent = `${stageEntry?.id || "Stage"} · ${
     levelEntry?.label || "Level"
   } · ${getFileCountLabel(fileEntry)}`;
+}
+
+function renderSetupLauncher() {
+  sessionBanner.hidden = true;
+  sessionBanner.innerHTML = "";
+  renderStatusCard(
+    sessionPage,
+    appState.sessionBlankIds.length
+      ? `Ready to start ${appState.selectedMode === "easy" ? "Easy Mode" : appState.selectedMode === "review" ? "Review" : "Full Dictation"} with ${pluralise(getCurrentModeBlankOrder().length, "prompt")}.`
+      : "Choose a stage, training file, topic, and mode to prepare a session."
+  );
+  renderSessionOutline();
+  prevBlankButton.disabled = true;
+  checkBlankButton.disabled = true;
+  revealBlankButton.disabled = true;
+  nextBlankButton.disabled = true;
+  reviewToggleButton.hidden = true;
+  if (mobileReviewToggleButton) {
+    mobileReviewToggleButton.hidden = true;
+  }
 }
 
 function getOutlineStatusLabel(blank, blankState) {
@@ -2884,6 +3585,82 @@ function renderSessionOutline() {
   }
 }
 
+function createCompactSessionStatus(question, blank, promptLabel, totalPrompts) {
+  const fileEntry = getFileEntry();
+  const stageEntry = getStageEntry();
+  const shell = document.createElement("section");
+  shell.className = "memorisation-active-status";
+  shell.setAttribute("aria-label", "Active session status");
+
+  const context = document.createElement("div");
+  context.className = "memorisation-active-status__context";
+
+  const pack = document.createElement("span");
+  pack.className = "memorisation-active-status__pack";
+  pack.textContent = `${stageEntry?.id || question.stage || "Stage"} · ${getCompactFileLabel(fileEntry)}`;
+
+  const topic = document.createElement("span");
+  topic.className = "memorisation-active-status__topic";
+  topic.textContent = `${formatLabel(getLearningMode())} · ${question.topicLabel || question.subtopic || "Current topic"}`;
+
+  context.append(pack, topic);
+
+  const actions = document.createElement("div");
+  actions.className = "memorisation-active-status__actions";
+
+  const progress = document.createElement("span");
+  progress.className = "memorisation-active-status__progress";
+  progress.textContent = `${promptLabel} / ${totalPrompts}`;
+
+  const setupButton = document.createElement("button");
+  setupButton.type = "button";
+  setupButton.className = "secondary-link memorisation-active-status__setup";
+  setupButton.textContent = "Setup";
+  setupButton.addEventListener("click", returnToSetup);
+
+  actions.append(progress, setupButton);
+  shell.append(context, actions);
+  return shell;
+}
+
+function createAnswerCardHeader(question, blank, blankState) {
+  const answerHeader = document.createElement("div");
+  answerHeader.className = "memorisation-answer-card__header";
+
+  const answerHeaderCopy = document.createElement("div");
+
+  const answerLabel = document.createElement("p");
+  answerLabel.className = "memorisation-question-label";
+  answerLabel.textContent = "Your answer";
+
+  answerHeaderCopy.append(answerLabel);
+
+  const statusPill = document.createElement("span");
+  const descriptor = getBlankFeedbackDescriptor(blank, blankState);
+  statusPill.className = "memorisation-status-pill";
+  statusPill.dataset.tone = descriptor.tone;
+  statusPill.textContent = descriptor.label;
+
+  const statusGroup = document.createElement("div");
+  statusGroup.className = "memorisation-answer-card__status";
+
+  if (question.blanks.length > 1) {
+    const blankChip = document.createElement("span");
+    blankChip.id = "active-blank-chip";
+    blankChip.className = "memorisation-card-chip memorisation-card-chip--muted";
+    blankChip.textContent = blank.label;
+    statusGroup.append(blankChip);
+  }
+
+  statusGroup.append(statusPill);
+
+  return {
+    answerHeader,
+    answerHeaderCopy,
+    statusGroup,
+  };
+}
+
 function renderActivePractice() {
   sessionPage.replaceChildren();
   appState.blankInputRefs = new Map();
@@ -2903,40 +3680,11 @@ function renderActivePractice() {
   promptCard.className = "interactive-subtle-panel memorisation-prompt-card";
   promptCard.dataset.blankId = blank.id;
 
-  const promptChips = document.createElement("div");
-  promptChips.className = "memorisation-card-chips";
-
-  const topicChip = document.createElement("span");
-  topicChip.className = "memorisation-card-chip";
-  topicChip.textContent = question.topicLabel || "Current topic";
-
-  const typeChip = document.createElement("span");
-  typeChip.className = "memorisation-card-chip";
-  typeChip.textContent = question.type || question.fileLabel;
-
-  promptChips.append(topicChip, typeChip);
-
-  if (question.blanks.length > 1) {
-    const blankChip = document.createElement("span");
-    blankChip.id = "active-blank-chip";
-    blankChip.className = "memorisation-card-chip memorisation-card-chip--muted";
-    blankChip.textContent = blank.label;
-    promptChips.append(blankChip);
-  }
-
-  const promptLabel = document.createElement("p");
-  promptLabel.className = "memorisation-question-label";
-  promptLabel.textContent = appState.reviewMode ? "Review prompt" : "Active prompt";
-
   const promptTitle = document.createElement("h3");
   promptTitle.id = "active-prompt-title";
   promptTitle.textContent = question.question;
 
-  const promptMeta = document.createElement("p");
-  promptMeta.className = "memorisation-prompt-card__meta";
-  promptMeta.textContent = [buildQuestionMeta(question), getReviewReasonSummary(blank.id)].filter(Boolean).join(" · ");
-
-  promptCard.append(promptChips, promptLabel, promptTitle, promptMeta);
+  promptCard.append(promptTitle);
 
   if (question.prompt && (question.kind === "cloze" || question.prompt !== question.question)) {
     const contextBlock = document.createElement("div");
@@ -2959,39 +3707,24 @@ function renderActivePractice() {
   answerCard.className = "interactive-subtle-panel memorisation-answer-card";
   answerCard.dataset.blankId = blank.id;
 
-  const answerHeader = document.createElement("div");
-  answerHeader.className = "memorisation-answer-card__header";
-
-  const answerHeaderCopy = document.createElement("div");
-
-  const answerLabel = document.createElement("p");
-  answerLabel.className = "memorisation-question-label";
-  answerLabel.textContent = "Your answer";
-
-  const answerCopy = document.createElement("p");
-  answerCopy.className = "memorisation-answer-card__copy";
-  answerCopy.textContent = blank.multiline
-    ? "Use a full multi-line response. Shift+Enter adds a new line without checking."
-    : "Keep the wording tight, then use Check to compare it against the expected chemistry ideas.";
-
-  answerHeaderCopy.append(answerLabel, answerCopy);
-
-  const statusPill = document.createElement("span");
-  const descriptor = getBlankFeedbackDescriptor(blank, blankState);
-  statusPill.className = "memorisation-status-pill";
-  statusPill.dataset.tone = descriptor.tone;
-  statusPill.textContent = descriptor.label;
-
-  if (shouldShowScaffoldSupport(question, blankState)) {
-    answerHeader.append(answerHeaderCopy, statusPill);
+  if (isEasyLearningMode()) {
+    answerCard.append(createEasyPracticePanel(question));
+  } else if (shouldShowScaffoldSupport(question, blankState)) {
+    const { answerHeader, answerHeaderCopy, statusGroup } = createAnswerCardHeader(question, blank, blankState);
+    answerHeader.append(answerHeaderCopy, statusGroup);
     answerCard.append(answerHeader, createEasyModeSkeleton(question, blank), createAnswerField(blank));
     answerCard.append(createWordBankPanel(question, blank));
   } else {
-    answerHeader.append(answerHeaderCopy, statusPill);
+    const { answerHeader, answerHeaderCopy, statusGroup } = createAnswerCardHeader(question, blank, blankState);
+    answerHeader.append(answerHeaderCopy, statusGroup);
     answerCard.append(answerHeader, createAnswerField(blank));
   }
 
-  sessionPage.append(promptCard, answerCard, createFeedbackCard(blank));
+  sessionPage.append(promptCard, answerCard);
+
+  if (!isEasyLearningMode()) {
+    sessionPage.append(createFeedbackCard(blank));
+  }
 
   if (appState.revealedQuestionIds.has(question.id)) {
     sessionPage.append(createRevealPanel(question, blank));
@@ -3040,6 +3773,7 @@ function renderCatalogErrorState(message) {
   appState.sessionBlankIds = [];
   appState.sessionBlankMap = new Map();
   appState.blankStates = new Map();
+  appState.easyQuestionStates = new Map();
   appState.pages = [];
   appState.reviewQueueBlankIds = [];
   appState.reviewPages = [];
@@ -3076,6 +3810,7 @@ function renderFileErrorState(fileEntry, message) {
   appState.sessionBlankIds = [];
   appState.sessionBlankMap = new Map();
   appState.blankStates = new Map();
+  appState.easyQuestionStates = new Map();
   appState.pages = [];
   appState.reviewQueueBlankIds = [];
   appState.reviewPages = [];
@@ -3109,7 +3844,15 @@ function renderFileErrorState(fileEntry, message) {
 }
 
 function renderSession({ focusBlankId = "" } = {}) {
+  if (appState.sessionView !== "practice") {
+    appState.reviewMode = false;
+  }
+
   if (focusBlankId) {
+    if (isEasyLearningMode()) {
+      focusBlankId = getPrimaryBlankIdForBlank(focusBlankId);
+    }
+
     appState.pendingFocusBlankId = focusBlankId;
 
     if (appState.reviewMode) {
@@ -3123,9 +3866,16 @@ function renderSession({ focusBlankId = "" } = {}) {
   updateBadges();
   renderSessionHeaderCopy();
   renderProgressHeader();
-  renderBanner();
-  renderPageContent();
-  renderSessionOutline();
+  updateSessionViewChrome();
+
+  if (appState.sessionView === "practice") {
+    renderBanner();
+    renderPageContent();
+    renderSessionOutline();
+  } else {
+    renderSetupLauncher();
+  }
+
   updateUrlFromState();
   persistSessionStateNow();
 }
@@ -3141,6 +3891,7 @@ async function refreshSession({ allowCatalogResync = true } = {}) {
     appState.sessionBlankIds = [];
     appState.sessionBlankMap = new Map();
     appState.blankStates = new Map();
+    appState.easyQuestionStates = new Map();
     appState.pages = [];
     appState.reviewQueueBlankIds = [];
     appState.reviewPages = [];
@@ -3169,6 +3920,7 @@ async function refreshSession({ allowCatalogResync = true } = {}) {
       appState.sessionBlankIds = [];
       appState.sessionBlankMap = new Map();
       appState.blankStates = new Map();
+      appState.easyQuestionStates = new Map();
       appState.pages = [];
       appState.reviewQueueBlankIds = [];
       appState.reviewPages = [];
@@ -3235,6 +3987,14 @@ function registerStaticEvents() {
 
   modeReviewButton.addEventListener("click", () => {
     switchLearningMode("review");
+  });
+
+  sessionStartButton?.addEventListener("click", () => {
+    startSession();
+  });
+
+  practiceRefineButton?.addEventListener("click", () => {
+    returnToSetup();
   });
 
   drillRulesOpenButton?.addEventListener("click", () => {
@@ -3305,6 +4065,8 @@ function registerStaticEvents() {
       scheduleAnswerFieldResize(field, appState.blankInputMirrorRefs.get(blankId));
     });
   });
+
+  window.addEventListener("keydown", onGlobalSessionKeydown);
 
   window.addEventListener("pagehide", () => {
     flushPersistedSessionState();
