@@ -810,50 +810,29 @@ function canScaffoldCurrentBlank() {
 }
 
 function switchLearningMode(mode) {
-  if (appState.sessionView !== "practice") {
-    const nextMode = mode === "review" ? "review" : normalizeLearningMode(mode);
-
-    if (nextMode === "review" && appState.reviewQueueBlankIds.length === 0) {
-      return;
-    }
-
-    if (nextMode === "easy" && !canScaffoldCurrentBlank()) {
-      return;
-    }
-
-    appState.selectedMode = nextMode;
-    renderModeSwitcher();
-    updateSessionViewChrome();
-    renderSetupLauncher();
-    persistSessionStateNow();
+  if (appState.sessionView === "practice") {
     return;
   }
 
-  if (mode === "review") {
-    setReviewMode(true);
+  const nextMode = mode === "review" ? "review" : normalizeLearningMode(mode);
+
+  if (nextMode === "review" && appState.reviewQueueBlankIds.length === 0) {
     return;
-  }
-
-  const nextMode = normalizeLearningMode(mode);
-
-  if (appState.reviewMode) {
-    setReviewMode(false);
   }
 
   if (nextMode === "easy" && !canScaffoldCurrentBlank()) {
     return;
   }
 
-  appState.learningMode = nextMode;
-  appState.wordBankOpen = false;
-  setWordBankMessage("");
-  renderSession({
-    focusBlankId: nextMode === "easy" ? getPrimaryBlankIdForBlank(getActiveBlankId()) : getActiveBlankId(),
-  });
+  appState.selectedMode = nextMode;
+  renderModeSwitcher();
+  updateSessionViewChrome();
+  renderSetupLauncher();
+  persistSessionStateNow();
 }
 
 function renderModeSwitcher() {
-  const mode = appState.sessionView === "practice" ? getLearningMode() : appState.selectedMode;
+  const mode = appState.selectedMode;
   const scaffoldAvailable = canScaffoldCurrentBlank();
   const reviewCount = appState.reviewQueueBlankIds.length;
 
@@ -2253,6 +2232,10 @@ function shouldIgnoreGlobalSessionEnter(event) {
 }
 
 function onGlobalSessionKeydown(event) {
+  if (appState.sessionView !== "practice") {
+    return;
+  }
+
   if (shouldIgnoreGlobalSessionEnter(event)) {
     return;
   }
@@ -2867,7 +2850,14 @@ function createEasyKeywordPanel(question) {
       }
 
       easyState.selectedKeywordIds = Array.from(nextSelectedIds);
-      easyState.keywordStatus = hasSelectedAllEasyKeywords(question, easyState) ? "correct" : "idle";
+      const allKeywordsSelected = hasSelectedAllEasyKeywords(question, easyState);
+      easyState.keywordStatus = allKeywordsSelected ? "correct" : "idle";
+
+      if (allKeywordsSelected) {
+        checkEasyQuestion(question.id);
+        return;
+      }
+
       renderSession({ focusBlankId: getQuestionPrimaryBlankId(question) });
     });
     list.append(chip);
@@ -3333,7 +3323,7 @@ function renderProgressHeader() {
     activeQuestion && appState.revealedQuestionIds.has(activeQuestion.id) ? "Shown" : "Reveal";
   actionBar.dataset.state = activeBlankState?.status || "idle";
   actionBar.dataset.mode = mode;
-  actionBar.hidden = mode === "easy";
+  actionBar.hidden = isEasyLearningMode();
   prevBlankButton.textContent = "Previous";
   checkBlankButton.textContent = "Check";
   nextBlankButton.textContent = "Next";
@@ -3342,7 +3332,7 @@ function renderProgressHeader() {
   revealBlankButton.className = "secondary-link";
   checkBlankButton.setAttribute("aria-label", "Check current answer");
 
-  if (mode === "easy" && activeQuestion) {
+  if (isEasyLearningMode() && activeQuestion) {
     const easyState = getEasyQuestionState(activeQuestion.id);
     const readyForCopy = hasSelectedAllEasyKeywords(activeQuestion, easyState);
     checkBlankButton.textContent =
@@ -3376,7 +3366,7 @@ function renderProgressHeader() {
   if (sessionActionHint) {
     if (activeBlankState?.status === "correct") {
       sessionActionHint.textContent = "Enter ↵ to continue";
-    } else if (mode === "easy" && activeQuestion) {
+    } else if (isEasyLearningMode() && activeQuestion) {
       const easyState = getEasyQuestionState(activeQuestion.id);
       sessionActionHint.textContent = easyState?.easyStep === "copy" ? "Enter ↵ to check copy" : "Enter ↵ to check";
     } else {
@@ -3384,7 +3374,9 @@ function renderProgressHeader() {
     }
   }
 
-  renderModeSwitcher();
+  if (appState.sessionView !== "practice") {
+    renderModeSwitcher();
+  }
 }
 
 function renderBanner() {

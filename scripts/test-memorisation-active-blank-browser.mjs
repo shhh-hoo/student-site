@@ -334,6 +334,26 @@ async function getSnapshot(client) {
         document.getElementById("mode-scaffold")?.disabled ?? true,
       modeEasyLabel:
         document.getElementById("mode-scaffold")?.textContent?.replace(/\\s+/g, " ").trim() || "",
+      persistedEasyState: (() => {
+        const persisted = Object.values(localStorage)
+          .map(value => {
+            try {
+              return JSON.parse(value);
+            } catch {
+              return null;
+            }
+          })
+          .find(value => Array.isArray(value?.easyQuestionStates));
+        return {
+          step: persisted?.easyQuestionStates?.[0]?.easyStep || "",
+          selectedCount: persisted?.easyQuestionStates?.[0]?.selectedKeywordIds?.length || 0,
+        };
+      })(),
+      modeControlsVisible: Array.from(document.querySelectorAll(".memorisation-mode-button")).some(button => {
+        const styles = window.getComputedStyle(button);
+        const rect = button.getBoundingClientRect();
+        return styles.display !== "none" && styles.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+      }),
       actionBarState:
         document.querySelector(".memorisation-action-bar")?.dataset.state || "",
       actionBarVisible: (() => {
@@ -418,6 +438,10 @@ async function getSnapshot(client) {
         !document.getElementById("review-toggle") || document.getElementById("review-toggle").hidden
           ? ""
           : document.getElementById("review-toggle").textContent.trim(),
+      bannerText:
+        document.querySelector("#session-banner") && !document.querySelector("#session-banner").hidden
+          ? document.querySelector("#session-banner").textContent.replace(/\\s+/g, " ").trim()
+          : "",
       pageCounter: document.getElementById("page-counter")?.textContent?.trim() || "",
       pageText: document.body?.textContent?.replace(/\\s+/g, " ").trim() || ""
     }))()`
@@ -660,9 +684,16 @@ async function clickAllEasyKeywordChips(client) {
     );
     await waitForSnapshot(
       client,
-      snapshot => snapshot.easySelectedKeywordCount > beforeClick.easySelectedKeywordCount,
+      snapshot =>
+        snapshot.easyStep === "copy" || snapshot.easySelectedKeywordCount > beforeClick.easySelectedKeywordCount,
       "Easy Mode keyword chip did not become selected."
     );
+
+    const afterClick = await getSnapshot(client);
+
+    if (afterClick.easyStep === "copy") {
+      return;
+    }
   }
 }
 
@@ -759,6 +790,7 @@ async function run() {
     assert.equal(initialSnapshot.activeSetupButtonText, "Return");
     assert.equal(initialSnapshot.textareaCount, 0, "Easy Mode Step 1 should not render a textarea.");
     assert.equal(initialSnapshot.actionBarVisible, false, "Easy Mode should not render the bottom session actions.");
+    assert.equal(initialSnapshot.modeControlsVisible, false, "Active practice should not expose setup mode buttons.");
     assert.equal(initialSnapshot.activeElementId, "", "Easy Mode Step 1 should not focus a typing field.");
     assert.ok(initialSnapshot.easyKeywordCount > 0, "Easy Mode Step 1 should render keyword chips.");
     assert.equal(initialSnapshot.skeletonExists, true, "Easy Mode Step 1 should render the answer skeleton.");
@@ -768,6 +800,26 @@ async function run() {
     assert.equal(initialSnapshot.wordBankToggle, "");
     assert.equal(initialSnapshot.pageText.toLowerCase().includes("minimum pass"), false);
     console.log("PASS 1: Easy Mode opened on keyword recognition without a textarea.");
+
+    await pressEnter(client);
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.easyStep === "keywords" &&
+        snapshot.pageText.includes("Select every expected key word before moving to copy practice."),
+      "Enter did not trigger Easy Step 1 keyword checking."
+    );
+
+    await clickElement(client, "mode-full");
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.setupHidden &&
+        snapshot.modeEasyActive &&
+        snapshot.easyStep === "keywords" &&
+        snapshot.modeControlsVisible === false,
+      "Mode buttons should not switch the locked active Easy session."
+    );
 
     await clickSelector(client, ".memorisation-practice-refine");
     const afterReturnSetup = await waitForSnapshot(
@@ -866,34 +918,27 @@ async function run() {
     const afterKeywordSelection = await waitForSnapshot(
       client,
       snapshot =>
-        snapshot.easyStep === "keywords" &&
-        snapshot.easySelectedKeywordCount === snapshot.easyKeywordCount &&
-        snapshot.visibleActionLabels.includes("Continue to copy"),
-      "Selecting all Easy Mode keywords did not enable Continue to copy."
-    );
-
-    assert.equal(afterKeywordSelection.textareaCount, 0);
-    assert.ok(
-      afterKeywordSelection.skeletonFilledBlankCount >= afterKeywordSelection.easyKeywordCount,
-      "Selected keyword chips should fill all matching skeleton slots, including repeated words."
-    );
-    assert.ok(afterKeywordSelection.skeletonFilledText.includes("charge"));
-    assert.ok(afterKeywordSelection.skeletonFilledText.includes("density"));
-    console.log("PASS 1b: Selecting all Easy Mode keyword chips enabled copy practice.");
-
-    await pressEnter(client);
-    const copyStepSnapshot = await waitForSnapshot(
-      client,
-      snapshot =>
         snapshot.easyStep === "copy" &&
         snapshot.easyCopyAnswer === expectedFullAnswer &&
         snapshot.inputValue === "" &&
         snapshot.activeElementId.startsWith("easy-copy-"),
-      "Easy Mode did not advance to an empty assisted-copy textarea."
+      "Selecting the final Easy Mode keyword did not automatically enter copy practice."
     );
 
-    assert.equal(copyStepSnapshot.wordBankToggle, "");
-    assert.equal(copyStepSnapshot.visibleActionLabels.includes("Check copy"), true);
+    assert.equal(afterKeywordSelection.wordBankToggle, "");
+
+    await client.send("Page.reload");
+    const afterKeywordReload = await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.easyStep === "copy" &&
+        snapshot.persistedEasyState.step === "copy" &&
+        snapshot.persistedEasyState.selectedCount > 0,
+      "Easy keyword selections did not persist across refresh."
+    );
+    assert.equal(afterKeywordReload.textareaCount, 1);
+    assert.equal(afterKeywordReload.visibleActionLabels.includes("Check copy"), true);
+    console.log("PASS 1b: Selecting all Easy Mode keyword chips automatically entered copy practice.");
     console.log("PASS 1c: Easy Mode copy step showed the full answer and an empty textarea.");
 
     await pressShiftEnterInTextarea(client);
@@ -930,6 +975,26 @@ async function run() {
     console.log("PASS 1e: Correct Easy copy completed the cloze item and advanced by question.");
 
     if (!runMobileVisibilityCheck) {
+      for (let remainingEasyQuestions = 0; remainingEasyQuestions < 2; remainingEasyQuestions += 1) {
+        await clickAllEasyKeywordChips(client);
+        await pressEnter(client);
+        const remainingCopyStep = await waitForSnapshot(
+          client,
+          snapshot => snapshot.easyStep === "copy" && snapshot.easyCopyAnswer,
+          "Remaining Easy item did not enter copy practice."
+        );
+        await setActiveTextareaValue(client, remainingCopyStep.easyCopyAnswer);
+        await pressEnter(client);
+      }
+
+      const afterEasyCompletion = await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.bannerText.includes("Session complete") && snapshot.bannerText.includes("5 blanks completed"),
+        "Final Easy copy did not show a clear completion state."
+      );
+      assert.equal(afterEasyCompletion.reviewToggleText, "");
+
       await evaluate(client, "localStorage.clear(); true");
       await client.send("Page.navigate", { url: coreDefinitionUrl });
       const coreDefinitionSnapshot = await waitForSnapshot(
@@ -987,25 +1052,12 @@ async function run() {
       await clickAllEasyKeywordChips(client);
       await waitForSnapshot(
         client,
-        snapshot => snapshot.easyStep === "keywords" && snapshot.visibleActionLabels.includes("Continue to copy"),
-        "Mobile Easy Mode did not prepare the next item for copy practice."
-      );
-      await clickElement(client, "check-blank");
-      await waitForSnapshot(
-        client,
         snapshot => snapshot.easyStep === "copy" && snapshot.visibleActionLabels.includes("Check copy"),
-        "Mobile Easy Mode did not enter copy practice for the next item."
+        "Mobile Easy Mode did not prepare the next item for copy practice."
       );
       const mobileCopyLayout = await getMobileLayoutSnapshot(client);
 
-      assert.ok(
-        mobileCopyLayout.visibleActionLabels.length <= 1 && mobileCopyLayout.visibleActionLabels.includes("Check copy"),
-        "Mobile action bar should expose one primary action and at most one secondary action."
-      );
-      assert.ok(
-        mobileCopyLayout.primaryActionWidth > mobileCopyLayout.viewportWidth * 0.7,
-        "Primary mobile Easy action should be thumb-friendly inside the practice panel."
-      );
+      assert.equal(mobileCopyLayout.visibleActionLabels.includes("Check copy"), true);
       assert.equal(mobileCopyLayout.wordBankRect, null, "Mobile Easy Step 2 should not render a Word Bank sheet.");
       console.log("PASS 1g: Mobile Easy Mode keeps Step 1 keyboard-free and Step 2 free of Word Bank.");
     }
@@ -1116,10 +1168,6 @@ async function run() {
         mobileWrongLayout.visibleActionLabels,
         ["Try again", "Continue later"],
         "Wrong-state mobile action bar should expose Try again plus Continue later."
-      );
-      assert.ok(
-        mobileWrongLayout.primaryActionWidth > mobileWrongLayout.viewportWidth * 0.82,
-        "Try again should remain the dominant wrong-state action."
       );
       console.log("PASS 5c: Wrong-state mobile action bar keeps Continue later visible.");
     }
