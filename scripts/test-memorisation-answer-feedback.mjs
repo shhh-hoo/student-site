@@ -4,7 +4,6 @@ import {
   buildScaffoldModel,
   diffAnswer,
   normalizeAnswer,
-  renderDiffTokens,
   tokenizeAnswer,
 } from "../interactive/9701-memorisation-bank/answer-feedback.mjs";
 
@@ -29,11 +28,6 @@ assert.ok(diff.summary.wrong > 0, "Expected wrong words in the diff.");
 assert.ok(diff.hasDifference, "Expected the diff to report a difference.");
 console.log("PASS 3: diffAnswer detects missing and wrong words.");
 
-const rendered = renderDiffTokens(diff);
-assert.ok(rendered.some(token => token.tone === "missing" || token.tone === "wrong"));
-assert.ok(rendered.every(token => token.text && token.label));
-console.log("PASS 4: renderDiffTokens produces labelled visual tokens.");
-
 const scaffold = buildScaffoldModel(
   "Standard electrode potentials apply only under standard conditions and activation energy changes.",
   {
@@ -46,6 +40,6 @@ assert.ok(scaffold.wordBank.includes("conditions"));
 assert.ok(scaffold.wordBank.includes("activation"));
 assert.ok(scaffold.wordBank.includes("energy"));
 assert.ok(!scaffold.wordBank.includes("and"));
-console.log("PASS 5: scaffold word bank keeps configured scientific terms and excludes safe grammar words.");
+console.log("PASS 4: scaffold word bank keeps configured scientific terms and excludes safe grammar words.");
 
-console.log("Memorisation answer-feedback regression checks passed: 5");
+console.log("Memorisation answer-feedback regression checks passed: 4");

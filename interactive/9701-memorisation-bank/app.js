@@ -1,6 +1,6 @@
 import { createAnswerModel as buildAnswerModel, evaluateAnswerModel } from "./matcher.mjs";
 import { buildSoftHighlightModel } from "./display-feedback.mjs";
-import { buildScaffoldModel, diffAnswer, renderDiffTokens } from "./answer-feedback.mjs";
+import { buildScaffoldModel, diffAnswer } from "./answer-feedback.mjs";
 import { resolveActiveBlankId, resolvePreferredBlankId } from "./active-blank-state.mjs";
 
 const definitionScopeOptions = [
@@ -25,6 +25,7 @@ const fileOrder = [
 ];
 
 const reviewPageSize = 4;
+const wordBankHintLimit = 8;
 const questionPageSizeByFile = {
   "full-reconstruction": 2,
   "guided-cloze": 3,
@@ -73,6 +74,8 @@ const filtersBackdrop = document.getElementById("filters-backdrop");
 const filtersSheet = document.getElementById("filters-sheet");
 const filtersToggleButton = document.getElementById("filters-toggle");
 const filtersCloseButton = document.getElementById("filters-close");
+const mobileFiltersToggleButton = document.getElementById("mobile-filters-toggle");
+const mobileReviewToggleButton = document.getElementById("mobile-review-toggle");
 const modeFullButton = document.getElementById("mode-full");
 const modeScaffoldButton = document.getElementById("mode-scaffold");
 const modeReviewButton = document.getElementById("mode-review");
@@ -522,6 +525,7 @@ function setFiltersOpen(nextOpen) {
   filtersSheet.hidden = !appState.filtersOpen;
   filtersBackdrop.hidden = !appState.filtersOpen || !isCompactViewport();
   filtersToggleButton.setAttribute("aria-expanded", String(appState.filtersOpen));
+  mobileFiltersToggleButton?.setAttribute("aria-expanded", String(appState.filtersOpen));
   document.body.classList.toggle("memorisation-filters-open", appState.filtersOpen && isCompactViewport());
 }
 
@@ -720,8 +724,20 @@ function getFileCountLabel(fileEntry) {
   return pluralise(fileEntry.count, "item");
 }
 
+function normalizeLearningMode(mode, fallback = "full") {
+  if (mode === "easy" || mode === "scaffold") {
+    return "easy";
+  }
+
+  if (mode === "full") {
+    return "full";
+  }
+
+  return fallback;
+}
+
 function getDefaultLearningModeForFile(fileId = appState.file) {
-  return fileId === "guided-cloze" || fileId === "multi-round-cloze" ? "scaffold" : "full";
+  return fileId === "guided-cloze" || fileId === "multi-round-cloze" ? "easy" : "full";
 }
 
 function getLearningMode() {
@@ -729,7 +745,7 @@ function getLearningMode() {
     return "review";
   }
 
-  return appState.learningMode || getDefaultLearningModeForFile();
+  return normalizeLearningMode(appState.learningMode, getDefaultLearningModeForFile());
 }
 
 function canScaffoldCurrentBlank() {
@@ -743,15 +759,17 @@ function switchLearningMode(mode) {
     return;
   }
 
+  const nextMode = normalizeLearningMode(mode);
+
   if (appState.reviewMode) {
     setReviewMode(false);
   }
 
-  if (mode === "scaffold" && !canScaffoldCurrentBlank()) {
+  if (nextMode === "easy" && !canScaffoldCurrentBlank()) {
     return;
   }
 
-  appState.learningMode = mode;
+  appState.learningMode = nextMode;
   appState.wordBankOpen = false;
   setWordBankMessage("");
   renderSession({ focusBlankId: getActiveBlankId() });
@@ -767,8 +785,8 @@ function renderModeSwitcher() {
   modeFullButton.setAttribute("aria-pressed", String(mode === "full"));
 
   modeScaffoldButton.disabled = !scaffoldAvailable;
-  modeScaffoldButton.dataset.active = String(mode === "scaffold");
-  modeScaffoldButton.setAttribute("aria-pressed", String(mode === "scaffold"));
+  modeScaffoldButton.dataset.active = String(mode === "easy");
+  modeScaffoldButton.setAttribute("aria-pressed", String(mode === "easy"));
 
   modeReviewButton.disabled = reviewCount === 0;
   modeReviewButton.dataset.active = String(mode === "review");
@@ -1957,6 +1975,9 @@ function setLoadingState(message = "Loading current session...") {
   revealBlankButton.disabled = true;
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
+  if (mobileReviewToggleButton) {
+    mobileReviewToggleButton.hidden = true;
+  }
 }
 
 function renderStatusCard(target, message, actionLabel = "", actionHandler = null) {
@@ -2047,14 +2068,14 @@ function buildQuestionMeta(question) {
 
 function getRevealNote(question) {
   if (question.type === "definition" && question.sourceScope && question.sourceScope !== "paper_only") {
-    return "Minimum pass uses the stored syllabus-style definition wording for this item.";
+    return "Use the stored syllabus-style wording as your comparison point for this item.";
   }
 
   if (question.fileId === "core-equations") {
-    return "Minimum pass keeps equation species and arrows strict while normalizing spacing and arrow variants.";
+    return "Equation species and arrows stay strict while spacing and arrow variants are normalized during checking.";
   }
 
-  return "Hints stay concept-level during checking. Reveal shows the full answer and the minimum acceptable pass wording together.";
+  return "Hints stay concept-level during checking. Reveal shows the full canonical answer for comparison.";
 }
 
 function getReviewReasonSummary(blankId) {
@@ -2118,7 +2139,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
     return {
       label: "Answer revealed",
       tone: "revealed",
-      message: "Compare your wording with the canonical answer and minimum pass below.",
+      message: "Compare your wording with the canonical answer below.",
       guidanceItems: [],
     };
   }
@@ -2174,7 +2195,7 @@ function getBlankFeedbackDescriptor(blank, blankState) {
   return {
     label: "Ready to check",
     tone: "neutral",
-    message: "Use Check to compare this draft against the minimum pass wording.",
+    message: "Use Check to compare this draft against the expected chemistry ideas.",
     guidanceItems: [],
   };
 }
@@ -2242,18 +2263,82 @@ function createAnswerField(blank) {
 
 function shouldShowScaffoldSupport(question, blankState) {
   return (
-    getLearningMode() === "scaffold" &&
-    Boolean(question) &&
-    canScaffoldCurrentBlank() &&
-    blankState.status !== "correct"
+    getLearningMode() === "easy" && Boolean(question) && canScaffoldCurrentBlank() && blankState.status !== "correct"
   );
 }
 
-function createWordBankPanel(question, blank) {
-  const blankState = getBlankState(blank.id);
-  const scaffoldModel = buildScaffoldModel(question.fullAnswer || blank.answerModel.full_answer, {
-    keyTerms: blank.answerModel.concept_groups.flatMap(group => group.keywords || []),
+function getScaffoldAnswerText(question, blank) {
+  return blank?.answerModel?.full_answer || question?.fullAnswer || "";
+}
+
+function getScaffoldConfig(blank) {
+  return {
+    keyTerms: blank?.answerModel?.concept_groups?.flatMap(group => group.keywords || []) || [],
+  };
+}
+
+function getScaffoldModel(question, blank) {
+  return buildScaffoldModel(getScaffoldAnswerText(question, blank), getScaffoldConfig(blank));
+}
+
+function getWordBankHintScore(word) {
+  const normalized = String(word || "");
+  const chemistryTokenBonus = /[0-9+()[\]{}=<>/-]/u.test(normalized) ? 4 : 0;
+  const lengthScore = Math.min(normalized.length, 14);
+
+  return lengthScore + chemistryTokenBonus;
+}
+
+function getLimitedWordBankHints(scaffoldModel) {
+  return Array.from(new Set(scaffoldModel.wordBank))
+    .map((word, index) => ({
+      word,
+      index,
+      score: getWordBankHintScore(word),
+    }))
+    .sort((left, right) => right.score - left.score || left.index - right.index || left.word.localeCompare(right.word))
+    .slice(0, wordBankHintLimit)
+    .map(entry => entry.word);
+}
+
+function createEasyModeSkeleton(question, blank) {
+  const scaffoldModel = getScaffoldModel(question, blank);
+  const shell = document.createElement("section");
+  shell.className = "memorisation-easy-skeleton";
+  shell.setAttribute("aria-label", "Easy Mode answer skeleton");
+
+  const label = document.createElement("p");
+  label.className = "memorisation-answer__label";
+  label.textContent = "Easy Mode";
+
+  const skeletonLine = document.createElement("div");
+  skeletonLine.className = "memorisation-easy-skeleton__line";
+
+  scaffoldModel.words.forEach(word => {
+    const wordElement = document.createElement("span");
+
+    if (word.isCore) {
+      wordElement.className = "memorisation-easy-skeleton__blank";
+      wordElement.setAttribute("aria-label", "blank");
+    } else {
+      wordElement.className = "memorisation-easy-skeleton__word";
+      wordElement.textContent = word.text;
+    }
+
+    skeletonLine.append(wordElement);
   });
+
+  const copy = document.createElement("p");
+  copy.className = "memorisation-easy-skeleton__copy";
+  copy.textContent = "Use the shape as a hint, then type the full answer below.";
+
+  shell.append(label, skeletonLine, copy);
+  return shell;
+}
+
+function createWordBankPanel(question, blank) {
+  const scaffoldModel = getScaffoldModel(question, blank);
+  const hintWords = getLimitedWordBankHints(scaffoldModel);
   const shell = document.createElement("section");
   shell.className = "memorisation-word-bank";
   shell.dataset.open = String(appState.wordBankOpen);
@@ -2300,12 +2385,12 @@ function createWordBankPanel(question, blank) {
 
   const copy = document.createElement("p");
   copy.className = "memorisation-word-bank__copy";
-  copy.textContent = "Use these shuffled words as a hint, then type the answer manually.";
+  copy.textContent = "Use these hint words, then type the answer manually.";
 
   const list = document.createElement("div");
   list.className = "memorisation-word-bank__list";
 
-  scaffoldModel.wordBank.forEach(word => {
+  hintWords.forEach(word => {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.className = "memorisation-word-bank__chip";
@@ -2368,7 +2453,6 @@ function createFeedbackCard(blank) {
 
 function createDiffComparisonPanel(blank, blankState) {
   const diffModel = diffAnswer(blankState.value, blank.answerModel.full_answer);
-  const renderedTokens = renderDiffTokens(diffModel);
   const panel = document.createElement("div");
   panel.className = "memorisation-diff";
 
@@ -2390,25 +2474,151 @@ function createDiffComparisonPanel(blank, blankState) {
 
   heading.append(label, summary);
 
-  const tokenList = document.createElement("div");
-  tokenList.className = "memorisation-diff__tokens";
-  tokenList.setAttribute("aria-label", "Word-level comparison against the canonical answer");
-
-  renderedTokens.forEach(token => {
-    const tokenElement = document.createElement("span");
-    tokenElement.className = "memorisation-diff-token";
-    tokenElement.dataset.tone = token.tone;
-    tokenElement.textContent = token.text;
-    tokenElement.setAttribute("aria-label", token.label);
-    tokenList.append(tokenElement);
-  });
+  const lines = document.createElement("div");
+  lines.className = "memorisation-diff__lines";
+  lines.append(
+    createInlineDiffLine("Your wording", diffModel.operations, "user", "No wording typed yet."),
+    createInlineDiffLine(
+      "Expected wording",
+      diffModel.operations,
+      "canonical",
+      "Check the canonical answer after reveal."
+    )
+  );
 
   const legend = document.createElement("p");
   legend.className = "memorisation-diff__legend";
-  legend.textContent = "Green words match. Soft red marks missing or wrong wording. Amber marks extra wording.";
+  legend.textContent =
+    "Green underlines mark matched wording. Amber marks extra or moved wording. Red marks missing expected wording.";
 
-  panel.append(heading, tokenList, legend);
+  panel.append(heading, lines, legend);
   return panel;
+}
+
+function createInlineMark(text, tone, label = "") {
+  const mark = document.createElement("span");
+  mark.className = "memorisation-inline-mark";
+  mark.dataset.tone = tone;
+  mark.textContent = text;
+
+  if (label) {
+    mark.setAttribute("aria-label", label);
+  }
+
+  return mark;
+}
+
+function appendReadableWord(target, node, state) {
+  if (state.hasContent) {
+    target.append(" ");
+  }
+
+  target.append(node);
+  state.hasContent = true;
+}
+
+function appendInlineDiffOperations(target, operations, variant, options = {}) {
+  const state = { hasContent: false };
+  const markMatches = Boolean(options.markMatches);
+
+  operations.forEach(operation => {
+    if (variant === "user") {
+      if (operation.type === "match") {
+        appendReadableWord(
+          target,
+          markMatches
+            ? createInlineMark(operation.text, "match", `Matched "${operation.text}"`)
+            : document.createTextNode(operation.text),
+          state
+        );
+      } else if (operation.type === "extra") {
+        appendReadableWord(target, createInlineMark(operation.text, "extra", `Extra "${operation.text}"`), state);
+      } else if (operation.type === "wrong") {
+        appendReadableWord(
+          target,
+          createInlineMark(operation.actual, "wrong", `Expected "${operation.expected}", got "${operation.actual}"`),
+          state
+        );
+      }
+
+      return;
+    }
+
+    if (operation.type === "match") {
+      appendReadableWord(target, document.createTextNode(operation.text), state);
+    } else if (operation.type === "missing") {
+      appendReadableWord(target, createInlineMark(operation.text, "missing", `Missing "${operation.text}"`), state);
+    } else if (operation.type === "wrong") {
+      appendReadableWord(
+        target,
+        createInlineMark(operation.expected, "wrong", `Expected "${operation.expected}", got "${operation.actual}"`),
+        state
+      );
+    }
+  });
+
+  return state.hasContent;
+}
+
+function createInlineDiffLine(labelText, operations, variant, emptyText) {
+  const line = document.createElement("div");
+  line.className = "memorisation-diff__line";
+
+  const label = document.createElement("span");
+  label.className = "memorisation-answer__label";
+  label.textContent = labelText;
+
+  const sentence = document.createElement("p");
+  sentence.className = "memorisation-diff__sentence";
+  const hasContent = appendInlineDiffOperations(sentence, operations, variant, {
+    markMatches: variant === "user",
+  });
+
+  if (!hasContent) {
+    sentence.textContent = emptyText;
+  }
+
+  line.append(label, sentence);
+  return line;
+}
+
+function createRevealAnswerText(question, blank) {
+  const text = document.createElement("p");
+  text.className = "memorisation-answer__text";
+
+  const blankState = getBlankState(blank.id);
+  const canonicalAnswer = blank.answerModel.full_answer;
+  const diffModel = diffAnswer(blankState?.value || "", canonicalAnswer);
+
+  if (!diffModel.hasDifference) {
+    text.textContent = question.fullAnswer;
+    return text;
+  }
+
+  const fullAnswer = String(question.fullAnswer || "");
+  const canonicalIndex = fullAnswer.indexOf(canonicalAnswer);
+
+  if (canonicalIndex < 0) {
+    appendInlineDiffOperations(text, diffModel.operations, "canonical");
+    return text;
+  }
+
+  const before = fullAnswer.slice(0, canonicalIndex);
+  const after = fullAnswer.slice(canonicalIndex + canonicalAnswer.length);
+
+  if (before) {
+    text.append(before);
+  }
+
+  appendInlineDiffOperations(text, diffModel.operations, "canonical", {
+    markMatches: false,
+  });
+
+  if (after) {
+    text.append(after);
+  }
+
+  return text;
 }
 
 function createRevealPanel(question, blank) {
@@ -2427,24 +2637,9 @@ function createRevealPanel(question, blank) {
   fullAnswerLabel.className = "memorisation-answer__label";
   fullAnswerLabel.textContent = "Full answer";
 
-  const fullAnswerText = document.createElement("p");
-  fullAnswerText.className = "memorisation-answer__text";
-  fullAnswerText.textContent = question.fullAnswer;
+  const fullAnswerText = createRevealAnswerText(question, blank);
 
   fullAnswerBlock.append(fullAnswerLabel, fullAnswerText);
-
-  const minimumPassBlock = document.createElement("div");
-  minimumPassBlock.className = "memorisation-reveal__block";
-
-  const minimumPassLabel = document.createElement("span");
-  minimumPassLabel.className = "memorisation-answer__label";
-  minimumPassLabel.textContent = "Minimum pass";
-
-  const minimumPassText = document.createElement("p");
-  minimumPassText.className = "memorisation-answer__text";
-  minimumPassText.textContent = question.minimalPass;
-
-  minimumPassBlock.append(minimumPassLabel, minimumPassText);
 
   const note = document.createElement("p");
   note.className = "memorisation-answer__note";
@@ -2452,7 +2647,7 @@ function createRevealPanel(question, blank) {
     .filter(Boolean)
     .join(" ");
 
-  shell.append(headerLabel, fullAnswerBlock, minimumPassBlock, note);
+  shell.append(headerLabel, fullAnswerBlock, note);
   return shell;
 }
 
@@ -2499,8 +2694,15 @@ function renderProgressHeader() {
   }
 
   // Keep review re-entry available as soon as something is queued, while leaving it outside the main action bar.
+  const reviewToggleText = appState.reviewMode ? "Back to main session" : `Review queue (${reviewCount})`;
   reviewToggleButton.hidden = reviewCount === 0;
-  reviewToggleButton.textContent = appState.reviewMode ? "Back to main session" : `Review queue (${reviewCount})`;
+  reviewToggleButton.textContent = reviewToggleText;
+
+  if (mobileReviewToggleButton) {
+    mobileReviewToggleButton.hidden = reviewCount === 0;
+    mobileReviewToggleButton.textContent = appState.reviewMode ? "Main" : `Review (${reviewCount})`;
+  }
+
   renderModeSwitcher();
 }
 
@@ -2770,7 +2972,7 @@ function renderActivePractice() {
   answerCopy.className = "memorisation-answer-card__copy";
   answerCopy.textContent = blank.multiline
     ? "Use a full multi-line response. Shift+Enter adds a new line without checking."
-    : "Keep the wording tight, then use Check to compare it against the minimum pass.";
+    : "Keep the wording tight, then use Check to compare it against the expected chemistry ideas.";
 
   answerHeaderCopy.append(answerLabel, answerCopy);
 
@@ -2780,11 +2982,13 @@ function renderActivePractice() {
   statusPill.dataset.tone = descriptor.tone;
   statusPill.textContent = descriptor.label;
 
-  answerHeader.append(answerHeaderCopy, statusPill);
-  answerCard.append(answerHeader, createAnswerField(blank));
-
   if (shouldShowScaffoldSupport(question, blankState)) {
+    answerHeader.append(answerHeaderCopy, statusPill);
+    answerCard.append(answerHeader, createEasyModeSkeleton(question, blank), createAnswerField(blank));
     answerCard.append(createWordBankPanel(question, blank));
+  } else {
+    answerHeader.append(answerHeaderCopy, statusPill);
+    answerCard.append(answerHeader, createAnswerField(blank));
   }
 
   sessionPage.append(promptCard, answerCard, createFeedbackCard(blank));
@@ -2898,6 +3102,9 @@ function renderFileErrorState(fileEntry, message) {
   revealBlankButton.disabled = true;
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
+  if (mobileReviewToggleButton) {
+    mobileReviewToggleButton.hidden = true;
+  }
   updateUrlFromState();
 }
 
@@ -3023,7 +3230,7 @@ function registerStaticEvents() {
   });
 
   modeScaffoldButton.addEventListener("click", () => {
-    switchLearningMode("scaffold");
+    switchLearningMode("easy");
   });
 
   modeReviewButton.addEventListener("click", () => {
@@ -3081,6 +3288,14 @@ function registerStaticEvents() {
   });
 
   reviewToggleButton.addEventListener("click", () => {
+    setReviewMode(!appState.reviewMode);
+  });
+
+  mobileFiltersToggleButton?.addEventListener("click", () => {
+    setFiltersOpen(!appState.filtersOpen);
+  });
+
+  mobileReviewToggleButton?.addEventListener("click", () => {
     setReviewMode(!appState.reviewMode);
   });
 

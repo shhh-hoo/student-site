@@ -300,19 +300,58 @@ async function getSnapshot(client) {
         document.querySelector(".memorisation-feedback-card__title")?.textContent?.trim() || "",
       revealNote:
         document.querySelector(".memorisation-reveal .memorisation-answer__note")?.textContent?.trim() || "",
-      modeScaffoldActive:
+      revealAnswerText:
+        document
+          .querySelector(".memorisation-reveal .memorisation-answer__text")
+          ?.textContent?.replace(/\\s+/g, " ")
+          .trim() || "",
+      revealTokenCount:
+        document.querySelectorAll(".memorisation-reveal .memorisation-diff__tokens, .memorisation-reveal .memorisation-diff-token").length,
+      revealMatchMarkCount:
+        document.querySelectorAll('.memorisation-reveal .memorisation-inline-mark[data-tone="match"]').length,
+      revealProblemMarkCount:
+        document.querySelectorAll(
+          '.memorisation-reveal .memorisation-inline-mark[data-tone="missing"], .memorisation-reveal .memorisation-inline-mark[data-tone="wrong"], .memorisation-reveal .memorisation-inline-mark[data-tone="extra"]'
+        ).length,
+      diffTokenCount:
+        document.querySelectorAll(".memorisation-diff__tokens, .memorisation-diff-token").length,
+      diffInlineMarkCount:
+        document.querySelectorAll(".memorisation-diff .memorisation-inline-mark").length,
+      diffSentenceText:
+        Array.from(document.querySelectorAll(".memorisation-diff__sentence"))
+          .map(sentence => sentence.textContent?.replace(/\\s+/g, " ").trim())
+          .filter(Boolean)
+          .join(" | "),
+      modeEasyActive:
         document.getElementById("mode-scaffold")?.dataset.active === "true",
       modeFullActive:
         document.getElementById("mode-full")?.dataset.active === "true",
-      modeScaffoldDisabled:
+      modeEasyDisabled:
         document.getElementById("mode-scaffold")?.disabled ?? true,
+      modeEasyLabel:
+        document.getElementById("mode-scaffold")?.textContent?.replace(/\\s+/g, " ").trim() || "",
       actionBarState:
         document.querySelector(".memorisation-action-bar")?.dataset.state || "",
       actionLabels: Array.from(document.querySelectorAll(".memorisation-action-bar button")).map(button =>
         button.textContent.trim()
       ),
+      skeletonExists:
+        Boolean(document.querySelector(".memorisation-easy-skeleton")),
+      skeletonBlankCount:
+        document.querySelectorAll(".memorisation-easy-skeleton__blank").length,
+      skeletonSupportText:
+        Array.from(document.querySelectorAll(".memorisation-easy-skeleton__word"))
+          .map(word => word.textContent.trim())
+          .filter(Boolean)
+          .join(" "),
+      skeletonClipped: (() => {
+        const line = document.querySelector(".memorisation-easy-skeleton__line");
+        return line ? line.scrollHeight > line.clientHeight + 1 || line.scrollWidth > line.clientWidth + 1 : false;
+      })(),
       wordBankToggle:
         document.querySelector(".memorisation-word-bank .secondary-link")?.textContent?.trim() || "",
+      wordBankChipCount:
+        document.querySelectorAll(".memorisation-word-bank__chip").length,
       wordBankMessage:
         document.querySelector(".memorisation-word-bank__message")?.textContent?.trim() || "",
       wordBankOpen:
@@ -327,7 +366,8 @@ async function getSnapshot(client) {
         !document.getElementById("review-toggle") || document.getElementById("review-toggle").hidden
           ? ""
           : document.getElementById("review-toggle").textContent.trim(),
-      pageCounter: document.getElementById("page-counter")?.textContent?.trim() || ""
+      pageCounter: document.getElementById("page-counter")?.textContent?.trim() || "",
+      pageText: document.body.textContent?.replace(/\\s+/g, " ").trim() || ""
     }))()`
   );
 }
@@ -370,6 +410,9 @@ async function getMobileLayoutSnapshot(client) {
       const wordBank = document.querySelector(".memorisation-word-bank");
       const wordBankRect = wordBank?.getBoundingClientRect();
       const wordBankStyles = wordBank ? window.getComputedStyle(wordBank) : null;
+      const currentRow = document.querySelector(".memorisation-current-row");
+      const currentRowStyles = currentRow ? window.getComputedStyle(currentRow) : null;
+      const skeletonLine = document.querySelector(".memorisation-easy-skeleton__line");
 
       return {
         viewportWidth: window.innerWidth,
@@ -378,6 +421,8 @@ async function getMobileLayoutSnapshot(client) {
         prompt: rectFor(".memorisation-prompt-card"),
         answer: rectFor(".memorisation-answer-card"),
         textarea: rectFor("textarea.memorisation-input"),
+        controlBand: rectFor(".memorisation-control-band"),
+        easySkeleton: rectFor(".memorisation-easy-skeleton"),
         actionBar: rectFor(".memorisation-action-bar"),
         feedback: rectFor(".memorisation-feedback-card"),
         mobileStudyHeader: rectFor(".memorisation-page-header"),
@@ -392,6 +437,14 @@ async function getMobileLayoutSnapshot(client) {
         visibleActionLabels: visibleActionButtons.map(button => button.textContent.trim()),
         primaryActionWidth:
           document.getElementById("check-blank")?.getBoundingClientRect().width || 0,
+        currentRowVisible:
+          Boolean(currentRow) &&
+          currentRowStyles.display !== "none" &&
+          currentRow.getBoundingClientRect().height > 0,
+        skeletonClipped: skeletonLine
+          ? skeletonLine.scrollHeight > skeletonLine.clientHeight + 1 ||
+            skeletonLine.scrollWidth > skeletonLine.clientWidth + 1
+          : false,
         wordBankPosition: wordBankStyles?.position || "",
         wordBankRect: wordBankRect
           ? {
@@ -548,9 +601,87 @@ async function run() {
     assert.equal(initialSnapshot.promptContext, expectedPromptContext);
     console.log("PASS 1: Initial prompt rendered with Blank 1 focused.");
 
-    assert.equal(initialSnapshot.modeScaffoldActive, true);
+    assert.equal(initialSnapshot.modeEasyActive, true);
+    assert.equal(initialSnapshot.modeEasyLabel.includes("Easy Mode"), true);
+    assert.equal(initialSnapshot.skeletonExists, true);
+    assert.ok(initialSnapshot.skeletonBlankCount > 0, "Easy Mode should render blank placeholders.");
     assert.equal(initialSnapshot.wordBankToggle, "Hint / Word Bank");
-    console.log("PASS 1b: Scaffold mode and hidden word bank hint rendered for guided cloze.");
+    assert.equal(initialSnapshot.wordBankOpen, false);
+    assert.equal(initialSnapshot.wordBankChipCount, 0);
+    assert.equal(initialSnapshot.pageText.toLowerCase().includes("minimum pass"), false);
+    console.log("PASS 1b: Easy Mode skeleton and closed word bank hint rendered for guided cloze.");
+
+    if (runMobileVisibilityCheck) {
+      const mobileClosedLayout = await getMobileLayoutSnapshot(client);
+
+      assert.equal(mobileClosedLayout.viewportWidth, 390);
+      assert.equal(mobileClosedLayout.hasHorizontalScroll, false);
+      assert.equal(mobileClosedLayout.mobileStudyHeaderVisible, true);
+      assert.ok(
+        mobileClosedLayout.mobileStudyHeader.height < 135,
+        `Mobile study header should stay compact: ${JSON.stringify(mobileClosedLayout)}`
+      );
+      assert.ok(
+        mobileClosedLayout.controlBand.height < 55,
+        `Mobile mode controls should not become a configuration block: ${JSON.stringify(mobileClosedLayout)}`
+      );
+      assert.equal(mobileClosedLayout.currentRowVisible, false);
+      assert.ok(
+        mobileClosedLayout.prompt.offsetTop < 430,
+        `Active prompt should appear quickly after compact study chrome: ${JSON.stringify(mobileClosedLayout)}`
+      );
+      assert.ok(
+        mobileClosedLayout.easySkeleton.height <= 90,
+        `Easy Mode skeleton should stay compact on mobile: ${JSON.stringify(mobileClosedLayout)}`
+      );
+      assert.equal(mobileClosedLayout.skeletonClipped, false, "Easy Mode skeleton text should not be clipped.");
+      assert.ok(
+        mobileClosedLayout.textarea.top - mobileClosedLayout.easySkeleton.bottom < 64,
+        "Textarea should remain directly reachable after the compact skeleton."
+      );
+      assert.ok(
+        mobileClosedLayout.answer.top < 680,
+        "Answer surface should be reached quickly in the mobile study flow."
+      );
+      assert.ok(mobileClosedLayout.modeTopSpread < 8, "Mode controls should be compact horizontal chips.");
+      assert.ok(mobileClosedLayout.modeMaxHeight <= 48, "Mode controls should not render as stacked cards.");
+      assert.equal(mobileClosedLayout.modeDescriptionVisible, false);
+
+      await client.send("Page.navigate", { url: coreDefinitionUrl });
+      const mobileCoreDefinitionSnapshot = await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.currentUrl.includes("file=core-definitions") &&
+          snapshot.modeFullActive &&
+          snapshot.modeEasyDisabled === false,
+        "Mobile core definitions should open with Easy Mode available."
+      );
+
+      assert.equal(mobileCoreDefinitionSnapshot.skeletonExists, false);
+      await clickElement(client, "mode-scaffold");
+      const mobileCoreEasySnapshot = await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.currentUrl.includes("file=core-definitions") &&
+          snapshot.modeEasyActive &&
+          snapshot.skeletonExists &&
+          snapshot.skeletonBlankCount > 0 &&
+          snapshot.skeletonSupportText.length > 0 &&
+          !snapshot.skeletonClipped,
+        "Mobile core-definition Easy Mode skeleton should render fully without clipping."
+      );
+      assert.equal(mobileCoreEasySnapshot.currentUrl.includes("file=core-definitions"), true);
+
+      await client.send("Page.navigate", { url: targetUrl });
+      await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.title === expectedPromptTitle &&
+          snapshot.blankChip === "Blank 1" &&
+          snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::0",
+        "Guided cloze did not restore after the mobile core-definition Easy Mode regression."
+      );
+    }
 
     await clickSelector(client, ".memorisation-word-bank .secondary-link");
     await clickSelector(client, ".memorisation-word-bank__chip");
@@ -564,6 +695,8 @@ async function run() {
     );
 
     assert.equal(afterWordBankClick.inputValue, "");
+    assert.ok(afterWordBankClick.wordBankChipCount > 0, "Word Bank should show a small hint set when opened.");
+    assert.ok(afterWordBankClick.wordBankChipCount <= 8, "Word Bank should not show a large wall of hint chips.");
     console.log("PASS 1c: Word bank chips did not auto-fill the active answer.");
 
     if (!runMobileVisibilityCheck) {
@@ -573,26 +706,31 @@ async function run() {
         snapshot =>
           snapshot.currentUrl.includes("file=core-definitions") &&
           snapshot.modeFullActive &&
-          snapshot.modeScaffoldDisabled === false &&
+          snapshot.modeEasyDisabled === false &&
           snapshot.wordBankToggle === "",
-        "Core definitions should open in Full Dictation with Scaffold available but not active."
+        "Core definitions should open in Full Dictation with Easy Mode available but not active."
       );
 
       assert.equal(coreDefinitionSnapshot.currentUrl.includes("file=core-definitions"), true);
-      assert.equal(coreDefinitionSnapshot.modeScaffoldDisabled, false);
+      assert.equal(coreDefinitionSnapshot.modeEasyDisabled, false);
 
       await clickElement(client, "mode-scaffold");
-      const coreScaffoldSnapshot = await waitForSnapshot(
+      const coreEasySnapshot = await waitForSnapshot(
         client,
         snapshot =>
           snapshot.currentUrl.includes("file=core-definitions") &&
-          snapshot.modeScaffoldActive &&
-          snapshot.modeScaffoldDisabled === false &&
+          snapshot.modeEasyActive &&
+          snapshot.modeEasyDisabled === false &&
+          snapshot.skeletonExists &&
+          snapshot.skeletonBlankCount > 0 &&
+          snapshot.skeletonSupportText.length > 0 &&
           snapshot.wordBankToggle === "Hint / Word Bank",
-        "Scaffold should activate on a core definition without switching the selected file."
+        "Easy Mode should activate on a core definition without switching the selected file."
       );
 
-      assert.equal(coreScaffoldSnapshot.currentUrl.includes("file=core-definitions"), true);
+      assert.equal(coreEasySnapshot.currentUrl.includes("file=core-definitions"), true);
+      assert.equal(coreEasySnapshot.wordBankOpen, false);
+      assert.equal(coreEasySnapshot.wordBankChipCount, 0);
       await clickSelector(client, ".memorisation-word-bank .secondary-link");
       await clickSelector(client, ".memorisation-word-bank__chip");
       const afterCoreWordBankClick = await waitForSnapshot(
@@ -602,11 +740,15 @@ async function run() {
           snapshot.wordBankMessage === "Please type it manually to strengthen recall." &&
           snapshot.inputValue === "" &&
           snapshot.wordBankOpen,
-        "Core-definition Scaffold word bank should not auto-fill the full-answer textarea."
+        "Core-definition Easy Mode word bank should not auto-fill the full-answer textarea."
       );
 
       assert.equal(afterCoreWordBankClick.inputValue, "");
-      console.log("PASS 1d: Core definitions can use Scaffold without changing file or auto-filling answers.");
+      assert.ok(afterCoreWordBankClick.wordBankChipCount > 0, "Core-definition Word Bank should show hint chips.");
+      assert.ok(afterCoreWordBankClick.wordBankChipCount <= 8, "Core-definition Word Bank should stay capped.");
+      console.log(
+        "PASS 1d: Core definitions can use Easy Mode skeletons without changing file or auto-filling answers."
+      );
 
       await client.send("Page.navigate", { url: targetUrl });
       await waitForSnapshot(
@@ -615,46 +757,28 @@ async function run() {
           snapshot.title === expectedPromptTitle &&
           snapshot.blankChip === "Blank 1" &&
           snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::0",
-        "Guided cloze did not restore after the core-definition Scaffold regression."
+        "Guided cloze did not restore after the core-definition Easy Mode regression."
       );
     }
 
     if (runMobileVisibilityCheck) {
-      const mobileInitialLayout = await getMobileLayoutSnapshot(client);
+      const mobileWordBankLayout = await getMobileLayoutSnapshot(client);
 
-      assert.equal(mobileInitialLayout.viewportWidth, 390);
-      assert.equal(mobileInitialLayout.hasHorizontalScroll, false);
-      assert.equal(mobileInitialLayout.mobileStudyHeaderVisible, true);
       assert.ok(
-        mobileInitialLayout.mobileStudyHeader.height < 170,
-        `Mobile study header should preserve context without becoming a tall hero: ${JSON.stringify(mobileInitialLayout)}`
-      );
-      assert.ok(
-        mobileInitialLayout.prompt.offsetTop < 560,
-        `Active prompt should appear before excessive setup UI: ${JSON.stringify(mobileInitialLayout)}`
-      );
-      assert.ok(
-        mobileInitialLayout.answer.top < 760,
-        "Answer surface should be reached quickly in the mobile study flow."
-      );
-      assert.ok(mobileInitialLayout.modeTopSpread < 8, "Mode controls should be compact horizontal chips.");
-      assert.ok(mobileInitialLayout.modeMaxHeight <= 48, "Mode controls should not render as stacked cards.");
-      assert.equal(mobileInitialLayout.modeDescriptionVisible, false);
-      assert.ok(
-        mobileInitialLayout.visibleActionLabels.length <= 2 &&
-          mobileInitialLayout.visibleActionLabels.includes("Check"),
+        mobileWordBankLayout.visibleActionLabels.length <= 2 &&
+          mobileWordBankLayout.visibleActionLabels.includes("Check"),
         "Mobile action bar should expose one primary action and at most one secondary action."
       );
       assert.ok(
-        mobileInitialLayout.primaryActionWidth > mobileInitialLayout.viewportWidth * 0.82,
+        mobileWordBankLayout.primaryActionWidth > mobileWordBankLayout.viewportWidth * 0.82,
         "Primary mobile action should be thumb-friendly and visually dominant."
       );
-      assert.equal(mobileInitialLayout.wordBankPosition, "fixed");
+      assert.equal(mobileWordBankLayout.wordBankPosition, "fixed");
       assert.ok(
-        mobileInitialLayout.wordBankRect.height <= mobileInitialLayout.viewportHeight * 0.55,
+        mobileWordBankLayout.wordBankRect.height <= mobileWordBankLayout.viewportHeight * 0.55,
         "Open Word Bank should be a bounded mobile sheet, not inline page expansion."
       );
-      console.log("PASS 1e: Mobile first screen uses compact mode chips, primary action, and sheet word bank.");
+      console.log("PASS 1e: Mobile first screen uses compact study chrome, Easy Mode skeleton, and sheet word bank.");
     }
 
     await clickElement(client, "next-blank");
@@ -696,7 +820,7 @@ async function run() {
     assert.equal(afterPrevious.promptContext, expectedPromptContext);
     console.log("PASS 4: Previous returned to Blank 2 and restored focus to the textarea.");
 
-    await setActiveTextareaValue(client, "density draft");
+    await setActiveTextareaValue(client, "draft");
     await sleep(250);
     await client.send("Page.reload");
 
@@ -706,7 +830,7 @@ async function run() {
         snapshot.title === expectedPromptTitle &&
         snapshot.blankChip === "Blank 2" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1" &&
-        snapshot.inputValue === "density draft",
+        snapshot.inputValue === "draft",
       "Refresh did not restore the active blank and draft answer."
     );
 
@@ -725,7 +849,13 @@ async function run() {
 
     assert.equal(afterWrongCheck.hasHorizontalScroll, false);
     assert.ok(afterWrongCheck.actionLabels.includes("Continue later"));
-    console.log("PASS 5b: Incorrect answer showed state-based action controls without horizontal scrolling.");
+    assert.equal(afterWrongCheck.diffTokenCount, 0, "Feedback comparison should stay inline, not token-chip based.");
+    assert.ok(afterWrongCheck.diffInlineMarkCount > 0, "Feedback comparison should add inline sentence markings.");
+    assert.ok(
+      afterWrongCheck.diffSentenceText.includes("density") && afterWrongCheck.diffSentenceText.includes("draft"),
+      "Feedback comparison should remain readable sentence text."
+    );
+    console.log("PASS 5b: Incorrect answer showed inline feedback and state-based action controls.");
 
     if (runMobileVisibilityCheck) {
       const mobileWrongLayout = await getMobileLayoutSnapshot(client);
@@ -749,10 +879,16 @@ async function run() {
         snapshot.feedbackTitle === "Answer revealed" &&
         snapshot.revealNote.includes("Current target: Blank 2.") &&
         snapshot.reviewToggleText === "Review queue (3)" &&
-        snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1",
+        snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1" &&
+        !snapshot.pageText.toLowerCase().includes("minimum pass"),
       "Reveal did not apply to the active blank or expose the review queue correctly."
     );
 
+    assert.ok(afterReveal.revealAnswerText.includes("Down the group"));
+    assert.ok(afterReveal.revealAnswerText.includes("less likely to decompose."));
+    assert.equal(afterReveal.revealTokenCount, 0, "Reveal should not render canonical answers as token chips.");
+    assert.equal(afterReveal.revealMatchMarkCount, 0, "Reveal should not mark every correct word.");
+    assert.ok(afterReveal.revealProblemMarkCount > 0, "Reveal should mark only missed or wrong answer parts.");
     console.log("PASS 6: Reveal applied to Blank 2 and kept focus on the active textarea.");
 
     if (runMobileVisibilityCheck) {

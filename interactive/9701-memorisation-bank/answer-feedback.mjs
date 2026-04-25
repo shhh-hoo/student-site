@@ -216,40 +216,6 @@ export function diffAnswer(userAnswer, canonicalAnswer) {
   };
 }
 
-export function renderDiffTokens(diffModel) {
-  return diffModel.operations.map(operation => {
-    if (operation.type === "wrong") {
-      return {
-        tone: "wrong",
-        text: operation.actual,
-        label: `Expected "${operation.expected}", got "${operation.actual}"`,
-      };
-    }
-
-    if (operation.type === "missing") {
-      return {
-        tone: "missing",
-        text: operation.text,
-        label: `Missing "${operation.text}"`,
-      };
-    }
-
-    if (operation.type === "extra") {
-      return {
-        tone: "extra",
-        text: operation.text,
-        label: `Extra "${operation.text}"`,
-      };
-    }
-
-    return {
-      tone: "match",
-      text: operation.text,
-      label: `Matched "${operation.text}"`,
-    };
-  });
-}
-
 function normalizeTerm(value) {
   return normalizeAnswer(value.replace(boundaryPunctuationPattern, "")).replace(/\s+/g, " ");
 }
