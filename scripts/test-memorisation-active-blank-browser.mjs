@@ -699,7 +699,11 @@ function assertDarkModeReadability(snapshot, requiredLabels, label) {
   });
 
   assert.equal(snapshot.focusOutlineVisible, true, `${label}: focus outline should be visible.`);
-  assert.deepEqual(snapshot.failures, [], `${label}: dark-mode contrast failures: ${JSON.stringify(snapshot.failures)}`);
+  assert.deepEqual(
+    snapshot.failures,
+    [],
+    `${label}: dark-mode contrast failures: ${JSON.stringify(snapshot.failures)}`
+  );
 }
 
 async function runDarkModeReadabilityChecks(client, targetUrl, easyModeUrl) {
@@ -849,8 +853,7 @@ async function getLegacyProtectionSnapshot(client, key) {
 }
 
 async function runLegacyProgressProtectionChecks(client, targetUrl, emptyUrl) {
-  const activeSessionKey =
-    "memorisation-bank-session::AS::level-2-guided-cloze::group-2::guided-cloze::all::all";
+  const activeSessionKey = "memorisation-bank-session::AS::level-2-guided-cloze::group-2::guided-cloze::all::all";
   const emptySessionKey =
     "memorisation-bank-session::AS::level-1-core::atomic-structure::core-definitions::paper_only::all";
   const legacyPayload = {
@@ -921,8 +924,7 @@ async function runLegacyProgressProtectionChecks(client, targetUrl, emptyUrl) {
   await waitForSnapshot(
     client,
     snapshot =>
-      snapshot.currentUrl.includes("definition_scope=paper_only") &&
-      snapshot.pageText.includes("No session questions"),
+      snapshot.currentUrl.includes("definition_scope=paper_only") && snapshot.pageText.includes("No session questions"),
     "Empty definition-scope route did not render the empty memorisation state."
   );
 
