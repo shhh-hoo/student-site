@@ -40,6 +40,10 @@ source payload:
 - Optional duplicate key when a raw source id is duplicated inside the same
   stage, level, topic, file, kind, round, and blank.
 
+PR2B must build these IDs from canonical runtime item context produced by the
+catalog/source item matching layer. Migration code must not guess stage, topic,
+file, kind, round, or blank context from a legacy id string alone.
+
 Proposed helper:
 
 ```js
@@ -189,8 +193,10 @@ Migration can only write normal progress when a legacy blank id or question id i
 confidently matched to a generated content ID. If matching fails, PR2B must keep
 the data recoverable without leaking typed answers.
 
-Unmatched records should be stored under `unmatchedLegacyProgress` inside the new
-progress payload:
+Unmatched records should be stored under `unmatchedLegacyProgress` inside the
+`mb:progress:v1` payload. PR2B should use this single location unless a later
+review explicitly chooses a separate key; splitting unmatched records into a
+separate storage key would complicate export/import and migration idempotency.
 
 ```js
 {
@@ -313,4 +319,6 @@ reset by default.
 PR2B can implement `learning-state.mjs` and migration after this plan is reviewed.
 That implementation should use the pure helper functions introduced in PR2A, call
 PR19 backup protection before touching legacy data, and follow the mapping and
-merge rules above.
+merge rules above. It must resolve canonical runtime item context first, then
+call `buildStableContentId()` with that context; it should store unmatched
+summaries inside `mb:progress:v1.unmatchedLegacyProgress`.
