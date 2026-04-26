@@ -554,6 +554,30 @@ function buildUnmatchedEntry({
   };
 }
 
+function hasProgressContribution(classification = {}) {
+  return (
+    safeInteger(classification.correctDelta) > 0 ||
+    safeInteger(classification.wrongDelta) > 0 ||
+    safeInteger(classification.hintDelta) > 0 ||
+    safeInteger(classification.gaveUpDelta) > 0 ||
+    safeInteger(classification.revealedDelta) > 0 ||
+    Boolean(classification.hasReviewDebt)
+  );
+}
+
+function hasLegacyActivityOnly(classification = {}) {
+  if (classification.kind === "easy-question") {
+    return (
+      safeInteger(classification.summary?.selectedKeywordCount) > 0 ||
+      ["wrong", "correct"].includes(classification.summary?.keywordStatus) ||
+      classification.summary?.easyStep === "copy" ||
+      Boolean(classification.summary?.hasCopyValue)
+    );
+  }
+
+  return !["", "idle"].includes(classification.summary?.status) || classification.summary?.matchState === "checked";
+}
+
 function parseLegacyPayload(rawValue) {
   try {
     return {
@@ -712,7 +736,11 @@ function migrateLegacyBlankState(progressPayload, reviewPayload, context) {
   const classification = classifyLegacyBlankState(blankState);
   const contentId = getIndexedContentId(contentIndex.blankByLegacyId, classification.legacyId);
 
-  if (!contentId || classification.parseStatus !== "parsed") {
+  if (!contentId || classification.parseStatus !== "parsed" || !hasProgressContribution(classification)) {
+    if (contentId && classification.parseStatus === "parsed" && !hasLegacyActivityOnly(classification)) {
+      return false;
+    }
+
     progressPayload.unmatchedLegacyProgress = mergeUnmatchedLegacyProgress(progressPayload.unmatchedLegacyProgress, [
       buildUnmatchedEntry({
         storageKey,
@@ -753,7 +781,11 @@ function migrateLegacyEasyQuestionState(progressPayload, reviewPayload, context)
   const classification = classifyLegacyEasyQuestionState(easyQuestionState);
   const contentId = getIndexedContentId(contentIndex.questionByLegacyId, classification.legacyId);
 
-  if (!contentId || classification.parseStatus !== "parsed") {
+  if (!contentId || classification.parseStatus !== "parsed" || !hasProgressContribution(classification)) {
+    if (contentId && classification.parseStatus === "parsed" && !hasLegacyActivityOnly(classification)) {
+      return false;
+    }
+
     progressPayload.unmatchedLegacyProgress = mergeUnmatchedLegacyProgress(progressPayload.unmatchedLegacyProgress, [
       buildUnmatchedEntry({
         storageKey,

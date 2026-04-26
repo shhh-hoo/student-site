@@ -295,6 +295,50 @@ function assertNoPrivateValues(value) {
 }
 
 {
+  const storage = new MemoryStorage();
+  const currentEmptyKey = "memorisation-bank-session::AS::level-1-core::atomic-structure::core-definitions::all::all";
+  storage.setItem(
+    currentEmptyKey,
+    JSON.stringify({
+      version: 2,
+      selectionKey: "AS::level-1-core::atomic-structure::core-definitions::all::all",
+      blankStates: [
+        {
+          id: "core-definitions::atomic-structure::as-def-001::0",
+          value: "",
+          status: "idle",
+          wrongCount: 0,
+          revealed: false,
+        },
+      ],
+      easyQuestionStates: [
+        {
+          questionId: "core-definitions::atomic-structure::as-def-001",
+          easyStep: "copy",
+          selectedKeywordIds: ["keyword-1"],
+          keywordStatus: "correct",
+          copyValue: "",
+          copyStatus: "idle",
+        },
+      ],
+    })
+  );
+
+  migrateLegacySessionProgress({
+    storage,
+    now: () => baseNow,
+    canonicalItems: makeCanonicalItems(),
+    currentSessionVersion: 2,
+  });
+  const progressPayload = parseStored(storage, learningProgressStorageKey);
+
+  assert.equal(Object.keys(progressPayload.records).length, 0);
+  assert.equal(progressPayload.unmatchedLegacyProgress.length, 1);
+  assert.equal(progressPayload.unmatchedLegacyProgress[0].legacyKind, "easy-question");
+  console.log("PASS 6: idle current session state and keyword-only activity do not create progress records.");
+}
+
+{
   const legacyKey = "memorisation-bank-session::AS::level-2-guided-cloze::group-2::guided-cloze::all::all";
   const storage = new BackupFailingStorage([
     [
@@ -326,7 +370,7 @@ function assertNoPrivateValues(value) {
   assert.equal(result.migrated, false);
   assert.equal(storage.getItem(learningProgressStorageKey), null);
   assert.equal(storage.getItem(legacyKey).includes("student typed secret"), true);
-  console.log("PASS 6: backup failure blocks migration writes and leaves legacy data recoverable.");
+  console.log("PASS 7: backup failure blocks migration writes and leaves legacy data recoverable.");
 }
 
 {
@@ -373,7 +417,7 @@ function assertNoPrivateValues(value) {
     "easy-question",
   ]);
   assertNoPrivateValues(progressPayload);
-  console.log("PASS 7: unmatched blank and Easy question ids are retained without typed or copy values.");
+  console.log("PASS 8: unmatched blank and Easy question ids are retained without typed or copy values.");
 }
 
 {
@@ -419,7 +463,7 @@ function assertNoPrivateValues(value) {
   assert.equal(record.revealedCount, 1);
   assert.equal(record.legacySources.length, 1);
   assert.equal(flag.sourceKeyCount, 1);
-  console.log("PASS 8: migration is idempotent and does not double-count legacy attempts.");
+  console.log("PASS 9: migration is idempotent and does not double-count legacy attempts.");
 }
 
 {
@@ -513,7 +557,7 @@ function assertNoPrivateValues(value) {
   assert.equal(storage.getItem(customItemsStorageKey), null);
   assert.equal(parseStored(storage, learningProgressStorageKey).unmatchedLegacyProgress.length, 1);
   console.log(
-    "PASS 9: import merges progress/review data, keeps local settings precedence, and does not touch custom items."
+    "PASS 10: import merges progress/review data, keeps local settings precedence, and does not touch custom items."
   );
 }
 
@@ -530,7 +574,7 @@ function assertNoPrivateValues(value) {
   assert.equal(exported.settings.version, 1);
   assert.equal(exported.progress.records[coreContentId].correctCount, 1);
   assertNoPrivateValues(exported);
-  console.log("PASS 10: export uses the versioned schema and excludes raw legacy/private answer data.");
+  console.log("PASS 11: export uses the versioned schema and excludes raw legacy/private answer data.");
 }
 
 {
@@ -547,7 +591,7 @@ function assertNoPrivateValues(value) {
   assert.equal(refreshedTopic.wrongCount, 1);
   assert.deepEqual(progressKeys, [coreContentId, topicChangeContentId].sort());
   assert.equal(parseStored(storage, reviewListStorageKey).items[topicChangeContentId].contentId, topicChangeContentId);
-  console.log("PASS 11: progress is independent of current filters, topic, file, page, and session keys.");
+  console.log("PASS 12: progress is independent of current filters, topic, file, page, and session keys.");
 }
 
 {
@@ -558,8 +602,8 @@ function assertNoPrivateValues(value) {
   assert.equal(index.blankByLegacyId.get("guided-cloze::group-2::as-exp-003::1"), guidedContentId);
   assert.equal(index.questionByLegacyId.get("guided-cloze::group-2::as-exp-003"), undefined);
   console.log(
-    "PASS 12: canonical content index maps runtime blank context without enabling cloze Easy question guesses."
+    "PASS 13: canonical content index maps runtime blank context without enabling cloze Easy question guesses."
   );
 }
 
-console.log("Memorisation learning-state checks passed: 12");
+console.log("Memorisation learning-state checks passed: 13");
