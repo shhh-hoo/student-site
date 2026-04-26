@@ -13,6 +13,8 @@ const targetPath =
   "/interactive/9701-memorisation-bank/?stage=AS&level=level-2-guided-cloze&topic=group-2&file=guided-cloze";
 const coreDefinitionPath =
   "/interactive/9701-memorisation-bank/?stage=AS&level=level-1-core&topic=atomic-structure&file=core-definitions";
+const emptyCoreDefinitionPath =
+  "/interactive/9701-memorisation-bank/?stage=AS&level=level-1-core&topic=atomic-structure&file=core-definitions&definition_scope=paper_only";
 const multiRoundGroup2Path =
   "/interactive/9701-memorisation-bank/?stage=AS&level=level-3-multi-round-cloze&topic=group-2&file=multi-round-cloze";
 const expectedPromptTitle = "Explain the trend in thermal stability of Group 2 carbonates.";
@@ -337,19 +339,26 @@ async function getSnapshot(client) {
       modeEasyLabel:
         document.getElementById("mode-scaffold")?.textContent?.replace(/\\s+/g, " ").trim() || "",
       persistedEasyState: (() => {
-        const persisted = Object.values(localStorage)
-          .map(value => {
-            try {
-              return JSON.parse(value);
-            } catch {
-              return null;
-            }
-          })
-          .find(value => Array.isArray(value?.easyQuestionStates));
-        return {
-          step: persisted?.easyQuestionStates?.[0]?.easyStep || "",
-          selectedCount: persisted?.easyQuestionStates?.[0]?.selectedKeywordIds?.length || 0,
-        };
+        try {
+          const persisted = Object.values(localStorage)
+            .map(value => {
+              try {
+                return JSON.parse(value);
+              } catch {
+                return null;
+              }
+            })
+            .find(value => Array.isArray(value?.easyQuestionStates));
+          return {
+            step: persisted?.easyQuestionStates?.[0]?.easyStep || "",
+            selectedCount: persisted?.easyQuestionStates?.[0]?.selectedKeywordIds?.length || 0,
+          };
+        } catch {
+          return {
+            step: "",
+            selectedCount: 0,
+          };
+        }
       })(),
       modeControlsVisible: Array.from(document.querySelectorAll(".memorisation-mode-button")).some(button => {
         const styles = window.getComputedStyle(button);
@@ -555,6 +564,382 @@ async function getMobileLayoutSnapshot(client) {
       };
     })()`
   );
+}
+
+async function getDarkModeReadabilitySnapshot(client) {
+  return evaluate(
+    client,
+    `(() => {
+      const parseRgb = value => {
+        const match = String(value || "").match(/rgba?\\(([^)]+)\\)/);
+
+        if (!match) {
+          return null;
+        }
+
+        const parts = match[1].split(",").map(part => Number.parseFloat(part.trim()));
+        return {
+          r: parts[0],
+          g: parts[1],
+          b: parts[2],
+          a: parts.length > 3 ? parts[3] : 1,
+        };
+      };
+
+      const channel = value => {
+        const normalized = value / 255;
+        return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      };
+
+      const luminance = color => 0.2126 * channel(color.r) + 0.7152 * channel(color.g) + 0.0722 * channel(color.b);
+      const contrast = (left, right) => {
+        const leftLum = luminance(left);
+        const rightLum = luminance(right);
+        return (Math.max(leftLum, rightLum) + 0.05) / (Math.min(leftLum, rightLum) + 0.05);
+      };
+
+      const isVisible = element => {
+        if (!element) {
+          return false;
+        }
+
+        const rect = element.getBoundingClientRect();
+        const styles = window.getComputedStyle(element);
+        return styles.display !== "none" && styles.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+      };
+
+      const getOpaqueBackground = element => {
+        let current = element;
+
+        while (current) {
+          const color = parseRgb(window.getComputedStyle(current).backgroundColor);
+
+          if (color && color.a > 0.05) {
+            return color;
+          }
+
+          current = current.parentElement;
+        }
+
+        return parseRgb(window.getComputedStyle(document.body).backgroundColor) || { r: 18, g: 15, b: 14, a: 1 };
+      };
+
+      const targets = [
+        { label: "question prompt", selector: "#active-prompt-title" },
+        { label: "prompt context", selector: "#active-prompt-context" },
+        { label: "answer input", selector: ".memorisation-input__mirror" },
+        { label: "answer placeholder", selector: "textarea.memorisation-input", pseudo: "::placeholder" },
+        { label: "feedback", selector: ".memorisation-feedback" },
+        { label: "diff text", selector: ".memorisation-diff__sentence" },
+        { label: "revealed answer", selector: ".memorisation-reveal .memorisation-answer__text" },
+        { label: "review queue card", selector: ".memorisation-outline__item" },
+        { label: "disabled button", selector: "#prev-blank", minimumContrast: 3 },
+        { label: "Easy Mode panel", selector: ".memorisation-easy-panel" },
+        { label: "Easy Mode keyword", selector: ".memorisation-easy-keyword" },
+      ];
+
+      const entries = targets.map(target => {
+        const element = document.querySelector(target.selector);
+
+        if (!isVisible(element)) {
+          return {
+            label: target.label,
+            missing: true,
+            contrast: 0,
+            minimumContrast: target.minimumContrast || 4.5,
+          };
+        }
+
+        const textColor = parseRgb(window.getComputedStyle(element, target.pseudo || null).color);
+        const backgroundColor = getOpaqueBackground(element);
+        const contrastRatio = textColor && backgroundColor ? contrast(textColor, backgroundColor) : 0;
+
+        return {
+          label: target.label,
+          missing: false,
+          contrast: Math.round(contrastRatio * 100) / 100,
+          minimumContrast: target.minimumContrast || 4.5,
+          color: window.getComputedStyle(element, target.pseudo || null).color,
+          backgroundColor: window.getComputedStyle(element).backgroundColor,
+        };
+      });
+
+      const focusTarget = [document.getElementById("check-blank"), document.querySelector(".memorisation-easy-action")].find(
+        candidate => isVisible(candidate)
+      );
+      focusTarget?.focus();
+      const focusStyles = focusTarget ? window.getComputedStyle(focusTarget) : null;
+
+      return {
+        theme: document.documentElement.dataset.theme || "",
+        entries,
+        failures: entries.filter(entry => !entry.missing && entry.contrast < entry.minimumContrast),
+        focusOutlineVisible: Boolean(
+          focusTarget &&
+            focusStyles &&
+            focusStyles.outlineStyle !== "none" &&
+            Number.parseFloat(focusStyles.outlineWidth) > 0
+        ),
+      };
+    })()`
+  );
+}
+
+function assertDarkModeReadability(snapshot, requiredLabels, label) {
+  assert.equal(snapshot.theme, "dark", `${label}: route should use the real dark theme attribute.`);
+
+  requiredLabels.forEach(requiredLabel => {
+    const entry = snapshot.entries.find(candidate => candidate.label === requiredLabel);
+    assert.ok(entry, `${label}: ${requiredLabel} was not sampled.`);
+    assert.equal(entry.missing, false, `${label}: ${requiredLabel} should be visible.`);
+    assert.ok(
+      entry.contrast >= entry.minimumContrast,
+      `${label}: ${requiredLabel} contrast ${entry.contrast} is below ${entry.minimumContrast}.`
+    );
+  });
+
+  assert.equal(snapshot.focusOutlineVisible, true, `${label}: focus outline should be visible.`);
+  assert.deepEqual(
+    snapshot.failures,
+    [],
+    `${label}: dark-mode contrast failures: ${JSON.stringify(snapshot.failures)}`
+  );
+}
+
+async function runDarkModeReadabilityChecks(client, targetUrl, easyModeUrl) {
+  const darkModeTargetUrl = `${targetUrl}&theme=dark`;
+  const darkModeEasyModeUrl = `${easyModeUrl}&theme=dark`;
+
+  await clearLocalStateAndNavigate(client, darkModeTargetUrl);
+  await waitForSnapshot(
+    client,
+    snapshot => snapshot.currentUrl.includes("theme=dark") && snapshot.startButtonText === "Start Full Dictation",
+    "Dark-mode route did not open the setup launcher."
+  );
+
+  await clickElement(client, "mode-full");
+  await waitForSnapshot(
+    client,
+    snapshot => snapshot.modeFullActive && snapshot.startButtonText === "Start Full Dictation",
+    "Dark-mode Full Dictation was not selectable."
+  );
+  await clickElement(client, "session-start");
+  await waitForSnapshot(
+    client,
+    snapshot => snapshot.title === expectedPromptTitle && snapshot.textareaCount === 1,
+    "Dark-mode Full Dictation did not render the answer input."
+  );
+  await setActiveTextareaValue(client, "draft");
+  await clickElement(client, "check-blank");
+  await waitForSnapshot(
+    client,
+    snapshot => snapshot.feedbackTitle === "Needs revision" && snapshot.diffInlineMarkCount > 0,
+    "Dark-mode wrong answer did not render feedback and diff text."
+  );
+
+  assertDarkModeReadability(
+    await getDarkModeReadabilitySnapshot(client),
+    [
+      "question prompt",
+      "prompt context",
+      "answer input",
+      "answer placeholder",
+      "feedback",
+      "diff text",
+      ...(runMobileVisibilityCheck ? [] : ["review queue card"]),
+      "disabled button",
+    ],
+    "Full Dictation wrong feedback"
+  );
+
+  await clickElement(client, "reveal-blank");
+  await waitForSnapshot(
+    client,
+    snapshot => snapshot.feedbackTitle === "Answer revealed" && snapshot.revealAnswerText.includes("Down the group"),
+    "Dark-mode reveal did not render the canonical answer."
+  );
+
+  assertDarkModeReadability(
+    await getDarkModeReadabilitySnapshot(client),
+    [
+      "question prompt",
+      "prompt context",
+      "answer input",
+      "answer placeholder",
+      "feedback",
+      "revealed answer",
+      ...(runMobileVisibilityCheck ? [] : ["review queue card"]),
+      "disabled button",
+    ],
+    "Full Dictation reveal"
+  );
+
+  await clearLocalStateAndNavigate(client, darkModeEasyModeUrl);
+  await waitForSnapshot(
+    client,
+    snapshot =>
+      snapshot.currentUrl.includes("theme=dark") &&
+      snapshot.startButtonText === "Start Full Dictation" &&
+      snapshot.modeEasyDisabled === false,
+    "Dark-mode Easy Mode setup did not render."
+  );
+  await clickElement(client, "mode-scaffold");
+  await waitForSnapshot(
+    client,
+    snapshot => snapshot.modeEasyActive && snapshot.startButtonText === "Start Easy Mode",
+    "Dark-mode Easy Mode was not selectable for Level 1."
+  );
+  await clickElement(client, "session-start");
+  await waitForSnapshot(
+    client,
+    snapshot => snapshot.currentUrl.includes("file=core-definitions") && snapshot.easyStep === "keywords",
+    "Dark-mode Easy Mode did not render the keyword panel."
+  );
+
+  assertDarkModeReadability(
+    await getDarkModeReadabilitySnapshot(client),
+    [
+      "question prompt",
+      ...(runMobileVisibilityCheck ? [] : ["review queue card"]),
+      "Easy Mode panel",
+      "Easy Mode keyword",
+    ],
+    "Easy Mode"
+  );
+
+  console.log("PASS 10: Dark mode keeps Memorisation Bank practice surfaces readable on the real route.");
+}
+
+async function seedLegacySessionKey(client, key, payload) {
+  await evaluate(
+    client,
+    `(() => {
+      const originalSetItem = Storage.prototype.setItem;
+
+      localStorage.clear();
+      originalSetItem.call(localStorage, ${JSON.stringify(key)}, ${JSON.stringify(JSON.stringify(payload))});
+      Storage.prototype.setItem = function noopSetItem() {};
+      return true;
+    })()`
+  );
+}
+
+async function getLegacyProtectionSnapshot(client, key) {
+  return evaluate(
+    client,
+    `(() => {
+      const rawValue = localStorage.getItem(${JSON.stringify(key)});
+      const rawBackup = localStorage.getItem("mb:legacy-session-backup:v1");
+      let backup = null;
+
+      try {
+        backup = JSON.parse(rawBackup || "null");
+      } catch {}
+
+      const report = window.MemorisationBankDebug?.reportProgressKeys?.() || null;
+      const serializedReport = JSON.stringify(report);
+      return {
+        rawValue,
+        backupEntryCount: Array.isArray(backup?.entries) ? backup.entries.length : 0,
+        matchingBackupRaw:
+          backup?.entries?.find(entry => entry.key === ${JSON.stringify(key)})?.rawValue || "",
+        reportAvailable: Boolean(report),
+        reportIncludesTypedValue: serializedReport.includes("legacy typed answer") || serializedReport.includes("legacy copy answer"),
+        rawExportWarning:
+          window.MemorisationBankDebug?.exportRawLegacyBackup?.().warning || "",
+      };
+    })()`
+  );
+}
+
+async function runLegacyProgressProtectionChecks(client, targetUrl, emptyUrl) {
+  const activeSessionKey = "memorisation-bank-session::AS::level-2-guided-cloze::group-2::guided-cloze::all::all";
+  const emptySessionKey =
+    "memorisation-bank-session::AS::level-1-core::atomic-structure::core-definitions::paper_only::all";
+  const legacyPayload = {
+    version: 1,
+    selectionKey: "AS::level-2-guided-cloze::group-2::guided-cloze::all::all",
+    blankStates: [
+      {
+        id: "guided-cloze::group-2::as-exp-003::0",
+        value: "legacy typed answer",
+        status: "wrong",
+        wrongCount: 1,
+      },
+    ],
+    easyQuestionStates: [
+      {
+        questionId: "guided-cloze::group-2::as-exp-003",
+        copyValue: "legacy copy answer",
+      },
+    ],
+  };
+
+  await seedLegacySessionKey(client, activeSessionKey, legacyPayload);
+  await client.send("Page.navigate", { url: targetUrl });
+  await waitForSnapshot(
+    client,
+    snapshot =>
+      snapshot.currentUrl.includes("file=guided-cloze") &&
+      snapshot.startButtonText === "Start Full Dictation" &&
+      snapshot.modeEasyDisabled,
+    "Legacy session key test did not open the guided cloze setup."
+  );
+
+  const activeProtection = await getLegacyProtectionSnapshot(client, activeSessionKey);
+  assert.equal(activeProtection.rawValue, JSON.stringify(legacyPayload));
+  assert.equal(activeProtection.matchingBackupRaw, JSON.stringify(legacyPayload));
+  assert.equal(activeProtection.reportAvailable, true);
+  assert.equal(activeProtection.reportIncludesTypedValue, false);
+  assert.ok(activeProtection.rawExportWarning.includes("private learning data"));
+
+  const unRestoredCurrentPayload = {
+    version: 2,
+    selectionKey: "AS::level-2-guided-cloze::group-2::guided-cloze::all::all",
+    currentBlankId: "guided-cloze::group-2::as-exp-003::0",
+    learningMode: "full",
+    selectedMode: "full",
+    sessionView: "practice",
+  };
+
+  await seedLegacySessionKey(client, activeSessionKey, unRestoredCurrentPayload);
+  await client.send("Page.navigate", { url: targetUrl });
+  await waitForSnapshot(
+    client,
+    snapshot => snapshot.currentUrl.includes("file=guided-cloze") && snapshot.title === expectedPromptTitle,
+    "Un-restored current-version session key test did not open the guided cloze session."
+  );
+  await setActiveTextareaValue(client, "new default v2 value must not overwrite");
+  await sleep(250);
+
+  const unRestoredProtection = await getLegacyProtectionSnapshot(client, activeSessionKey);
+  assert.equal(unRestoredProtection.rawValue, JSON.stringify(unRestoredCurrentPayload));
+  assert.equal(unRestoredProtection.matchingBackupRaw, JSON.stringify(unRestoredCurrentPayload));
+
+  await seedLegacySessionKey(client, emptySessionKey, {
+    ...legacyPayload,
+    selectionKey: "AS::level-1-core::atomic-structure::core-definitions::paper_only::all",
+  });
+  await client.send("Page.navigate", { url: emptyUrl });
+  await waitForSnapshot(
+    client,
+    snapshot =>
+      snapshot.currentUrl.includes("definition_scope=paper_only") && snapshot.pageText.includes("No session questions"),
+    "Empty definition-scope route did not render the empty memorisation state."
+  );
+
+  const emptyProtection = await getLegacyProtectionSnapshot(client, emptySessionKey);
+  assert.equal(
+    emptyProtection.rawValue,
+    JSON.stringify({
+      ...legacyPayload,
+      selectionKey: "AS::level-1-core::atomic-structure::core-definitions::paper_only::all",
+    })
+  );
+  assert.ok(emptyProtection.backupEntryCount >= 1);
+  assert.equal(emptyProtection.matchingBackupRaw, emptyProtection.rawValue);
+  assert.equal(emptyProtection.reportIncludesTypedValue, false);
+  console.log("PASS 9: Legacy session keys are backed up, redacted in reports, and not overwritten by render paths.");
 }
 
 async function setActiveTextareaValue(client, value) {
@@ -853,11 +1238,24 @@ async function clearLocalStateAndReload(client) {
   );
 }
 
+async function clearLocalStateAndNavigate(client, url) {
+  await evaluate(
+    client,
+    `(() => {
+      localStorage.clear();
+      Storage.prototype.setItem = function noopSetItem() {};
+      location.href = ${JSON.stringify(url)};
+      return true;
+    })()`
+  );
+}
+
 async function run() {
   const server = createStaticServer(studentSiteRoot);
   const serverPort = await listen(server);
   const targetUrl = `http://127.0.0.1:${serverPort}${targetPath}`;
   const coreDefinitionUrl = `http://127.0.0.1:${serverPort}${coreDefinitionPath}`;
+  const emptyCoreDefinitionUrl = `http://127.0.0.1:${serverPort}${emptyCoreDefinitionPath}`;
   const multiRoundGroup2Url = `http://127.0.0.1:${serverPort}${multiRoundGroup2Path}`;
   const userDataDirectory = await mkdtemp(path.join(os.tmpdir(), "memorisation-bank-chrome-"));
   const browserPath = await resolveBrowserPath();
@@ -906,57 +1304,87 @@ async function run() {
       client,
       snapshot =>
         snapshot.currentUrl.includes("file=guided-cloze") &&
-        snapshot.modeEasyActive &&
+        snapshot.modeFullActive &&
+        snapshot.modeEasyDisabled &&
         snapshot.practiceHidden &&
         !snapshot.setupHidden &&
-        snapshot.startButtonText === "Start Easy Mode",
-      "Setup launcher did not render with Easy Mode selected."
+        snapshot.startButtonText === "Start Full Dictation",
+      "Guided cloze setup should default to Full Dictation with Easy Mode disabled."
     );
 
     assert.equal(launcherSnapshot.modeEasyLabel.includes("Easy Mode"), true);
     assert.equal(launcherSnapshot.activeStatusText, "");
-    console.log("PASS 0: Setup launcher rendered with mode selection before practice.");
-
-    await clickElement(client, "session-start");
-    const initialSnapshot = await waitForSnapshot(
+    await clickElement(client, "mode-scaffold");
+    await waitForSnapshot(
       client,
       snapshot =>
-        snapshot.title === expectedPromptTitle &&
-        snapshot.modeEasyActive &&
-        snapshot.easyStep === "keywords" &&
-        snapshot.setupHidden &&
-        !snapshot.practiceHidden,
-      "Starting Easy Mode did not open the active keyword step."
+        snapshot.currentUrl.includes("file=guided-cloze") &&
+        snapshot.modeFullActive &&
+        snapshot.modeEasyDisabled &&
+        snapshot.startButtonText === "Start Full Dictation",
+      "Guided cloze should not allow Easy Mode selection."
+    );
+    console.log("PASS 0: Guided cloze opens in Full Dictation with Easy Mode disabled.");
+
+    await clearLocalStateAndNavigate(client, coreDefinitionUrl);
+    const coreDefinitionSnapshot = await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.currentUrl.includes("file=core-definitions") &&
+        snapshot.modeFullActive &&
+        snapshot.modeEasyDisabled === false &&
+        snapshot.practiceHidden &&
+        snapshot.easyStep === "",
+      "Core definitions should open in Full Dictation with Easy Mode available but not active."
     );
 
-    assert.equal(initialSnapshot.promptContext, expectedPromptContext);
-    assert.equal(initialSnapshot.modeEasyLabel.includes("Easy Mode"), true);
-    assert.equal(initialSnapshot.activeStatusText, "");
-    assert.equal(initialSnapshot.activeSetupButtonText, "Return");
-    assert.equal(initialSnapshot.textareaCount, 0, "Easy Mode Step 1 should not render a textarea.");
-    assert.equal(initialSnapshot.actionBarVisible, false, "Easy Mode should not render the bottom session actions.");
-    assert.equal(initialSnapshot.modeControlsVisible, false, "Active practice should not expose setup mode buttons.");
-    assert.equal(
-      initialSnapshot.modeControlsFocusable,
-      false,
-      "Setup mode buttons should not be focusable in practice."
+    assert.equal(coreDefinitionSnapshot.currentUrl.includes("file=core-definitions"), true);
+    assert.equal(coreDefinitionSnapshot.modeEasyDisabled, false);
+    await clickElement(client, "mode-scaffold");
+    await waitForSnapshot(
+      client,
+      snapshot => snapshot.modeEasyActive && snapshot.startButtonText === "Start Easy Mode",
+      "Easy Mode should be selectable for Level 1 core definitions."
     );
-    assert.equal(initialSnapshot.setupInert, true, "Setup region should be inert in practice.");
-    assert.equal(
-      initialSnapshot.setupAriaHidden,
-      "true",
-      "Setup region should be hidden from assistive tech in practice."
+    await clickElement(client, "session-start");
+    const coreEasySnapshot = await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.currentUrl.includes("file=core-definitions") &&
+        snapshot.modeEasyActive &&
+        snapshot.easyStep === "keywords" &&
+        snapshot.easyKeywordCount > 0 &&
+        snapshot.textareaCount === 0,
+      "Easy Mode should activate on Level 1 core definitions without typing UI."
     );
-    assert.equal(initialSnapshot.practiceInert, false, "Practice region should be interactive after Start.");
-    assert.equal(initialSnapshot.activeElementId, "", "Easy Mode Step 1 should not focus a typing field.");
-    assert.ok(initialSnapshot.easyKeywordCount > 0, "Easy Mode Step 1 should render keyword chips.");
-    assert.equal(initialSnapshot.skeletonExists, true, "Easy Mode Step 1 should render the answer skeleton.");
-    assert.ok(initialSnapshot.skeletonBlankCount > 0, "Easy Mode skeleton should expose fillable slots.");
-    assert.equal(initialSnapshot.skeletonFilledBlankCount, 0, "Easy Mode skeleton should start empty.");
-    assert.equal(initialSnapshot.visibleActionLabels.includes("Check key words"), true);
-    assert.equal(initialSnapshot.wordBankToggle, "");
-    assert.equal(initialSnapshot.pageText.toLowerCase().includes("minimum pass"), false);
-    console.log("PASS 1: Easy Mode opened on keyword recognition without a textarea.");
+
+    assert.equal(coreEasySnapshot.currentUrl.includes("file=core-definitions"), true);
+    assert.equal(coreEasySnapshot.actionBarVisible, false, "Level 1 Easy Mode should hide Full Dictation actions.");
+    assert.equal(coreEasySnapshot.modeControlsVisible, false, "Active Level 1 Easy Mode should hide setup controls.");
+    assert.equal(coreEasySnapshot.activeElementId, "", "Level 1 Easy Mode Step 1 should not focus a typing field.");
+    assert.equal(coreEasySnapshot.skeletonExists, true, "Level 1 Easy Mode should render an answer skeleton.");
+    assert.ok(coreEasySnapshot.skeletonBlankCount > 0, "Level 1 Easy Mode skeleton should expose slots.");
+    assert.equal(coreEasySnapshot.skeletonFilledBlankCount, 0, "Level 1 Easy Mode skeleton should start empty.");
+    assert.equal(coreEasySnapshot.visibleActionLabels.includes("Check key words"), true);
+    console.log("PASS 1: Level 1 core definitions start Easy Mode keyword recognition.");
+
+    if (runMobileVisibilityCheck) {
+      const mobileEasyLayout = await getMobileLayoutSnapshot(client);
+
+      assert.equal(mobileEasyLayout.viewportWidth, 390);
+      assert.equal(mobileEasyLayout.hasHorizontalScroll, false, JSON.stringify(mobileEasyLayout));
+      assert.ok(mobileEasyLayout.easyPanel, "Mobile Level 1 Easy Mode should render the keyword panel.");
+      assert.ok(
+        mobileEasyLayout.easyPanel.height <= 520,
+        `Mobile Level 1 Easy Mode panel should stay usable: ${JSON.stringify(mobileEasyLayout)}`
+      );
+      assert.equal(mobileEasyLayout.textareaCount, 0, "Mobile Level 1 Easy Step 1 should not render a textarea.");
+      assert.ok(
+        mobileEasyLayout.answer.top < 760,
+        `Mobile Level 1 Easy answer surface should appear without deep scrolling: ${JSON.stringify(mobileEasyLayout)}`
+      );
+      console.log("PASS 1b: Mobile Level 1 Easy Mode keeps a usable keyword layout.");
+    }
 
     await pressEnter(client);
     await waitForSnapshot(
@@ -964,7 +1392,7 @@ async function run() {
       snapshot =>
         snapshot.easyStep === "keywords" &&
         snapshot.pageText.includes("Select the key words in the answer order before moving to copy practice."),
-      "Enter did not trigger Easy Step 1 keyword checking."
+      "Enter did not check Level 1 Easy Mode keyword selections."
     );
 
     const focusedKeywordText = await evaluate(
@@ -983,112 +1411,8 @@ async function run() {
         snapshot.easySelectedKeywordCount === 1 &&
         snapshot.skeletonFilledBlankCount === 1 &&
         snapshot.skeletonFilledText === focusedKeywordText,
-      "Focused keyword chip Enter should toggle the chip without global pre-check interference."
+      "Focused Level 1 Easy keyword Enter should toggle the chip."
     );
-
-    await clickElement(client, "mode-full");
-    await waitForSnapshot(
-      client,
-      snapshot =>
-        snapshot.setupHidden &&
-        snapshot.modeEasyActive &&
-        snapshot.easyStep === "keywords" &&
-        snapshot.modeControlsVisible === false,
-      "Mode buttons should not switch the locked active Easy session."
-    );
-
-    await clickSelector(client, ".memorisation-practice-refine");
-    const afterReturnSetup = await waitForSnapshot(
-      client,
-      snapshot =>
-        !snapshot.setupHidden &&
-        snapshot.practiceHidden &&
-        snapshot.modeEasyActive &&
-        snapshot.startButtonText === "Start Easy Mode" &&
-        snapshot.currentUrl.includes("topic=group-2"),
-      "Returning to setup did not preserve Easy mode and filters."
-    );
-    assert.equal(afterReturnSetup.modeEasyActive, true);
-    console.log("PASS 1a: Returning to setup preserved selected filters and Easy mode.");
-
-    await clickElement(client, "session-start");
-    await waitForSnapshot(
-      client,
-      snapshot => snapshot.title === expectedPromptTitle && snapshot.easyStep === "keywords" && snapshot.setupHidden,
-      "Restarting from setup did not return to Easy keyword practice."
-    );
-
-    if (runMobileVisibilityCheck) {
-      const mobileClosedLayout = await getMobileLayoutSnapshot(client);
-
-      assert.equal(mobileClosedLayout.viewportWidth, 390);
-      assert.equal(mobileClosedLayout.hasHorizontalScroll, false, JSON.stringify(mobileClosedLayout));
-      assert.equal(mobileClosedLayout.mobileStudyHeaderVisible, false, JSON.stringify(mobileClosedLayout));
-      assert.ok(
-        !mobileClosedLayout.controlBand || mobileClosedLayout.controlBand.height < 1,
-        "Active practice should hide setup mode controls."
-      );
-      assert.equal(mobileClosedLayout.currentRowVisible, false, JSON.stringify(mobileClosedLayout));
-      assert.ok(
-        mobileClosedLayout.prompt.offsetTop < 430,
-        `Active prompt should appear quickly after compact study chrome: ${JSON.stringify(mobileClosedLayout)}`
-      );
-      assert.equal(mobileClosedLayout.activeStatus, null, "Active practice should not render duplicate status chrome.");
-      assert.ok(
-        mobileClosedLayout.easyPanel.height <= 480,
-        `Easy Mode keyword panel should show the full hint bank without becoming unwieldy: ${JSON.stringify(mobileClosedLayout)}`
-      );
-      assert.equal(mobileClosedLayout.textareaCount, 0, "Mobile Easy Step 1 should not render a textarea.");
-      assert.ok(
-        mobileClosedLayout.answer.top < 680,
-        "Answer surface should be reached quickly in the mobile study flow."
-      );
-      assert.equal(mobileClosedLayout.modeMaxHeight, 0, "Mode controls should not render in active practice.");
-      assert.equal(mobileClosedLayout.modeDescriptionVisible, false, JSON.stringify(mobileClosedLayout));
-
-      await client.send("Page.navigate", { url: coreDefinitionUrl });
-      const mobileCoreDefinitionSnapshot = await waitForSnapshot(
-        client,
-        snapshot =>
-          snapshot.currentUrl.includes("file=core-definitions") &&
-          snapshot.modeFullActive &&
-          snapshot.modeEasyDisabled === false,
-        "Mobile core definitions should open with Easy Mode available."
-      );
-
-      assert.equal(mobileCoreDefinitionSnapshot.easyStep, "");
-      await clickElement(client, "mode-scaffold");
-      await waitForSnapshot(
-        client,
-        snapshot => snapshot.modeEasyActive && snapshot.startButtonText === "Start Easy Mode",
-        "Mobile core-definition setup did not select Easy Mode."
-      );
-      await clickElement(client, "session-start");
-      const mobileCoreEasySnapshot = await waitForSnapshot(
-        client,
-        snapshot =>
-          snapshot.currentUrl.includes("file=core-definitions") &&
-          snapshot.modeEasyActive &&
-          snapshot.easyStep === "keywords" &&
-          snapshot.easyKeywordCount > 0 &&
-          snapshot.textareaCount === 0,
-        "Mobile core-definition Easy Mode should render keyword chips without typing UI."
-      );
-      assert.equal(mobileCoreEasySnapshot.currentUrl.includes("file=core-definitions"), true);
-
-      await client.send("Page.navigate", { url: targetUrl });
-      await waitForSnapshot(
-        client,
-        snapshot => snapshot.currentUrl.includes("file=guided-cloze") && snapshot.startButtonText === "Start Easy Mode",
-        "Guided cloze setup did not restore after the mobile core-definition Easy Mode regression."
-      );
-      await clickElement(client, "session-start");
-      await waitForSnapshot(
-        client,
-        snapshot => snapshot.title === expectedPromptTitle && snapshot.easyStep === "keywords",
-        "Guided cloze did not restore after the mobile core-definition Easy Mode regression."
-      );
-    }
 
     await clearSelectedEasyKeywordChips(client);
     await clickEasyKeywordChipsInReverseSkeletonOrder(client);
@@ -1098,213 +1422,143 @@ async function run() {
         snapshot.easyStep === "keywords" &&
         snapshot.easySelectedKeywordCount === snapshot.easyKeywordCount &&
         snapshot.pageText.includes("Select the key words in the answer order before moving to copy practice."),
-      "Selecting all shuffled Easy Mode keywords should check and stay in Step 1 when the order is wrong."
+      "Wrong Level 1 Easy keyword order should stay in Step 1."
     );
 
     await clearSelectedEasyKeywordChips(client);
     await waitForSnapshot(
       client,
       snapshot => snapshot.easyStep === "keywords" && snapshot.easySelectedKeywordCount === 0,
-      "Easy Mode keyword selections did not clear before the ordered selection check."
+      "Level 1 Easy keyword selections did not clear before ordered selection."
     );
     await clickEasyKeywordChipsInSkeletonOrder(client);
-    const afterKeywordSelection = await waitForSnapshot(
+    const afterCoreKeywordSelection = await waitForSnapshot(
       client,
       snapshot =>
         snapshot.easyStep === "copy" &&
-        snapshot.easyCopyAnswer === expectedFullAnswer &&
+        snapshot.easyCopyAnswer &&
         snapshot.inputValue === "" &&
         snapshot.activeElementId.startsWith("easy-copy-"),
-      "Correctly ordered Easy Mode keywords did not enter copy practice."
+      "Correct Level 1 Easy keyword order did not enter copy practice."
     );
+    const coreEasyFullAnswer = afterCoreKeywordSelection.easyCopyAnswer;
 
-    assert.equal(afterKeywordSelection.wordBankToggle, "");
+    assert.equal(afterCoreKeywordSelection.visibleActionLabels.includes("Check copy"), true);
+    console.log("PASS 1c: Level 1 Easy keywords advance to copy with the canonical answer visible.");
 
     await client.send("Page.reload");
-    const afterKeywordReload = await waitForSnapshot(
+    const afterCoreKeywordReload = await waitForSnapshot(
       client,
       snapshot =>
         snapshot.easyStep === "copy" &&
         snapshot.persistedEasyState.step === "copy" &&
-        snapshot.persistedEasyState.selectedCount > 0,
-      "Easy keyword selections did not persist across refresh."
+        snapshot.persistedEasyState.selectedCount > 0 &&
+        snapshot.easyCopyAnswer === coreEasyFullAnswer,
+      "Level 1 Easy keyword selections did not persist across refresh."
     );
-    assert.equal(afterKeywordReload.textareaCount, 1);
-    assert.equal(afterKeywordReload.visibleActionLabels.includes("Check copy"), true);
-    console.log(
-      "PASS 1b: Easy Mode keyword chips fill in selection order and only correct order enters copy practice."
-    );
-    console.log("PASS 1c: Easy Mode copy step showed the full answer and an empty textarea.");
+    assert.equal(afterCoreKeywordReload.textareaCount, 1);
+    assert.equal(afterCoreKeywordReload.inputValue, "");
+    assert.equal(afterCoreKeywordReload.visibleActionLabels.includes("Check copy"), true);
 
     await pressShiftEnterInTextarea(client);
-    const afterCopyShiftEnter = await waitForSnapshot(
+    const afterCoreCopyShiftEnter = await waitForSnapshot(
       client,
       snapshot => snapshot.easyStep === "copy" && snapshot.inputValue === "\n",
-      "Shift+Enter should insert a newline in the Easy copy textarea."
+      "Shift+Enter should insert a newline in the Level 1 Easy copy textarea."
     );
-    assert.equal(afterCopyShiftEnter.inputValue, "\n");
+    assert.equal(afterCoreCopyShiftEnter.inputValue, "\n");
 
-    await setActiveTextareaValue(client, "Down the group the M2+ ion has lower charge density.");
+    await setActiveTextareaValue(client, "wrong level 1 copy");
     await pressEnter(client);
-    const afterWrongCopy = await waitForSnapshot(
+    const afterCoreWrongCopy = await waitForSnapshot(
       client,
       snapshot =>
         snapshot.easyStep === "copy" &&
-        snapshot.inputValue === "Down the group the M2+ ion has lower charge density." &&
+        snapshot.inputValue === "wrong level 1 copy" &&
         snapshot.reviewToggleText === "",
-      "Wrong Easy Mode copy should stay in copy practice without adding review debt."
+      "Wrong Level 1 Easy copy should stay in copy practice."
     );
+    assert.equal(afterCoreWrongCopy.inputValue, "wrong level 1 copy");
 
-    assert.equal(afterWrongCopy.inputValue, "Down the group the M2+ ion has lower charge density.");
-    console.log("PASS 1d: Wrong Easy copy stayed manual and did not add review debt.");
-
-    await setActiveTextareaValue(client, expectedFullAnswer);
+    await setActiveTextareaValue(client, coreEasyFullAnswer);
     await pressEnter(client);
-    const afterCorrectCopy = await waitForSnapshot(
+    const afterCoreCorrectCopy = await waitForSnapshot(
       client,
-      snapshot => snapshot.title !== expectedPromptTitle && snapshot.pageCounter === "Prompt 2 / 3",
-      "Correct Easy Mode copy did not complete the question and advance by question."
+      snapshot => snapshot.currentUrl.includes("file=core-definitions") && snapshot.pageCounter === "Prompt 2 / 5",
+      "Correct Level 1 Easy copy did not complete the item and advance."
     );
+    assert.equal(afterCoreCorrectCopy.reviewToggleText, "");
+    console.log("PASS 1d: Level 1 Easy copy checks, persists, and advances after a correct copy.");
 
-    assert.equal(afterCorrectCopy.reviewToggleText, "");
-    console.log("PASS 1e: Correct Easy copy completed the cloze item and advanced by question.");
+    await clickSelector(client, ".memorisation-practice-refine");
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.practiceHidden &&
+        snapshot.modeEasyActive &&
+        snapshot.startButtonText === "Start Easy Mode" &&
+        snapshot.currentUrl.includes("level=level-1-core") &&
+        snapshot.currentUrl.includes("file=core-definitions"),
+      "Returning to setup should preserve valid Level 1 Easy Mode filters and mode."
+    );
+    console.log("PASS 1e: Returning to setup preserves valid Level 1 Easy Mode selection.");
 
-    if (!runMobileVisibilityCheck) {
-      for (let remainingEasyQuestions = 0; remainingEasyQuestions < 2; remainingEasyQuestions += 1) {
-        await clickEasyKeywordChipsInSkeletonOrder(client);
-        const remainingCopyStep = await waitForSnapshot(
-          client,
-          snapshot => snapshot.easyStep === "copy" && snapshot.easyCopyAnswer,
-          "Remaining Easy item did not enter copy practice."
-        );
-        await setActiveTextareaValue(client, remainingCopyStep.easyCopyAnswer);
-        await pressEnter(client);
-      }
+    await evaluate(
+      client,
+      `(() => {
+        const levelButton = document.querySelector('[data-level-id="level-2-guided-cloze"]');
 
-      const afterEasyCompletion = await waitForSnapshot(
-        client,
-        snapshot =>
-          snapshot.bannerText.includes("Session complete") && snapshot.bannerText.includes("5 blanks completed"),
-        "Final Easy copy did not show a clear completion state."
-      );
-      assert.equal(afterEasyCompletion.reviewToggleText, "");
-
-      await evaluate(client, "localStorage.clear(); true");
-      await client.send("Page.navigate", { url: coreDefinitionUrl });
-      const coreDefinitionSnapshot = await waitForSnapshot(
-        client,
-        snapshot =>
-          snapshot.currentUrl.includes("file=core-definitions") &&
-          snapshot.modeFullActive &&
-          snapshot.modeEasyDisabled === false &&
-          snapshot.practiceHidden &&
-          snapshot.easyStep === "",
-        "Core definitions should open in Full Dictation with Easy Mode available but not active."
-      );
-
-      assert.equal(coreDefinitionSnapshot.currentUrl.includes("file=core-definitions"), true);
-      assert.equal(coreDefinitionSnapshot.modeEasyDisabled, false);
-
-      await clickElement(client, "mode-scaffold");
-      await waitForSnapshot(
-        client,
-        snapshot => snapshot.modeEasyActive && snapshot.startButtonText === "Start Easy Mode",
-        "Easy Mode should be selectable for a core definition."
-      );
-      await clickElement(client, "session-start");
-      const coreEasySnapshot = await waitForSnapshot(
-        client,
-        snapshot =>
-          snapshot.currentUrl.includes("file=core-definitions") &&
-          snapshot.modeEasyActive &&
-          snapshot.modeEasyDisabled === false &&
-          snapshot.easyStep === "keywords" &&
-          snapshot.easyKeywordCount > 0 &&
-          snapshot.textareaCount === 0,
-        "Easy Mode should activate on a core definition without switching the selected file."
-      );
-
-      assert.equal(coreEasySnapshot.currentUrl.includes("file=core-definitions"), true);
-      console.log("PASS 1f: Core definitions support Easy Mode keyword recognition.");
-
-      await evaluate(client, "localStorage.clear(); true");
-      await client.send("Page.navigate", { url: multiRoundGroup2Url });
-      await waitForSnapshot(
-        client,
-        snapshot =>
-          snapshot.currentUrl.includes("file=multi-round-cloze") && snapshot.startButtonText === "Start Easy Mode",
-        "Multi-round cloze setup did not open with Easy Mode available."
-      );
-      await clickElement(client, "session-start");
-      let duplicateKeywordSelection = null;
-
-      for (let duplicateSearchAttempts = 0; duplicateSearchAttempts < 3; duplicateSearchAttempts += 1) {
-        await waitForSnapshot(
-          client,
-          snapshot => snapshot.easyStep === "keywords" && snapshot.easyKeywordCount > 0,
-          "Multi-round Easy Mode did not show keyword chips while searching for duplicate labels."
-        );
-        duplicateKeywordSelection = await getDuplicateSwappedSkeletonKeywordIds(client);
-
-        if (duplicateKeywordSelection.ids.length) {
-          break;
+        if (!levelButton) {
+          throw new Error("Missing Level 2 switcher button.");
         }
 
-        await clickEasyKeywordChipsInSkeletonOrder(client);
-        const duplicateSearchCopyStep = await waitForSnapshot(
-          client,
-          snapshot => snapshot.easyStep === "copy" && snapshot.easyCopyAnswer,
-          "Multi-round Easy Mode item did not enter copy while searching for duplicate labels."
-        );
-        await setActiveTextareaValue(client, duplicateSearchCopyStep.easyCopyAnswer);
-        await pressEnter(client);
-      }
+        levelButton.click();
+        return true;
+      })()`
+    );
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.currentUrl.includes("level=level-2-guided-cloze") &&
+        snapshot.modeFullActive &&
+        snapshot.modeEasyDisabled &&
+        snapshot.startButtonText === "Start Full Dictation",
+      "Switching from Level 1 Easy Mode to Level 2 should force Full Dictation."
+    );
+    console.log("PASS 1f: Switching from Level 1 Easy Mode to non-Level 1 forces Full Dictation.");
 
-      assert.ok(
-        duplicateKeywordSelection?.ids.length > 0,
-        "Expected a multi-round Easy Mode item with duplicate visible keyword labels."
-      );
-      await clickEasyKeywordChipsByIdSequence(client, duplicateKeywordSelection.ids);
-      await waitForSnapshot(
-        client,
-        snapshot => snapshot.easyStep === "copy",
-        "Duplicate visible keyword chips should be interchangeable when their normalized text sequence matches."
-      );
-      console.log("PASS 1g: Duplicate visible Easy keyword chips are interchangeable by normalized text.");
+    await clearLocalStateAndNavigate(client, multiRoundGroup2Url);
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.currentUrl.includes("file=multi-round-cloze") &&
+        snapshot.modeFullActive &&
+        snapshot.modeEasyDisabled &&
+        snapshot.startButtonText === "Start Full Dictation",
+      "Multi-round cloze should open in Full Dictation with Easy Mode disabled."
+    );
+    console.log("PASS 1a: Later cloze levels keep Easy Mode disabled.");
 
-      await evaluate(client, "localStorage.clear(); true");
-      await client.send("Page.navigate", { url: targetUrl });
-      await waitForSnapshot(
-        client,
-        snapshot => snapshot.currentUrl.includes("file=guided-cloze") && snapshot.startButtonText === "Start Easy Mode",
-        "Guided cloze setup did not restore after the core-definition Easy Mode regression."
-      );
-      await clickElement(client, "session-start");
-      await waitForSnapshot(
-        client,
-        snapshot => snapshot.title === expectedPromptTitle && snapshot.easyStep === "keywords",
-        "Guided cloze did not restore after the core-definition Easy Mode regression."
-      );
-    }
-
-    if (runMobileVisibilityCheck) {
-      await clickEasyKeywordChipsInSkeletonOrder(client);
-      await waitForSnapshot(
-        client,
-        snapshot => snapshot.easyStep === "copy" && snapshot.visibleActionLabels.includes("Check copy"),
-        "Mobile Easy Mode did not prepare the next item for copy practice."
-      );
-      const mobileCopyLayout = await getMobileLayoutSnapshot(client);
-
-      assert.equal(mobileCopyLayout.visibleActionLabels.includes("Check copy"), true);
-      assert.equal(mobileCopyLayout.wordBankRect, null, "Mobile Easy Step 2 should not render a Word Bank sheet.");
-      console.log("PASS 1g: Mobile Easy Mode keeps Step 1 keyboard-free and Step 2 free of Word Bank.");
-    }
+    await clearLocalStateAndNavigate(client, targetUrl);
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.currentUrl.includes("file=guided-cloze") &&
+        snapshot.modeFullActive &&
+        snapshot.modeEasyDisabled &&
+        snapshot.startButtonText === "Start Full Dictation" &&
+        snapshot.practiceHidden,
+      "Guided cloze did not reset before Full Dictation regression checks."
+    );
 
     await clearLocalStateAndReload(client);
     await waitForSnapshot(
       client,
-      snapshot => snapshot.startButtonText === "Start Easy Mode" && snapshot.practiceHidden,
+      snapshot =>
+        snapshot.startButtonText === "Start Full Dictation" &&
+        snapshot.modeFullActive &&
+        snapshot.modeEasyDisabled &&
+        snapshot.practiceHidden,
       "Guided cloze did not reset before Full Dictation regression checks."
     );
     await clickElement(client, "mode-full");
@@ -1521,6 +1775,8 @@ async function run() {
 
     assert.equal(backToMainSnapshot.title, expectedPromptTitle);
     console.log("PASS 8: Leaving review restored the main-session active blank.");
+    await runLegacyProgressProtectionChecks(client, targetUrl, emptyCoreDefinitionUrl);
+    await runDarkModeReadabilityChecks(client, targetUrl, coreDefinitionUrl);
     console.log("Browser active-blank regression checks passed.");
   } catch (error) {
     const chromeExitDetails = chromeProcess.exitCode != null ? ` Chrome exit code: ${chromeProcess.exitCode}.` : "";

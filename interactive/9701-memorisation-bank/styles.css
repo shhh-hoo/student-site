@@ -1,6 +1,14 @@
 .memorisation-layout {
   --memorisation-word-hit-color: #b45309;
   --memorisation-phrase-hit-color: #15803d;
+  --memorisation-text: var(--locked-ink, var(--text));
+  --memorisation-text-soft: var(--locked-ink-soft, var(--muted));
+  --memorisation-label: var(--accent-strong);
+  --memorisation-success-text: #047857;
+  --memorisation-warning-text: #b45309;
+  --memorisation-danger-text: #b42318;
+  --memorisation-revealed-text: #8a5a14;
+  --memorisation-focus-ring: rgba(15, 139, 141, 0.28);
   --memorisation-border: rgba(15, 139, 141, 0.14);
   --memorisation-border-strong: rgba(15, 139, 141, 0.22);
   --memorisation-surface: rgba(255, 255, 255, 0.9);
@@ -15,6 +23,7 @@
   grid-template-columns: minmax(0, 1fr) minmax(240px, 280px);
   gap: 1rem;
   align-items: start;
+  color: var(--memorisation-text);
 }
 
 body.memorisation-filters-open {
@@ -740,7 +749,7 @@ textarea.memorisation-input {
 
 .memorisation-diff__sentence {
   margin: 0;
-  color: var(--text);
+  color: var(--memorisation-text);
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -804,7 +813,7 @@ textarea.memorisation-input {
   align-items: center;
   flex-wrap: wrap;
   gap: 0.3rem 0.4rem;
-  color: var(--text);
+  color: var(--memorisation-text);
   line-height: 1.75;
 }
 
@@ -919,9 +928,9 @@ textarea.memorisation-easy-copy-input {
   min-height: var(--memorisation-input-min-height);
   border: 1px solid rgba(15, 139, 141, 0.18);
   background: var(--memorisation-surface-strong);
-  color: var(--text);
-  caret-color: var(--accent-strong);
-  -webkit-text-fill-color: var(--text);
+  color: var(--memorisation-text);
+  caret-color: var(--memorisation-label);
+  -webkit-text-fill-color: var(--memorisation-text);
 }
 
 .memorisation-reveal {
@@ -1989,4 +1998,224 @@ html[data-theme="dark"] .memorisation-action-bar,
 html[data-theme="dark"] .memorisation-toggle,
 html[data-theme="dark"] .memorisation-outline__item {
   box-shadow: none;
+}
+
+html[data-theme="dark"] .memorisation-layout {
+  --memorisation-word-hit-color: #fde68a;
+  --memorisation-phrase-hit-color: #86efac;
+  --memorisation-text: rgba(247, 240, 228, 0.96);
+  --memorisation-text-soft: rgba(230, 219, 202, 0.78);
+  --memorisation-label: rgba(168, 215, 255, 0.9);
+  --memorisation-success-text: #bbf7d0;
+  --memorisation-warning-text: #fde68a;
+  --memorisation-danger-text: #fecaca;
+  --memorisation-revealed-text: #fed7aa;
+  --memorisation-focus-ring: rgba(168, 215, 255, 0.42);
+  --memorisation-border: rgba(230, 219, 202, 0.18);
+  --memorisation-border-strong: rgba(168, 215, 255, 0.36);
+  --memorisation-surface: rgba(28, 25, 22, 0.98);
+  --memorisation-surface-strong: rgba(35, 31, 27, 0.98);
+  --memorisation-surface-soft: rgba(24, 42, 39, 0.98);
+  --memorisation-surface-accent: rgba(29, 54, 54, 0.88);
+  color: var(--memorisation-text);
+}
+
+html[data-theme="dark"] .memorisation-session-strip,
+html[data-theme="dark"] .memorisation-control-band,
+html[data-theme="dark"] .memorisation-side-card,
+html[data-theme="dark"] .memorisation-active-status,
+html[data-theme="dark"] .memorisation-prompt-card,
+html[data-theme="dark"] .memorisation-answer-card,
+html[data-theme="dark"] .memorisation-feedback-card,
+html[data-theme="dark"] .memorisation-reveal,
+html[data-theme="dark"] .memorisation-status-card {
+  border-color: var(--memorisation-border);
+  background: var(--memorisation-surface);
+  color: var(--memorisation-text);
+}
+
+html[data-theme="dark"] .memorisation-prompt-card h3,
+html[data-theme="dark"] .memorisation-banner h3,
+html[data-theme="dark"] .memorisation-current-row__title,
+html[data-theme="dark"] .memorisation-side-card h2,
+html[data-theme="dark"] .memorisation-feedback-card__title,
+html[data-theme="dark"] .memorisation-prompt-context__text,
+html[data-theme="dark"] .memorisation-question-stem,
+html[data-theme="dark"] .memorisation-answer__text,
+html[data-theme="dark"] .memorisation-input__mirror,
+html[data-theme="dark"] .memorisation-diff__sentence,
+html[data-theme="dark"] .memorisation-easy-skeleton__line,
+html[data-theme="dark"] .memorisation-outline__title {
+  color: var(--memorisation-text);
+}
+
+html[data-theme="dark"] .memorisation-control__label,
+html[data-theme="dark"] .memorisation-question-label,
+html[data-theme="dark"] .memorisation-answer__label,
+html[data-theme="dark"] .memorisation-prompt-context__label,
+html[data-theme="dark"] .memorisation-feedback-card__label,
+html[data-theme="dark"] .memorisation-outline__status,
+html[data-theme="dark"] .memorisation-mode-button span {
+  color: var(--memorisation-label);
+}
+
+html[data-theme="dark"] .memorisation-prompt-card__meta,
+html[data-theme="dark"] .memorisation-question-copy,
+html[data-theme="dark"] .memorisation-answer-card__copy,
+html[data-theme="dark"] .memorisation-answer-card__subcopy,
+html[data-theme="dark"] .memorisation-current-row__copy,
+html[data-theme="dark"] .memorisation-side-card__copy,
+html[data-theme="dark"] .memorisation-active-status__topic,
+html[data-theme="dark"] .memorisation-action-hint,
+html[data-theme="dark"] .memorisation-outline__meta,
+html[data-theme="dark"] .memorisation-outline__overflow,
+html[data-theme="dark"] .memorisation-empty,
+html[data-theme="dark"] .memorisation-stat span,
+html[data-theme="dark"] .memorisation-diff__summary,
+html[data-theme="dark"] .memorisation-diff__legend,
+html[data-theme="dark"] .memorisation-word-bank__copy,
+html[data-theme="dark"] .memorisation-mode-button small,
+html[data-theme="dark"] .memorisation-easy-panel__copy,
+html[data-theme="dark"] .memorisation-easy-skeleton__copy {
+  color: var(--memorisation-text-soft);
+}
+
+html[data-theme="dark"] .memorisation-toggle,
+html[data-theme="dark"] .memorisation-select,
+html[data-theme="dark"] .memorisation-mode-button,
+html[data-theme="dark"] .memorisation-outline__item,
+html[data-theme="dark"] .memorisation-input-shell,
+html[data-theme="dark"] .memorisation-prompt-context,
+html[data-theme="dark"] .memorisation-word-bank,
+html[data-theme="dark"] .memorisation-diff,
+html[data-theme="dark"] .memorisation-easy-skeleton,
+html[data-theme="dark"] .memorisation-easy-panel,
+html[data-theme="dark"] .memorisation-easy-copy-answer,
+html[data-theme="dark"] textarea.memorisation-easy-copy-input {
+  border-color: var(--memorisation-border);
+  background: var(--memorisation-surface-accent);
+  color: var(--memorisation-text);
+}
+
+html[data-theme="dark"] .memorisation-toggle[data-active="true"],
+html[data-theme="dark"] .memorisation-mode-button[data-active="true"],
+html[data-theme="dark"] .memorisation-outline__item[data-current="true"],
+html[data-theme="dark"] .memorisation-easy-keyword[data-selected="true"] {
+  border-color: var(--memorisation-border-strong);
+  background: rgba(39, 72, 72, 0.96);
+}
+
+html[data-theme="dark"] .memorisation-input-shell,
+html[data-theme="dark"] textarea.memorisation-easy-copy-input,
+html[data-theme="dark"] .memorisation-easy-copy-answer,
+html[data-theme="dark"] .memorisation-word-bank__chip,
+html[data-theme="dark"] .memorisation-easy-keyword {
+  background: var(--memorisation-surface-strong);
+}
+
+html[data-theme="dark"] textarea.memorisation-easy-copy-input {
+  caret-color: var(--memorisation-label);
+  -webkit-text-fill-color: var(--memorisation-text);
+}
+
+html[data-theme="dark"] .memorisation-input::placeholder {
+  color: var(--memorisation-text-soft);
+  -webkit-text-fill-color: var(--memorisation-text-soft);
+}
+
+html[data-theme="dark"] .memorisation-input {
+  caret-color: var(--memorisation-label);
+}
+
+html[data-theme="dark"] .memorisation-card-chip,
+html[data-theme="dark"] .memorisation-badge,
+html[data-theme="dark"] .memorisation-counter-chip,
+html[data-theme="dark"] .memorisation-status-pill {
+  border-color: var(--memorisation-border);
+  background: rgba(29, 54, 54, 0.94);
+  color: var(--memorisation-text);
+}
+
+html[data-theme="dark"] .memorisation-card-chip--muted,
+html[data-theme="dark"] .memorisation-counter-chip,
+html[data-theme="dark"] .memorisation-counter-chip--soft {
+  background: rgba(42, 38, 34, 0.92);
+  color: var(--memorisation-text);
+}
+
+html[data-theme="dark"] .memorisation-status-pill[data-tone="correct"] {
+  background: rgba(21, 63, 51, 0.96);
+  color: var(--memorisation-success-text);
+}
+
+html[data-theme="dark"] .memorisation-feedback[data-tone="correct"] {
+  color: var(--memorisation-success-text);
+}
+
+html[data-theme="dark"] .memorisation-status-pill[data-tone="near"] {
+  background: rgba(79, 59, 31, 0.96);
+  color: var(--memorisation-warning-text);
+}
+
+html[data-theme="dark"] .memorisation-feedback[data-tone="near"] {
+  color: var(--memorisation-warning-text);
+}
+
+html[data-theme="dark"] .memorisation-status-pill[data-tone="wrong"] {
+  background: rgba(67, 34, 35, 0.96);
+  color: var(--memorisation-danger-text);
+}
+
+html[data-theme="dark"] .memorisation-feedback[data-tone="wrong"],
+html[data-theme="dark"] .memorisation-easy-panel__message {
+  color: var(--memorisation-danger-text);
+}
+
+html[data-theme="dark"] .memorisation-status-pill[data-tone="revealed"] {
+  background: rgba(74, 52, 24, 0.96);
+  color: var(--memorisation-revealed-text);
+}
+
+html[data-theme="dark"] .memorisation-feedback[data-tone="revealed"],
+html[data-theme="dark"] .memorisation-answer__note {
+  color: var(--memorisation-revealed-text);
+}
+
+html[data-theme="dark"] .memorisation-feedback__guidance,
+html[data-theme="dark"] .memorisation-word-bank__message {
+  color: var(--memorisation-text-soft);
+}
+
+html[data-theme="dark"] .memorisation-action-bar .doc-link,
+html[data-theme="dark"] .memorisation-action-bar .secondary-link,
+html[data-theme="dark"] .memorisation-current-row__actions .doc-link,
+html[data-theme="dark"] .memorisation-current-row__actions .secondary-link,
+html[data-theme="dark"] .memorisation-active-status__setup,
+html[data-theme="dark"] .memorisation-practice-refine {
+  border-color: var(--memorisation-border);
+  background: var(--memorisation-surface-strong);
+  color: var(--memorisation-text);
+}
+
+html[data-theme="dark"] .memorisation-action-bar .doc-link {
+  color: var(--memorisation-label);
+}
+
+html[data-theme="dark"] .memorisation-action-bar button:disabled,
+html[data-theme="dark"] .memorisation-mode-button:disabled,
+html[data-theme="dark"] .memorisation-toggle:disabled {
+  border-color: rgba(230, 219, 202, 0.1);
+  background: rgba(42, 38, 34, 0.48);
+  color: rgba(230, 219, 202, 0.48);
+  opacity: 1;
+}
+
+html[data-theme="dark"] .memorisation-toggle:focus-visible,
+html[data-theme="dark"] .memorisation-select:focus-visible,
+html[data-theme="dark"] .memorisation-mode-button:focus-visible,
+html[data-theme="dark"] .memorisation-input-shell:focus-within,
+html[data-theme="dark"] .memorisation-outline__item:focus-visible,
+html[data-theme="dark"] .memorisation-action-bar button:focus-visible,
+html[data-theme="dark"] .memorisation-easy-keyword:focus-visible {
+  outline-color: var(--memorisation-focus-ring);
 }

@@ -2,6 +2,13 @@ import { createAnswerModel as buildAnswerModel, evaluateAnswerModel } from "./ma
 import { buildSoftHighlightModel } from "./display-feedback.mjs";
 import { buildScaffoldModel, diffAnswer } from "./answer-feedback.mjs";
 import { resolveActiveBlankId, resolvePreferredBlankId } from "./active-blank-state.mjs";
+import {
+  buildLegacyProgressReport,
+  classifyLegacySessionValue,
+  ensureLegacyBackupSnapshot,
+  exportRawLegacyBackup,
+  shouldSkipSessionWriteForClassification,
+} from "./legacy-progress-safety.mjs";
 
 const definitionScopeOptions = [
   { id: "all", label: "All" },
@@ -42,6 +49,8 @@ const localSessionStoragePrefix = "memorisation-bank-session";
 const inputPersistDelayMs = 150;
 const answerFieldResizeFrames = new WeakMap();
 let persistSessionStateTimeoutId = 0;
+let legacySessionPersistenceBlockedForPage = false;
+let lastLegacyBackupSnapshotResult = null;
 
 const stageSwitcher = document.getElementById("stage-switcher");
 const levelSwitcher = document.getElementById("level-switcher");
@@ -474,6 +483,148 @@ function getLocalSessionStorageKey(selection = getSelectionSnapshot()) {
   return `${localSessionStoragePrefix}::${buildSessionSelectionKey(selection)}`;
 }
 
+function getLocalStorage() {
+  try {
+    return window.localStorage || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function runLegacyBackupSnapshot() {
+  const storage = getLocalStorage();
+
+  if (!storage) {
+    legacySessionPersistenceBlockedForPage = true;
+    lastLegacyBackupSnapshotResult = {
+      ok: false,
+      wrote: false,
+      appendedKeys: [],
+      errorType: "storage",
+      error: "localStorage is unavailable.",
+    };
+    return lastLegacyBackupSnapshotResult;
+  }
+
+  const result = ensureLegacyBackupSnapshot(storage, {
+    sessionStoragePrefix: localSessionStoragePrefix,
+    currentVersion: localSessionStateVersion,
+  });
+
+  lastLegacyBackupSnapshotResult = result;
+
+  if (!result.ok) {
+    legacySessionPersistenceBlockedForPage = true;
+  }
+
+  return result;
+}
+
+function ensureLegacyProgressBackup() {
+  return runLegacyBackupSnapshot().ok;
+}
+
+function classifyCurrentSessionStorageKey(selection = getSelectionSnapshot()) {
+  const storage = getLocalStorage();
+
+  if (!storage) {
+    return {
+      classification: "un-restored",
+      parseStatus: "unavailable",
+    };
+  }
+
+  try {
+    const rawSessionState = storage.getItem(getLocalSessionStorageKey(selection));
+
+    if (rawSessionState === null) {
+      return {
+        classification: "empty",
+        parseStatus: "missing",
+      };
+    }
+
+    return classifyLegacySessionValue(rawSessionState, {
+      currentVersion: localSessionStateVersion,
+      expectedSelectionKey: buildSessionSelectionKey(selection),
+    });
+  } catch (error) {
+    return {
+      classification: "un-restored",
+      parseStatus: "unavailable",
+    };
+  }
+}
+
+function shouldSkipCurrentSessionWrite(selection = getSelectionSnapshot()) {
+  if (legacySessionPersistenceBlockedForPage) {
+    return true;
+  }
+
+  return shouldSkipSessionWriteForClassification(classifyCurrentSessionStorageKey(selection).classification);
+}
+
+function canExposeMemorisationDebugTools() {
+  const hostname = window.location.hostname;
+
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return true;
+  }
+
+  try {
+    return window.localStorage?.getItem("mb-debug") === "1";
+  } catch (error) {
+    return false;
+  }
+}
+
+function registerMemorisationDebugTools() {
+  if (!canExposeMemorisationDebugTools()) {
+    return;
+  }
+
+  window.MemorisationBankDebug = Object.freeze({
+    reportProgressKeys() {
+      const storage = getLocalStorage();
+
+      if (!storage) {
+        return {
+          ok: false,
+          error: "localStorage is unavailable.",
+          sessions: [],
+          backup: {
+            parseStatus: "unavailable",
+            entryCount: 0,
+            entries: [],
+          },
+        };
+      }
+
+      return buildLegacyProgressReport(storage, {
+        sessionStoragePrefix: localSessionStoragePrefix,
+        currentVersion: localSessionStateVersion,
+        expectedSelectionKey: buildSessionSelectionKey(),
+      });
+    },
+    ensureLegacyBackupSnapshot: runLegacyBackupSnapshot,
+    exportRawLegacyBackup() {
+      const storage = getLocalStorage();
+
+      if (!storage) {
+        return {
+          warning: "Raw legacy backup export is unavailable because localStorage cannot be read.",
+          rawBackup: null,
+        };
+      }
+
+      return exportRawLegacyBackup(storage);
+    },
+    getLastLegacyBackupSnapshotResult() {
+      return lastLegacyBackupSnapshotResult;
+    },
+  });
+}
+
 function getInitialSelectionFromUrl() {
   const searchParams = new URLSearchParams(window.location.search);
   const requestedRound = searchParams.get("round");
@@ -789,7 +940,7 @@ function normalizeLearningMode(mode, fallback = "full") {
 }
 
 function getDefaultLearningModeForFile(fileId = appState.file) {
-  return fileId === "guided-cloze" || fileId === "multi-round-cloze" ? "easy" : "full";
+  return "full";
 }
 
 function getDefaultSelectedModeForFile(fileId = appState.file) {
@@ -801,12 +952,13 @@ function getLearningMode() {
     return "review";
   }
 
-  return normalizeLearningMode(appState.learningMode, getDefaultLearningModeForFile());
+  const mode = normalizeLearningMode(appState.learningMode, getDefaultLearningModeForFile());
+  return mode === "easy" && !canScaffoldCurrentBlank() ? "full" : mode;
 }
 
 function canScaffoldCurrentBlank() {
   const activeBlank = getBlank(getActiveBlankId(appState.sessionBlankIds));
-  return Boolean(activeBlank?.answerModel?.full_answer);
+  return appState.level === "level-1-core" && Boolean(activeBlank?.answerModel?.full_answer);
 }
 
 function switchLearningMode(mode) {
@@ -832,8 +984,12 @@ function switchLearningMode(mode) {
 }
 
 function renderModeSwitcher() {
-  const mode = appState.selectedMode;
   const scaffoldAvailable = canScaffoldCurrentBlank();
+  if (appState.selectedMode === "easy" && !scaffoldAvailable) {
+    appState.selectedMode = "full";
+  }
+
+  const mode = appState.selectedMode;
   const reviewCount = appState.reviewQueueBlankIds.length;
 
   modeFullButton.disabled = appState.sessionBlankIds.length === 0;
@@ -869,7 +1025,10 @@ function applySelectedModeToPractice() {
   }
 
   appState.reviewMode = false;
-  appState.learningMode = normalizeLearningMode(appState.selectedMode, getDefaultLearningModeForFile());
+  appState.learningMode =
+    appState.selectedMode === "easy" && !canScaffoldCurrentBlank()
+      ? "full"
+      : normalizeLearningMode(appState.selectedMode, getDefaultLearningModeForFile());
 }
 
 function startSession() {
@@ -1680,6 +1839,10 @@ function buildPersistedSessionState() {
 }
 
 function persistSessionStateNow() {
+  if (!ensureLegacyProgressBackup() || shouldSkipCurrentSessionWrite()) {
+    return;
+  }
+
   const persistedSessionState = buildPersistedSessionState();
 
   if (!persistedSessionState) {
@@ -1687,7 +1850,7 @@ function persistSessionStateNow() {
   }
 
   try {
-    window.localStorage.setItem(getLocalSessionStorageKey(), JSON.stringify(persistedSessionState));
+    getLocalStorage()?.setItem(getLocalSessionStorageKey(), JSON.stringify(persistedSessionState));
   } catch (error) {
     // Ignore storage failures so practice flow is not blocked.
   }
@@ -1713,9 +1876,17 @@ function flushPersistedSessionState() {
   persistSessionStateNow();
 }
 
-function clearPersistedSessionState(selection = getSelectionSnapshot()) {
+function clearCurrentCompatibleSessionStateOnly(selection = getSelectionSnapshot()) {
+  if (!ensureLegacyProgressBackup()) {
+    return;
+  }
+
+  if (classifyCurrentSessionStorageKey(selection).classification !== "current-compatible") {
+    return;
+  }
+
   try {
-    window.localStorage.removeItem(getLocalSessionStorageKey(selection));
+    getLocalStorage()?.removeItem(getLocalSessionStorageKey(selection));
   } catch (error) {
     // Ignore storage failures so empty/error states can still render.
   }
@@ -1803,10 +1974,11 @@ function restoreSessionStateFromLocalStorage() {
     return false;
   }
 
+  ensureLegacyProgressBackup();
   let restoredSessionState = null;
 
   try {
-    restoredSessionState = JSON.parse(window.localStorage.getItem(getLocalSessionStorageKey()) || "null");
+    restoredSessionState = JSON.parse(getLocalStorage()?.getItem(getLocalSessionStorageKey()) || "null");
   } catch (error) {
     return false;
   }
@@ -3798,6 +3970,7 @@ function renderPageContent() {
 }
 
 function renderEmptyState(message) {
+  ensureLegacyProgressBackup();
   renderStats();
   updateBadges();
   questionLabel.textContent = "No session questions";
@@ -3818,7 +3991,6 @@ function renderEmptyState(message) {
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
   updateUrlFromState();
-  clearPersistedSessionState();
 }
 
 function renderCatalogErrorState(message) {
@@ -4147,6 +4319,7 @@ async function bootRuntime({ preserveSelection = true } = {}) {
 }
 
 async function init() {
+  registerMemorisationDebugTools();
   registerStaticEvents();
   bootRuntime({ preserveSelection: false });
 }
