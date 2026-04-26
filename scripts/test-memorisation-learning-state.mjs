@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   buildCanonicalContentIndex,
   createLearningStateStore,
+  customItemsStorageKey,
   exportLearningState,
   getAllProgress,
   getProgress,
@@ -12,6 +13,7 @@ import {
   progressMigratedStorageKey,
   recordAttempt,
   reviewListStorageKey,
+  settingsStorageKey,
 } from "../interactive/9701-memorisation-bank/learning-state.mjs";
 import { legacySessionBackupKey } from "../interactive/9701-memorisation-bank/legacy-progress-safety.mjs";
 import { buildStableContentId } from "../interactive/9701-memorisation-bank/learning-state-id.mjs";
@@ -425,6 +427,14 @@ function assertNoPrivateValues(value) {
 
   recordAttempt({ contentId: coreContentId, result: "correct" }, { storage, now: () => baseNow });
   recordAttempt({ contentId: coreContentId, result: "incorrect" }, { storage, now: () => laterNow });
+  storage.setItem(
+    settingsStorageKey,
+    JSON.stringify({
+      version: 1,
+      displayMode: "local",
+      localOnly: true,
+    })
+  );
 
   const incoming = {
     version: 1,
@@ -479,12 +489,13 @@ function assertNoPrivateValues(value) {
         },
       },
     },
-    settings: { version: 1, localSetting: "imported" },
+    settings: { version: 1, displayMode: "imported", importOnly: true },
   };
 
   const result = importLearningState(incoming, { storage, now: () => latestNow });
   const record = getProgress(coreContentId, { storage });
   const due = createLearningStateStore({ storage, now: () => latestNow }).getDueReviewItems();
+  const settings = parseStored(storage, settingsStorageKey);
 
   assert.equal(result.ok, true);
   assert.equal(record.correctCount, 5);
@@ -496,8 +507,14 @@ function assertNoPrivateValues(value) {
   assert.equal(record.nextReviewAt, "2026-04-26T09:00:00.000Z");
   assert.equal(due[0].reasons.includes("incorrect"), true);
   assert.equal(due[0].reasons.includes("imported-review"), true);
+  assert.equal(settings.displayMode, "local");
+  assert.equal(settings.localOnly, true);
+  assert.equal(settings.importOnly, true);
+  assert.equal(storage.getItem(customItemsStorageKey), null);
   assert.equal(parseStored(storage, learningProgressStorageKey).unmatchedLegacyProgress.length, 1);
-  console.log("PASS 9: import merges records, review reasons, timestamps, legacy sources, and unmatched summaries.");
+  console.log(
+    "PASS 9: import merges progress/review data, keeps local settings precedence, and does not touch custom items."
+  );
 }
 
 {

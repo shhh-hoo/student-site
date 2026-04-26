@@ -11,10 +11,10 @@ import {
 
 export const learningProgressStorageKey = "mb:progress:v1";
 export const reviewListStorageKey = "mb:review-list:v1";
+// Reserved for PR4. PR2B must not read from or write to custom review items.
 export const customItemsStorageKey = "mb:custom-items:v1";
 export const settingsStorageKey = "mb:settings:v1";
 export const progressMigratedStorageKey = "mb:progress:migrated:v1";
-export const unmatchedLegacyProgressStorageKey = "mb:unmatched-legacy-progress:v1";
 
 const schemaVersion = 1;
 const defaultSessionStoragePrefix = "memorisation-bank-session";
@@ -1003,6 +1003,7 @@ export function importLearningState(payload, options = {}) {
   });
 
   const incomingSettings = isObject(payload.settings) ? payload.settings : {};
+  // Settings import is non-destructive: progress/review merge, and local settings win for now.
   writeProgressPayload(storage, progressPayload, { ...options, now: () => importedAt });
   writeReviewListPayload(storage, reviewPayload, { ...options, now: () => importedAt });
   writeSettingsPayload(storage, { ...incomingSettings, ...settingsPayload, version: schemaVersion }, options);
