@@ -2100,7 +2100,7 @@ function checkEasyQuestion(questionId) {
   }
 
   if (easyState.easyStep === "keywords") {
-    if (hasSelectedAllEasyKeywords(question, easyState)) {
+    if (hasCorrectEasyKeywordOrder(question, easyState)) {
       easyState.keywordStatus = "correct";
       easyState.easyStep = "copy";
     } else {
@@ -2668,7 +2668,7 @@ function getEasyKeywordModel(question) {
   }
 
   const scaffoldModel = buildScaffoldModel(question.fullAnswer, getQuestionScaffoldConfig(question));
-  const chipsByNormalized = new Map();
+  const chips = [];
   const parts = [];
 
   scaffoldModel.words.forEach(word => {
@@ -2690,15 +2690,13 @@ function getEasyKeywordModel(question) {
       return;
     }
 
-    if (!chipsByNormalized.has(normalized)) {
-      chipsByNormalized.set(normalized, {
-        id: `keyword-${chipsByNormalized.size}`,
-        text: word.text,
-        normalized,
-      });
-    }
+    const chipModel = {
+      id: `keyword-${chips.length}`,
+      text: word.text,
+      normalized,
+    };
+    chips.push(chipModel);
 
-    const chipModel = chipsByNormalized.get(normalized);
     parts.push({
       type: "slot",
       id: chipModel.id,
@@ -2708,7 +2706,7 @@ function getEasyKeywordModel(question) {
   });
 
   return {
-    chips: stableShuffleEntries(Array.from(chipsByNormalized.values()), question.id),
+    chips: stableShuffleEntries(chips, question.id),
     parts,
   };
 }
@@ -2717,15 +2715,34 @@ function getEasyKeywordChips(question) {
   return getEasyKeywordModel(question).chips;
 }
 
-function hasSelectedAllEasyKeywords(question, easyState = getEasyQuestionState(question?.id || "")) {
-  const chips = getEasyKeywordChips(question);
+function getEasyKeywordSlotIds(question) {
+  return getEasyKeywordModel(question)
+    .parts.filter(part => part.type === "slot")
+    .map(part => part.id);
+}
 
-  if (!chips.length) {
+function hasFilledAllEasyKeywordSlots(question, easyState = getEasyQuestionState(question?.id || "")) {
+  const slotIds = getEasyKeywordSlotIds(question);
+
+  if (!slotIds.length) {
     return true;
   }
 
-  const selectedIds = new Set(easyState?.selectedKeywordIds || []);
-  return chips.every(chip => selectedIds.has(chip.id));
+  return (easyState?.selectedKeywordIds || []).length >= slotIds.length;
+}
+
+function hasCorrectEasyKeywordOrder(question, easyState = getEasyQuestionState(question?.id || "")) {
+  const slotIds = getEasyKeywordSlotIds(question);
+  const selectedKeywordIds = easyState?.selectedKeywordIds || [];
+
+  if (!slotIds.length) {
+    return true;
+  }
+
+  return (
+    slotIds.length === selectedKeywordIds.length &&
+    slotIds.every((slotId, index) => slotId === selectedKeywordIds[index])
+  );
 }
 
 function getWordBankHintScore(word) {
@@ -2782,8 +2799,10 @@ function createEasyModeSkeleton(question, blank) {
   return shell;
 }
 
-function createEasyKeywordSkeleton(question, selectedIds) {
+function createEasyKeywordSkeleton(question, selectedKeywordIds) {
   const keywordModel = getEasyKeywordModel(question);
+  const chipsById = new Map(keywordModel.chips.map(chip => [chip.id, chip]));
+  let selectedIndex = 0;
   const shell = document.createElement("section");
   shell.className = "memorisation-easy-skeleton memorisation-easy-skeleton--keywords";
   shell.setAttribute("aria-label", "Easy Mode answer skeleton");
@@ -2799,11 +2818,14 @@ function createEasyKeywordSkeleton(question, selectedIds) {
     const partElement = document.createElement("span");
 
     if (part.type === "slot") {
-      const isSelected = selectedIds.has(part.id);
+      const selectedChip = chipsById.get(selectedKeywordIds[selectedIndex]);
+      const isSelected = Boolean(selectedChip);
+      selectedIndex += 1;
       partElement.className = "memorisation-easy-skeleton__blank";
       partElement.dataset.filled = String(isSelected);
-      partElement.setAttribute("aria-label", isSelected ? `Selected ${part.text}` : "blank");
-      partElement.textContent = isSelected ? part.text : "";
+      partElement.dataset.expectedKeywordId = part.id;
+      partElement.setAttribute("aria-label", isSelected ? `Selected ${selectedChip.text}` : "blank");
+      partElement.textContent = isSelected ? selectedChip.text : "";
     } else {
       partElement.className = "memorisation-easy-skeleton__word";
       partElement.textContent = part.text;
@@ -2823,8 +2845,9 @@ function createEasyKeywordSkeleton(question, selectedIds) {
 function createEasyKeywordPanel(question) {
   const easyState = getEasyQuestionState(question.id);
   const chips = getEasyKeywordChips(question);
-  const selectedIds = new Set(easyState?.selectedKeywordIds || []);
-  const readyForCopy = hasSelectedAllEasyKeywords(question, easyState);
+  const selectedKeywordIds = easyState?.selectedKeywordIds || [];
+  const selectedIds = new Set(selectedKeywordIds);
+  const readyForCopy = hasCorrectEasyKeywordOrder(question, easyState);
   const shell = document.createElement("section");
   shell.className = "memorisation-easy-panel";
   shell.dataset.step = "keywords";
@@ -2845,23 +2868,25 @@ function createEasyKeywordPanel(question) {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.className = "memorisation-easy-keyword";
+    chip.dataset.keywordId = chipModel.id;
     chip.dataset.selected = String(selectedIds.has(chipModel.id));
     chip.textContent = chipModel.text;
     chip.setAttribute("aria-pressed", String(selectedIds.has(chipModel.id)));
     const toggleKeyword = () => {
-      const nextSelectedIds = new Set(getEasyQuestionState(question.id)?.selectedKeywordIds || []);
+      const nextSelectedIds = [...(getEasyQuestionState(question.id)?.selectedKeywordIds || [])];
+      const selectedIndex = nextSelectedIds.indexOf(chipModel.id);
 
-      if (nextSelectedIds.has(chipModel.id)) {
-        nextSelectedIds.delete(chipModel.id);
+      if (selectedIndex >= 0) {
+        nextSelectedIds.splice(selectedIndex, 1);
       } else {
-        nextSelectedIds.add(chipModel.id);
+        nextSelectedIds.push(chipModel.id);
       }
 
-      easyState.selectedKeywordIds = Array.from(nextSelectedIds);
-      const allKeywordsSelected = hasSelectedAllEasyKeywords(question, easyState);
-      easyState.keywordStatus = allKeywordsSelected ? "correct" : "idle";
+      easyState.selectedKeywordIds = nextSelectedIds;
+      const allSlotsFilled = hasFilledAllEasyKeywordSlots(question, easyState);
+      easyState.keywordStatus = "idle";
 
-      if (allKeywordsSelected) {
+      if (allSlotsFilled) {
         checkEasyQuestion(question.id);
         return;
       }
@@ -2900,12 +2925,12 @@ function createEasyKeywordPanel(question) {
   });
   actionRow.append(actionButton);
 
-  shell.append(label, copy, createEasyKeywordSkeleton(question, selectedIds), list, actionRow);
+  shell.append(label, copy, createEasyKeywordSkeleton(question, selectedKeywordIds), list, actionRow);
 
   if (easyState?.keywordStatus === "wrong") {
     const message = document.createElement("p");
     message.className = "memorisation-easy-panel__message";
-    message.textContent = "Select every expected key word before moving to copy practice.";
+    message.textContent = "Select the key words in the answer order before moving to copy practice.";
     shell.append(message);
   }
 
@@ -3359,7 +3384,7 @@ function renderProgressHeader() {
 
   if (isEasyLearningMode() && activeQuestion) {
     const easyState = getEasyQuestionState(activeQuestion.id);
-    const readyForCopy = hasSelectedAllEasyKeywords(activeQuestion, easyState);
+    const readyForCopy = hasCorrectEasyKeywordOrder(activeQuestion, easyState);
     checkBlankButton.textContent =
       easyState?.easyStep === "copy" ? "Check copy" : readyForCopy ? "Continue to copy" : "Check key words";
     checkBlankButton.setAttribute(

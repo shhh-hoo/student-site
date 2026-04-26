@@ -666,25 +666,52 @@ async function pressShiftEnterInTextarea(client) {
   });
 }
 
-async function clickAllEasyKeywordChips(client) {
-  const initialSnapshot = await getSnapshot(client);
-
-  if (!initialSnapshot.easyKeywordCount) {
-    throw new Error("Missing Easy Mode keyword chips.");
-  }
-
-  for (let index = 0; index < initialSnapshot.easyKeywordCount; index += 1) {
+async function clearSelectedEasyKeywordChips(client) {
+  for (;;) {
     const beforeClick = await getSnapshot(client);
 
-    if (beforeClick.easySelectedKeywordCount === beforeClick.easyKeywordCount) {
+    if (!beforeClick.easySelectedKeywordCount) {
       return;
     }
 
     await evaluate(
       client,
       `(() => {
+        const chip = document.querySelector('.memorisation-easy-keyword[data-selected="true"]');
+
+        if (!chip) {
+          return false;
+        }
+
+        chip.click();
+        return true;
+      })()`
+    );
+    await waitForSnapshot(
+      client,
+      snapshot => snapshot.easySelectedKeywordCount < beforeClick.easySelectedKeywordCount,
+      "Selected Easy Mode keyword chip did not clear."
+    );
+  }
+}
+
+async function clickEasyKeywordChipsInSkeletonOrder(client) {
+  for (;;) {
+    const beforeClick = await getSnapshot(client);
+
+    if (beforeClick.easyStep === "copy") {
+      return;
+    }
+
+    await evaluate(
+      client,
+      `(() => {
+        const nextBlank = Array.from(document.querySelectorAll(".memorisation-easy-skeleton__blank")).find(
+          blank => blank.dataset.filled !== "true"
+        );
+        const expectedKeywordId = nextBlank?.dataset.expectedKeywordId;
         const chip = Array.from(document.querySelectorAll(".memorisation-easy-keyword")).find(
-          candidate => candidate.dataset.selected !== "true"
+          candidate => candidate.dataset.keywordId === expectedKeywordId && candidate.dataset.selected !== "true"
         );
 
         if (!chip) {
@@ -698,15 +725,49 @@ async function clickAllEasyKeywordChips(client) {
     await waitForSnapshot(
       client,
       snapshot =>
-        snapshot.easyStep === "copy" || snapshot.easySelectedKeywordCount > beforeClick.easySelectedKeywordCount,
-      "Easy Mode keyword chip did not become selected."
+        snapshot.easyStep === "copy" || snapshot.skeletonFilledBlankCount > beforeClick.skeletonFilledBlankCount,
+      "Easy Mode keyword chip did not fill the next skeleton slot."
     );
+  }
+}
 
-    const afterClick = await getSnapshot(client);
+async function clickEasyKeywordChipsInReverseSkeletonOrder(client) {
+  const expectedKeywordIds = await evaluate(
+    client,
+    `Array.from(document.querySelectorAll(".memorisation-easy-skeleton__blank"))
+      .map(blank => blank.dataset.expectedKeywordId)
+      .filter(Boolean)
+      .reverse()`
+  );
 
-    if (afterClick.easyStep === "copy") {
-      return;
-    }
+  if (expectedKeywordIds.length < 2) {
+    throw new Error("Need at least two Easy Mode keyword slots for the wrong-order check.");
+  }
+
+  for (const expectedKeywordId of expectedKeywordIds) {
+    const beforeClick = await getSnapshot(client);
+    await evaluate(
+      client,
+      `(() => {
+        const chip = Array.from(document.querySelectorAll(".memorisation-easy-keyword")).find(
+          candidate => candidate.dataset.keywordId === ${JSON.stringify(expectedKeywordId)} && candidate.dataset.selected !== "true"
+        );
+
+        if (!chip) {
+          return false;
+        }
+
+        chip.click();
+        return true;
+      })()`
+    );
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.pageText.includes("Select the key words in the answer order before moving to copy practice.") ||
+        snapshot.skeletonFilledBlankCount > beforeClick.skeletonFilledBlankCount,
+      "Easy Mode reverse-order keyword chip did not fill the next skeleton slot."
+    );
   }
 }
 
@@ -831,21 +892,26 @@ async function run() {
       client,
       snapshot =>
         snapshot.easyStep === "keywords" &&
-        snapshot.pageText.includes("Select every expected key word before moving to copy practice."),
+        snapshot.pageText.includes("Select the key words in the answer order before moving to copy practice."),
       "Enter did not trigger Easy Step 1 keyword checking."
     );
 
-    await evaluate(
+    const focusedKeywordText = await evaluate(
       client,
       `(() => {
-        document.querySelector(".memorisation-easy-keyword")?.focus();
-        return true;
+        const chip = document.querySelector(".memorisation-easy-keyword");
+        chip?.focus();
+        return chip?.textContent?.trim() || "";
       })()`
     );
     await pressEnter(client);
     await waitForSnapshot(
       client,
-      snapshot => snapshot.easyStep === "keywords" && snapshot.easySelectedKeywordCount === 1,
+      snapshot =>
+        snapshot.easyStep === "keywords" &&
+        snapshot.easySelectedKeywordCount === 1 &&
+        snapshot.skeletonFilledBlankCount === 1 &&
+        snapshot.skeletonFilledText === focusedKeywordText,
       "Focused keyword chip Enter should toggle the chip without global pre-check interference."
     );
 
@@ -898,7 +964,7 @@ async function run() {
       );
       assert.equal(mobileClosedLayout.activeStatus, null, "Active practice should not render duplicate status chrome.");
       assert.ok(
-        mobileClosedLayout.easyPanel.height <= 430,
+        mobileClosedLayout.easyPanel.height <= 480,
         `Easy Mode keyword panel should show the full hint bank without becoming unwieldy: ${JSON.stringify(mobileClosedLayout)}`
       );
       assert.equal(mobileClosedLayout.textareaCount, 0, "Mobile Easy Step 1 should not render a textarea.");
@@ -953,7 +1019,24 @@ async function run() {
       );
     }
 
-    await clickAllEasyKeywordChips(client);
+    await clearSelectedEasyKeywordChips(client);
+    await clickEasyKeywordChipsInReverseSkeletonOrder(client);
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.easyStep === "keywords" &&
+        snapshot.easySelectedKeywordCount === snapshot.easyKeywordCount &&
+        snapshot.pageText.includes("Select the key words in the answer order before moving to copy practice."),
+      "Selecting all shuffled Easy Mode keywords should check and stay in Step 1 when the order is wrong."
+    );
+
+    await clearSelectedEasyKeywordChips(client);
+    await waitForSnapshot(
+      client,
+      snapshot => snapshot.easyStep === "keywords" && snapshot.easySelectedKeywordCount === 0,
+      "Easy Mode keyword selections did not clear before the ordered selection check."
+    );
+    await clickEasyKeywordChipsInSkeletonOrder(client);
     const afterKeywordSelection = await waitForSnapshot(
       client,
       snapshot =>
@@ -961,7 +1044,7 @@ async function run() {
         snapshot.easyCopyAnswer === expectedFullAnswer &&
         snapshot.inputValue === "" &&
         snapshot.activeElementId.startsWith("easy-copy-"),
-      "Selecting the final Easy Mode keyword did not automatically enter copy practice."
+      "Correctly ordered Easy Mode keywords did not enter copy practice."
     );
 
     assert.equal(afterKeywordSelection.wordBankToggle, "");
@@ -977,7 +1060,9 @@ async function run() {
     );
     assert.equal(afterKeywordReload.textareaCount, 1);
     assert.equal(afterKeywordReload.visibleActionLabels.includes("Check copy"), true);
-    console.log("PASS 1b: Selecting all Easy Mode keyword chips automatically entered copy practice.");
+    console.log(
+      "PASS 1b: Easy Mode keyword chips fill in selection order and only correct order enters copy practice."
+    );
     console.log("PASS 1c: Easy Mode copy step showed the full answer and an empty textarea.");
 
     await pressShiftEnterInTextarea(client);
@@ -1015,8 +1100,7 @@ async function run() {
 
     if (!runMobileVisibilityCheck) {
       for (let remainingEasyQuestions = 0; remainingEasyQuestions < 2; remainingEasyQuestions += 1) {
-        await clickAllEasyKeywordChips(client);
-        await pressEnter(client);
+        await clickEasyKeywordChipsInSkeletonOrder(client);
         const remainingCopyStep = await waitForSnapshot(
           client,
           snapshot => snapshot.easyStep === "copy" && snapshot.easyCopyAnswer,
@@ -1088,7 +1172,7 @@ async function run() {
     }
 
     if (runMobileVisibilityCheck) {
-      await clickAllEasyKeywordChips(client);
+      await clickEasyKeywordChipsInSkeletonOrder(client);
       await waitForSnapshot(
         client,
         snapshot => snapshot.easyStep === "copy" && snapshot.visibleActionLabels.includes("Check copy"),
