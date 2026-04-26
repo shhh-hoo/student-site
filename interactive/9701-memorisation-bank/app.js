@@ -2732,16 +2732,19 @@ function hasFilledAllEasyKeywordSlots(question, easyState = getEasyQuestionState
 }
 
 function hasCorrectEasyKeywordOrder(question, easyState = getEasyQuestionState(question?.id || "")) {
-  const slotIds = getEasyKeywordSlotIds(question);
+  const keywordModel = getEasyKeywordModel(question);
+  const expectedValues = keywordModel.parts.filter(part => part.type === "slot").map(part => part.normalized);
   const selectedKeywordIds = easyState?.selectedKeywordIds || [];
+  const chipsById = new Map(keywordModel.chips.map(chip => [chip.id, chip]));
+  const selectedValues = selectedKeywordIds.map(chipId => chipsById.get(chipId)?.normalized || "");
 
-  if (!slotIds.length) {
+  if (!expectedValues.length) {
     return true;
   }
 
   return (
-    slotIds.length === selectedKeywordIds.length &&
-    slotIds.every((slotId, index) => slotId === selectedKeywordIds[index])
+    expectedValues.length === selectedValues.length &&
+    expectedValues.every((expectedValue, index) => expectedValue === selectedValues[index])
   );
 }
 
@@ -2924,6 +2927,19 @@ function createEasyKeywordPanel(question) {
     checkCurrentBlank();
   });
   actionRow.append(actionButton);
+
+  if (selectedKeywordIds.length && easyState?.keywordStatus === "wrong") {
+    const clearButton = document.createElement("button");
+    clearButton.type = "button";
+    clearButton.className = "secondary-link memorisation-easy-action memorisation-easy-action--secondary";
+    clearButton.textContent = "Clear order";
+    clearButton.addEventListener("click", () => {
+      easyState.selectedKeywordIds = [];
+      easyState.keywordStatus = "idle";
+      renderSession({ focusBlankId: getQuestionPrimaryBlankId(question) });
+    });
+    actionRow.append(clearButton);
+  }
 
   shell.append(label, copy, createEasyKeywordSkeleton(question, selectedKeywordIds), list, actionRow);
 

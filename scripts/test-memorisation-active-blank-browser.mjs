@@ -13,6 +13,8 @@ const targetPath =
   "/interactive/9701-memorisation-bank/?stage=AS&level=level-2-guided-cloze&topic=group-2&file=guided-cloze";
 const coreDefinitionPath =
   "/interactive/9701-memorisation-bank/?stage=AS&level=level-1-core&topic=atomic-structure&file=core-definitions";
+const multiRoundGroup2Path =
+  "/interactive/9701-memorisation-bank/?stage=AS&level=level-3-multi-round-cloze&topic=group-2&file=multi-round-cloze";
 const expectedPromptTitle = "Explain the trend in thermal stability of Group 2 carbonates.";
 const expectedPromptContext =
   "Down the group the M2+ ion has lower _____ _____. So it polarises the carbonate ion _____. The carbonate ion is less distorted and is less likely to decompose.";
@@ -771,6 +773,74 @@ async function clickEasyKeywordChipsInReverseSkeletonOrder(client) {
   }
 }
 
+async function getDuplicateSwappedSkeletonKeywordIds(client) {
+  return evaluate(
+    client,
+    `(() => {
+      const expectedIds = Array.from(document.querySelectorAll(".memorisation-easy-skeleton__blank"))
+        .map(blank => blank.dataset.expectedKeywordId)
+        .filter(Boolean);
+      const chipTextById = new Map(
+        Array.from(document.querySelectorAll(".memorisation-easy-keyword")).map(chip => [
+          chip.dataset.keywordId,
+          chip.textContent.trim().toLowerCase(),
+        ])
+      );
+
+      for (let leftIndex = 0; leftIndex < expectedIds.length; leftIndex += 1) {
+        for (let rightIndex = leftIndex + 1; rightIndex < expectedIds.length; rightIndex += 1) {
+          const leftId = expectedIds[leftIndex];
+          const rightId = expectedIds[rightIndex];
+
+          if (leftId !== rightId && chipTextById.get(leftId) && chipTextById.get(leftId) === chipTextById.get(rightId)) {
+            const swappedIds = [...expectedIds];
+            swappedIds[leftIndex] = rightId;
+            swappedIds[rightIndex] = leftId;
+            return {
+              ids: swappedIds,
+              duplicateText: chipTextById.get(leftId),
+              slotCount: expectedIds.length,
+            };
+          }
+        }
+      }
+
+      return {
+        ids: [],
+        duplicateText: "",
+        slotCount: expectedIds.length,
+      };
+    })()`
+  );
+}
+
+async function clickEasyKeywordChipsByIdSequence(client, keywordIds) {
+  for (const keywordId of keywordIds) {
+    const beforeClick = await getSnapshot(client);
+    await evaluate(
+      client,
+      `(() => {
+        const chip = Array.from(document.querySelectorAll(".memorisation-easy-keyword")).find(
+          candidate => candidate.dataset.keywordId === ${JSON.stringify(keywordId)} && candidate.dataset.selected !== "true"
+        );
+
+        if (!chip) {
+          return false;
+        }
+
+        chip.click();
+        return true;
+      })()`
+    );
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.easyStep === "copy" || snapshot.skeletonFilledBlankCount > beforeClick.skeletonFilledBlankCount,
+      "Easy Mode keyword chip sequence did not fill the next skeleton slot."
+    );
+  }
+}
+
 async function clearLocalStateAndReload(client) {
   await evaluate(
     client,
@@ -788,6 +858,7 @@ async function run() {
   const serverPort = await listen(server);
   const targetUrl = `http://127.0.0.1:${serverPort}${targetPath}`;
   const coreDefinitionUrl = `http://127.0.0.1:${serverPort}${coreDefinitionPath}`;
+  const multiRoundGroup2Url = `http://127.0.0.1:${serverPort}${multiRoundGroup2Path}`;
   const userDataDirectory = await mkdtemp(path.join(os.tmpdir(), "memorisation-bank-chrome-"));
   const browserPath = await resolveBrowserPath();
   const chromeProcess = spawn(
@@ -1155,6 +1226,51 @@ async function run() {
 
       assert.equal(coreEasySnapshot.currentUrl.includes("file=core-definitions"), true);
       console.log("PASS 1f: Core definitions support Easy Mode keyword recognition.");
+
+      await evaluate(client, "localStorage.clear(); true");
+      await client.send("Page.navigate", { url: multiRoundGroup2Url });
+      await waitForSnapshot(
+        client,
+        snapshot =>
+          snapshot.currentUrl.includes("file=multi-round-cloze") && snapshot.startButtonText === "Start Easy Mode",
+        "Multi-round cloze setup did not open with Easy Mode available."
+      );
+      await clickElement(client, "session-start");
+      let duplicateKeywordSelection = null;
+
+      for (let duplicateSearchAttempts = 0; duplicateSearchAttempts < 3; duplicateSearchAttempts += 1) {
+        await waitForSnapshot(
+          client,
+          snapshot => snapshot.easyStep === "keywords" && snapshot.easyKeywordCount > 0,
+          "Multi-round Easy Mode did not show keyword chips while searching for duplicate labels."
+        );
+        duplicateKeywordSelection = await getDuplicateSwappedSkeletonKeywordIds(client);
+
+        if (duplicateKeywordSelection.ids.length) {
+          break;
+        }
+
+        await clickEasyKeywordChipsInSkeletonOrder(client);
+        const duplicateSearchCopyStep = await waitForSnapshot(
+          client,
+          snapshot => snapshot.easyStep === "copy" && snapshot.easyCopyAnswer,
+          "Multi-round Easy Mode item did not enter copy while searching for duplicate labels."
+        );
+        await setActiveTextareaValue(client, duplicateSearchCopyStep.easyCopyAnswer);
+        await pressEnter(client);
+      }
+
+      assert.ok(
+        duplicateKeywordSelection?.ids.length > 0,
+        "Expected a multi-round Easy Mode item with duplicate visible keyword labels."
+      );
+      await clickEasyKeywordChipsByIdSequence(client, duplicateKeywordSelection.ids);
+      await waitForSnapshot(
+        client,
+        snapshot => snapshot.easyStep === "copy",
+        "Duplicate visible keyword chips should be interchangeable when their normalized text sequence matches."
+      );
+      console.log("PASS 1g: Duplicate visible Easy keyword chips are interchangeable by normalized text.");
 
       await evaluate(client, "localStorage.clear(); true");
       await client.send("Page.navigate", { url: targetUrl });

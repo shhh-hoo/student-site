@@ -892,12 +892,18 @@ textarea.memorisation-input {
 
 .memorisation-easy-action-row {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   justify-content: flex-end;
 }
 
 .memorisation-easy-action {
   min-width: min(100%, 14rem);
   justify-content: center;
+}
+
+.memorisation-easy-action--secondary {
+  min-width: 0;
 }
 
 .memorisation-easy-copy-answer {
@@ -1738,11 +1744,21 @@ html[data-theme="dark"] .memorisation-rules-dialog__panel {
   }
 
   .memorisation-easy-action {
+    flex: 1 1 100%;
     width: 100%;
     min-height: 3.2rem;
     border-radius: 18px;
     font-size: 0.95rem;
     letter-spacing: 0.08em;
+  }
+
+  .memorisation-easy-action--secondary {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 2.35rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
   }
 
   .memorisation-easy-copy-answer {
