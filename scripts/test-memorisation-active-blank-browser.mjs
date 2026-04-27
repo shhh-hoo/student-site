@@ -788,7 +788,8 @@ async function runDarkModeReadabilityChecks(client, targetUrl, easyModeUrl) {
       value.record.wrongCount === 1 &&
       value.record.revealedCount === 1 &&
       value.reviewItem?.reasons?.includes("revealed"),
-    "Reveal should still record revealedCount separately from stuck/gave-up."
+    "Reveal should still record revealedCount separately from stuck/gave-up.",
+    { mode: "full" }
   );
 
   assertDarkModeReadability(
@@ -921,78 +922,21 @@ async function getLearningStorageSnapshot(client) {
   );
 }
 
-async function seedDueSavedReviewItem(client, contentId, reason = "browser-test") {
-  await evaluate(
-    client,
-    `(() => {
-      const contentId = ${JSON.stringify(contentId)};
-      const reason = ${JSON.stringify(reason)};
-      const now = "2024-01-01T00:00:00.000Z";
-      const parse = (key, fallback) => {
-        try {
-          return JSON.parse(localStorage.getItem(key) || "null") || fallback;
-        } catch {
-          return fallback;
-        }
-      };
-      const progress = parse("mb:progress:v1", {
-        version: 1,
-        records: {},
-        unmatchedLegacyProgress: [],
-        updatedAt: null
-      });
-      const reviewList = parse("mb:review-list:v1", {
-        version: 1,
-        items: {},
-        updatedAt: null
-      });
-      const existingRecord = progress.records[contentId] || {
-        contentId,
-        status: "unseen",
-        correctCount: 0,
-        wrongCount: 0,
-        hintCount: 0,
-        gaveUpCount: 0,
-        revealedCount: 0,
-        streak: 0,
-        lastSeenAt: null,
-        nextReviewAt: null,
-        masteryScore: 0,
-        legacySources: []
-      };
-
-      progress.records[contentId] = {
-        ...existingRecord,
-        contentId,
-        status: "reviewing",
-        nextReviewAt: now
-      };
-      reviewList.items[contentId] = {
-        ...(reviewList.items[contentId] || {}),
-        contentId,
-        reasons: [...new Set([...(reviewList.items[contentId]?.reasons || []), reason])],
-        addedAt: reviewList.items[contentId]?.addedAt || now,
-        nextReviewAt: now
-      };
-      progress.updatedAt = now;
-      reviewList.updatedAt = now;
-      localStorage.setItem("mb:progress:v1", JSON.stringify(progress));
-      localStorage.setItem("mb:review-list:v1", JSON.stringify(reviewList));
-      return true;
-    })()`
-  );
-}
-
-async function waitForLearningRecord(client, contentId, predicate, message) {
+async function waitForLearningRecord(client, contentId, predicate, message, { mode = "" } = {}) {
   return waitForEvaluation(
     client,
     `(() => {
       try {
         const progress = JSON.parse(localStorage.getItem("mb:progress:v1") || "null");
         const reviewList = JSON.parse(localStorage.getItem("mb:review-list:v1") || "null");
+        const mode = ${JSON.stringify(mode)};
+        const reviewItems = Object.values(reviewList?.items || {}).filter(item =>
+          item?.contentId === ${JSON.stringify(contentId)} && (!mode || item?.mode === mode)
+        );
         return {
           record: progress?.records?.[${JSON.stringify(contentId)}] || null,
-          reviewItem: reviewList?.items?.[${JSON.stringify(contentId)}] || null,
+          reviewItem: reviewItems[0] || null,
+          reviewItems,
           progress,
           reviewList,
         };
@@ -1517,27 +1461,34 @@ async function run() {
     await waitForSnapshot(
       client,
       snapshot => snapshot.modeReviewActive && snapshot.startButtonText === "Start Flashcard Mode",
-      "Flashcard Mode should be selectable even when no saved review cards are due."
+      "Flashcard Mode should be selectable even when saved review is empty."
     );
     await clickElement(client, "session-start");
-    const emptyFlashcardSnapshot = await waitForSnapshot(
+    const flashcardCurrentContentSnapshot = await waitForSnapshot(
       client,
       snapshot =>
-        snapshot.pageCounter === "Flashcard 0 / 0" &&
-        snapshot.pageText.includes("No saved review cards are due right now.") &&
+        snapshot.pageCounter.startsWith("Flashcard 1 /") &&
+        snapshot.title === expectedPromptTitle &&
         snapshot.textareaCount === 0 &&
+        snapshot.visibleActionLabels.includes("Show answer") &&
         !snapshot.visibleActionLabels.includes("Check") &&
         !snapshot.visibleActionLabels.includes(reviewLaterActionLabel) &&
         snapshot.visibleHintButtonCount === 0,
-      "Empty Flashcard Mode should show a saved-review empty state without falling into dictation."
+      "Flashcard Mode should open current selected content without requiring saved review."
     );
-    assert.equal(emptyFlashcardSnapshot.actionBarVisible, false);
-    await clickSelector(client, ".memorisation-status-actions button");
+    assert.equal(flashcardCurrentContentSnapshot.actionBarVisible, false);
+    await clickSelector(client, ".memorisation-flashcard-action");
+    await waitForSnapshot(
+      client,
+      snapshot => snapshot.flashcardAnswerText.includes("charge density"),
+      "Flashcard Mode should reveal the current content canonical answer."
+    );
+    await clickSelector(client, ".memorisation-practice-refine");
     await waitForSnapshot(
       client,
       snapshot =>
         snapshot.practiceHidden && snapshot.modeReviewActive && snapshot.startButtonText === "Start Flashcard Mode",
-      "Returning from empty Flashcard Mode should preserve the selected mode on setup."
+      "Returning from Flashcard Mode should preserve the selected mode on setup."
     );
     await clickElement(client, "mode-full");
     await waitForSnapshot(
@@ -1545,7 +1496,7 @@ async function run() {
       snapshot => snapshot.modeFullActive && snapshot.startButtonText === "Start Full Dictation",
       "Full Dictation should remain selectable after empty Flashcard Mode."
     );
-    console.log("PASS 0b: Empty Flashcard Mode shows due saved-review empty state without dictation controls.");
+    console.log("PASS 0b: Flashcard Mode opens current content without saved review or dictation controls.");
 
     await clearLocalStateAndNavigate(client, coreDefinitionUrl);
     const coreDefinitionSnapshot = await waitForSnapshot(
@@ -1711,7 +1662,8 @@ async function run() {
         value.record.wrongCount === 1 &&
         value.record.hintCount === 1 &&
         value.reviewItem?.reasons?.includes("incorrect"),
-      "Wrong Level 1 Easy copy should record an incorrect scaffolded attempt."
+      "Wrong Level 1 Easy copy should record an incorrect scaffolded attempt.",
+      { mode: "easy" }
     );
 
     await setActiveTextareaValue(client, coreEasyFullAnswer);
@@ -1753,9 +1705,21 @@ async function run() {
         value.record.correctCount === 0 &&
         value.record.masteryScore === 0 &&
         value.reviewItem?.reasons?.includes("gave-up"),
-      "Level 1 Easy stuck action should record a scaffolded gave-up attempt in saved review."
+      "Level 1 Easy stuck action should record a scaffolded gave-up attempt in saved review.",
+      { mode: "easy" }
     );
     assert.equal(afterEasyStuckProgress.record.status, "reviewing");
+    const afterEasySavedReview = await getLearningStorageSnapshot(client);
+    const easyReviewItems = Object.values(afterEasySavedReview.reviewList.items || {});
+    assert.ok(
+      easyReviewItems.some(item => item.contentId === easyStuckContentId && item.mode === "easy"),
+      "Easy Mode saved review should stay in the easy mode bucket."
+    );
+    assert.equal(
+      easyReviewItems.some(item => item.contentId === easyStuckContentId && item.mode === "flashcard"),
+      false,
+      "Easy Mode saved review must not be mixed into the flashcard mode bucket."
+    );
 
     await client.send("Page.reload");
     await waitForSnapshot(
@@ -1774,7 +1738,8 @@ async function run() {
       client,
       easyStuckContentId,
       value => value.record.gaveUpCount === 1 && value.reviewItem?.reasons?.includes("gave-up"),
-      "Refresh should preserve the Level 1 Easy stuck gave-up progress."
+      "Refresh should preserve the Level 1 Easy stuck gave-up progress.",
+      { mode: "easy" }
     );
     console.log("PASS 1d: Level 1 Easy copy checks, persists, and advances after a correct copy.");
 
@@ -1949,7 +1914,8 @@ async function run() {
         value.record.wrongCount === 1 &&
         value.record.hintCount === 0 &&
         value.reviewItem?.reasons?.includes("incorrect"),
-      "Full Dictation wrong answer should record wrongCount and saved review."
+      "Full Dictation wrong answer should record wrongCount and saved review.",
+      { mode: "full" }
     );
     console.log("PASS 5b: Incorrect answer showed inline feedback and state-based action controls.");
 
@@ -1989,7 +1955,8 @@ async function run() {
         value.record.correctCount === 0 &&
         value.record.masteryScore === 0 &&
         value.reviewItem?.reasons?.includes("gave-up"),
-      "Stuck review-later should record gaveUpCount and keep the item in saved review."
+      "Stuck review-later should record gaveUpCount and keep the item in saved review.",
+      { mode: "full" }
     );
     const giveUpLearningSnapshot = await getLearningStorageSnapshot(client);
     assert.equal(
@@ -1998,8 +1965,10 @@ async function run() {
       "Stuck review-later should not record gaveUpCount for other non-correct blanks in the same question."
     );
     assert.equal(
-      giveUpLearningSnapshot.reviewList.items[guidedBlank2ContentId],
-      undefined,
+      Object.values(giveUpLearningSnapshot.reviewList.items || {}).some(
+        item => item.contentId === guidedBlank2ContentId
+      ),
+      false,
       "Stuck review-later should not add other non-correct blanks in the same question to saved review."
     );
     await clickElement(client, "next-blank");
@@ -2068,13 +2037,14 @@ async function run() {
     await waitForSnapshot(
       client,
       snapshot => snapshot.modeReviewActive && snapshot.startButtonText === "Start Flashcard Mode",
-      "Flashcard Mode was not selectable from setup after saved review was created."
+      "Flashcard Mode was not selectable from setup after Full Dictation review-later."
     );
     await clickElement(client, "session-start");
     const flashcardFrontSnapshot = await waitForSnapshot(
       client,
       snapshot =>
         snapshot.pageCounter.startsWith("Flashcard 1 /") &&
+        !snapshot.pageCounter.startsWith("Flashcard 1 / 1") &&
         snapshot.modeReviewActive &&
         snapshot.setupInert &&
         !snapshot.modeControlsFocusable &&
@@ -2085,7 +2055,7 @@ async function run() {
         !snapshot.visibleActionLabels.includes(reviewLaterActionLabel) &&
         snapshot.flashcardGradeLabels.length === 0 &&
         snapshot.visibleHintButtonCount === 0,
-      "Flashcard Mode should open saved review without dictation controls."
+      "Flashcard Mode should open current-session cards without dictation controls."
     );
 
     assert.ok(flashcardFrontSnapshot.title);
@@ -2109,37 +2079,27 @@ async function run() {
       client,
       firstFlashcardContentId,
       value => value.record.correctCount === firstBeforeCorrect + 1 && !value.reviewItem,
-      "I knew it should record a clean correct flashcard attempt."
+      "I knew it should record a clean correct flashcard attempt without saving flashcard review.",
+      { mode: "flashcard" }
     );
-    await waitForSnapshot(
+    const afterKnewCardAdvance = await waitForSnapshot(
       client,
       snapshot =>
-        snapshot.pageText.includes("Flashcard review complete") &&
+        snapshot.pageCounter.startsWith("Flashcard 1 /") &&
+        !snapshot.pageCounter.includes("/ 0") &&
         snapshot.flashcardGradeLabels.length === 0 &&
-        !snapshot.visibleActionLabels.includes("Show answer"),
-      "Self-grading the only card should complete the pass and disable self-grade controls."
+        snapshot.visibleActionLabels.includes("Show answer"),
+      "Self-grading a flashcard should remove it from the current pass and show the next card."
     );
+    assert.equal(afterKnewCardAdvance.flashcardGradeLabels.includes("I knew it"), false);
 
-    await seedDueSavedReviewItem(client, guidedBlank1ContentId, "browser-test-almost");
-    await seedDueSavedReviewItem(client, guidedBlank2ContentId, "browser-test-forgot");
-    await clickSelector(client, ".memorisation-status-actions button");
-    await waitForSnapshot(
-      client,
-      snapshot =>
-        snapshot.practiceHidden && snapshot.modeReviewActive && snapshot.startButtonText === "Start Flashcard Mode",
-      "Returning from completed Flashcard Mode should preserve selected setup mode."
-    );
-    await clickElement(client, "session-start");
-    await waitForSnapshot(
-      client,
-      snapshot =>
-        snapshot.pageCounter.startsWith("Flashcard 1 / 2") &&
-        snapshot.visibleActionLabels.includes("Show answer") &&
-        snapshot.flashcardGradeLabels.length === 0,
-      "A new Flashcard pass should open the next due saved-review cards."
-    );
     const secondFlashcardProgress = await getLearningStorageSnapshot(client);
     const almostFlashcardContentId = secondFlashcardProgress.debugSnapshot.activeContentId;
+    assert.notEqual(
+      almostFlashcardContentId,
+      firstFlashcardContentId,
+      "Flashcard Mode should not immediately repeat the same card after I knew it."
+    );
     const secondBeforeCorrect = secondFlashcardProgress.progress.records[almostFlashcardContentId]?.correctCount || 0;
     const secondBeforeHints = secondFlashcardProgress.progress.records[almostFlashcardContentId]?.hintCount || 0;
     await clickSelector(client, ".memorisation-flashcard-action");
@@ -2154,12 +2114,13 @@ async function run() {
       almostFlashcardContentId,
       value =>
         value.record.correctCount === secondBeforeCorrect + 1 && value.record.hintCount === secondBeforeHints + 1,
-      "Almost should record a scaffolded correct flashcard attempt."
+      "Almost should record a scaffolded correct flashcard attempt.",
+      { mode: "flashcard" }
     );
     const afterAlmostCardAdvance = await waitForSnapshot(
       client,
       snapshot =>
-        snapshot.pageCounter.startsWith("Flashcard 1 / 1") &&
+        snapshot.pageCounter.startsWith("Flashcard 1 /") &&
         snapshot.visibleActionLabels.includes("Show answer") &&
         snapshot.flashcardGradeLabels.length === 0,
       "After Almost, the graded card should be removed from the current pass and the next card should be shown."
@@ -2185,8 +2146,37 @@ async function run() {
       client,
       forgotFlashcardContentId,
       value => value.record.wrongCount === thirdBeforeWrong + 1 && value.reviewItem?.reasons?.includes("incorrect"),
-      "Forgot should record incorrect and keep the flashcard in saved review."
+      "Forgot should record incorrect and save the card to Flashcard Mode saved review.",
+      { mode: "flashcard" }
     );
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.pageCounter.startsWith("Flashcard 1 /") &&
+        snapshot.flashcardGradeLabels.length === 0 &&
+        snapshot.visibleActionLabels.includes("Show answer"),
+      "Forgot should remove the card from this pass without immediately repeating it."
+    );
+
+    for (let index = 0; index < 12; index += 1) {
+      const snapshot = await getSnapshot(client);
+
+      if (snapshot.pageText.includes("Flashcard review complete")) {
+        break;
+      }
+
+      if (snapshot.visibleActionLabels.includes("Show answer")) {
+        await clickSelector(client, ".memorisation-flashcard-action");
+        await waitForSnapshot(
+          client,
+          nextSnapshot => nextSnapshot.flashcardGradeLabels.includes("I knew it"),
+          "Remaining flashcard did not reveal self-grade buttons."
+        );
+      }
+
+      await clickSelector(client, '[data-flashcard-grade="knew"]');
+    }
+
     await waitForSnapshot(
       client,
       snapshot =>
@@ -2196,6 +2186,20 @@ async function run() {
       "Completing the last flashcard should show the end-of-pass completion state."
     );
     const afterFlashcardGrades = await getLearningStorageSnapshot(client);
+    const reviewItems = Object.values(afterFlashcardGrades.reviewList.items || {});
+    assert.ok(
+      reviewItems.some(item => item.contentId === guidedBlank1ContentId && item.mode === "full"),
+      "Full Dictation saved review should stay in the full mode bucket."
+    );
+    assert.ok(
+      reviewItems.some(item => item.contentId === forgotFlashcardContentId && item.mode === "flashcard"),
+      "Forgot in Flashcard Mode should save only to the flashcard mode bucket."
+    );
+    assert.equal(
+      reviewItems.some(item => item.contentId === guidedBlank1ContentId && item.mode === "flashcard"),
+      false,
+      "Full Dictation saved review must not be mixed into the flashcard mode bucket."
+    );
     assert.equal(afterFlashcardGrades.customItemsWritten, false, "Flashcard Mode must not write custom items.");
     await client.send("Page.reload");
     await waitForSnapshot(
@@ -2208,9 +2212,10 @@ async function run() {
       client,
       forgotFlashcardContentId,
       value => value.record.wrongCount === thirdBeforeWrong + 1 && value.reviewItem?.reasons?.includes("incorrect"),
-      "Reload should preserve flashcard self-grade progress."
+      "Reload should preserve flashcard self-grade progress.",
+      { mode: "flashcard" }
     );
-    console.log("PASS 7: Flashcard Mode reviewed saved items without typing and recorded self-grades.");
+    console.log("PASS 7: Flashcard Mode reviewed current-session cards without typing and recorded self-grades.");
 
     await clickElement(client, "mode-full");
     await waitForSnapshot(

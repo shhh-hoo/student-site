@@ -6,6 +6,7 @@ import {
   customItemsStorageKey,
   exportLearningState,
   getAllProgress,
+  getDueReviewItems,
   getProgress,
   importLearningState,
   learningProgressStorageKey,
@@ -157,6 +158,8 @@ function assertNoPrivateValues(value) {
   assert.equal(record.streak, 0);
   assert.equal(record.status, "reviewing");
   assert.equal(store.getDueReviewItems().length, 1);
+  assert.equal(getDueReviewItems({ storage, mode: "full", now: () => baseNow }).length, 1);
+  assert.equal(getDueReviewItems({ storage, mode: "flashcard", now: () => baseNow }).length, 0);
 
   record = store.recordAttempt({ contentId: coreContentId, result: "gave_up" });
   assert.equal(record.gaveUpCount, 1);
@@ -166,6 +169,27 @@ function assertNoPrivateValues(value) {
   assert.equal(record.revealedCount, 1);
   assert.equal(record.status, "reviewing");
   console.log("PASS 1: recordAttempt updates counts, status, review queue, hints, and mastery score.");
+}
+
+{
+  const storage = new MemoryStorage();
+
+  recordAttempt({ contentId: coreContentId, result: "incorrect", mode: "full" }, { storage, now: () => baseNow });
+  recordAttempt({ contentId: coreContentId, result: "incorrect", mode: "flashcard" }, { storage, now: () => baseNow });
+  recordAttempt(
+    { contentId: topicChangeContentId, result: "gave_up", mode: "easy", hintsUsed: 1 },
+    { storage, now: () => baseNow }
+  );
+
+  const reviewPayload = parseStored(storage, reviewListStorageKey);
+
+  assert.equal(reviewPayload.items[`full::${coreContentId}`].mode, "full");
+  assert.equal(reviewPayload.items[`flashcard::${coreContentId}`].mode, "flashcard");
+  assert.equal(reviewPayload.items[`easy::${topicChangeContentId}`].mode, "easy");
+  assert.equal(getDueReviewItems({ storage, mode: "full", now: () => baseNow }).length, 1);
+  assert.equal(getDueReviewItems({ storage, mode: "easy", now: () => baseNow }).length, 1);
+  assert.equal(getDueReviewItems({ storage, mode: "flashcard", now: () => baseNow }).length, 1);
+  console.log("PASS 1b: saved review items stay separated by practice mode.");
 }
 
 {
@@ -568,6 +592,7 @@ function assertNoPrivateValues(value) {
   assert.equal(record.revealedCount, 2);
   assert.equal(record.lastSeenAt, "2026-04-29T10:00:00.000Z");
   assert.equal(record.nextReviewAt, "2026-04-26T09:00:00.000Z");
+  assert.equal(due[0].mode, "full");
   assert.equal(due[0].reasons.includes("incorrect"), true);
   assert.equal(due[0].reasons.includes("imported-review"), true);
   assert.equal(settings.displayMode, "local");
@@ -609,7 +634,10 @@ function assertNoPrivateValues(value) {
   assert.equal(refreshedCore.correctCount, 1);
   assert.equal(refreshedTopic.wrongCount, 1);
   assert.deepEqual(progressKeys, [coreContentId, topicChangeContentId].sort());
-  assert.equal(parseStored(storage, reviewListStorageKey).items[topicChangeContentId].contentId, topicChangeContentId);
+  assert.equal(
+    parseStored(storage, reviewListStorageKey).items[`full::${topicChangeContentId}`].contentId,
+    topicChangeContentId
+  );
   console.log("PASS 13: progress is independent of current filters, topic, file, page, and session keys.");
 }
 
