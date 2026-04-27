@@ -27,6 +27,7 @@ const coreDefinitionContentId =
 const guidedBlank0ContentId = "mb:canonical:v1:as:level-2-guided-cloze:group-2:guided-cloze:as-exp-003:cloze:blank-0";
 const guidedBlank1ContentId = "mb:canonical:v1:as:level-2-guided-cloze:group-2:guided-cloze:as-exp-003:cloze:blank-1";
 const guidedBlank2ContentId = "mb:canonical:v1:as:level-2-guided-cloze:group-2:guided-cloze:as-exp-003:cloze:blank-2";
+const reviewLaterActionLabel = "Show me and review later";
 const runMobileVisibilityCheck = process.env.MEMORISATION_MOBILE_CHECK === "1";
 const configuredWindowSize =
   process.env.MEMORISATION_WINDOW_SIZE || (runMobileVisibilityCheck ? "390,900" : "1440,1600");
@@ -393,6 +394,13 @@ async function getSnapshot(client) {
           return styles.display !== "none" && styles.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
         })
         .map(button => button.textContent?.trim() || ""),
+      visibleHintButtonCount: Array.from(document.querySelectorAll("button"))
+        .filter(button => {
+          const styles = window.getComputedStyle(button);
+          const rect = button.getBoundingClientRect();
+          return styles.display !== "none" && styles.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+        })
+        .filter(button => /^Hint\\b/i.test(button.textContent?.trim() || "")).length,
       textareaCount:
         document.querySelectorAll("textarea.memorisation-input").length,
       easyStep:
@@ -762,6 +770,15 @@ async function runDarkModeReadabilityChecks(client, targetUrl, easyModeUrl) {
     client,
     snapshot => snapshot.feedbackTitle === "Answer revealed" && snapshot.revealAnswerText.includes("Down the group"),
     "Dark-mode reveal did not render the canonical answer."
+  );
+  await waitForLearningRecord(
+    client,
+    guidedBlank0ContentId,
+    value =>
+      value.record.wrongCount === 1 &&
+      value.record.revealedCount === 1 &&
+      value.reviewItem?.reasons?.includes("revealed"),
+    "Reveal should still record revealedCount separately from stuck/gave-up."
   );
 
   assertDarkModeReadability(
@@ -1461,6 +1478,8 @@ async function run() {
     assert.ok(coreEasySnapshot.skeletonBlankCount > 0, "Level 1 Easy Mode skeleton should expose slots.");
     assert.equal(coreEasySnapshot.skeletonFilledBlankCount, 0, "Level 1 Easy Mode skeleton should start empty.");
     assert.equal(coreEasySnapshot.visibleActionLabels.includes("Check key words"), true);
+    assert.equal(coreEasySnapshot.visibleActionLabels.includes(reviewLaterActionLabel), true);
+    assert.equal(coreEasySnapshot.visibleHintButtonCount, 0, "PR3 should not add hint buttons or a hint ladder.");
     console.log("PASS 1: Level 1 core definitions start Easy Mode keyword recognition.");
 
     if (runMobileVisibilityCheck) {
@@ -1602,6 +1621,33 @@ async function run() {
     );
     assert.equal(afterCoreCorrectProgress.record.correctCount, 1);
 
+    const beforeEasyStuck = await getLearningStorageSnapshot(client);
+    const easyStuckContentId = beforeEasyStuck.debugSnapshot.activeContentId;
+    assert.ok(easyStuckContentId, "Level 1 Easy stuck check needs an active learning content id.");
+    await clickSelector(client, ".memorisation-stuck-action");
+    const afterEasyStuck = await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.easyStep === "copy" &&
+        snapshot.easyCopyAnswer &&
+        snapshot.inputValue === "" &&
+        snapshot.visibleActionLabels.includes("Next"),
+      "Level 1 Easy stuck action should show the canonical copy answer and allow moving on."
+    );
+    assert.equal(afterEasyStuck.visibleHintButtonCount, 0, "Easy stuck flow should not introduce hint buttons.");
+    const afterEasyStuckProgress = await waitForLearningRecord(
+      client,
+      easyStuckContentId,
+      value =>
+        value.record.gaveUpCount === 1 &&
+        value.record.hintCount === 1 &&
+        value.record.correctCount === 0 &&
+        value.record.masteryScore === 0 &&
+        value.reviewItem?.reasons?.includes("gave-up"),
+      "Level 1 Easy stuck action should record a scaffolded gave-up attempt in saved review."
+    );
+    assert.equal(afterEasyStuckProgress.record.status, "reviewing");
+
     await client.send("Page.reload");
     await waitForSnapshot(
       client,
@@ -1615,6 +1661,12 @@ async function run() {
       "Refresh should preserve Level 1 Easy learning-state progress."
     );
     assert.equal(afterCoreProgressReload.record.hintCount, 2);
+    await waitForLearningRecord(
+      client,
+      easyStuckContentId,
+      value => value.record.gaveUpCount === 1 && value.reviewItem?.reasons?.includes("gave-up"),
+      "Refresh should preserve the Level 1 Easy stuck gave-up progress."
+    );
     console.log("PASS 1d: Level 1 Easy copy checks, persists, and advances after a correct copy.");
 
     await clickSelector(client, ".memorisation-practice-refine");
@@ -1773,6 +1825,8 @@ async function run() {
 
     assert.equal(afterWrongCheck.hasHorizontalScroll, false);
     assert.ok(afterWrongCheck.actionLabels.includes("Continue later"));
+    assert.equal(afterWrongCheck.visibleActionLabels.includes(reviewLaterActionLabel), true);
+    assert.equal(afterWrongCheck.visibleHintButtonCount, 0, "Full Dictation should not show hint buttons.");
     assert.equal(afterWrongCheck.diffTokenCount, 0, "Feedback comparison should stay inline, not token-chip based.");
     assert.ok(afterWrongCheck.diffInlineMarkCount > 0, "Feedback comparison should add inline sentence markings.");
     assert.ok(
@@ -1799,8 +1853,8 @@ async function run() {
       console.log("PASS 5c: Wrong-state mobile action bar stays lightweight and keeps Continue later available.");
     }
 
-    await clickElement(client, "reveal-blank");
-    const afterReveal = await waitForSnapshot(
+    await clickElement(client, "stuck-review-later");
+    const afterGiveUp = await waitForSnapshot(
       client,
       snapshot =>
         snapshot.feedbackTitle === "Answer revealed" &&
@@ -1808,41 +1862,58 @@ async function run() {
         snapshot.reviewToggleText === "" &&
         snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1" &&
         !snapshot.pageText.toLowerCase().includes("minimum pass"),
-      "Reveal did not apply to the active blank or expose the review queue correctly."
+      "Stuck review-later did not reveal the active blank or keep the session usable."
     );
 
-    assert.ok(afterReveal.revealAnswerText.includes("Down the group"));
-    assert.ok(afterReveal.revealAnswerText.includes("less likely to decompose."));
-    assert.equal(afterReveal.revealTokenCount, 0, "Reveal should not render canonical answers as token chips.");
-    assert.equal(afterReveal.revealMatchMarkCount, 0, "Reveal should not mark every correct word.");
-    assert.ok(afterReveal.revealProblemMarkCount > 0, "Reveal should mark only missed or wrong answer parts.");
+    assert.ok(afterGiveUp.revealAnswerText.includes("Down the group"));
+    assert.ok(afterGiveUp.revealAnswerText.includes("less likely to decompose."));
+    assert.equal(afterGiveUp.revealTokenCount, 0, "Stuck reveal should not render canonical answers as token chips.");
+    assert.equal(afterGiveUp.revealMatchMarkCount, 0, "Stuck reveal should not mark every correct word.");
+    assert.ok(afterGiveUp.revealProblemMarkCount > 0, "Stuck reveal should mark only missed or wrong answer parts.");
     await waitForLearningRecord(
       client,
       guidedBlank1ContentId,
       value =>
         value.record.wrongCount === 1 &&
-        value.record.revealedCount === 1 &&
-        value.reviewItem?.reasons?.includes("revealed"),
-      "Reveal should record revealedCount and keep the item in saved review."
+        value.record.gaveUpCount === 1 &&
+        value.record.revealedCount === 0 &&
+        value.record.correctCount === 0 &&
+        value.record.masteryScore === 0 &&
+        value.reviewItem?.reasons?.includes("gave-up"),
+      "Stuck review-later should record gaveUpCount and keep the item in saved review."
     );
-    const revealLearningSnapshot = await getLearningStorageSnapshot(client);
+    const giveUpLearningSnapshot = await getLearningStorageSnapshot(client);
     assert.equal(
-      revealLearningSnapshot.progress.records[guidedBlank2ContentId],
+      giveUpLearningSnapshot.progress.records[guidedBlank2ContentId],
       undefined,
-      "Reveal should not record revealedCount for other non-correct blanks in the same question."
+      "Stuck review-later should not record gaveUpCount for other non-correct blanks in the same question."
     );
     assert.equal(
-      revealLearningSnapshot.reviewList.items[guidedBlank2ContentId],
+      giveUpLearningSnapshot.reviewList.items[guidedBlank2ContentId],
       undefined,
-      "Reveal should not add other non-correct blanks in the same question to saved review."
+      "Stuck review-later should not add other non-correct blanks in the same question to saved review."
     );
-    console.log("PASS 6: Reveal applied to Blank 2 and kept focus on the active textarea.");
+    await clickElement(client, "next-blank");
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.blankChip === "Blank 3" && snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::2",
+      "Next should continue working after a stuck review-later action."
+    );
+    await clickElement(client, "prev-blank");
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.blankChip === "Blank 2" && snapshot.activeElementId === "guided-cloze::group-2::as-exp-003::1",
+      "Previous should return to the gave-up blank after navigation."
+    );
+    console.log("PASS 6: Stuck review-later revealed Blank 2, recorded gave-up progress, and kept navigation working.");
 
     if (runMobileVisibilityCheck) {
       await waitForSnapshot(
         client,
         snapshot => snapshot.revealNote.includes("Current target: Blank 2."),
-        "Reveal note did not stay attached to the active blank during the mobile visibility check."
+        "Stuck reveal note did not stay attached to the active blank during the mobile visibility check."
       );
 
       const mobileVisibilityMetrics = await waitForEvaluation(
@@ -1872,17 +1943,17 @@ async function run() {
           metrics.fieldBottom <= metrics.actionBarTop &&
           metrics.revealTop < metrics.actionBarTop &&
           metrics.feedbackBottom <= metrics.actionBarTop,
-        "Mobile action footer still obscures the focused or revealed content."
+        "Mobile action footer still obscures the focused or stuck-revealed content."
       );
 
-      console.log("PASS 6b: Mobile action footer left the focused field and reveal content visible.");
+      console.log("PASS 6b: Mobile action footer left the focused field and stuck reveal content visible.");
     }
 
     await clickSelector(client, ".memorisation-practice-refine");
     await waitForSnapshot(
       client,
       snapshot => snapshot.practiceHidden && snapshot.modeFullActive && snapshot.currentUrl.includes("topic=group-2"),
-      "Setup did not reopen after reveal."
+      "Setup did not reopen after stuck review-later."
     );
     await clickElement(client, "mode-review");
     await waitForSnapshot(
@@ -1905,7 +1976,7 @@ async function run() {
     );
 
     assert.equal(reviewSnapshot.title, expectedPromptTitle);
-    console.log("PASS 7: Review queue opened from setup on the highest-priority revealed blank.");
+    console.log("PASS 7: Review queue opened from setup on the highest-priority gave-up blank.");
 
     await clickSelector(client, ".memorisation-practice-refine");
     await waitForSnapshot(
@@ -1933,7 +2004,7 @@ async function run() {
     console.log("PASS 8: Leaving review restored the main-session active blank.");
 
     const progressBeforeFilterChange = await getLearningStorageSnapshot(client);
-    assert.equal(progressBeforeFilterChange.progress.records[guidedBlank1ContentId].revealedCount, 1);
+    assert.equal(progressBeforeFilterChange.progress.records[guidedBlank1ContentId].gaveUpCount, 1);
     await client.send("Page.navigate", { url: multiRoundGroup2Url });
     await waitForSnapshot(
       client,
@@ -1942,7 +2013,7 @@ async function run() {
       "Topic/file switch did not navigate to multi-round setup."
     );
     const progressAfterFilterChange = await getLearningStorageSnapshot(client);
-    assert.equal(progressAfterFilterChange.progress.records[guidedBlank1ContentId].revealedCount, 1);
+    assert.equal(progressAfterFilterChange.progress.records[guidedBlank1ContentId].gaveUpCount, 1);
     assert.equal(progressAfterFilterChange.containsTypedAnswer, false);
     await runLegacyProgressProtectionChecks(client, targetUrl, emptyCoreDefinitionUrl);
     await runDarkModeReadabilityChecks(client, targetUrl, coreDefinitionUrl);
