@@ -1825,11 +1825,16 @@ async function run() {
         value.reviewItem?.reasons?.includes("revealed"),
       "Reveal should record revealedCount and keep the item in saved review."
     );
-    await waitForLearningRecord(
-      client,
-      guidedBlank2ContentId,
-      value => value.record.revealedCount === 1 && value.reviewItem?.reasons?.includes("revealed"),
-      "Reveal should record revealedCount for other non-correct blanks in the same revealed question."
+    const revealLearningSnapshot = await getLearningStorageSnapshot(client);
+    assert.equal(
+      revealLearningSnapshot.progress.records[guidedBlank2ContentId],
+      undefined,
+      "Reveal should not record revealedCount for other non-correct blanks in the same question."
+    );
+    assert.equal(
+      revealLearningSnapshot.reviewList.items[guidedBlank2ContentId],
+      undefined,
+      "Reveal should not add other non-correct blanks in the same question to saved review."
     );
     console.log("PASS 6: Reveal applied to Blank 2 and kept focus on the active textarea.");
 

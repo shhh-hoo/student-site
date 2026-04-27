@@ -640,27 +640,6 @@ function readLearningMigrationFlag(storage) {
   }
 }
 
-function writeEmptyLearningMigrationFlag(storage) {
-  const migratedAt = new Date().toISOString();
-
-  try {
-    storage.setItem(
-      progressMigratedStorageKey,
-      JSON.stringify({
-        version: 1,
-        migratedAt,
-        sourceKeyCount: 0,
-        migratedCount: 0,
-        unmatchedCount: 0,
-      })
-    );
-  } catch (error) {
-    // A failed empty migration marker should not affect the practice UI.
-  }
-
-  return migratedAt;
-}
-
 async function buildCanonicalLearningContentIndex() {
   if (appState.learningContentIndex) {
     return appState.learningContentIndex;
@@ -722,10 +701,10 @@ function queueLearningStateMigration() {
   }
 
   if (!hasPersistedSessionKeys(storage)) {
-    writeEmptyLearningMigrationFlag(storage);
     lastLearningStateMigrationResult = {
       ok: true,
       migrated: false,
+      skipped: true,
       sourceKeyCount: 0,
       migratedCount: 0,
       unmatchedCount: 0,
@@ -2658,6 +2637,10 @@ function revealQuestion(questionId, focusBlankId = getActiveBlankId()) {
   }
 
   appState.revealedQuestionIds.add(questionId);
+  const revealedLearningBlankId = resolvePreferredBlankId(
+    question.blanks.map(blank => blank.id),
+    [focusBlankId, getActiveBlankId()]
+  );
 
   question.blanks.forEach(blank => {
     const blankState = getBlankState(blank.id);
@@ -2673,7 +2656,10 @@ function revealQuestion(questionId, focusBlankId = getActiveBlankId()) {
     blankState.contradictionHits = [];
     blankState.lastReviewSignalAt = nextInteractionTick();
     blankState.reviewPriority = buildReviewPriority(blankState);
-    recordLearningAttemptForBlank(blank.id, "revealed", 0);
+
+    if (blank.id === revealedLearningBlankId) {
+      recordLearningAttemptForBlank(blank.id, "revealed", 0);
+    }
   });
 
   updateReviewQueue();

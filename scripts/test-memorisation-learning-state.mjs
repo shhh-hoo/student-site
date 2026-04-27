@@ -335,6 +335,7 @@ function assertNoPrivateValues(value) {
   assert.equal(Object.keys(progressPayload.records).length, 0);
   assert.equal(progressPayload.unmatchedLegacyProgress.length, 1);
   assert.equal(progressPayload.unmatchedLegacyProgress[0].legacyKind, "easy-question");
+  assert.equal(progressPayload.unmatchedLegacyProgress[0].reason, "activity-only-no-progress-contribution");
   console.log("PASS 6: idle current session state and keyword-only activity do not create progress records.");
 }
 
@@ -469,6 +470,24 @@ function assertNoPrivateValues(value) {
 {
   const storage = new MemoryStorage();
 
+  const result = migrateLegacySessionProgress({
+    storage,
+    now: () => baseNow,
+    canonicalItems: makeCanonicalItems(),
+    currentSessionVersion: 2,
+  });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.migrated, false);
+  assert.equal(result.skipped, true);
+  assert.equal(result.sourceKeyCount, 0);
+  assert.equal(storage.getItem(progressMigratedStorageKey), null);
+  console.log("PASS 10: zero legacy session keys skip migration without writing a permanent migration flag.");
+}
+
+{
+  const storage = new MemoryStorage();
+
   recordAttempt({ contentId: coreContentId, result: "correct" }, { storage, now: () => baseNow });
   recordAttempt({ contentId: coreContentId, result: "incorrect" }, { storage, now: () => laterNow });
   storage.setItem(
@@ -557,7 +576,7 @@ function assertNoPrivateValues(value) {
   assert.equal(storage.getItem(customItemsStorageKey), null);
   assert.equal(parseStored(storage, learningProgressStorageKey).unmatchedLegacyProgress.length, 1);
   console.log(
-    "PASS 10: import merges progress/review data, keeps local settings precedence, and does not touch custom items."
+    "PASS 11: import merges progress/review data, keeps local settings precedence, and does not touch custom items."
   );
 }
 
@@ -574,7 +593,7 @@ function assertNoPrivateValues(value) {
   assert.equal(exported.settings.version, 1);
   assert.equal(exported.progress.records[coreContentId].correctCount, 1);
   assertNoPrivateValues(exported);
-  console.log("PASS 11: export uses the versioned schema and excludes raw legacy/private answer data.");
+  console.log("PASS 12: export uses the versioned schema and excludes raw legacy/private answer data.");
 }
 
 {
@@ -591,7 +610,7 @@ function assertNoPrivateValues(value) {
   assert.equal(refreshedTopic.wrongCount, 1);
   assert.deepEqual(progressKeys, [coreContentId, topicChangeContentId].sort());
   assert.equal(parseStored(storage, reviewListStorageKey).items[topicChangeContentId].contentId, topicChangeContentId);
-  console.log("PASS 12: progress is independent of current filters, topic, file, page, and session keys.");
+  console.log("PASS 13: progress is independent of current filters, topic, file, page, and session keys.");
 }
 
 {
@@ -602,8 +621,8 @@ function assertNoPrivateValues(value) {
   assert.equal(index.blankByLegacyId.get("guided-cloze::group-2::as-exp-003::1"), guidedContentId);
   assert.equal(index.questionByLegacyId.get("guided-cloze::group-2::as-exp-003"), undefined);
   console.log(
-    "PASS 13: canonical content index maps runtime blank context without enabling cloze Easy question guesses."
+    "PASS 14: canonical content index maps runtime blank context without enabling cloze Easy question guesses."
   );
 }
 
-console.log("Memorisation learning-state checks passed: 13");
+console.log("Memorisation learning-state checks passed: 14");
