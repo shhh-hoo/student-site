@@ -9,6 +9,32 @@ PR19 already protects legacy session keys matching `memorisation-bank-session::*
 and stores raw recovery snapshots in `mb:legacy-session-backup:v1`. PR2B must use
 that safety layer before any migration starts.
 
+## Practice Mode Model
+
+Memorisation Bank has three practice modes. They share canonical content and
+long-term learning state, but they should stay conceptually separate in the UI
+and saved-review data.
+
+- Full Dictation is typed practice. The student enters an answer, the system
+  checks it, and review-later actions save review debt under the `full` review
+  mode.
+- Easy Mode is Level 1 scaffolded practice. It keeps the keyword/copy flow and
+  saves its own review debt under the `easy` review mode.
+- Flashcard Mode is independent practice over the current selected stage, level,
+  topic, and file content. It does not require an existing saved-review item. The
+  student thinks, shows the answer, and self-grades; forgotten cards save review
+  debt under the `flashcard` review mode.
+
+Saved review is mode-specific. `mb:review-list:v1` entries should include a
+review mode, such as `full`, `easy`, or `flashcard`, and implementations may use
+mode-scoped storage ids such as `full::<contentId>` to avoid mixing review debt
+from different practice modes.
+
+My Review Bank is a future editable management layer over these mode-specific
+saved-review sets. It is not Flashcard Mode, and it should not be introduced by
+Flashcard Mode work. Custom review items remain out of scope until the dedicated
+My Review Bank PR writes `mb:custom-items:v1`.
+
 ## A. Generated Content ID Algorithm
 
 Canonical progress records need stable runtime content IDs that survive UI
