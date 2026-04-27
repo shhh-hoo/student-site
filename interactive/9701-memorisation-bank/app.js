@@ -16,6 +16,7 @@ import {
   migrateLegacySessionProgress,
   progressMigratedStorageKey,
   recordAttempt,
+  removeFromReview,
 } from "./learning-state.mjs";
 
 const definitionScopeOptions = [
@@ -137,6 +138,16 @@ const appState = {
   sessionBlankMap: new Map(),
   sessionLearningContentIndex: null,
   learningContentIndex: null,
+  learningCanonicalQuestions: null,
+  learningFlashcardItemMap: null,
+  flashcardReviewItems: [],
+  flashcardReviewItemMap: new Map(),
+  flashcardReviewContentIds: [],
+  flashcardReviewPages: [],
+  flashcardRevealedContentIds: new Set(),
+  flashcardCompletedContentIds: new Set(),
+  flashcardReviewPassInitialCount: 0,
+  flashcardReviewComplete: false,
   blankStates: new Map(),
   pages: [],
   currentPageIndex: 0,
@@ -577,6 +588,20 @@ function getDueLearningReviewCount() {
   }
 }
 
+function getDueLearningReviewItems() {
+  const options = getLearningStateOptions();
+
+  if (!options) {
+    return [];
+  }
+
+  try {
+    return getDueReviewItems(options);
+  } catch (error) {
+    return [];
+  }
+}
+
 function recordLearningAttemptForBlank(blankId, result, hintsUsed = 0) {
   const contentId = getLearningContentIdForBlankId(blankId);
   const options = getLearningStateOptions();
@@ -592,10 +617,49 @@ function recordLearningAttemptForBlank(blankId, result, hintsUsed = 0) {
   }
 }
 
+function recordLearningAttemptForContentId(contentId, result, hintsUsed = 0) {
+  const options = getLearningStateOptions();
+
+  if (!contentId || !options) {
+    return null;
+  }
+
+  try {
+    return recordAttempt({ contentId, result, hintsUsed }, options);
+  } catch (error) {
+    return null;
+  }
+}
+
+function removeLearningReviewForContentId(contentId) {
+  const options = getLearningStateOptions();
+
+  if (!contentId || !options) {
+    return false;
+  }
+
+  try {
+    return removeFromReview(contentId, options);
+  } catch (error) {
+    return false;
+  }
+}
+
 function getLearningStateDebugSnapshot() {
   const dueReviewCount = getDueLearningReviewCount();
-  const activeContentId = getLearningContentIdForBlankId(getActiveBlankId());
-  const activeProgress = getLearningProgressForBlankId(getActiveBlankId());
+  const activeContentId = appState.reviewMode
+    ? getActiveBlankId(appState.flashcardReviewContentIds)
+    : getLearningContentIdForBlankId(getActiveBlankId());
+  let activeProgress = appState.reviewMode ? null : getLearningProgressForBlankId(getActiveBlankId());
+
+  if (appState.reviewMode && activeContentId) {
+    try {
+      const options = getLearningStateOptions();
+      activeProgress = options ? getProgress(activeContentId, options) : null;
+    } catch (error) {
+      activeProgress = null;
+    }
+  }
 
   return {
     migration: lastLearningStateMigrationResult,
@@ -643,9 +707,9 @@ function readLearningMigrationFlag(storage) {
   }
 }
 
-async function buildCanonicalLearningContentIndex() {
-  if (appState.learningContentIndex) {
-    return appState.learningContentIndex;
+async function buildCanonicalLearningQuestions() {
+  if (appState.learningCanonicalQuestions) {
+    return appState.learningCanonicalQuestions;
   }
 
   const questionGroups = await Promise.all(
@@ -666,10 +730,82 @@ async function buildCanonicalLearningContentIndex() {
       });
     })
   );
-  const canonicalQuestions = questionGroups.flat();
 
+  appState.learningCanonicalQuestions = questionGroups.flat();
+  return appState.learningCanonicalQuestions;
+}
+
+async function buildCanonicalLearningContentIndex() {
+  if (appState.learningContentIndex) {
+    return appState.learningContentIndex;
+  }
+
+  const canonicalQuestions = await buildCanonicalLearningQuestions();
   appState.learningContentIndex = buildCanonicalContentIndex(canonicalQuestions);
   return appState.learningContentIndex;
+}
+
+async function buildFlashcardReviewLibrary() {
+  if (appState.learningFlashcardItemMap) {
+    return appState.learningFlashcardItemMap;
+  }
+
+  const [canonicalQuestions, contentIndex] = await Promise.all([
+    buildCanonicalLearningQuestions(),
+    buildCanonicalLearningContentIndex(),
+  ]);
+  const flashcardItems = new Map();
+
+  canonicalQuestions.forEach(question => {
+    question.blanks.forEach(blank => {
+      const contentId = getContentIdFromIndex(contentIndex, "blankByLegacyId", blank.id);
+
+      if (!contentId || flashcardItems.has(contentId)) {
+        return;
+      }
+
+      flashcardItems.set(contentId, {
+        contentId,
+        question,
+        blank,
+      });
+    });
+  });
+
+  appState.learningFlashcardItemMap = flashcardItems;
+  return flashcardItems;
+}
+
+async function prepareFlashcardReviewItems() {
+  const dueItems = getDueLearningReviewItems();
+  const library = await buildFlashcardReviewLibrary();
+  const items = dueItems
+    .map(reviewItem => {
+      const card = library.get(reviewItem.contentId);
+
+      return card
+        ? {
+            ...card,
+            reviewItem,
+          }
+        : null;
+    })
+    .filter(Boolean);
+
+  appState.flashcardReviewItems = items;
+  appState.flashcardReviewItemMap = new Map(items.map(item => [item.contentId, item]));
+  appState.flashcardReviewContentIds = items.map(item => item.contentId);
+  appState.flashcardReviewPages = chunkIntoPages(appState.flashcardReviewContentIds, reviewPageSize);
+  appState.flashcardRevealedContentIds = new Set();
+  appState.flashcardCompletedContentIds = new Set();
+  appState.flashcardReviewPassInitialCount = items.length;
+  appState.flashcardReviewComplete = false;
+
+  if (appState.reviewPageIndex >= appState.flashcardReviewPages.length) {
+    appState.reviewPageIndex = Math.max(0, appState.flashcardReviewPages.length - 1);
+  }
+
+  return items;
 }
 
 function queueLearningStateMigration() {
@@ -1231,10 +1367,6 @@ function switchLearningMode(mode) {
 
   const nextMode = mode === "review" ? "review" : normalizeLearningMode(mode);
 
-  if (nextMode === "review" && appState.reviewQueueBlankIds.length === 0) {
-    return;
-  }
-
   if (nextMode === "easy" && !canScaffoldCurrentBlank()) {
     return;
   }
@@ -1253,7 +1385,7 @@ function renderModeSwitcher() {
   }
 
   const mode = appState.selectedMode;
-  const reviewCount = appState.reviewQueueBlankIds.length;
+  const savedReviewCount = getDueLearningReviewCount();
 
   modeFullButton.disabled = appState.sessionBlankIds.length === 0;
   modeFullButton.dataset.active = String(mode === "full");
@@ -1263,26 +1395,21 @@ function renderModeSwitcher() {
   modeScaffoldButton.dataset.active = String(mode === "easy");
   modeScaffoldButton.setAttribute("aria-pressed", String(mode === "easy"));
 
-  modeReviewButton.disabled = reviewCount === 0;
+  modeReviewButton.disabled = appState.sessionBlankIds.length === 0;
   modeReviewButton.dataset.active = String(mode === "review");
   modeReviewButton.setAttribute("aria-pressed", String(mode === "review"));
   modeReviewButton.querySelector("small").textContent =
-    reviewCount === 0 ? "Missed or revealed items" : `${pluralise(reviewCount, "item")} queued`;
+    savedReviewCount === 0 ? "No due saved review" : `${pluralise(savedReviewCount, "card")} due`;
 }
 
-function applySelectedModeToPractice() {
+async function applySelectedModeToPractice() {
   if (appState.selectedMode === "review") {
-    if (appState.reviewQueueBlankIds.length === 0) {
-      appState.selectedMode = normalizeLearningMode(appState.learningMode, getDefaultLearningModeForFile());
-      appState.reviewMode = false;
-      return;
-    }
-
     appState.lastMainBlankId = resolvePreferredBlankId(appState.sessionBlankIds, [
       appState.setupReturnBlankId,
       appState.currentBlankId,
       appState.lastMainBlankId,
     ]);
+    await prepareFlashcardReviewItems();
     appState.reviewMode = true;
     return;
   }
@@ -1294,26 +1421,37 @@ function applySelectedModeToPractice() {
       : normalizeLearningMode(appState.selectedMode, getDefaultLearningModeForFile());
 }
 
-function startSession() {
+async function startSession() {
   if (!appState.sessionBlankIds.length) {
     return;
   }
 
-  applySelectedModeToPractice();
+  try {
+    await applySelectedModeToPractice();
+  } catch (error) {
+    appState.flashcardReviewItems = [];
+    appState.flashcardReviewItemMap = new Map();
+    appState.flashcardReviewContentIds = [];
+    appState.flashcardReviewPages = [];
+    appState.flashcardRevealedContentIds = new Set();
+    appState.flashcardCompletedContentIds = new Set();
+    appState.flashcardReviewPassInitialCount = 0;
+    appState.flashcardReviewComplete = false;
+    appState.reviewMode = appState.selectedMode === "review";
+  }
   appState.sessionView = "practice";
   appState.wordBankOpen = false;
   setWordBankMessage("");
 
   const blankOrder = getCurrentModeBlankOrder();
-  const focusBlankId =
-    appState.reviewMode && appState.reviewQueueBlankIds.length
-      ? resolvePreferredBlankId(appState.reviewQueueBlankIds, [appState.lastReviewBlankId])
-      : resolvePreferredBlankId(blankOrder, [
-          appState.setupReturnBlankId,
-          appState.lastMainBlankId,
-          appState.currentBlankId,
-          blankOrder[0],
-        ]);
+  const focusBlankId = appState.reviewMode
+    ? resolvePreferredBlankId(appState.flashcardReviewContentIds, [appState.lastReviewBlankId, blankOrder[0]])
+    : resolvePreferredBlankId(blankOrder, [
+        appState.setupReturnBlankId,
+        appState.lastMainBlankId,
+        appState.currentBlankId,
+        blankOrder[0],
+      ]);
 
   appState.setupReturnBlankId = "";
   renderSession({ focusBlankId });
@@ -1360,12 +1498,10 @@ function updateSessionViewChrome() {
 
   if (sessionStartButton) {
     sessionStartButton.disabled =
-      !appState.sessionBlankIds.length ||
-      (appState.selectedMode === "easy" && !canScaffoldCurrentBlank()) ||
-      (appState.selectedMode === "review" && appState.reviewQueueBlankIds.length === 0);
+      !appState.sessionBlankIds.length || (appState.selectedMode === "easy" && !canScaffoldCurrentBlank());
     sessionStartButton.textContent =
       appState.selectedMode === "review"
-        ? "Start review"
+        ? "Start Flashcard Mode"
         : appState.selectedMode === "easy"
           ? "Start Easy Mode"
           : "Start Full Dictation";
@@ -1693,6 +1829,8 @@ async function loadCatalogResources({ preserveSelection = true } = {}) {
   appState.topicNormalizationMap = topicNormalizationMap;
   appState.fileDataCache.clear();
   appState.learningContentIndex = null;
+  appState.learningCanonicalQuestions = null;
+  appState.learningFlashcardItemMap = null;
   learningStateMigrationPromise = null;
 
   synchroniseSelection({
@@ -2022,6 +2160,14 @@ function rebuildSessionRuntime(sessionQuestions) {
   appState.currentPageIndex = 0;
   appState.reviewQueueBlankIds = [];
   appState.reviewPages = [];
+  appState.flashcardReviewItems = [];
+  appState.flashcardReviewItemMap = new Map();
+  appState.flashcardReviewContentIds = [];
+  appState.flashcardReviewPages = [];
+  appState.flashcardRevealedContentIds = new Set();
+  appState.flashcardCompletedContentIds = new Set();
+  appState.flashcardReviewPassInitialCount = 0;
+  appState.flashcardReviewComplete = false;
   appState.reviewPageIndex = 0;
   appState.reviewMode = false;
   appState.learningMode = getDefaultLearningModeForFile(appState.file);
@@ -2094,13 +2240,15 @@ function buildPersistedSessionState() {
   return {
     version: localSessionStateVersion,
     selectionKey: buildSessionSelectionKey(),
-    currentBlankId: getActiveBlankId(),
+    currentBlankId: appState.reviewMode
+      ? resolvePreferredBlankId(appState.sessionBlankIds, [appState.lastMainBlankId])
+      : getActiveBlankId(),
     lastMainBlankId: resolvePreferredBlankId(appState.sessionBlankIds, [appState.lastMainBlankId]),
-    lastReviewBlankId: resolvePreferredBlankId(appState.reviewQueueBlankIds, [appState.lastReviewBlankId]),
-    reviewMode: Boolean(appState.reviewMode && appState.reviewQueueBlankIds.length),
+    lastReviewBlankId: "",
+    reviewMode: false,
     learningMode: normalizeLearningMode(appState.learningMode, getDefaultLearningModeForFile()),
     selectedMode: appState.selectedMode === "review" ? "review" : normalizeLearningMode(appState.selectedMode),
-    sessionView: appState.sessionView,
+    sessionView: appState.reviewMode ? "setup" : appState.sessionView,
     interactionTick: appState.interactionTick,
     blankStates: appState.sessionBlankIds.map(blankId => serializeBlankState(getBlankState(blankId))).filter(Boolean),
     easyQuestionStates: appState.sessionQuestionIds
@@ -2332,7 +2480,7 @@ function getCompletedBlankCount() {
 }
 
 function getPageSet() {
-  return appState.reviewMode ? appState.reviewPages : appState.pages;
+  return appState.reviewMode ? appState.flashcardReviewPages : appState.pages;
 }
 
 function getCurrentPageIndex() {
@@ -2381,15 +2529,19 @@ function getPrimaryBlankIdForBlank(blankId) {
 }
 
 function getCurrentModeBlankOrder() {
+  if (appState.reviewMode) {
+    return appState.flashcardReviewContentIds;
+  }
+
   if (isEasyLearningMode()) {
     return getEasyQuestionBlankOrder();
   }
 
-  return appState.reviewMode ? appState.reviewQueueBlankIds : appState.sessionBlankIds;
+  return appState.sessionBlankIds;
 }
 
 function getCurrentModePageIndexForBlank(blankId, reviewMode = appState.reviewMode) {
-  const pages = reviewMode ? appState.reviewPages : appState.pages;
+  const pages = reviewMode ? appState.flashcardReviewPages : appState.pages;
 
   if (reviewMode) {
     return pages.findIndex(page => page.includes(blankId));
@@ -2397,6 +2549,10 @@ function getCurrentModePageIndexForBlank(blankId, reviewMode = appState.reviewMo
 
   const questionId = getBlank(blankId)?.questionId;
   return pages.findIndex(page => page.includes(questionId));
+}
+
+function getFlashcardReviewItem(contentId = getActiveBlankId(appState.flashcardReviewContentIds)) {
+  return appState.flashcardReviewItemMap.get(contentId) || null;
 }
 
 function findNextIncompleteBlankAfter(blankId = "", blankOrder = getCurrentModeBlankOrder()) {
@@ -2749,10 +2905,6 @@ function onGlobalSessionKeydown(event) {
 }
 
 function setReviewMode(reviewMode) {
-  if (reviewMode && appState.reviewQueueBlankIds.length === 0) {
-    return;
-  }
-
   const activeBlankId = getActiveBlankId();
 
   if (appState.reviewMode === reviewMode) {
@@ -2767,7 +2919,7 @@ function setReviewMode(reviewMode) {
 
   appState.reviewMode = reviewMode;
   const nextFocusBlankId = reviewMode
-    ? resolvePreferredBlankId(appState.reviewQueueBlankIds, [appState.lastReviewBlankId])
+    ? resolvePreferredBlankId(appState.flashcardReviewContentIds, [appState.lastReviewBlankId])
     : resolvePreferredBlankId(appState.sessionBlankIds, [
         appState.lastMainBlankId,
         findNextIncompleteBlankAfter("", appState.sessionBlankIds),
@@ -2881,7 +3033,7 @@ function renderStats() {
   fileManifestCount.textContent = getFileCountLabel(fileEntry);
   poolCount.textContent = pluralise(appState.sessionQuestionIds.length, "session question");
   itemCounter.textContent = pluralise(totalBlanks, "session blank");
-  counterChip.textContent = appState.reviewMode ? "Review queue" : "Main session";
+  counterChip.textContent = appState.reviewMode ? "Flashcard Mode" : "Main session";
 }
 
 function updateBadges() {
@@ -3903,7 +4055,233 @@ function createRevealPanel(question, blank) {
   return shell;
 }
 
+function createFlashcardAnswerPanel(question, blank) {
+  const shell = document.createElement("section");
+  shell.className = "interactive-subtle-panel memorisation-reveal memorisation-flashcard-answer";
+  shell.dataset.blankId = blank.id;
+
+  const headerLabel = document.createElement("p");
+  headerLabel.className = "memorisation-question-label";
+  headerLabel.textContent = "Canonical answer";
+
+  const fullAnswerBlock = document.createElement("div");
+  fullAnswerBlock.className = "memorisation-reveal__block";
+
+  const fullAnswerLabel = document.createElement("span");
+  fullAnswerLabel.className = "memorisation-answer__label";
+  fullAnswerLabel.textContent = "Full answer";
+
+  const fullAnswerText = document.createElement("p");
+  fullAnswerText.className = "memorisation-answer__text";
+  fullAnswerText.textContent = question.fullAnswer || blank.answerModel.full_answer;
+
+  const note = document.createElement("p");
+  note.className = "memorisation-answer__note";
+  note.textContent = [question.blanks.length > 1 ? `Current target: ${blank.label}.` : "", getRevealNote(question)]
+    .filter(Boolean)
+    .join(" ");
+
+  fullAnswerBlock.append(fullAnswerLabel, fullAnswerText);
+  shell.append(headerLabel, fullAnswerBlock, note);
+  return shell;
+}
+
+function createFlashcardGradeButton(label, grade, contentId) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className =
+    grade === "knew" ? "doc-link memorisation-flashcard-action" : "secondary-link memorisation-flashcard-action";
+  button.textContent = label;
+  button.dataset.flashcardGrade = grade;
+  button.addEventListener("click", () => {
+    gradeFlashcard(contentId, grade);
+  });
+  return button;
+}
+
+function createFlashcardActions(contentId, answerShown) {
+  const actions = document.createElement("div");
+  actions.className = "memorisation-flashcard-actions";
+
+  if (!answerShown) {
+    const showAnswerButton = document.createElement("button");
+    showAnswerButton.type = "button";
+    showAnswerButton.className = "doc-link memorisation-flashcard-action";
+    showAnswerButton.textContent = "Show answer";
+    showAnswerButton.addEventListener("click", () => {
+      appState.flashcardRevealedContentIds.add(contentId);
+      renderSession({ focusBlankId: contentId });
+    });
+    actions.append(showAnswerButton);
+    return actions;
+  }
+
+  actions.append(
+    createFlashcardGradeButton("I knew it", "knew", contentId),
+    createFlashcardGradeButton("Almost", "almost", contentId),
+    createFlashcardGradeButton("Forgot", "forgot", contentId)
+  );
+  return actions;
+}
+
+function removeFlashcardFromCurrentPass(contentId) {
+  const currentIndex = appState.flashcardReviewContentIds.indexOf(contentId);
+
+  appState.flashcardCompletedContentIds.add(contentId);
+  appState.flashcardRevealedContentIds.delete(contentId);
+  appState.flashcardReviewItems = appState.flashcardReviewItems.filter(item => item.contentId !== contentId);
+  appState.flashcardReviewItemMap.delete(contentId);
+  appState.flashcardReviewContentIds = appState.flashcardReviewContentIds.filter(
+    itemContentId => itemContentId !== contentId
+  );
+  appState.flashcardReviewPages = chunkIntoPages(appState.flashcardReviewContentIds, reviewPageSize);
+  appState.reviewPageIndex = Math.min(appState.reviewPageIndex, Math.max(0, appState.flashcardReviewPages.length - 1));
+
+  if (!appState.flashcardReviewContentIds.length) {
+    appState.flashcardReviewComplete = appState.flashcardReviewPassInitialCount > 0;
+    appState.lastReviewBlankId = "";
+    return "";
+  }
+
+  const nextIndex = currentIndex >= 0 ? Math.min(currentIndex, appState.flashcardReviewContentIds.length - 1) : 0;
+  const nextContentId = appState.flashcardReviewContentIds[nextIndex] || appState.flashcardReviewContentIds[0] || "";
+
+  if (nextContentId) {
+    syncPageIndexForBlank(nextContentId, true);
+    appState.lastReviewBlankId = nextContentId;
+  }
+
+  return nextContentId;
+}
+
+function gradeFlashcard(contentId, grade) {
+  if (!appState.flashcardReviewItemMap.has(contentId) || appState.flashcardCompletedContentIds.has(contentId)) {
+    return;
+  }
+
+  let recordedAttempt = null;
+
+  if (grade === "knew") {
+    recordedAttempt = recordLearningAttemptForContentId(contentId, "correct", 0);
+
+    if (recordedAttempt) {
+      removeLearningReviewForContentId(contentId);
+    }
+  } else if (grade === "almost") {
+    recordedAttempt = recordLearningAttemptForContentId(contentId, "correct", 1);
+  } else if (grade === "forgot") {
+    recordedAttempt = recordLearningAttemptForContentId(contentId, "incorrect", 0);
+  } else {
+    return;
+  }
+
+  // Flashcard Mode is a review pass over due saved-review cards: self-grade
+  // completes the card for this pass, while learning-state decides whether it
+  // remains scheduled for future review.
+  const nextContentId = removeFlashcardFromCurrentPass(contentId);
+
+  if (nextContentId) {
+    renderSession({ focusBlankId: nextContentId });
+    return;
+  }
+
+  renderSession();
+}
+
+function renderFlashcardReviewPractice() {
+  sessionPage.replaceChildren();
+  appState.blankInputRefs = new Map();
+  appState.blankInputMirrorRefs = new Map();
+
+  if (!appState.flashcardReviewItems.length) {
+    if (appState.flashcardReviewComplete) {
+      renderStatusCard(sessionPage, "Flashcard review complete", "Return to setup", returnToSetup);
+      return;
+    }
+
+    renderStatusCard(
+      sessionPage,
+      "No saved review cards are due right now. Full Dictation and Easy Mode can add items here when you miss, reveal, or review later.",
+      "Return to setup",
+      returnToSetup
+    );
+    return;
+  }
+
+  const contentId = getActiveBlankId(appState.flashcardReviewContentIds);
+  const item = getFlashcardReviewItem(contentId);
+
+  if (!item) {
+    renderStatusCard(sessionPage, "This saved review card could not be matched to the current content catalog.");
+    return;
+  }
+
+  const { question, blank } = item;
+  const answerShown = appState.flashcardRevealedContentIds.has(contentId);
+  const promptCard = document.createElement("article");
+  promptCard.className = "interactive-subtle-panel memorisation-prompt-card memorisation-flashcard-card";
+  promptCard.dataset.contentId = contentId;
+
+  const label = document.createElement("p");
+  label.className = "memorisation-question-label";
+  label.textContent = "Flashcard front";
+
+  const promptTitle = document.createElement("h3");
+  promptTitle.id = "active-prompt-title";
+  promptTitle.textContent = question.question;
+
+  const meta = document.createElement("p");
+  meta.className = "memorisation-prompt-card__meta";
+  meta.textContent = [question.stage, question.levelId, question.topicLabel, question.fileLabel, blank.label]
+    .filter(Boolean)
+    .map(value => formatLabel(value))
+    .join(" · ");
+
+  promptCard.append(label, promptTitle, meta);
+
+  if (question.prompt && (question.kind === "cloze" || question.prompt !== question.question)) {
+    const contextBlock = document.createElement("div");
+    contextBlock.className = "memorisation-prompt-context";
+
+    const contextLabel = document.createElement("p");
+    contextLabel.className = "memorisation-prompt-context__label";
+    contextLabel.textContent = question.kind === "cloze" ? "Prompt context" : "Prompt";
+
+    const contextText = document.createElement("p");
+    contextText.id = "active-prompt-context";
+    contextText.className = "memorisation-prompt-context__text";
+    contextText.textContent = question.prompt;
+
+    contextBlock.append(contextLabel, contextText);
+    promptCard.append(contextBlock);
+  }
+
+  const actionPanel = document.createElement("section");
+  actionPanel.className = "interactive-subtle-panel memorisation-flashcard-panel";
+  actionPanel.setAttribute("aria-label", answerShown ? "Flashcard self assessment" : "Flashcard answer reveal");
+
+  const actionCopy = document.createElement("p");
+  actionCopy.className = "memorisation-answer-card__copy";
+  actionCopy.textContent = answerShown
+    ? "Self-grade this card. This updates saved review without requiring typing."
+    : "Think through the answer first, then show the canonical answer.";
+
+  actionPanel.append(actionCopy, createFlashcardActions(contentId, answerShown));
+  sessionPage.append(promptCard);
+
+  if (answerShown) {
+    sessionPage.append(createFlashcardAnswerPanel(question, blank));
+  }
+
+  sessionPage.append(actionPanel);
+}
+
 function renderProgressHeader() {
+  if (appState.reviewMode) {
+    renderFlashcardProgressHeader();
+    return;
+  }
+
   const blankOrder = getCurrentModeBlankOrder();
   const activeBlankId = getActiveBlankId();
   const activeBlankIndex = getBlankOrderIndex(activeBlankId, blankOrder);
@@ -3992,6 +4370,52 @@ function renderProgressHeader() {
   }
 }
 
+function renderFlashcardProgressHeader() {
+  const cardOrder = appState.flashcardReviewContentIds;
+  const activeContentId = getActiveBlankId(cardOrder);
+  const activeCardIndex = getBlankOrderIndex(activeContentId, cardOrder);
+  const savedReviewCount = getDueLearningReviewCount();
+  const promptLabel = activeCardIndex >= 0 ? activeCardIndex + 1 : 0;
+
+  pageCounter.textContent = appState.flashcardReviewComplete
+    ? "Flashcard review complete"
+    : `Flashcard ${promptLabel} / ${cardOrder.length}`;
+  completionChip.textContent = appState.flashcardReviewComplete
+    ? "Review pass complete"
+    : `${pluralise(cardOrder.length, "due card")}`;
+  reviewChip.textContent = savedReviewCount ? `Saved review: ${savedReviewCount}` : "Saved review: none due";
+  prevBlankButton.disabled = activeCardIndex <= 0;
+  nextBlankButton.disabled = activeCardIndex < 0 || activeCardIndex >= cardOrder.length - 1;
+  checkBlankButton.disabled = true;
+  revealBlankButton.disabled = true;
+  stuckReviewLaterButton.hidden = true;
+  stuckReviewLaterButton.disabled = true;
+  actionBar.dataset.state = "flashcard";
+  actionBar.dataset.mode = "review";
+  actionBar.hidden = true;
+  prevBlankButton.textContent = "Previous";
+  checkBlankButton.textContent = "Check";
+  revealBlankButton.textContent = "Reveal";
+  nextBlankButton.textContent = "Next";
+
+  const reviewToggleText = "Back to setup";
+  reviewToggleButton.hidden = true;
+  reviewToggleButton.textContent = reviewToggleText;
+
+  if (mobileReviewToggleButton) {
+    mobileReviewToggleButton.hidden = true;
+    mobileReviewToggleButton.textContent = "Setup";
+  }
+
+  if (sessionActionHint) {
+    sessionActionHint.textContent = "Show answer, then self-grade";
+  }
+
+  if (appState.sessionView !== "practice") {
+    renderModeSwitcher();
+  }
+}
+
 function renderBanner() {
   const totalBlanks = appState.sessionBlankIds.length;
   const completedBlanks = getCompletedBlankCount();
@@ -4021,15 +4445,22 @@ function renderBanner() {
     sessionBanner.hidden = false;
     sessionBanner.innerHTML = `
       <div class="memorisation-banner__content">
-        <p class="memorisation-question-label">Review queue</p>
-        <h3>Focused second pass.</h3>
+        <p class="memorisation-question-label">Flashcard review</p>
+        <h3>${appState.flashcardReviewComplete ? "Flashcard review complete." : "Self-assess saved review."}</h3>
         <p class="memorisation-question-copy">
-          ${pluralise(appState.reviewQueueBlankIds.length, "blank")} selected from wrong attempts,
-          reveals, and blanks that were corrected after earlier misses.
+          ${
+            appState.flashcardReviewComplete
+              ? "This review pass is finished."
+              : `${pluralise(appState.flashcardReviewContentIds.length, "due card")} from saved review.`
+          }
         </p>
-        <p class="memorisation-question-copy">
-          Ordering: revealed first, then higher wrong counts, then the most recent unresolved items.
-        </p>
+        ${
+          appState.flashcardReviewComplete
+            ? ""
+            : `<p class="memorisation-question-copy">
+                Think first, show the answer, then choose I knew it, Almost, or Forgot.
+              </p>`
+        }
       </div>
     `;
     return;
@@ -4046,15 +4477,11 @@ function renderSessionHeaderCopy() {
   const topicText = appState.topic ? getTopicEntry()?.label || "Current topic" : "All topics";
 
   if (appState.reviewMode) {
-    questionLabel.textContent = "Focused review";
-    questionTitle.textContent = `${fileEntry?.label || "Training file"} review queue`;
-    questionCopy.textContent = `Return to missed or revealed blanks from ${
-      stageEntry?.id || "stage"
-    } · ${levelEntry?.label || "level"} · ${topicText}.`;
-    currentSetSummary.textContent = `Reviewing ${topicText}`;
-    currentSetCopy.textContent = `${stageEntry?.id || "Stage"} · ${
-      levelEntry?.label || "Level"
-    } · ${pluralise(appState.reviewQueueBlankIds.length, "blank")} queued`;
+    questionLabel.textContent = "Flashcard Mode";
+    questionTitle.textContent = "Saved review flashcards";
+    questionCopy.textContent = "Review due saved items without typing: think, show the answer, then self-grade.";
+    currentSetSummary.textContent = "Flashcard review";
+    currentSetCopy.textContent = `${pluralise(appState.flashcardReviewContentIds.length, "due card")} from saved review`;
     return;
   }
 
@@ -4068,12 +4495,15 @@ function renderSessionHeaderCopy() {
 }
 
 function renderSetupLauncher() {
+  const readyPromptCount =
+    appState.selectedMode === "review" ? getDueLearningReviewCount() : getCurrentModeBlankOrder().length;
+
   sessionBanner.hidden = true;
   sessionBanner.innerHTML = "";
   renderStatusCard(
     sessionPage,
     appState.sessionBlankIds.length
-      ? `Ready to start ${appState.selectedMode === "easy" ? "Easy Mode" : appState.selectedMode === "review" ? "Review" : "Full Dictation"} with ${pluralise(getCurrentModeBlankOrder().length, "prompt")}.`
+      ? `Ready to start ${appState.selectedMode === "easy" ? "Easy Mode" : appState.selectedMode === "review" ? "Flashcard Mode" : "Full Dictation"} with ${pluralise(readyPromptCount, appState.selectedMode === "review" ? "due card" : "prompt")}.`
       : "Choose a stage, training file, topic, and mode to prepare a session."
   );
   renderSessionOutline();
@@ -4119,6 +4549,11 @@ function getOutlinePromptMeta(question, blank) {
 
 function renderSessionOutline() {
   sessionOutline.replaceChildren();
+
+  if (appState.reviewMode) {
+    renderFlashcardSessionOutline();
+    return;
+  }
 
   const blankOrder = getCurrentModeBlankOrder();
 
@@ -4188,6 +4623,58 @@ function renderSessionOutline() {
     overflow.textContent = `${blankOrder.length - (endIndex - startIndex)} more prompt${
       blankOrder.length - (endIndex - startIndex) === 1 ? "" : "s"
     } in this session.`;
+    sessionOutline.append(overflow);
+  }
+}
+
+function renderFlashcardSessionOutline() {
+  if (!appState.flashcardReviewItems.length) {
+    const emptyState = document.createElement("p");
+    emptyState.className = "memorisation-empty";
+    emptyState.textContent = appState.flashcardReviewComplete
+      ? "Flashcard review complete."
+      : "No due saved review cards.";
+    sessionOutline.append(emptyState);
+    return;
+  }
+
+  const activeContentId = getActiveBlankId(appState.flashcardReviewContentIds);
+
+  appState.flashcardReviewItems.slice(0, 7).forEach(item => {
+    const outlineItem = document.createElement("button");
+    outlineItem.type = "button";
+    outlineItem.className = "memorisation-outline__item";
+    outlineItem.dataset.current = String(item.contentId === activeContentId);
+    outlineItem.dataset.status = item.progress?.status || "reviewing";
+    outlineItem.addEventListener("click", () => {
+      focusBlank(item.contentId);
+    });
+
+    const title = document.createElement("span");
+    title.className = "memorisation-outline__title";
+    title.textContent = item.question.question;
+
+    const status = document.createElement("span");
+    status.className = "memorisation-outline__status";
+    status.textContent = appState.flashcardRevealedContentIds.has(item.contentId) ? "Answer shown" : "Saved review";
+
+    const meta = document.createElement("p");
+    meta.className = "memorisation-outline__meta";
+    meta.textContent = [item.question.stage, item.question.topicLabel, item.question.fileLabel, item.blank.label]
+      .filter(Boolean)
+      .join(" · ");
+
+    outlineItem.setAttribute("aria-label", `${item.question.question}. ${status.textContent}. ${meta.textContent}.`);
+    outlineItem.append(title, status, meta);
+    sessionOutline.append(outlineItem);
+  });
+
+  if (appState.flashcardReviewItems.length > 7) {
+    const overflow = document.createElement("p");
+    overflow.className = "memorisation-outline__overflow";
+    overflow.textContent = `${appState.flashcardReviewItems.length - 7} more saved review card${
+      appState.flashcardReviewItems.length - 7 === 1 ? "" : "s"
+    }.`;
     sessionOutline.append(overflow);
   }
 }
@@ -4278,6 +4765,11 @@ function createAnswerCardHeader(question, blank, blankState) {
 }
 
 function renderActivePractice() {
+  if (appState.reviewMode) {
+    renderFlashcardReviewPractice();
+    return;
+  }
+
   sessionPage.replaceChildren();
   appState.blankInputRefs = new Map();
   appState.blankInputMirrorRefs = new Map();
