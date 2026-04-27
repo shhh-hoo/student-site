@@ -1026,6 +1026,21 @@ textarea.memorisation-easy-copy-input {
   white-space: normal;
 }
 
+.memorisation-flashcard-panel {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.memorisation-flashcard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.memorisation-flashcard-action {
+  justify-content: center;
+}
+
 .memorisation-action-hint {
   flex: 1 0 100%;
   order: -1;
@@ -1910,6 +1925,7 @@ html[data-theme="dark"] .memorisation-rules-dialog__panel {
 .memorisation-answer-card,
 .memorisation-feedback-card,
 .memorisation-reveal,
+.memorisation-flashcard-panel,
 .memorisation-status-card,
 .memorisation-rules-dialog__panel,
 .memorisation-action-bar,
@@ -1925,6 +1941,7 @@ html[data-theme="dark"] .memorisation-rules-dialog__panel {
 .memorisation-answer-card,
 .memorisation-feedback-card,
 .memorisation-reveal,
+.memorisation-flashcard-panel,
 .memorisation-status-card,
 .memorisation-rules-dialog__panel {
   border-width: 2px;
@@ -2002,6 +2019,7 @@ html[data-theme="dark"] .memorisation-prompt-card,
 html[data-theme="dark"] .memorisation-answer-card,
 html[data-theme="dark"] .memorisation-feedback-card,
 html[data-theme="dark"] .memorisation-reveal,
+html[data-theme="dark"] .memorisation-flashcard-panel,
 html[data-theme="dark"] .memorisation-status-card,
 html[data-theme="dark"] .memorisation-rules-dialog__panel,
 html[data-theme="dark"] .memorisation-action-bar,
@@ -2038,6 +2056,7 @@ html[data-theme="dark"] .memorisation-prompt-card,
 html[data-theme="dark"] .memorisation-answer-card,
 html[data-theme="dark"] .memorisation-feedback-card,
 html[data-theme="dark"] .memorisation-reveal,
+html[data-theme="dark"] .memorisation-flashcard-panel,
 html[data-theme="dark"] .memorisation-status-card {
   border-color: var(--memorisation-border);
   background: var(--memorisation-surface);
@@ -2198,6 +2217,8 @@ html[data-theme="dark"] .memorisation-word-bank__message {
 
 html[data-theme="dark"] .memorisation-action-bar .doc-link,
 html[data-theme="dark"] .memorisation-action-bar .secondary-link,
+html[data-theme="dark"] .memorisation-flashcard-actions .doc-link,
+html[data-theme="dark"] .memorisation-flashcard-actions .secondary-link,
 html[data-theme="dark"] .memorisation-current-row__actions .doc-link,
 html[data-theme="dark"] .memorisation-current-row__actions .secondary-link,
 html[data-theme="dark"] .memorisation-active-status__setup,
@@ -2207,7 +2228,8 @@ html[data-theme="dark"] .memorisation-practice-refine {
   color: var(--memorisation-text);
 }
 
-html[data-theme="dark"] .memorisation-action-bar .doc-link {
+html[data-theme="dark"] .memorisation-action-bar .doc-link,
+html[data-theme="dark"] .memorisation-flashcard-actions .doc-link {
   color: var(--memorisation-label);
 }
 
