@@ -98,6 +98,7 @@ const modeReviewButton = document.getElementById("mode-review");
 const prevBlankButton = document.getElementById("prev-blank");
 const checkBlankButton = document.getElementById("check-blank");
 const revealBlankButton = document.getElementById("reveal-blank");
+const stuckReviewLaterButton = document.getElementById("stuck-review-later");
 const nextBlankButton = document.getElementById("next-blank");
 const reviewToggleButton = document.getElementById("review-toggle");
 const sessionActionHint = document.getElementById("session-action-hint");
@@ -161,6 +162,8 @@ const appState = {
   wordBankMessage: "",
   wordBankMessageTimeoutId: 0,
 };
+
+const reviewLaterActionLabel = "Show me and review later";
 
 function fetchJson(path) {
   return fetch(path, { cache: "no-store" }).then(response => {
@@ -2511,6 +2514,12 @@ function checkCurrentBlank() {
   renderSession({ focusBlankId: activeBlankId });
 }
 
+function canGiveUpBlank(blankId) {
+  const blankState = getBlankState(blankId);
+
+  return Boolean(blankState && blankState.status !== "correct" && blankState.status !== "revealed");
+}
+
 function markQuestionCorrectFromEasy(question) {
   question.blanks.forEach(blank => {
     const blankState = getBlankState(blank.id);
@@ -2629,8 +2638,9 @@ function checkBlank(blankId) {
   return result;
 }
 
-function revealQuestion(questionId, focusBlankId = getActiveBlankId()) {
+function revealQuestion(questionId, focusBlankId = getActiveBlankId(), options = {}) {
   const question = getQuestion(questionId);
+  const { attemptResult = "revealed", hintsUsed = 0 } = options;
 
   if (!question) {
     return;
@@ -2658,13 +2668,36 @@ function revealQuestion(questionId, focusBlankId = getActiveBlankId()) {
     blankState.reviewPriority = buildReviewPriority(blankState);
 
     if (blank.id === revealedLearningBlankId) {
-      recordLearningAttemptForBlank(blank.id, "revealed", 0);
+      recordLearningAttemptForBlank(blank.id, attemptResult, hintsUsed);
     }
   });
 
   updateReviewQueue();
   renderSession({
     focusBlankId: resolvePreferredBlankId(getCurrentModeBlankOrder(), [focusBlankId]),
+  });
+}
+
+function giveUpCurrentItem(focusBlankId = getActiveBlankId()) {
+  const blank = getBlank(focusBlankId);
+  const question = getQuestion(blank?.questionId || "");
+
+  if (!blank || !question || !canGiveUpBlank(blank.id)) {
+    return;
+  }
+
+  if (isEasyLearningMode()) {
+    const easyState = getEasyQuestionState(question.id);
+
+    if (easyState) {
+      easyState.easyStep = "copy";
+      easyState.copyStatus = easyState.copyStatus === "correct" ? "correct" : "idle";
+    }
+  }
+
+  revealQuestion(question.id, blank.id, {
+    attemptResult: "gave_up",
+    hintsUsed: isEasyLearningMode() ? 1 : 0,
   });
 }
 
@@ -2806,6 +2839,8 @@ function setLoadingState(message = "Loading current session...") {
   prevBlankButton.disabled = true;
   checkBlankButton.disabled = true;
   revealBlankButton.disabled = true;
+  stuckReviewLaterButton.hidden = true;
+  stuckReviewLaterButton.disabled = true;
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
   if (mobileReviewToggleButton) {
@@ -3306,6 +3341,43 @@ function createEasyKeywordSkeleton(question, selectedKeywordIds) {
   return shell;
 }
 
+function appendEasyReviewLaterAction(actionRow, question) {
+  const primaryBlankId = getQuestionPrimaryBlankId(question);
+
+  if (!canGiveUpBlank(primaryBlankId)) {
+    return;
+  }
+
+  const stuckButton = document.createElement("button");
+  stuckButton.type = "button";
+  stuckButton.className =
+    "secondary-link memorisation-easy-action memorisation-easy-action--secondary memorisation-stuck-action";
+  stuckButton.textContent = reviewLaterActionLabel;
+  stuckButton.addEventListener("click", () => {
+    giveUpCurrentItem(primaryBlankId);
+  });
+  actionRow.append(stuckButton);
+}
+
+function appendEasyContinueAfterReviewLaterAction(actionRow, question) {
+  const primaryBlankId = getQuestionPrimaryBlankId(question);
+  const blankState = getBlankState(primaryBlankId);
+
+  if (blankState?.status !== "revealed") {
+    return;
+  }
+
+  const nextButton = document.createElement("button");
+  nextButton.type = "button";
+  nextButton.className = "secondary-link memorisation-easy-action memorisation-easy-action--secondary";
+  nextButton.textContent = "Next";
+  nextButton.disabled = !getAdjacentBlankId(primaryBlankId, 1);
+  nextButton.addEventListener("click", () => {
+    moveToNextBlank(primaryBlankId);
+  });
+  actionRow.append(nextButton);
+}
+
 function createEasyKeywordPanel(question) {
   const easyState = getEasyQuestionState(question.id);
   const chips = getEasyKeywordChips(question);
@@ -3388,6 +3460,7 @@ function createEasyKeywordPanel(question) {
     checkCurrentBlank();
   });
   actionRow.append(actionButton);
+  appendEasyReviewLaterAction(actionRow, question);
 
   if (selectedKeywordIds.length && easyState?.keywordStatus === "wrong") {
     const clearButton = document.createElement("button");
@@ -3495,6 +3568,8 @@ function createEasyCopyPanel(question) {
   });
 
   actionRow.append(actionButton);
+  appendEasyReviewLaterAction(actionRow, question);
+  appendEasyContinueAfterReviewLaterAction(actionRow, question);
   shell.append(label, copy, answerBlock, createEasyCopyField(question));
 
   if (easyState?.copyStatus === "wrong") {
@@ -3855,6 +3930,9 @@ function renderProgressHeader() {
   revealBlankButton.disabled = !activeQuestion || appState.revealedQuestionIds.has(activeQuestion.id);
   revealBlankButton.textContent =
     activeQuestion && appState.revealedQuestionIds.has(activeQuestion.id) ? "Shown" : "Reveal";
+  stuckReviewLaterButton.hidden = isEasyLearningMode() || !canGiveUpBlank(activeBlankId);
+  stuckReviewLaterButton.disabled = !activeQuestion || !canGiveUpBlank(activeBlankId);
+  stuckReviewLaterButton.textContent = reviewLaterActionLabel;
   actionBar.dataset.state = activeBlankState?.status || "idle";
   actionBar.dataset.mode = mode;
   actionBar.hidden = isEasyLearningMode();
@@ -3864,6 +3942,7 @@ function renderProgressHeader() {
   checkBlankButton.className = "doc-link";
   nextBlankButton.className = "secondary-link";
   revealBlankButton.className = "secondary-link";
+  stuckReviewLaterButton.className = "secondary-link memorisation-stuck-action";
   checkBlankButton.setAttribute("aria-label", "Check current answer");
 
   if (isEasyLearningMode() && activeQuestion) {
@@ -4001,6 +4080,8 @@ function renderSetupLauncher() {
   prevBlankButton.disabled = true;
   checkBlankButton.disabled = true;
   revealBlankButton.disabled = true;
+  stuckReviewLaterButton.hidden = true;
+  stuckReviewLaterButton.disabled = true;
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
   if (mobileReviewToggleButton) {
@@ -4293,6 +4374,8 @@ function renderEmptyState(message) {
   prevBlankButton.disabled = true;
   checkBlankButton.disabled = true;
   revealBlankButton.disabled = true;
+  stuckReviewLaterButton.hidden = true;
+  stuckReviewLaterButton.disabled = true;
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
   updateUrlFromState();
@@ -4335,6 +4418,8 @@ function renderCatalogErrorState(message) {
   prevBlankButton.disabled = true;
   checkBlankButton.disabled = true;
   revealBlankButton.disabled = true;
+  stuckReviewLaterButton.hidden = true;
+  stuckReviewLaterButton.disabled = true;
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
 }
@@ -4372,6 +4457,8 @@ function renderFileErrorState(fileEntry, message) {
   prevBlankButton.disabled = true;
   checkBlankButton.disabled = true;
   revealBlankButton.disabled = true;
+  stuckReviewLaterButton.hidden = true;
+  stuckReviewLaterButton.disabled = true;
   nextBlankButton.disabled = true;
   reviewToggleButton.hidden = true;
   if (mobileReviewToggleButton) {
@@ -4581,6 +4668,10 @@ function registerStaticEvents() {
     if (questionId) {
       revealQuestion(questionId, activeBlankId);
     }
+  });
+
+  stuckReviewLaterButton.addEventListener("click", () => {
+    giveUpCurrentItem(getActiveBlankId());
   });
 
   nextBlankButton.addEventListener("click", () => {
