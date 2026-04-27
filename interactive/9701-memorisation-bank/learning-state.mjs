@@ -20,6 +20,8 @@ const schemaVersion = 1;
 const defaultSessionStoragePrefix = "memorisation-bank-session";
 const allowedStatuses = new Set(["unseen", "learning", "reviewing", "mastered"]);
 const allowedAttemptResults = new Set(["correct", "incorrect", "gave_up", "revealed"]);
+const defaultReviewMode = "full";
+const allowedReviewModes = new Set(["full", "easy", "flashcard"]);
 
 function isObject(value) {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
@@ -148,6 +150,40 @@ function getSettingsKey(options = {}) {
 
 function getMigrationFlagKey(options = {}) {
   return options.migrationFlagKey || progressMigratedStorageKey;
+}
+
+function normalizeReviewMode(mode) {
+  const normalizedMode = String(mode || defaultReviewMode);
+  return allowedReviewModes.has(normalizedMode) ? normalizedMode : defaultReviewMode;
+}
+
+function getReviewMode(options = {}) {
+  return normalizeReviewMode(options.mode);
+}
+
+function parseReviewItemFallbackKey(fallbackKey = "") {
+  const text = String(fallbackKey || "");
+  const separatorIndex = text.indexOf("::");
+
+  if (separatorIndex > 0) {
+    const possibleMode = text.slice(0, separatorIndex);
+
+    if (allowedReviewModes.has(possibleMode)) {
+      return {
+        mode: possibleMode,
+        contentId: text.slice(separatorIndex + 2),
+      };
+    }
+  }
+
+  return {
+    mode: defaultReviewMode,
+    contentId: text,
+  };
+}
+
+function getReviewItemKey(contentId, mode = defaultReviewMode) {
+  return `${normalizeReviewMode(mode)}::${String(contentId || "")}`;
 }
 
 function createEmptyProgressPayload() {
@@ -304,8 +340,10 @@ function writeProgressPayload(storage, payload, options = {}) {
   return nextPayload;
 }
 
-function normalizeReviewItem(item, fallbackContentId = "") {
-  const contentId = String(item?.contentId || fallbackContentId || "");
+function normalizeReviewItem(item, fallbackKey = "") {
+  const fallback = parseReviewItemFallbackKey(fallbackKey);
+  const contentId = String(item?.contentId || fallback.contentId || "");
+  const mode = normalizeReviewMode(item?.mode || fallback.mode);
 
   if (!contentId) {
     return null;
@@ -319,6 +357,7 @@ function normalizeReviewItem(item, fallbackContentId = "") {
 
   return {
     contentId,
+    mode,
     reasons: [...new Set(reasons)],
     addedAt: normalizeIsoString(item?.addedAt) || null,
     nextReviewAt: normalizeIsoString(item?.nextReviewAt) || null,
@@ -330,11 +369,11 @@ function readReviewListPayload(storage, options = {}) {
   const payload = createEmptyReviewListPayload();
   const rawItems = isObject(parsed.items) ? parsed.items : {};
 
-  Object.entries(rawItems).forEach(([contentId, item]) => {
-    const normalized = normalizeReviewItem(item, contentId);
+  Object.entries(rawItems).forEach(([reviewKey, item]) => {
+    const normalized = normalizeReviewItem(item, reviewKey);
 
     if (normalized) {
-      payload.items[normalized.contentId] = normalized;
+      payload.items[getReviewItemKey(normalized.contentId, normalized.mode)] = normalized;
     }
   });
 
@@ -383,8 +422,9 @@ function mergeReasons(left = [], right = []) {
 }
 
 function mergeReviewItem(left, right) {
-  const normalizedLeft = normalizeReviewItem(left, right?.contentId);
-  const normalizedRight = normalizeReviewItem(right, left?.contentId);
+  const fallbackKey = right?.contentId || left?.contentId || "";
+  const normalizedLeft = left ? normalizeReviewItem(left, fallbackKey) : null;
+  const normalizedRight = right ? normalizeReviewItem(right, fallbackKey) : null;
 
   if (!normalizedLeft) {
     return normalizedRight;
@@ -396,6 +436,7 @@ function mergeReviewItem(left, right) {
 
   return {
     contentId: normalizedLeft.contentId,
+    mode: normalizedLeft.mode,
     reasons: mergeReasons(normalizedLeft.reasons, normalizedRight.reasons),
     addedAt: earliestIso(normalizedLeft.addedAt, normalizedRight.addedAt),
     nextReviewAt: earliestIso(normalizedLeft.nextReviewAt, normalizedRight.nextReviewAt),
@@ -468,22 +509,31 @@ function updateRecordStatusFromScore(record) {
   return record;
 }
 
-function addReviewItemToPayload(reviewPayload, contentId, reason, now, nextReviewAt = now) {
-  const existing = reviewPayload.items[contentId];
+function addReviewItemToPayload(reviewPayload, contentId, reason, now, nextReviewAt = now, mode = defaultReviewMode) {
+  const normalizedMode = normalizeReviewMode(mode);
+  const reviewKey = getReviewItemKey(contentId, normalizedMode);
+  const existing = reviewPayload.items[reviewKey];
   const next = mergeReviewItem(existing, {
     contentId,
+    mode: normalizedMode,
     reasons: reason ? [reason] : [],
     addedAt: existing?.addedAt || now,
     nextReviewAt,
   });
 
   if (next) {
-    reviewPayload.items[contentId] = next;
+    reviewPayload.items[reviewKey] = next;
   }
 }
 
-function removeReviewItemFromPayload(reviewPayload, contentId) {
-  delete reviewPayload.items[contentId];
+function removeReviewItemFromPayload(reviewPayload, contentId, mode = defaultReviewMode) {
+  delete reviewPayload.items[getReviewItemKey(contentId, mode)];
+}
+
+function getNextReviewAtForContent(reviewPayload, contentId) {
+  return Object.values(reviewPayload.items || {})
+    .filter(item => item?.contentId === contentId)
+    .reduce((nextReviewAt, item) => earliestIso(nextReviewAt, item.nextReviewAt), null);
 }
 
 function normalizeUnmatchedLegacyProgress(entries = []) {
@@ -849,8 +899,12 @@ export function getAllProgress(options = {}) {
   return clone(readProgressPayload(storage, options).records);
 }
 
-export function recordAttempt({ contentId, result, hintsUsed = 0, historical = false } = {}, options = {}) {
+export function recordAttempt(
+  { contentId, result, hintsUsed = 0, historical = false, mode = null } = {},
+  options = {}
+) {
   const normalizedContentId = String(contentId || "");
+  const reviewMode = normalizeReviewMode(mode || options.mode);
 
   if (!normalizedContentId) {
     throw new Error("recordAttempt requires a contentId.");
@@ -879,7 +933,7 @@ export function recordAttempt({ contentId, result, hintsUsed = 0, historical = f
     updateRecordStatusFromScore(record);
 
     if (record.status === "mastered") {
-      removeReviewItemFromPayload(reviewPayload, normalizedContentId);
+      removeReviewItemFromPayload(reviewPayload, normalizedContentId, reviewMode);
       record.nextReviewAt = addDays(now, 7);
     }
   }
@@ -890,7 +944,7 @@ export function recordAttempt({ contentId, result, hintsUsed = 0, historical = f
     record.masteryScore = clampScore(record.masteryScore - 15);
     record.status = "reviewing";
     record.nextReviewAt = now;
-    addReviewItemToPayload(reviewPayload, normalizedContentId, "incorrect", now);
+    addReviewItemToPayload(reviewPayload, normalizedContentId, "incorrect", now, now, reviewMode);
   }
 
   if (result === "gave_up") {
@@ -899,7 +953,7 @@ export function recordAttempt({ contentId, result, hintsUsed = 0, historical = f
     record.masteryScore = clampScore(record.masteryScore - 10);
     record.status = "reviewing";
     record.nextReviewAt = now;
-    addReviewItemToPayload(reviewPayload, normalizedContentId, "gave-up", now);
+    addReviewItemToPayload(reviewPayload, normalizedContentId, "gave-up", now, now, reviewMode);
   }
 
   if (result === "revealed") {
@@ -911,7 +965,7 @@ export function recordAttempt({ contentId, result, hintsUsed = 0, historical = f
     if (!(historical && record.status === "mastered")) {
       record.status = "reviewing";
       record.nextReviewAt = now;
-      addReviewItemToPayload(reviewPayload, normalizedContentId, "revealed", now);
+      addReviewItemToPayload(reviewPayload, normalizedContentId, "revealed", now, now, reviewMode);
     }
   }
 
@@ -924,6 +978,7 @@ export function recordAttempt({ contentId, result, hintsUsed = 0, historical = f
 
 export function addToReview(contentId, reason = "manual", options = {}) {
   const normalizedContentId = String(contentId || "");
+  const reviewMode = getReviewMode(options);
 
   if (!normalizedContentId) {
     throw new Error("addToReview requires a contentId.");
@@ -938,15 +993,16 @@ export function addToReview(contentId, reason = "manual", options = {}) {
   record.status = "reviewing";
   record.nextReviewAt = earliestIso(record.nextReviewAt, now);
   progressPayload.records[normalizedContentId] = normalizeProgressRecord(record, normalizedContentId);
-  addReviewItemToPayload(reviewPayload, normalizedContentId, reason, now);
+  addReviewItemToPayload(reviewPayload, normalizedContentId, reason, now, now, reviewMode);
   writeProgressPayload(storage, progressPayload, { ...options, now: () => now });
   writeReviewListPayload(storage, reviewPayload, { ...options, now: () => now });
 
-  return clone(reviewPayload.items[normalizedContentId]);
+  return clone(reviewPayload.items[getReviewItemKey(normalizedContentId, reviewMode)]);
 }
 
 export function removeFromReview(contentId, options = {}) {
   const normalizedContentId = String(contentId || "");
+  const reviewMode = getReviewMode(options);
 
   if (!normalizedContentId) {
     throw new Error("removeFromReview requires a contentId.");
@@ -957,10 +1013,10 @@ export function removeFromReview(contentId, options = {}) {
   const reviewPayload = readReviewListPayload(storage, options);
   const record = progressPayload.records[normalizedContentId];
 
-  removeReviewItemFromPayload(reviewPayload, normalizedContentId);
+  removeReviewItemFromPayload(reviewPayload, normalizedContentId, reviewMode);
 
   if (record) {
-    record.nextReviewAt = null;
+    record.nextReviewAt = getNextReviewAtForContent(reviewPayload, normalizedContentId);
     progressPayload.records[normalizedContentId] = normalizeProgressRecord(record, normalizedContentId);
     writeProgressPayload(storage, progressPayload, options);
   }
@@ -974,11 +1030,16 @@ export function getDueReviewItems(options = {}) {
   const storage = getStorage(options);
   const now = getNow(options);
   const nowTime = Date.parse(now);
+  const requestedMode = options.mode ? normalizeReviewMode(options.mode) : "";
   const progressPayload = readProgressPayload(storage, options);
   const reviewPayload = readReviewListPayload(storage, options);
 
   return Object.values(reviewPayload.items)
     .filter(item => {
+      if (requestedMode && item.mode !== requestedMode) {
+        return false;
+      }
+
       const dueTime = Date.parse(item.nextReviewAt || now);
       return !Number.isFinite(dueTime) || dueTime <= nowTime;
     })
@@ -1039,14 +1100,15 @@ export function importLearningState(payload, options = {}) {
     incomingProgress.unmatchedLegacyProgress
   );
 
-  Object.entries(incomingReviewItems).forEach(([contentId, item]) => {
-    const normalized = normalizeReviewItem(item, contentId);
+  Object.entries(incomingReviewItems).forEach(([reviewKey, item]) => {
+    const normalized = normalizeReviewItem(item, reviewKey);
 
     if (!normalized) {
       return;
     }
 
-    reviewPayload.items[normalized.contentId] = mergeReviewItem(reviewPayload.items[normalized.contentId], normalized);
+    const normalizedKey = getReviewItemKey(normalized.contentId, normalized.mode);
+    reviewPayload.items[normalizedKey] = mergeReviewItem(reviewPayload.items[normalizedKey], normalized);
   });
 
   const incomingSettings = isObject(payload.settings) ? payload.settings : {};

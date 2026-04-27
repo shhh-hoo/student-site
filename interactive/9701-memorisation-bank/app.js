@@ -139,7 +139,6 @@ const appState = {
   sessionLearningContentIndex: null,
   learningContentIndex: null,
   learningCanonicalQuestions: null,
-  learningFlashcardItemMap: null,
   flashcardReviewItems: [],
   flashcardReviewItemMap: new Map(),
   flashcardReviewContentIds: [],
@@ -588,21 +587,38 @@ function getDueLearningReviewCount() {
   }
 }
 
-function getDueLearningReviewItems() {
+function getDueLearningReviewCountForMode(mode) {
   const options = getLearningStateOptions();
 
   if (!options) {
-    return [];
+    return 0;
   }
 
   try {
-    return getDueReviewItems(options);
+    return getDueReviewItems({ ...options, mode }).length;
   } catch (error) {
-    return [];
+    return 0;
   }
 }
 
-function recordLearningAttemptForBlank(blankId, result, hintsUsed = 0) {
+function getLearningReviewModeForCurrentPractice() {
+  if (appState.reviewMode) {
+    return "flashcard";
+  }
+
+  if (isEasyLearningMode()) {
+    return "easy";
+  }
+
+  return "full";
+}
+
+function recordLearningAttemptForBlank(
+  blankId,
+  result,
+  hintsUsed = 0,
+  mode = getLearningReviewModeForCurrentPractice()
+) {
   const contentId = getLearningContentIdForBlankId(blankId);
   const options = getLearningStateOptions();
 
@@ -611,13 +627,18 @@ function recordLearningAttemptForBlank(blankId, result, hintsUsed = 0) {
   }
 
   try {
-    return recordAttempt({ contentId, result, hintsUsed }, options);
+    return recordAttempt({ contentId, result, hintsUsed, mode }, options);
   } catch (error) {
     return null;
   }
 }
 
-function recordLearningAttemptForContentId(contentId, result, hintsUsed = 0) {
+function recordLearningAttemptForContentId(
+  contentId,
+  result,
+  hintsUsed = 0,
+  mode = getLearningReviewModeForCurrentPractice()
+) {
   const options = getLearningStateOptions();
 
   if (!contentId || !options) {
@@ -625,13 +646,13 @@ function recordLearningAttemptForContentId(contentId, result, hintsUsed = 0) {
   }
 
   try {
-    return recordAttempt({ contentId, result, hintsUsed }, options);
+    return recordAttempt({ contentId, result, hintsUsed, mode }, options);
   } catch (error) {
     return null;
   }
 }
 
-function removeLearningReviewForContentId(contentId) {
+function removeLearningReviewForContentId(contentId, mode = getLearningReviewModeForCurrentPractice()) {
   const options = getLearningStateOptions();
 
   if (!contentId || !options) {
@@ -639,7 +660,7 @@ function removeLearningReviewForContentId(contentId) {
   }
 
   try {
-    return removeFromReview(contentId, options);
+    return removeFromReview(contentId, { ...options, mode });
   } catch (error) {
     return false;
   }
@@ -745,18 +766,11 @@ async function buildCanonicalLearningContentIndex() {
   return appState.learningContentIndex;
 }
 
-async function buildFlashcardReviewLibrary() {
-  if (appState.learningFlashcardItemMap) {
-    return appState.learningFlashcardItemMap;
-  }
-
-  const [canonicalQuestions, contentIndex] = await Promise.all([
-    buildCanonicalLearningQuestions(),
-    buildCanonicalLearningContentIndex(),
-  ]);
+function buildFlashcardPracticeItems() {
+  const contentIndex = appState.sessionLearningContentIndex;
   const flashcardItems = new Map();
 
-  canonicalQuestions.forEach(question => {
+  appState.sessionQuestions.forEach(question => {
     question.blanks.forEach(blank => {
       const contentId = getContentIdFromIndex(contentIndex, "blankByLegacyId", blank.id);
 
@@ -772,25 +786,11 @@ async function buildFlashcardReviewLibrary() {
     });
   });
 
-  appState.learningFlashcardItemMap = flashcardItems;
-  return flashcardItems;
+  return [...flashcardItems.values()];
 }
 
 async function prepareFlashcardReviewItems() {
-  const dueItems = getDueLearningReviewItems();
-  const library = await buildFlashcardReviewLibrary();
-  const items = dueItems
-    .map(reviewItem => {
-      const card = library.get(reviewItem.contentId);
-
-      return card
-        ? {
-            ...card,
-            reviewItem,
-          }
-        : null;
-    })
-    .filter(Boolean);
+  const items = buildFlashcardPracticeItems();
 
   appState.flashcardReviewItems = items;
   appState.flashcardReviewItemMap = new Map(items.map(item => [item.contentId, item]));
@@ -1385,7 +1385,6 @@ function renderModeSwitcher() {
   }
 
   const mode = appState.selectedMode;
-  const savedReviewCount = getDueLearningReviewCount();
 
   modeFullButton.disabled = appState.sessionBlankIds.length === 0;
   modeFullButton.dataset.active = String(mode === "full");
@@ -1399,7 +1398,7 @@ function renderModeSwitcher() {
   modeReviewButton.dataset.active = String(mode === "review");
   modeReviewButton.setAttribute("aria-pressed", String(mode === "review"));
   modeReviewButton.querySelector("small").textContent =
-    savedReviewCount === 0 ? "No due saved review" : `${pluralise(savedReviewCount, "card")} due`;
+    `${pluralise(appState.sessionBlankIds.length, "card")} · no typing`;
 }
 
 async function applySelectedModeToPractice() {
@@ -1830,7 +1829,6 @@ async function loadCatalogResources({ preserveSelection = true } = {}) {
   appState.fileDataCache.clear();
   appState.learningContentIndex = null;
   appState.learningCanonicalQuestions = null;
-  appState.learningFlashcardItemMap = null;
   learningStateMigrationPromise = null;
 
   synchroniseSelection({
@@ -4162,22 +4160,22 @@ function gradeFlashcard(contentId, grade) {
   let recordedAttempt = null;
 
   if (grade === "knew") {
-    recordedAttempt = recordLearningAttemptForContentId(contentId, "correct", 0);
+    recordedAttempt = recordLearningAttemptForContentId(contentId, "correct", 0, "flashcard");
 
     if (recordedAttempt) {
-      removeLearningReviewForContentId(contentId);
+      removeLearningReviewForContentId(contentId, "flashcard");
     }
   } else if (grade === "almost") {
-    recordedAttempt = recordLearningAttemptForContentId(contentId, "correct", 1);
+    recordedAttempt = recordLearningAttemptForContentId(contentId, "correct", 1, "flashcard");
   } else if (grade === "forgot") {
-    recordedAttempt = recordLearningAttemptForContentId(contentId, "incorrect", 0);
+    recordedAttempt = recordLearningAttemptForContentId(contentId, "incorrect", 0, "flashcard");
   } else {
     return;
   }
 
-  // Flashcard Mode is a review pass over due saved-review cards: self-grade
-  // completes the card for this pass, while learning-state decides whether it
-  // remains scheduled for future review.
+  // Flashcard Mode is an independent review pass over the current selected
+  // content. Self-grade completes the card for this pass; learning-state uses
+  // the flashcard saved-review bucket to decide future review.
   const nextContentId = removeFlashcardFromCurrentPass(contentId);
 
   if (nextContentId) {
@@ -4201,7 +4199,7 @@ function renderFlashcardReviewPractice() {
 
     renderStatusCard(
       sessionPage,
-      "No saved review cards are due right now. Full Dictation and Easy Mode can add items here when you miss, reveal, or review later.",
+      "No flashcard cards are available for the current selection.",
       "Return to setup",
       returnToSetup
     );
@@ -4212,7 +4210,7 @@ function renderFlashcardReviewPractice() {
   const item = getFlashcardReviewItem(contentId);
 
   if (!item) {
-    renderStatusCard(sessionPage, "This saved review card could not be matched to the current content catalog.");
+    renderStatusCard(sessionPage, "This flashcard could not be matched to the current content catalog.");
     return;
   }
 
@@ -4263,7 +4261,7 @@ function renderFlashcardReviewPractice() {
   const actionCopy = document.createElement("p");
   actionCopy.className = "memorisation-answer-card__copy";
   actionCopy.textContent = answerShown
-    ? "Self-grade this card. This updates saved review without requiring typing."
+    ? "Self-grade this card. This updates flashcard progress without requiring typing."
     : "Think through the answer first, then show the canonical answer.";
 
   actionPanel.append(actionCopy, createFlashcardActions(contentId, answerShown));
@@ -4290,7 +4288,9 @@ function renderProgressHeader() {
   const totalBlanks = appState.sessionBlankIds.length;
   const completedBlanks = getCompletedBlankCount();
   const reviewCount = appState.reviewQueueBlankIds.length;
-  const savedReviewCount = getDueLearningReviewCount();
+  const savedReviewMode = isEasyLearningMode() ? "easy" : "full";
+  const savedReviewCount = getDueLearningReviewCountForMode(savedReviewMode);
+  const savedReviewLabel = savedReviewMode === "easy" ? "Easy saved review" : "Full saved review";
   const promptLabel = activeBlankIndex >= 0 ? activeBlankIndex + 1 : 0;
   const mode = getLearningMode();
 
@@ -4298,7 +4298,7 @@ function renderProgressHeader() {
   completionChip.textContent = `${completedBlanks} / ${totalBlanks} blanks completed`;
   reviewChip.textContent = [
     appState.reviewMode ? `Review queue: ${reviewCount} active` : `Review queue: ${reviewCount}`,
-    savedReviewCount ? `Saved review: ${savedReviewCount}` : "",
+    savedReviewCount ? `${savedReviewLabel}: ${savedReviewCount}` : "",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -4374,7 +4374,7 @@ function renderFlashcardProgressHeader() {
   const cardOrder = appState.flashcardReviewContentIds;
   const activeContentId = getActiveBlankId(cardOrder);
   const activeCardIndex = getBlankOrderIndex(activeContentId, cardOrder);
-  const savedReviewCount = getDueLearningReviewCount();
+  const savedReviewCount = getDueLearningReviewCountForMode("flashcard");
   const promptLabel = activeCardIndex >= 0 ? activeCardIndex + 1 : 0;
 
   pageCounter.textContent = appState.flashcardReviewComplete
@@ -4382,8 +4382,10 @@ function renderFlashcardProgressHeader() {
     : `Flashcard ${promptLabel} / ${cardOrder.length}`;
   completionChip.textContent = appState.flashcardReviewComplete
     ? "Review pass complete"
-    : `${pluralise(cardOrder.length, "due card")}`;
-  reviewChip.textContent = savedReviewCount ? `Saved review: ${savedReviewCount}` : "Saved review: none due";
+    : `${pluralise(cardOrder.length, "card")} in this pass`;
+  reviewChip.textContent = savedReviewCount
+    ? `Flashcard saved review: ${savedReviewCount}`
+    : "Flashcard saved review: none due";
   prevBlankButton.disabled = activeCardIndex <= 0;
   nextBlankButton.disabled = activeCardIndex < 0 || activeCardIndex >= cardOrder.length - 1;
   checkBlankButton.disabled = true;
@@ -4445,13 +4447,13 @@ function renderBanner() {
     sessionBanner.hidden = false;
     sessionBanner.innerHTML = `
       <div class="memorisation-banner__content">
-        <p class="memorisation-question-label">Flashcard review</p>
-        <h3>${appState.flashcardReviewComplete ? "Flashcard review complete." : "Self-assess saved review."}</h3>
+        <p class="memorisation-question-label">Flashcard Mode</p>
+        <h3>${appState.flashcardReviewComplete ? "Flashcard review complete." : "Self-assess the current set."}</h3>
         <p class="memorisation-question-copy">
           ${
             appState.flashcardReviewComplete
               ? "This review pass is finished."
-              : `${pluralise(appState.flashcardReviewContentIds.length, "due card")} from saved review.`
+              : `${pluralise(appState.flashcardReviewContentIds.length, "card")} left in this flashcard pass.`
           }
         </p>
         ${
@@ -4478,10 +4480,11 @@ function renderSessionHeaderCopy() {
 
   if (appState.reviewMode) {
     questionLabel.textContent = "Flashcard Mode";
-    questionTitle.textContent = "Saved review flashcards";
-    questionCopy.textContent = "Review due saved items without typing: think, show the answer, then self-grade.";
-    currentSetSummary.textContent = "Flashcard review";
-    currentSetCopy.textContent = `${pluralise(appState.flashcardReviewContentIds.length, "due card")} from saved review`;
+    questionTitle.textContent = `${fileEntry?.label || "Training file"} · flashcards`;
+    questionCopy.textContent =
+      "Review the current selected content without typing: think, show the answer, then self-grade.";
+    currentSetSummary.textContent = "Flashcard practice";
+    currentSetCopy.textContent = `${pluralise(appState.flashcardReviewContentIds.length, "card")} in this pass`;
     return;
   }
 
@@ -4496,14 +4499,14 @@ function renderSessionHeaderCopy() {
 
 function renderSetupLauncher() {
   const readyPromptCount =
-    appState.selectedMode === "review" ? getDueLearningReviewCount() : getCurrentModeBlankOrder().length;
+    appState.selectedMode === "review" ? appState.sessionBlankIds.length : getCurrentModeBlankOrder().length;
 
   sessionBanner.hidden = true;
   sessionBanner.innerHTML = "";
   renderStatusCard(
     sessionPage,
     appState.sessionBlankIds.length
-      ? `Ready to start ${appState.selectedMode === "easy" ? "Easy Mode" : appState.selectedMode === "review" ? "Flashcard Mode" : "Full Dictation"} with ${pluralise(readyPromptCount, appState.selectedMode === "review" ? "due card" : "prompt")}.`
+      ? `Ready to start ${appState.selectedMode === "easy" ? "Easy Mode" : appState.selectedMode === "review" ? "Flashcard Mode" : "Full Dictation"} with ${pluralise(readyPromptCount, appState.selectedMode === "review" ? "card" : "prompt")}.`
       : "Choose a stage, training file, topic, and mode to prepare a session."
   );
   renderSessionOutline();
@@ -4633,7 +4636,7 @@ function renderFlashcardSessionOutline() {
     emptyState.className = "memorisation-empty";
     emptyState.textContent = appState.flashcardReviewComplete
       ? "Flashcard review complete."
-      : "No due saved review cards.";
+      : "No flashcards in this pass.";
     sessionOutline.append(emptyState);
     return;
   }
@@ -4656,7 +4659,7 @@ function renderFlashcardSessionOutline() {
 
     const status = document.createElement("span");
     status.className = "memorisation-outline__status";
-    status.textContent = appState.flashcardRevealedContentIds.has(item.contentId) ? "Answer shown" : "Saved review";
+    status.textContent = appState.flashcardRevealedContentIds.has(item.contentId) ? "Answer shown" : "Flashcard";
 
     const meta = document.createElement("p");
     meta.className = "memorisation-outline__meta";
@@ -4672,7 +4675,7 @@ function renderFlashcardSessionOutline() {
   if (appState.flashcardReviewItems.length > 7) {
     const overflow = document.createElement("p");
     overflow.className = "memorisation-outline__overflow";
-    overflow.textContent = `${appState.flashcardReviewItems.length - 7} more saved review card${
+    overflow.textContent = `${appState.flashcardReviewItems.length - 7} more flashcard${
       appState.flashcardReviewItems.length - 7 === 1 ? "" : "s"
     }.`;
     sessionOutline.append(overflow);
