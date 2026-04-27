@@ -22,6 +22,11 @@ const expectedPromptContext =
   "Down the group the M2+ ion has lower _____ _____. So it polarises the carbonate ion _____. The carbonate ion is less distorted and is less likely to decompose.";
 const expectedFullAnswer =
   "Down the group the M2+ ion has lower charge density. So it polarises the carbonate ion less. The carbonate ion is less distorted and is less likely to decompose.";
+const coreDefinitionContentId =
+  "mb:canonical:v1:as:level-1-core:atomic-structure:core-definitions:as-def-001:single:blank-0";
+const guidedBlank0ContentId = "mb:canonical:v1:as:level-2-guided-cloze:group-2:guided-cloze:as-exp-003:cloze:blank-0";
+const guidedBlank1ContentId = "mb:canonical:v1:as:level-2-guided-cloze:group-2:guided-cloze:as-exp-003:cloze:blank-1";
+const guidedBlank2ContentId = "mb:canonical:v1:as:level-2-guided-cloze:group-2:guided-cloze:as-exp-003:cloze:blank-2";
 const runMobileVisibilityCheck = process.env.MEMORISATION_MOBILE_CHECK === "1";
 const configuredWindowSize =
   process.env.MEMORISATION_WINDOW_SIZE || (runMobileVisibilityCheck ? "390,900" : "1440,1600");
@@ -852,6 +857,67 @@ async function getLegacyProtectionSnapshot(client, key) {
   );
 }
 
+async function getLearningStorageSnapshot(client) {
+  return evaluate(
+    client,
+    `(() => {
+      const parse = key => {
+        try {
+          return JSON.parse(localStorage.getItem(key) || "null");
+        } catch {
+          return null;
+        }
+      };
+      const progress = parse("mb:progress:v1");
+      const reviewList = parse("mb:review-list:v1");
+      const migrationFlag = parse("mb:progress:migrated:v1");
+      const debugSnapshot = window.MemorisationBankDebug?.getLearningStateSnapshot?.() || null;
+      const serializedProgress = JSON.stringify(progress || {});
+
+      return {
+        progress,
+        reviewList,
+        migrationFlag,
+        debugSnapshot,
+        recordCount: Object.keys(progress?.records || {}).length,
+        reviewCount: Object.keys(reviewList?.items || {}).length,
+        containsTypedAnswer:
+          serializedProgress.includes("legacy typed answer") ||
+          serializedProgress.includes("legacy copy answer") ||
+          serializedProgress.includes("wrong level 1 copy") ||
+          serializedProgress.includes("draft"),
+      };
+    })()`
+  );
+}
+
+async function waitForLearningRecord(client, contentId, predicate, message) {
+  return waitForEvaluation(
+    client,
+    `(() => {
+      try {
+        const progress = JSON.parse(localStorage.getItem("mb:progress:v1") || "null");
+        const reviewList = JSON.parse(localStorage.getItem("mb:review-list:v1") || "null");
+        return {
+          record: progress?.records?.[${JSON.stringify(contentId)}] || null,
+          reviewItem: reviewList?.items?.[${JSON.stringify(contentId)}] || null,
+          progress,
+          reviewList,
+        };
+      } catch {
+        return {
+          record: null,
+          reviewItem: null,
+          progress: null,
+          reviewList: null,
+        };
+      }
+    })()`,
+    value => Boolean(value?.record) && predicate(value),
+    message
+  );
+}
+
 async function runLegacyProgressProtectionChecks(client, targetUrl, emptyUrl) {
   const activeSessionKey = "memorisation-bank-session::AS::level-2-guided-cloze::group-2::guided-cloze::all::all";
   const emptySessionKey =
@@ -892,6 +958,35 @@ async function runLegacyProgressProtectionChecks(client, targetUrl, emptyUrl) {
   assert.equal(activeProtection.reportAvailable, true);
   assert.equal(activeProtection.reportIncludesTypedValue, false);
   assert.ok(activeProtection.rawExportWarning.includes("private learning data"));
+
+  const migratedLegacyProgress = await waitForLearningRecord(
+    client,
+    guidedBlank0ContentId,
+    value =>
+      value.record.wrongCount === 1 &&
+      value.record.legacySources?.length === 1 &&
+      value.reviewItem?.reasons?.includes("wrong-answer"),
+    "Legacy blank progress was not migrated through the canonical content index."
+  );
+  const migratedLegacySnapshot = await getLearningStorageSnapshot(client);
+  assert.equal(migratedLegacySnapshot.containsTypedAnswer, false);
+  assert.equal(migratedLegacySnapshot.debugSnapshot.activeContentId, guidedBlank0ContentId);
+  assert.equal(migratedLegacyProgress.record.legacySources[0].legacyKind, "blank");
+
+  await client.send("Page.reload");
+  await waitForSnapshot(
+    client,
+    snapshot =>
+      snapshot.currentUrl.includes("file=guided-cloze") && snapshot.startButtonText === "Start Full Dictation",
+    "Legacy migration idempotency reload did not return to guided cloze setup."
+  );
+  const remigratedLegacyProgress = await waitForLearningRecord(
+    client,
+    guidedBlank0ContentId,
+    value => value.record.wrongCount === 1 && value.record.legacySources?.length === 1,
+    "Refreshing after legacy migration should not double-count migrated attempts."
+  );
+  assert.equal(remigratedLegacyProgress.record.wrongCount, 1);
 
   const unRestoredCurrentPayload = {
     version: 2,
@@ -1424,6 +1519,8 @@ async function run() {
         snapshot.pageText.includes("Select the key words in the answer order before moving to copy practice."),
       "Wrong Level 1 Easy keyword order should stay in Step 1."
     );
+    const afterKeywordOnlyLearning = await getLearningStorageSnapshot(client);
+    assert.equal(afterKeywordOnlyLearning.recordCount, 0, "Keyword-only Easy activity must not record mastery.");
 
     await clearSelectedEasyKeywordChips(client);
     await waitForSnapshot(
@@ -1479,6 +1576,15 @@ async function run() {
       "Wrong Level 1 Easy copy should stay in copy practice."
     );
     assert.equal(afterCoreWrongCopy.inputValue, "wrong level 1 copy");
+    await waitForLearningRecord(
+      client,
+      coreDefinitionContentId,
+      value =>
+        value.record.wrongCount === 1 &&
+        value.record.hintCount === 1 &&
+        value.reviewItem?.reasons?.includes("incorrect"),
+      "Wrong Level 1 Easy copy should record an incorrect scaffolded attempt."
+    );
 
     await setActiveTextareaValue(client, coreEasyFullAnswer);
     await pressEnter(client);
@@ -1488,6 +1594,27 @@ async function run() {
       "Correct Level 1 Easy copy did not complete the item and advance."
     );
     assert.equal(afterCoreCorrectCopy.reviewToggleText, "");
+    const afterCoreCorrectProgress = await waitForLearningRecord(
+      client,
+      coreDefinitionContentId,
+      value => value.record.correctCount === 1 && value.record.wrongCount === 1 && value.record.hintCount === 2,
+      "Correct Level 1 Easy copy should record a scaffolded correct attempt."
+    );
+    assert.equal(afterCoreCorrectProgress.record.correctCount, 1);
+
+    await client.send("Page.reload");
+    await waitForSnapshot(
+      client,
+      snapshot => snapshot.currentUrl.includes("file=core-definitions") && snapshot.pageCounter === "Prompt 2 / 5",
+      "Refresh after Level 1 Easy copy should preserve the session."
+    );
+    const afterCoreProgressReload = await waitForLearningRecord(
+      client,
+      coreDefinitionContentId,
+      value => value.record.correctCount === 1 && value.record.wrongCount === 1 && value.record.hintCount === 2,
+      "Refresh should preserve Level 1 Easy learning-state progress."
+    );
+    assert.equal(afterCoreProgressReload.record.hintCount, 2);
     console.log("PASS 1d: Level 1 Easy copy checks, persists, and advances after a correct copy.");
 
     await clickSelector(client, ".memorisation-practice-refine");
@@ -1652,6 +1779,15 @@ async function run() {
       afterWrongCheck.diffSentenceText.includes("density") && afterWrongCheck.diffSentenceText.includes("draft"),
       "Feedback comparison should remain readable sentence text."
     );
+    await waitForLearningRecord(
+      client,
+      guidedBlank1ContentId,
+      value =>
+        value.record.wrongCount === 1 &&
+        value.record.hintCount === 0 &&
+        value.reviewItem?.reasons?.includes("incorrect"),
+      "Full Dictation wrong answer should record wrongCount and saved review."
+    );
     console.log("PASS 5b: Incorrect answer showed inline feedback and state-based action controls.");
 
     if (runMobileVisibilityCheck) {
@@ -1680,6 +1816,26 @@ async function run() {
     assert.equal(afterReveal.revealTokenCount, 0, "Reveal should not render canonical answers as token chips.");
     assert.equal(afterReveal.revealMatchMarkCount, 0, "Reveal should not mark every correct word.");
     assert.ok(afterReveal.revealProblemMarkCount > 0, "Reveal should mark only missed or wrong answer parts.");
+    await waitForLearningRecord(
+      client,
+      guidedBlank1ContentId,
+      value =>
+        value.record.wrongCount === 1 &&
+        value.record.revealedCount === 1 &&
+        value.reviewItem?.reasons?.includes("revealed"),
+      "Reveal should record revealedCount and keep the item in saved review."
+    );
+    const revealLearningSnapshot = await getLearningStorageSnapshot(client);
+    assert.equal(
+      revealLearningSnapshot.progress.records[guidedBlank2ContentId],
+      undefined,
+      "Reveal should not record revealedCount for other non-correct blanks in the same question."
+    );
+    assert.equal(
+      revealLearningSnapshot.reviewList.items[guidedBlank2ContentId],
+      undefined,
+      "Reveal should not add other non-correct blanks in the same question to saved review."
+    );
     console.log("PASS 6: Reveal applied to Blank 2 and kept focus on the active textarea.");
 
     if (runMobileVisibilityCheck) {
@@ -1775,6 +1931,19 @@ async function run() {
 
     assert.equal(backToMainSnapshot.title, expectedPromptTitle);
     console.log("PASS 8: Leaving review restored the main-session active blank.");
+
+    const progressBeforeFilterChange = await getLearningStorageSnapshot(client);
+    assert.equal(progressBeforeFilterChange.progress.records[guidedBlank1ContentId].revealedCount, 1);
+    await client.send("Page.navigate", { url: multiRoundGroup2Url });
+    await waitForSnapshot(
+      client,
+      snapshot =>
+        snapshot.currentUrl.includes("file=multi-round-cloze") && snapshot.modeFullActive && snapshot.modeEasyDisabled,
+      "Topic/file switch did not navigate to multi-round setup."
+    );
+    const progressAfterFilterChange = await getLearningStorageSnapshot(client);
+    assert.equal(progressAfterFilterChange.progress.records[guidedBlank1ContentId].revealedCount, 1);
+    assert.equal(progressAfterFilterChange.containsTypedAnswer, false);
     await runLegacyProgressProtectionChecks(client, targetUrl, emptyCoreDefinitionUrl);
     await runDarkModeReadabilityChecks(client, targetUrl, coreDefinitionUrl);
     console.log("Browser active-blank regression checks passed.");

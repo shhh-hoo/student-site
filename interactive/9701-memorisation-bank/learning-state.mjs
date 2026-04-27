@@ -520,6 +520,7 @@ function normalizeUnmatchedLegacyProgress(entries = []) {
       reviewReasons: Array.isArray(entry.reviewReasons)
         ? entry.reviewReasons.map(reason => String(reason || "")).filter(Boolean)
         : [],
+      reason: String(entry.reason || ""),
       capturedAt: normalizeIsoString(entry.capturedAt) || null,
     });
   });
@@ -539,6 +540,7 @@ function buildUnmatchedEntry({
   selectionKey,
   summaryCounts,
   reviewReasons,
+  reason = "",
   capturedAt,
 }) {
   return {
@@ -550,8 +552,33 @@ function buildUnmatchedEntry({
     selectionKey: selectionKey || "",
     summaryCounts: summaryCounts || {},
     reviewReasons: reviewReasons || [],
+    reason,
     capturedAt,
   };
+}
+
+function hasProgressContribution(classification = {}) {
+  return (
+    safeInteger(classification.correctDelta) > 0 ||
+    safeInteger(classification.wrongDelta) > 0 ||
+    safeInteger(classification.hintDelta) > 0 ||
+    safeInteger(classification.gaveUpDelta) > 0 ||
+    safeInteger(classification.revealedDelta) > 0 ||
+    Boolean(classification.hasReviewDebt)
+  );
+}
+
+function hasLegacyActivityOnly(classification = {}) {
+  if (classification.kind === "easy-question") {
+    return (
+      safeInteger(classification.summary?.selectedKeywordCount) > 0 ||
+      ["wrong", "correct"].includes(classification.summary?.keywordStatus) ||
+      classification.summary?.easyStep === "copy" ||
+      Boolean(classification.summary?.hasCopyValue)
+    );
+  }
+
+  return !["", "idle"].includes(classification.summary?.status) || classification.summary?.matchState === "checked";
 }
 
 function parseLegacyPayload(rawValue) {
@@ -712,7 +739,16 @@ function migrateLegacyBlankState(progressPayload, reviewPayload, context) {
   const classification = classifyLegacyBlankState(blankState);
   const contentId = getIndexedContentId(contentIndex.blankByLegacyId, classification.legacyId);
 
-  if (!contentId || classification.parseStatus !== "parsed") {
+  if (!contentId || classification.parseStatus !== "parsed" || !hasProgressContribution(classification)) {
+    if (contentId && classification.parseStatus === "parsed" && !hasLegacyActivityOnly(classification)) {
+      return false;
+    }
+
+    const reason =
+      contentId && classification.parseStatus === "parsed" && hasLegacyActivityOnly(classification)
+        ? "activity-only-no-progress-contribution"
+        : "";
+
     progressPayload.unmatchedLegacyProgress = mergeUnmatchedLegacyProgress(progressPayload.unmatchedLegacyProgress, [
       buildUnmatchedEntry({
         storageKey,
@@ -722,6 +758,7 @@ function migrateLegacyBlankState(progressPayload, reviewPayload, context) {
         selectionKey,
         summaryCounts: classification.summary,
         reviewReasons: classification.reviewReasons,
+        reason,
         capturedAt: migratedAt,
       }),
     ]);
@@ -753,7 +790,16 @@ function migrateLegacyEasyQuestionState(progressPayload, reviewPayload, context)
   const classification = classifyLegacyEasyQuestionState(easyQuestionState);
   const contentId = getIndexedContentId(contentIndex.questionByLegacyId, classification.legacyId);
 
-  if (!contentId || classification.parseStatus !== "parsed") {
+  if (!contentId || classification.parseStatus !== "parsed" || !hasProgressContribution(classification)) {
+    if (contentId && classification.parseStatus === "parsed" && !hasLegacyActivityOnly(classification)) {
+      return false;
+    }
+
+    const reason =
+      contentId && classification.parseStatus === "parsed" && hasLegacyActivityOnly(classification)
+        ? "activity-only-no-progress-contribution"
+        : "";
+
     progressPayload.unmatchedLegacyProgress = mergeUnmatchedLegacyProgress(progressPayload.unmatchedLegacyProgress, [
       buildUnmatchedEntry({
         storageKey,
@@ -763,6 +809,7 @@ function migrateLegacyEasyQuestionState(progressPayload, reviewPayload, context)
         selectionKey,
         summaryCounts: classification.summary,
         reviewReasons: classification.reviewReasons,
+        reason,
         capturedAt: migratedAt,
       }),
     ]);
@@ -1040,12 +1087,26 @@ export function migrateLegacySessionProgress(options = {}) {
   }
 
   const contentIndex = getCanonicalIndex(options);
-  const progressPayload = readProgressPayload(storage, options);
-  const reviewPayload = readReviewListPayload(storage, options);
   const sessionKeys = listLegacySessionStorageKeys(
     storage,
     options.sessionStoragePrefix || defaultSessionStoragePrefix
   );
+
+  if (!sessionKeys.length) {
+    return {
+      ok: true,
+      migrated: false,
+      skipped: true,
+      backup: backupResult,
+      sourceKeyCount: 0,
+      migratedCount: 0,
+      unmatchedCount: 0,
+      skippedDuplicateCount: 0,
+    };
+  }
+
+  const progressPayload = readProgressPayload(storage, options);
+  const reviewPayload = readReviewListPayload(storage, options);
   let migratedCount = 0;
   let skippedDuplicateCount = 0;
 

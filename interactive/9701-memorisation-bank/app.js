@@ -9,6 +9,14 @@ import {
   exportRawLegacyBackup,
   shouldSkipSessionWriteForClassification,
 } from "./legacy-progress-safety.mjs";
+import {
+  buildCanonicalContentIndex,
+  getDueReviewItems,
+  getProgress,
+  migrateLegacySessionProgress,
+  progressMigratedStorageKey,
+  recordAttempt,
+} from "./learning-state.mjs";
 
 const definitionScopeOptions = [
   { id: "all", label: "All" },
@@ -106,6 +114,8 @@ const drillRulesDialog = document.getElementById("drill-rules-dialog");
 const drillRulesOpenButton = document.getElementById("drill-rules-open");
 const drillRulesCloseButton = document.getElementById("drill-rules-close");
 let lastDrillRulesTrigger = null;
+let learningStateMigrationPromise = null;
+let lastLearningStateMigrationResult = null;
 
 const appState = {
   catalog: null,
@@ -124,6 +134,8 @@ const appState = {
   sessionQuestionMap: new Map(),
   sessionBlankIds: [],
   sessionBlankMap: new Map(),
+  sessionLearningContentIndex: null,
+  learningContentIndex: null,
   blankStates: new Map(),
   pages: [],
   currentPageIndex: 0,
@@ -491,6 +503,251 @@ function getLocalStorage() {
   }
 }
 
+function getLearningStateOptions() {
+  const storage = getLocalStorage();
+
+  return storage ? { storage } : null;
+}
+
+function getContentIdFromIndex(index, groupName, legacyId) {
+  const contentId = index?.[groupName]?.get(String(legacyId || ""));
+  return typeof contentId === "string" ? contentId : "";
+}
+
+function getLearningContentIdForBlankId(blankId) {
+  const legacyBlankId = String(blankId || "");
+
+  if (!legacyBlankId) {
+    return "";
+  }
+
+  return (
+    getContentIdFromIndex(appState.sessionLearningContentIndex, "blankByLegacyId", legacyBlankId) ||
+    getContentIdFromIndex(appState.learningContentIndex, "blankByLegacyId", legacyBlankId)
+  );
+}
+
+function getLearningProgressForBlankId(blankId) {
+  const contentId = getLearningContentIdForBlankId(blankId);
+  const options = getLearningStateOptions();
+
+  if (!contentId || !options) {
+    return null;
+  }
+
+  try {
+    return getProgress(contentId, options);
+  } catch (error) {
+    return null;
+  }
+}
+
+function getLearningProgressStatusLabel(blankId) {
+  const progress = getLearningProgressForBlankId(blankId);
+
+  if (!progress || progress.status === "unseen") {
+    return "";
+  }
+
+  if (progress.status === "mastered") {
+    return "Mastered";
+  }
+
+  if (progress.status === "reviewing") {
+    return "Saved review";
+  }
+
+  return "Learning";
+}
+
+function getDueLearningReviewCount() {
+  const options = getLearningStateOptions();
+
+  if (!options) {
+    return 0;
+  }
+
+  try {
+    return getDueReviewItems(options).length;
+  } catch (error) {
+    return 0;
+  }
+}
+
+function recordLearningAttemptForBlank(blankId, result, hintsUsed = 0) {
+  const contentId = getLearningContentIdForBlankId(blankId);
+  const options = getLearningStateOptions();
+
+  if (!contentId || !options) {
+    return null;
+  }
+
+  try {
+    return recordAttempt({ contentId, result, hintsUsed }, options);
+  } catch (error) {
+    return null;
+  }
+}
+
+function getLearningStateDebugSnapshot() {
+  const dueReviewCount = getDueLearningReviewCount();
+  const activeContentId = getLearningContentIdForBlankId(getActiveBlankId());
+  const activeProgress = getLearningProgressForBlankId(getActiveBlankId());
+
+  return {
+    migration: lastLearningStateMigrationResult,
+    activeContentId,
+    activeProgress,
+    dueReviewCount,
+  };
+}
+
+function getCatalogLearningFileEntries() {
+  return getStageEntries().flatMap(stageEntry =>
+    (stageEntry.levels || []).flatMap(levelEntry =>
+      (levelEntry.topics || []).flatMap(topicEntry =>
+        (topicEntry.files || []).map(fileEntry => ({
+          stageId: stageEntry.id,
+          levelId: levelEntry.id,
+          topicId: topicEntry.id,
+          topicLabel: topicEntry.label,
+          fileEntry,
+        }))
+      )
+    )
+  );
+}
+
+function hasPersistedSessionKeys(storage) {
+  try {
+    for (let index = 0; index < storage.length; index += 1) {
+      if (String(storage.key(index) || "").startsWith(`${localSessionStoragePrefix}::`)) {
+        return true;
+      }
+    }
+  } catch (error) {
+    return true;
+  }
+
+  return false;
+}
+
+function readLearningMigrationFlag(storage) {
+  try {
+    return JSON.parse(storage.getItem(progressMigratedStorageKey) || "null");
+  } catch (error) {
+    return null;
+  }
+}
+
+async function buildCanonicalLearningContentIndex() {
+  if (appState.learningContentIndex) {
+    return appState.learningContentIndex;
+  }
+
+  const questionGroups = await Promise.all(
+    getCatalogLearningFileEntries().map(async entry => {
+      const items = await loadFileItems(entry.fileEntry.path);
+      const runtimeItems = items.map(item => ({
+        ...item,
+        stage: entry.stageId,
+        levelId: entry.levelId,
+        level: entry.levelId,
+        topic: normalizeTopicKey(item.topic || entry.topicId),
+        topicLabel: entry.topicLabel,
+      }));
+
+      return buildSessionQuestions(runtimeItems, entry.fileEntry, {
+        definitionScope: "all",
+        round: "all",
+      });
+    })
+  );
+  const canonicalQuestions = questionGroups.flat();
+
+  appState.learningContentIndex = buildCanonicalContentIndex(canonicalQuestions);
+  return appState.learningContentIndex;
+}
+
+function queueLearningStateMigration() {
+  if (learningStateMigrationPromise) {
+    return learningStateMigrationPromise;
+  }
+
+  const storage = getLocalStorage();
+
+  if (!storage || !appState.catalog) {
+    lastLearningStateMigrationResult = {
+      ok: false,
+      migrated: false,
+      error: storage ? "Catalog is not available." : "localStorage is unavailable.",
+    };
+    return Promise.resolve(lastLearningStateMigrationResult);
+  }
+
+  const migrationFlag = readLearningMigrationFlag(storage);
+
+  if (migrationFlag?.version === 1) {
+    lastLearningStateMigrationResult = {
+      ok: true,
+      migrated: false,
+      skipped: true,
+      sourceKeyCount: Number(migrationFlag.sourceKeyCount) || 0,
+      migratedCount: Number(migrationFlag.migratedCount) || 0,
+      unmatchedCount: Number(migrationFlag.unmatchedCount) || 0,
+      skippedDuplicateCount: 0,
+    };
+    return Promise.resolve(lastLearningStateMigrationResult);
+  }
+
+  if (!hasPersistedSessionKeys(storage)) {
+    lastLearningStateMigrationResult = {
+      ok: true,
+      migrated: false,
+      skipped: true,
+      sourceKeyCount: 0,
+      migratedCount: 0,
+      unmatchedCount: 0,
+      skippedDuplicateCount: 0,
+    };
+    return Promise.resolve(lastLearningStateMigrationResult);
+  }
+
+  learningStateMigrationPromise = buildCanonicalLearningContentIndex()
+    .then(contentIndex =>
+      migrateLegacySessionProgress({
+        storage,
+        contentIndex,
+        currentSessionVersion: localSessionStateVersion,
+      })
+    )
+    .then(result => {
+      lastLearningStateMigrationResult = result;
+
+      if (!result.ok) {
+        console.warn("Memorisation learning-state migration skipped.", {
+          error: result.error || "unknown",
+          sourceKeyCount: result.sourceKeyCount || 0,
+        });
+      }
+
+      return result;
+    })
+    .catch(error => {
+      lastLearningStateMigrationResult = {
+        ok: false,
+        migrated: false,
+        error: error instanceof Error ? error.message : "Learning-state migration failed.",
+      };
+      console.warn("Memorisation learning-state migration failed.", {
+        error: lastLearningStateMigrationResult.error,
+      });
+      return lastLearningStateMigrationResult;
+    });
+
+  return learningStateMigrationPromise;
+}
+
 function runLegacyBackupSnapshot() {
   const storage = getLocalStorage();
 
@@ -621,6 +878,9 @@ function registerMemorisationDebugTools() {
     },
     getLastLegacyBackupSnapshotResult() {
       return lastLegacyBackupSnapshotResult;
+    },
+    getLearningStateSnapshot() {
+      return getLearningStateDebugSnapshot();
     },
   });
 }
@@ -1429,6 +1689,8 @@ async function loadCatalogResources({ preserveSelection = true } = {}) {
   appState.catalog = catalog;
   appState.topicNormalizationMap = topicNormalizationMap;
   appState.fileDataCache.clear();
+  appState.learningContentIndex = null;
+  learningStateMigrationPromise = null;
 
   synchroniseSelection({
     ...fallbackSelection,
@@ -1463,11 +1725,14 @@ function fillPromptBlanks(prompt, values) {
 }
 
 function createQuestionBase(item, fileEntry, questionId, kind, questionText, promptText) {
+  const levelId = item.levelId || item.level_id || appState.level;
+
   return {
     id: questionId,
     sourceId: item.id,
     stage: item.stage || appState.stage,
-    level: item.level || appState.level,
+    level: levelId,
+    levelId,
     topic: item.topic,
     topicLabel: item.topicLabel || getTopicEntry(appState.stage, appState.level, item.topic)?.label,
     subtopic: item.subtopic || "",
@@ -1573,19 +1838,19 @@ function buildGuidedClozeQuestion(item, fileEntry) {
   return question;
 }
 
-function buildMultiRoundQuestions(item, fileEntry) {
+function buildMultiRoundQuestions(item, fileEntry, { round = appState.round } = {}) {
   const rounds = Array.isArray(item.rounds) ? item.rounds : [];
 
   return rounds
-    .filter((round, roundIndex) => appState.round === "all" || String(round.round ?? roundIndex + 1) === appState.round)
-    .map((round, roundIndex) => {
-      const roundNumber = Number(round.round ?? roundIndex + 1);
+    .filter((roundEntry, roundIndex) => round === "all" || String(roundEntry.round ?? roundIndex + 1) === String(round))
+    .map((roundEntry, roundIndex) => {
+      const roundNumber = Number(roundEntry.round ?? roundIndex + 1);
       const questionId = `${fileEntry.id}::${item.topic}::${item.id}::round-${roundNumber}`;
-      const questionText = item.question || round.prompt || "";
-      const question = createQuestionBase(item, fileEntry, questionId, "cloze", questionText, round.prompt);
-      const answers = Array.isArray(round.answers) ? round.answers : [];
+      const questionText = item.question || roundEntry.prompt || "";
+      const question = createQuestionBase(item, fileEntry, questionId, "cloze", questionText, roundEntry.prompt);
+      const answers = Array.isArray(roundEntry.answers) ? roundEntry.answers : [];
       const blankPattern = /_{4,}/g;
-      const blankCount = (String(round.prompt || "").match(blankPattern) || []).length;
+      const blankCount = (String(roundEntry.prompt || "").match(blankPattern) || []).length;
 
       if (answers.length !== blankCount) {
         return null;
@@ -1597,7 +1862,7 @@ function buildMultiRoundQuestions(item, fileEntry) {
           fullAnswer: answer,
           minimalPass: item.minimal_pass_answers?.[answerIndex],
           fileId: fileEntry.id,
-          prompt: round.prompt,
+          prompt: roundEntry.prompt,
           question: item.question,
           type: item.type,
           sourceScope: item.source_scope,
@@ -1606,14 +1871,14 @@ function buildMultiRoundQuestions(item, fileEntry) {
 
       question.round = roundNumber;
       question.roundTotal = rounds.length;
-      question.fullAnswer = item.full_answer || fillPromptBlanks(round.prompt, answers);
+      question.fullAnswer = item.full_answer || fillPromptBlanks(roundEntry.prompt, answers);
       question.minimalPass = fillPromptBlanks(
-        round.prompt,
+        roundEntry.prompt,
         answerModels.map(answerModel => answerModel.minimal_pass)
       );
       question.conceptGroups = answerModels.flatMap(answerModel => answerModel.concept_groups);
       question.contradictions = answerModels.flatMap(answerModel => answerModel.contradictions);
-      question.promptParts = String(round.prompt || "").split(blankPattern);
+      question.promptParts = String(roundEntry.prompt || "").split(blankPattern);
       question.blanks = answerModels.map((answerModel, blankIndex) =>
         createBlankModel(question, blankIndex, answerModel, {
           label: `Blank ${blankIndex + 1}`,
@@ -1657,10 +1922,12 @@ function buildFullReconstructionQuestion(item, fileEntry) {
   return question;
 }
 
-function buildSessionQuestions(items, fileEntry) {
+function buildSessionQuestions(items, fileEntry, options = {}) {
+  const definitionScope = options.definitionScope ?? appState.definitionScope;
+  const round = options.round ?? appState.round;
   const filteredItems =
-    fileEntry.id === "core-definitions" && appState.definitionScope !== "all"
-      ? items.filter(item => item.source_scope === appState.definitionScope)
+    fileEntry.id === "core-definitions" && definitionScope !== "all"
+      ? items.filter(item => item.source_scope === definitionScope)
       : items;
 
   if (fileEntry.id === "guided-cloze") {
@@ -1668,7 +1935,7 @@ function buildSessionQuestions(items, fileEntry) {
   }
 
   if (fileEntry.id === "multi-round-cloze") {
-    return filteredItems.flatMap(item => buildMultiRoundQuestions(item, fileEntry));
+    return filteredItems.flatMap(item => buildMultiRoundQuestions(item, fileEntry, { round }));
   }
 
   if (fileEntry.id === "full-reconstruction") {
@@ -1741,6 +2008,7 @@ function rebuildSessionRuntime(sessionQuestions) {
   appState.sessionBlankMap = new Map(
     sessionQuestions.flatMap(question => question.blanks.map(blank => [blank.id, blank]))
   );
+  appState.sessionLearningContentIndex = buildCanonicalContentIndex(sessionQuestions);
   appState.easyQuestionStates = new Map(
     sessionQuestions.map(question => [question.id, createEasyQuestionState(question)])
   );
@@ -2283,8 +2551,15 @@ function checkEasyQuestion(questionId) {
     return;
   }
 
+  const previousCopyStatus = easyState.copyStatus;
+
   if (normalizeCopyText(easyState.copyValue) === normalizeCopyText(question.fullAnswer)) {
     easyState.copyStatus = "correct";
+
+    if (previousCopyStatus !== "correct") {
+      recordLearningAttemptForBlank(getQuestionPrimaryBlankId(question), "correct", 1);
+    }
+
     markQuestionCorrectFromEasy(question);
     const nextBlankId = getAdjacentBlankId(getQuestionPrimaryBlankId(question), 1);
 
@@ -2294,6 +2569,10 @@ function checkEasyQuestion(questionId) {
     }
   } else {
     easyState.copyStatus = "wrong";
+
+    if (previousCopyStatus !== "wrong") {
+      recordLearningAttemptForBlank(getQuestionPrimaryBlankId(question), "incorrect", 1);
+    }
   }
 
   renderSession({ focusBlankId: getQuestionPrimaryBlankId(question) });
@@ -2337,10 +2616,12 @@ function checkBlank(blankId) {
 
   if (result.status === "correct") {
     blankState.status = "correct";
+    recordLearningAttemptForBlank(blank.id, "correct", 0);
   } else {
     blankState.status = "wrong";
     blankState.wrongCount += 1;
     blankState.lastReviewSignalAt = nextInteractionTick();
+    recordLearningAttemptForBlank(blank.id, "incorrect", 0);
   }
 
   blankState.reviewPriority = buildReviewPriority(blankState);
@@ -2356,6 +2637,10 @@ function revealQuestion(questionId, focusBlankId = getActiveBlankId()) {
   }
 
   appState.revealedQuestionIds.add(questionId);
+  const revealedLearningBlankId = resolvePreferredBlankId(
+    question.blanks.map(blank => blank.id),
+    [focusBlankId, getActiveBlankId()]
+  );
 
   question.blanks.forEach(blank => {
     const blankState = getBlankState(blank.id);
@@ -2371,6 +2656,10 @@ function revealQuestion(questionId, focusBlankId = getActiveBlankId()) {
     blankState.contradictionHits = [];
     blankState.lastReviewSignalAt = nextInteractionTick();
     blankState.reviewPriority = buildReviewPriority(blankState);
+
+    if (blank.id === revealedLearningBlankId) {
+      recordLearningAttemptForBlank(blank.id, "revealed", 0);
+    }
   });
 
   updateReviewQueue();
@@ -3158,6 +3447,7 @@ function createEasyCopyField(question) {
     }
 
     event.preventDefault();
+    event.stopPropagation();
     checkCurrentBlank();
   });
 
@@ -3547,12 +3837,18 @@ function renderProgressHeader() {
   const totalBlanks = appState.sessionBlankIds.length;
   const completedBlanks = getCompletedBlankCount();
   const reviewCount = appState.reviewQueueBlankIds.length;
+  const savedReviewCount = getDueLearningReviewCount();
   const promptLabel = activeBlankIndex >= 0 ? activeBlankIndex + 1 : 0;
   const mode = getLearningMode();
 
   pageCounter.textContent = `${appState.reviewMode ? "Review" : "Prompt"} ${promptLabel} / ${blankOrder.length}`;
   completionChip.textContent = `${completedBlanks} / ${totalBlanks} blanks completed`;
-  reviewChip.textContent = appState.reviewMode ? `Review queue: ${reviewCount} active` : `Review queue: ${reviewCount}`;
+  reviewChip.textContent = [
+    appState.reviewMode ? `Review queue: ${reviewCount} active` : `Review queue: ${reviewCount}`,
+    savedReviewCount ? `Saved review: ${savedReviewCount}` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
   prevBlankButton.disabled = activeBlankIndex <= 0;
   nextBlankButton.disabled = activeBlankIndex < 0 || activeBlankIndex >= blankOrder.length - 1;
   checkBlankButton.disabled = !activeBlankId;
@@ -3882,6 +4178,15 @@ function createAnswerCardHeader(question, blank, blankState) {
     statusGroup.append(blankChip);
   }
 
+  const learningStatusLabel = getLearningProgressStatusLabel(blank.id);
+
+  if (learningStatusLabel) {
+    const learningStatusChip = document.createElement("span");
+    learningStatusChip.className = "memorisation-card-chip memorisation-card-chip--muted";
+    learningStatusChip.textContent = learningStatusLabel;
+    statusGroup.append(learningStatusChip);
+  }
+
   statusGroup.append(statusPill);
 
   return {
@@ -4002,6 +4307,7 @@ function renderCatalogErrorState(message) {
   appState.sessionQuestionMap = new Map();
   appState.sessionBlankIds = [];
   appState.sessionBlankMap = new Map();
+  appState.sessionLearningContentIndex = null;
   appState.blankStates = new Map();
   appState.easyQuestionStates = new Map();
   appState.pages = [];
@@ -4039,6 +4345,7 @@ function renderFileErrorState(fileEntry, message) {
   appState.sessionQuestionMap = new Map();
   appState.sessionBlankIds = [];
   appState.sessionBlankMap = new Map();
+  appState.sessionLearningContentIndex = null;
   appState.blankStates = new Map();
   appState.easyQuestionStates = new Map();
   appState.pages = [];
@@ -4120,6 +4427,7 @@ async function refreshSession({ allowCatalogResync = true } = {}) {
     appState.sessionQuestionMap = new Map();
     appState.sessionBlankIds = [];
     appState.sessionBlankMap = new Map();
+    appState.sessionLearningContentIndex = null;
     appState.blankStates = new Map();
     appState.easyQuestionStates = new Map();
     appState.pages = [];
@@ -4149,6 +4457,7 @@ async function refreshSession({ allowCatalogResync = true } = {}) {
       appState.sessionQuestionMap = new Map();
       appState.sessionBlankIds = [];
       appState.sessionBlankMap = new Map();
+      appState.sessionLearningContentIndex = null;
       appState.blankStates = new Map();
       appState.easyQuestionStates = new Map();
       appState.pages = [];
@@ -4170,6 +4479,7 @@ async function refreshSession({ allowCatalogResync = true } = {}) {
     if (allowCatalogResync) {
       try {
         await loadCatalogResources({ preserveSelection: true });
+        queueLearningStateMigration();
 
         if (renderToken !== appState.renderToken) {
           return;
@@ -4310,6 +4620,7 @@ async function bootRuntime({ preserveSelection = true } = {}) {
 
   try {
     await loadCatalogResources({ preserveSelection });
+    queueLearningStateMigration();
     renderControls();
     updateUrlFromState();
     await refreshSession({ allowCatalogResync: false });
