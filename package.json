@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "npm run typecheck && npm run test:mechanisms && npm run build:mechanisms",
-    "build:mechanisms": "vite build --config interactive/benzene-nitration/vite.config.ts",
+    "build:mechanisms": "vite build --config interactive/benzene-nitration/vite.config.ts && prettier --write interactive/benzene-nitration/assets/benzene-nitration.js",
     "compile:mechanism-tests": "tsc -p tsconfig.test.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -4,22 +4,28 @@ import { join } from "node:path";
 
 import { renderToStaticMarkup } from "react-dom/server";
 
-import fixtureJson from "../interactive/benzene-nitration/fixtures/benzene-nitration.v1.json";
-import { validateMechanismFixture } from "../interactive/benzene-nitration/src/fixtureValidation";
-import { MechanismDemoPage } from "../interactive/benzene-nitration/src/MechanismDemoPage";
-import { formatChemistryText } from "../interactive/benzene-nitration/src/renderers/chemistryText";
-import { SvgMechanismRenderer } from "../interactive/benzene-nitration/src/renderers/SvgMechanismRenderer";
+import BenzeneNitrationMechanism, {
+  MechanismSvg,
+} from "../interactive/benzene-nitration/src/BenzeneNitrationMechanism";
 import {
-  createMechanismDemoState,
-  getActivePanel,
-  getStepIndicator,
-  movePanel,
-} from "../interactive/benzene-nitration/src/state";
+  benzeneNitrationSpecies,
+  benzeneNitrationSteps,
+} from "../interactive/benzene-nitration/src/benzeneNitrationData";
+import {
+  benzeneNitrationArrows,
+  benzeneNitrationCorrectnessChecks,
+  benzeneNitrationRequiredCorrectnessCheckIds,
+  validateBenzeneNitrationArrowAnchors,
+} from "../interactive/benzene-nitration/src/chemicalCorrectness";
+import { MechanismDemoPage } from "../interactive/benzene-nitration/src/MechanismDemoPage";
+import { PartialCharge } from "../interactive/benzene-nitration/src/svgPrimitives";
 
-const panelTitles = [
-  "Step 1. Generate the electrophile",
-  "Step 2. Electrophilic attack",
-  "Step 3. Restore aromaticity",
+const requiredStepIds = [
+  "electrophile-generation",
+  "electrophilic-attack",
+  "wheland-intermediate",
+  "deprotonation",
+  "product",
 ];
 
 let passed = 0;
@@ -31,81 +37,67 @@ function pass(name: string) {
 
 async function main() {
   const pageHtml = await readFile(join(process.cwd(), "interactive/benzene-nitration/index.html"), "utf8");
-  const fixture = validateMechanismFixture(fixtureJson);
-
-  assert.equal(fixture.id, "benzene-eas-nitration-v1");
-  assert.equal(fixture.panels.length, 3);
-  assert.equal(fixture.display.show3D, false);
-  assert.ok(
-    fixture.species.every(species => species.name && species.role && species.smiles && species.structureSource)
-  );
-  assert.equal(fixture.species.find(species => species.id === "nitronium")?.charge, 1);
-  assert.equal(fixture.species.find(species => species.id === "bisulfate")?.charge, -1);
-  pass("fixture parsing and shape validation");
-
-  assert.ok(fixture.panels.every(panel => panel.display.layout.canvas.width > 0));
-  assert.ok(fixture.panels.every(panel => panel.display.layout.diagram));
-  assert.ok(fixture.panels.every(panel => !("diagram" in panel)));
-  pass("manual SVG coordinates are isolated under panel display layout");
-
-  const mechanismArrowAnchors = fixture.panels
-    .flatMap(panel => panel.mechanismArrows)
-    .flatMap(arrow => [`${arrow.from.speciesId}.${arrow.from.anchorId}`, `${arrow.to.speciesId}.${arrow.to.anchorId}`]);
-  assert.deepEqual(
-    [...new Set(mechanismArrowAnchors)].sort(),
-    ["benzene.pi-system", "bisulfate.O-lone-pair", "nitronium.N", "sigma-complex.C-H-bond"].sort()
-  );
-  pass("mechanism arrows reference chemistry species and conceptual anchors");
 
   assert.deepEqual(
-    fixture.panels.map(panel => panel.title),
-    panelTitles
+    benzeneNitrationSteps.map(step => step.id),
+    requiredStepIds
   );
-  pass("all three panel titles are present in the fixture");
+  pass("all five benzene nitration step ids are present");
 
-  assert.equal(fixture.reaction.overallEquation, "C6H6 + HNO3 -> C6H5NO2 + H2O");
-  assert.equal(formatChemistryText(fixture.reaction.overallEquation), "C₆H₆ + HNO₃ → C₆H₅NO₂ + H₂O");
-  pass("overall reaction text appears and formats for display");
+  assert.equal(benzeneNitrationSpecies.nitronium.name, "nitronium ion");
+  assert.equal(benzeneNitrationSpecies.nitronium.role, "electrophile");
+  assert.equal(benzeneNitrationSpecies.nitronium.electrophile, true);
+  assert.equal(benzeneNitrationSpecies.nitronium.formalCharge, "+");
+  assert.equal(benzeneNitrationSpecies.nitronium.charge, 1);
+  pass("nitronium is present as positively charged electrophile metadata");
 
-  assert.ok(fixture.examChecklist.some(item => item.includes("NO2+")));
-  assert.ok(fixture.examChecklist.some(item => item.includes("Aromaticity restored")));
-  pass("exam checklist renders from fixture content");
+  assert.deepEqual(validateBenzeneNitrationArrowAnchors(), []);
+  assert.deepEqual(
+    benzeneNitrationArrows.map(arrow => [arrow.sourceAnchor, arrow.targetAnchor]),
+    [
+      ["benzene.pi-system", "nitronium.N"],
+      ["hydrogensulfate.O-lone-pair", "wheland.H"],
+      ["wheland.C-H-bond", "wheland.C1-C2-bond-forming-pi-system"],
+    ]
+  );
+  pass("all arrow anchors are valid and chemically constrained");
 
-  let state = createMechanismDemoState(fixture);
-  assert.equal(getActivePanel(state).title, panelTitles[0]);
-  assert.equal(getStepIndicator(state), "1 / 3");
-  state = movePanel(state, 1);
-  assert.equal(getActivePanel(state).title, panelTitles[1]);
-  state = movePanel(state, 1);
-  assert.equal(getActivePanel(state).title, panelTitles[2]);
-  state = movePanel(state, 1);
-  assert.equal(getActivePanel(state).title, panelTitles[2]);
-  state = movePanel(state, -1);
-  assert.equal(getActivePanel(state).title, panelTitles[1]);
-  pass("stepper state moves between panels and clamps at bounds");
+  const checkIds = new Set(benzeneNitrationCorrectnessChecks.map(check => check.id));
+  benzeneNitrationRequiredCorrectnessCheckIds.forEach(checkId =>
+    assert.ok(checkIds.has(checkId), `Missing required correctness check ${checkId}`)
+  );
+  assert.ok(checkIds.has("partial-charge-policy"));
+  pass("all required correctness checks and partial-charge policy exist");
 
-  const renderedPanels = fixture.panels.map(panel => renderToStaticMarkup(<SvgMechanismRenderer panel={panel} />));
-  assert.ok(renderedPanels.every(markup => markup.includes("<svg")));
-  assert.ok(renderedPanels[0].includes("NO₂⁺"));
-  assert.ok(renderedPanels[1].includes("attack-arrow") || renderedPanels[1].includes("mechanism-svg__curly-arrow"));
-  assert.ok(renderedPanels[2].includes("HSO₄−"));
-  assert.ok(renderedPanels[2].includes("nitrobenzene"));
-  pass("SVG smoke render covers electrophile, attack, deprotonation, and product labels");
+  const renderedStepSvgs = benzeneNitrationSteps.map(step => renderToStaticMarkup(<MechanismSvg step={step.id} />));
+  assert.ok(renderedStepSvgs[0].includes("NO₂⁺"));
+  assert.ok(renderedStepSvgs[1].includes("aromatic π system"));
+  assert.ok(renderedStepSvgs[1].includes("nitrogen of nitronium ion"));
+  assert.ok(renderedStepSvgs[2].includes("new C-N bond to nitro group"));
+  assert.ok(renderedStepSvgs[2].includes("C-H bond retained on attacked carbon"));
+  assert.ok(renderedStepSvgs[3].includes("oxygen lone pair on hydrogensulfate"));
+  assert.ok(renderedStepSvgs[3].includes("C-H bond midpoint"));
+  assert.ok(renderedStepSvgs[4].includes("nitrobenzene product"));
+  pass("step SVGs render the required mechanism features");
+
+  const primitiveMarkup = renderToStaticMarkup(<PartialCharge x={10} y={10} charge="δ+" />);
+  assert.ok(primitiveMarkup.includes("δ+"));
+  pass("PartialCharge exists as an SVG primitive");
+
+  const componentMarkup = renderToStaticMarkup(<BenzeneNitrationMechanism />);
+  assert.ok(componentMarkup.includes("1. Generation of the electrophile"));
+  assert.ok(componentMarkup.includes("Chemical correctness checks"));
 
   const pageMarkup = renderToStaticMarkup(<MechanismDemoPage />);
   assert.ok(pageMarkup.includes("Nitration of benzene"));
-  panelTitles.forEach(panelTitle =>
-    assert.ok(pageMarkup.includes(panelTitle), `Missing rendered title: ${panelTitle}`)
-  );
-  assert.ok(pageMarkup.includes("Overall reaction"));
-  assert.ok(pageMarkup.includes("Exam checklist"));
-  pass("React demo page smoke renders with all panel titles available");
+  assert.ok(pageMarkup.includes("Golden reference"));
+  pass("React page and component render without crashing");
 
   assert.ok(pageHtml.includes('id="benzene-nitration-root"'));
   assert.ok(pageHtml.includes("./assets/benzene-nitration.js"));
   pass("static route shell includes React mount root and built asset reference");
 
-  console.log(`Benzene nitration demo checks passed: ${passed}`);
+  console.log(`Benzene nitration golden reference checks passed: ${passed}`);
 }
 
 void main();

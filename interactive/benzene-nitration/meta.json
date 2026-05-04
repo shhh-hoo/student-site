@@ -5,7 +5,7 @@
   "subject": "Chemistry",
   "topic": "arenes-electrophilic-substitution",
   "tags": ["9701", "chemistry", "arenes", "benzene", "nitration", "mechanism"],
-  "description": "Focused 2D CAIE 9701 demo for benzene nitration, showing NO2+ electrophile generation, electrophilic attack, sigma complex formation, and deprotonation to nitrobenzene.",
+  "description": "Five-step React + SVG golden reference for benzene nitration, with NO2+ electrophile generation, attack at nitrogen, Wheland intermediate, deprotonation, and nitrobenzene product.",
   "source_kind": "teacher-made",
   "status": "ready",
   "stage": "A2",
