@@ -23,7 +23,16 @@ import {
 } from "../interactive/benzene-nitration/src/chemicalCorrectness";
 import {
   benzeneNitrationScenes,
+  cloneMechanismAnnotations,
+  createLayoutOverridesExport,
+  getAnnotationHandlePoint,
+  getDefaultHandleForAnnotation,
+  nudgeAnnotationHandle,
+  updateAnnotationLayoutFromHandle,
+  validateMechanismSceneActions,
   validateMechanismScenes,
+  type EditableMechanismHandle,
+  type MechanismAnnotation,
 } from "../interactive/benzene-nitration/src/features/mechanisms";
 import { MechanismDemoPage } from "../interactive/benzene-nitration/src/MechanismDemoPage";
 import { PartialCharge } from "../interactive/benzene-nitration/src/svgPrimitives";
@@ -41,6 +50,35 @@ let passed = 0;
 function pass(name: string) {
   passed += 1;
   console.log(`PASS ${passed}: ${name}`);
+}
+
+function getAnnotationById(annotations: MechanismAnnotation[], annotationId: string) {
+  const annotation = annotations.find(item => item.id === annotationId);
+
+  assert.ok(annotation, `Missing annotation ${annotationId}`);
+  return annotation;
+}
+
+function withWindowSearch(search: string, callback: () => void) {
+  const prior = Object.getOwnPropertyDescriptor(globalThis, "window");
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {
+      location: {
+        search,
+      },
+    },
+  });
+
+  try {
+    callback();
+  } finally {
+    if (prior) {
+      Object.defineProperty(globalThis, "window", prior);
+    } else {
+      delete (globalThis as { window?: unknown }).window;
+    }
+  }
 }
 
 async function main() {
@@ -98,11 +136,11 @@ async function main() {
   const attackArrow = benzeneNitrationScenes[1].annotations.find(annotation => annotation.id === "attack-arrow");
   assert.equal(attackArrow?.kind, "curlyArrow");
   if (attackArrow?.kind === "curlyArrow") {
-    assert.deepEqual(attackArrow.layout.startOffset, { x: 26, y: -26 });
-    assert.deepEqual(attackArrow.layout.endOffset, { x: -2, y: 0 });
+    assert.deepEqual(attackArrow.layout.startOffset, { x: 30, y: -30 });
+    assert.deepEqual(attackArrow.layout.endOffset, { x: -6, y: 0 });
     assert.ok(attackArrow.layout.control1);
     assert.ok(attackArrow.layout.control2);
-    assert.equal(attackArrow.layout.arrowheadOffset, 12);
+    assert.equal(attackArrow.layout.arrowheadOffset, 14);
   }
   const deprotonationArrows = benzeneNitrationScenes[3].annotations.filter(
     annotation => annotation.kind === "curlyArrow"
@@ -125,6 +163,180 @@ async function main() {
     assert.equal(baseLonePair.layout.rotation, -20);
   }
   pass("manual layout controls exist for arrows, charges, and lone pairs");
+
+  const attackScene = benzeneNitrationScenes[1];
+  const attackDraft = cloneMechanismAnnotations(attackScene.annotations);
+  const control1Handle: EditableMechanismHandle = {
+    annotationId: "attack-arrow",
+    kind: "curlyArrow",
+    field: "control1",
+  };
+  const control1Moved = updateAnnotationLayoutFromHandle(attackScene, attackDraft, control1Handle, { x: 232, y: 126 });
+  const control1Arrow = getAnnotationById(control1Moved, "attack-arrow");
+  assert.equal(control1Arrow.kind, "curlyArrow");
+  if (control1Arrow.kind === "curlyArrow") {
+    assert.deepEqual(control1Arrow.layout.control1, { x: 232, y: 126 });
+    assert.deepEqual(control1Arrow.layout.control2, { x: 294, y: 96 });
+    assert.equal(control1Arrow.fromAnchorId, "benzene.piSystem");
+    assert.equal(control1Arrow.toAnchorId, "nitronium.N");
+  }
+
+  const control2Moved = updateAnnotationLayoutFromHandle(
+    attackScene,
+    control1Moved,
+    {
+      annotationId: "attack-arrow",
+      kind: "curlyArrow",
+      field: "control2",
+    },
+    { x: 302, y: 98 }
+  );
+  const control2Arrow = getAnnotationById(control2Moved, "attack-arrow");
+  assert.equal(control2Arrow.kind, "curlyArrow");
+  if (control2Arrow.kind === "curlyArrow") {
+    assert.deepEqual(control2Arrow.layout.control1, { x: 232, y: 126 });
+    assert.deepEqual(control2Arrow.layout.control2, { x: 302, y: 98 });
+  }
+
+  const startOffsetMoved = updateAnnotationLayoutFromHandle(
+    attackScene,
+    control2Moved,
+    {
+      annotationId: "attack-arrow",
+      kind: "curlyArrow",
+      field: "startOffset",
+    },
+    { x: 212, y: 176 }
+  );
+  const startOffsetArrow = getAnnotationById(startOffsetMoved, "attack-arrow");
+  assert.equal(startOffsetArrow.kind, "curlyArrow");
+  if (startOffsetArrow.kind === "curlyArrow") {
+    assert.deepEqual(startOffsetArrow.layout.startOffset, { x: 34, y: -30 });
+    assert.equal(startOffsetArrow.fromAnchorId, "benzene.piSystem");
+  }
+
+  const endOffsetMoved = updateAnnotationLayoutFromHandle(
+    attackScene,
+    startOffsetMoved,
+    {
+      annotationId: "attack-arrow",
+      kind: "curlyArrow",
+      field: "endOffset",
+    },
+    { x: 342, y: 106 }
+  );
+  const endOffsetArrow = getAnnotationById(endOffsetMoved, "attack-arrow");
+  assert.equal(endOffsetArrow.kind, "curlyArrow");
+  if (endOffsetArrow.kind === "curlyArrow") {
+    assert.deepEqual(endOffsetArrow.layout.endOffset, { x: -10, y: 2 });
+    assert.equal(endOffsetArrow.toAnchorId, "nitronium.N");
+  }
+  pass("dragging arrow handles updates only arrow layout fields");
+
+  const whelandScene = benzeneNitrationScenes[2];
+  const whelandDraft = cloneMechanismAnnotations(whelandScene.annotations);
+  const movedChargeDraft = updateAnnotationLayoutFromHandle(
+    whelandScene,
+    whelandDraft,
+    {
+      annotationId: "wheland-positive-charge",
+      kind: "anchoredOffset",
+      field: "offset",
+    },
+    { x: 247, y: 231 }
+  );
+  const movedCharge = getAnnotationById(movedChargeDraft, "wheland-positive-charge");
+  assert.equal(movedCharge.kind, "formalCharge");
+  if (movedCharge.kind === "formalCharge") {
+    assert.deepEqual(movedCharge.layout.offset, { x: 7, y: 7 });
+    assert.equal(movedCharge.anchorId, "sigmaComplex.positiveRegion");
+  }
+
+  const partialChargeAnnotation: MechanismAnnotation = {
+    id: "test-partial-charge",
+    kind: "partialCharge",
+    value: "δ+",
+    anchorId: "nitronium.N",
+    layout: {
+      offset: { x: 3, y: -12 },
+    },
+  };
+  const partialChargeMoved = updateAnnotationLayoutFromHandle(
+    attackScene,
+    [partialChargeAnnotation],
+    {
+      annotationId: "test-partial-charge",
+      kind: "anchoredOffset",
+      field: "offset",
+    },
+    { x: 360, y: 92 }
+  )[0];
+  assert.equal(partialChargeMoved.kind, "partialCharge");
+  if (partialChargeMoved.kind === "partialCharge") {
+    assert.deepEqual(partialChargeMoved.layout.offset, { x: 8, y: -12 });
+    assert.equal(partialChargeMoved.anchorId, "nitronium.N");
+  }
+
+  const deprotonationScene = benzeneNitrationScenes[3];
+  const lonePairMoved = updateAnnotationLayoutFromHandle(
+    deprotonationScene,
+    cloneMechanismAnnotations(deprotonationScene.annotations),
+    {
+      annotationId: "hso4-reactive-oxygen-lone-pair",
+      kind: "anchoredOffset",
+      field: "offset",
+    },
+    { x: 108, y: 90 }
+  );
+  const lonePairAfterMove = getAnnotationById(lonePairMoved, "hso4-reactive-oxygen-lone-pair");
+  assert.equal(lonePairAfterMove.kind, "lonePair");
+  if (lonePairAfterMove.kind === "lonePair") {
+    assert.deepEqual(lonePairAfterMove.layout.offset, { x: 5, y: -4 });
+    assert.equal(lonePairAfterMove.anchorId, "hso4.reactiveO.lonePair");
+  }
+  pass("dragging charge, partial charge, and lone pair handles updates only offsets");
+
+  const generationScene = benzeneNitrationScenes[0];
+  const lockedDraft = cloneMechanismAnnotations(generationScene.annotations);
+  const lockedBefore = JSON.stringify(getAnnotationById(lockedDraft, "nitronium.N.formal-positive-charge"));
+  const lockedAfter = updateAnnotationLayoutFromHandle(
+    generationScene,
+    lockedDraft,
+    {
+      annotationId: "nitronium.N.formal-positive-charge",
+      kind: "anchoredOffset",
+      field: "offset",
+    },
+    { x: 300, y: 300 }
+  );
+  assert.equal(JSON.stringify(getAnnotationById(lockedAfter, "nitronium.N.formal-positive-charge")), lockedBefore);
+  pass("locked annotations do not update on drag");
+
+  const nudgedDraft = nudgeAnnotationHandle(attackScene, endOffsetMoved, control1Handle, { x: 1, y: -1 });
+  const nudgedArrow = getAnnotationById(nudgedDraft, "attack-arrow");
+  assert.equal(nudgedArrow.kind, "curlyArrow");
+  if (nudgedArrow.kind === "curlyArrow") {
+    assert.deepEqual(nudgedArrow.layout.control1, { x: 233, y: 125 });
+  }
+  assert.deepEqual(getAnnotationHandlePoint(attackScene, nudgedDraft, control1Handle), { x: 233, y: 125 });
+  assert.equal(getDefaultHandleForAnnotation(nudgedArrow)?.annotationId, "attack-arrow");
+  pass("selected handles can be nudged with keyboard-compatible deltas");
+
+  assert.deepEqual(validateMechanismSceneActions({ ...attackScene, annotations: nudgedDraft }), []);
+  const layoutExport = createLayoutOverridesExport(attackScene, nudgedDraft);
+  assert.equal(layoutExport.sceneId, "electrophilic-attack");
+  const exportedAttackArrow = getAnnotationById(nudgedDraft, "attack-arrow");
+  assert.equal(exportedAttackArrow.kind, "curlyArrow");
+  if (exportedAttackArrow.kind === "curlyArrow") {
+    assert.deepEqual(layoutExport.annotations["attack-arrow"].layout, exportedAttackArrow.layout);
+    assert.deepEqual(exportedAttackArrow.layout.control1, { x: 233, y: 125 });
+  }
+  assert.equal(
+    (getAnnotationById(nudgedDraft, "attack-arrow") as Extract<MechanismAnnotation, { kind: "curlyArrow" }>)
+      .fromAnchorId,
+    "benzene.piSystem"
+  );
+  pass("layout export reflects draft layout while validation remains anchor-based");
 
   const checkIds = new Set(benzeneNitrationCorrectnessChecks.map(check => check.id));
   benzeneNitrationRequiredCorrectnessCheckIds.forEach(checkId =>
@@ -170,6 +382,37 @@ async function main() {
   assert.ok(debugMarkup.includes("sigmaComplex.CHBondMidpoint"));
   pass("author debug SVG mode exposes anchors, bounds, hitboxes, and control points");
 
+  const authorSvgMarkup = renderToStaticMarkup(
+    <MechanismSvg
+      step="electrophilic-attack"
+      debugOptions={{
+        showAnchors: true,
+        showHitboxes: false,
+        showAnnotationBounds: true,
+        showControlPoints: true,
+        showJson: false,
+      }}
+      annotations={nudgedDraft}
+      authoring={{
+        selectedAnnotationId: "attack-arrow",
+        selectedHandle: control1Handle,
+        isDragging: false,
+        selectAnnotation: () => undefined,
+        beginDrag: () => undefined,
+        dragSelectedHandleTo: () => undefined,
+        endDrag: () => undefined,
+        nudgeSelectedHandle: () => undefined,
+        clearSelection: () => undefined,
+        resetSelectedAnnotation: () => undefined,
+      }}
+    />
+  );
+  assert.ok(authorSvgMarkup.includes("mechanism-author-handle"));
+  assert.ok(authorSvgMarkup.includes("mechanism-author-handle--selected"));
+  assert.ok(authorSvgMarkup.includes("attack-arrow"));
+  assert.ok(!renderedStepSvgs[1].includes("mechanism-author-handle"));
+  pass("author SVG renders drag handles while learner SVG remains clean");
+
   const primitiveMarkup = renderToStaticMarkup(<PartialCharge x={10} y={10} charge="δ+" />);
   assert.ok(primitiveMarkup.includes("δ+"));
   pass("PartialCharge exists as an SVG primitive");
@@ -190,6 +433,15 @@ async function main() {
   assert.ok(componentMarkup.includes("1. Generation of the electrophile"));
   assert.ok(componentMarkup.includes("Go to 5. Product"));
   assert.ok(componentMarkup.includes("Chemical correctness checks"));
+  assert.ok(!componentMarkup.includes("mechanism-author"));
+
+  withWindowSearch("?mode=author&debugBounds=1&debugJson=1", () => {
+    const authorComponentMarkup = renderToStaticMarkup(<BenzeneNitrationMechanism />);
+    assert.ok(authorComponentMarkup.includes("mechanism-author"));
+    assert.ok(authorComponentMarkup.includes("Copy layout overrides"));
+    assert.ok(authorComponentMarkup.includes("mechanism-author-handle"));
+  });
+  pass("query author mode renders controls and learner mode does not");
 
   const pageMarkup = renderToStaticMarkup(<MechanismDemoPage />);
   assert.ok(pageMarkup.includes("Nitration of benzene"));

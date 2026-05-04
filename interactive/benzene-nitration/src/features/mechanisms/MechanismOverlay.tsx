@@ -1,6 +1,12 @@
 import React from "react";
 
 import { anchorPoint, boundsFromPoints, type Bounds } from "./geometry";
+import {
+  describeAnnotationSemantics,
+  getEditableHandlesForAnnotation,
+  getHandleKey,
+  type EditableMechanismHandle,
+} from "./authoring";
 import { AreniumHorseshoe, getAreniumHorseshoeBounds } from "./primitives/AreniumHorseshoe";
 import { CurlyArrow, getCurlyArrowGeometry } from "./primitives/CurlyArrow";
 import { Dipole, getDipoleBounds } from "./primitives/Dipole";
@@ -16,6 +22,13 @@ import type {
   MechanismScene,
   TextRun,
 } from "./types";
+
+export type MechanismOverlayAuthoring = {
+  selectedAnnotationId: string | null;
+  selectedHandle: EditableMechanismHandle | null;
+  onSelectAnnotation: (annotationId: string) => void;
+  onBeginHandleDrag: (event: React.PointerEvent<SVGElement>, handle: EditableMechanismHandle) => void;
+};
 
 function defaultZIndex(annotation: MechanismAnnotation) {
   switch (annotation.kind) {
@@ -178,61 +191,181 @@ function AnnotationView({
   scene,
   annotation,
   debug,
+  authoring,
 }: {
   scene: MechanismScene;
   annotation: MechanismAnnotation;
   debug?: MechanismDebugOptions;
+  authoring?: MechanismOverlayAuthoring;
 }) {
-  switch (annotation.kind) {
-    case "curlyArrow": {
-      const fromAnchor = getAnchor(scene, annotation.fromAnchorId);
-      const toAnchor = getAnchor(scene, annotation.toAnchorId);
+  const selected = authoring?.selectedAnnotationId === annotation.id;
+  const selectable = Boolean(authoring);
+  const handlePointerDown = selectable
+    ? (event: React.PointerEvent<SVGGElement>) => {
+        event.stopPropagation();
+        authoring?.onSelectAnnotation(annotation.id);
+      }
+    : undefined;
+  const className = [
+    "mechanism-annotation-shell",
+    selected ? "mechanism-annotation-shell--selected" : "",
+    annotation.layout.locked ? "mechanism-annotation-shell--locked" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const child = (() => {
+    switch (annotation.kind) {
+      case "curlyArrow": {
+        const fromAnchor = getAnchor(scene, annotation.fromAnchorId);
+        const toAnchor = getAnchor(scene, annotation.toAnchorId);
 
-      return fromAnchor && toAnchor ? (
-        <CurlyArrow annotation={annotation} fromAnchor={fromAnchor} toAnchor={toAnchor} debug={debug} />
-      ) : null;
-    }
-    case "lonePair": {
-      const anchor = getAnchor(scene, annotation.anchorId);
+        return fromAnchor && toAnchor ? (
+          <CurlyArrow annotation={annotation} fromAnchor={fromAnchor} toAnchor={toAnchor} debug={debug} />
+        ) : null;
+      }
+      case "lonePair": {
+        const anchor = getAnchor(scene, annotation.anchorId);
 
-      return anchor ? <LonePair annotation={annotation} anchor={anchor} /> : null;
-    }
-    case "formalCharge": {
-      const anchor = getAnchor(scene, annotation.anchorId);
+        return anchor ? <LonePair annotation={annotation} anchor={anchor} /> : null;
+      }
+      case "formalCharge": {
+        const anchor = getAnchor(scene, annotation.anchorId);
 
-      return anchor ? <FormalCharge annotation={annotation} anchor={anchor} /> : null;
-    }
-    case "partialCharge": {
-      const anchor = getAnchor(scene, annotation.anchorId);
+        return anchor ? <FormalCharge annotation={annotation} anchor={anchor} /> : null;
+      }
+      case "partialCharge": {
+        const anchor = getAnchor(scene, annotation.anchorId);
 
-      return anchor ? <PartialCharge annotation={annotation} anchor={anchor} /> : null;
-    }
-    case "dipole": {
-      const fromAnchor = getAnchor(scene, annotation.fromAnchorId);
-      const toAnchor = getAnchor(scene, annotation.toAnchorId);
+        return anchor ? <PartialCharge annotation={annotation} anchor={anchor} /> : null;
+      }
+      case "dipole": {
+        const fromAnchor = getAnchor(scene, annotation.fromAnchorId);
+        const toAnchor = getAnchor(scene, annotation.toAnchorId);
 
-      return fromAnchor && toAnchor ? (
-        <Dipole annotation={annotation} fromAnchor={fromAnchor} toAnchor={toAnchor} />
-      ) : null;
-    }
-    case "label":
-      return (
-        <Label
-          annotation={annotation}
-          anchor={annotation.anchorId ? getAnchor(scene, annotation.anchorId) : undefined}
-        />
-      );
-    case "bondChange": {
-      const fromAnchor = getAnchor(scene, annotation.fromAnchorId);
-      const toAnchor = getAnchor(scene, annotation.toAnchorId);
+        return fromAnchor && toAnchor ? (
+          <Dipole annotation={annotation} fromAnchor={fromAnchor} toAnchor={toAnchor} />
+        ) : null;
+      }
+      case "label":
+        return (
+          <Label
+            annotation={annotation}
+            anchor={annotation.anchorId ? getAnchor(scene, annotation.anchorId) : undefined}
+          />
+        );
+      case "bondChange": {
+        const fromAnchor = getAnchor(scene, annotation.fromAnchorId);
+        const toAnchor = getAnchor(scene, annotation.toAnchorId);
 
-      return fromAnchor && toAnchor ? (
-        <BondChange annotation={annotation} fromAnchor={fromAnchor} toAnchor={toAnchor} />
-      ) : null;
+        return fromAnchor && toAnchor ? (
+          <BondChange annotation={annotation} fromAnchor={fromAnchor} toAnchor={toAnchor} />
+        ) : null;
+      }
+      case "areniumHorseshoe":
+        return <AreniumHorseshoe annotation={annotation} debug={debug} />;
     }
-    case "areniumHorseshoe":
-      return <AreniumHorseshoe annotation={annotation} debug={debug} />;
+  })();
+
+  if (!child) {
+    return null;
   }
+
+  return (
+    <g
+      className={className}
+      data-selected={selected ? "true" : undefined}
+      data-annotation-id={annotation.id}
+      onPointerDown={handlePointerDown}
+    >
+      {child}
+    </g>
+  );
+}
+
+function EditableHandles({
+  scene,
+  annotations,
+  debug,
+  authoring,
+}: {
+  scene: MechanismScene;
+  annotations: MechanismAnnotation[];
+  debug?: MechanismDebugOptions;
+  authoring: MechanismOverlayAuthoring;
+}) {
+  const selectedAnnotation = authoring.selectedAnnotationId
+    ? (annotations.find(annotation => annotation.id === authoring.selectedAnnotationId) ?? null)
+    : null;
+  const visibleAnnotations = annotations.filter(
+    annotation => annotation.id === authoring.selectedAnnotationId || debug?.showControlPoints
+  );
+
+  return (
+    <g className="mechanism-author-handles" aria-hidden="true">
+      {visibleAnnotations.flatMap(annotation =>
+        getEditableHandlesForAnnotation(scene, annotations, annotation).map(handleView => {
+          const selectedHandle = authoring.selectedHandle
+            ? getHandleKey(authoring.selectedHandle) === getHandleKey(handleView.handle)
+            : false;
+          const selectedAnnotationHandle = annotation.id === authoring.selectedAnnotationId;
+
+          return (
+            <g
+              key={handleView.id}
+              className={[
+                "mechanism-author-handle",
+                selectedAnnotationHandle
+                  ? "mechanism-author-handle--selected-annotation"
+                  : "mechanism-author-handle--ghost",
+                selectedHandle ? "mechanism-author-handle--selected" : "",
+                handleView.disabled ? "mechanism-author-handle--disabled" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              transform={`translate(${handleView.point.x} ${handleView.point.y})`}
+              onPointerDown={event => {
+                if (handleView.disabled) {
+                  event.stopPropagation();
+                  authoring.onSelectAnnotation(annotation.id);
+                  return;
+                }
+
+                authoring.onBeginHandleDrag(event, handleView.handle);
+              }}
+            >
+              <circle className="mechanism-author-handle__ring" r="7" />
+              <circle className="mechanism-author-handle__dot" r="3.2" />
+              <title>{`${annotation.id}: ${handleView.label}`}</title>
+            </g>
+          );
+        })
+      )}
+      {selectedAnnotation ? <SelectedAnnotationCallout scene={scene} annotation={selectedAnnotation} /> : null}
+    </g>
+  );
+}
+
+function SelectedAnnotationCallout({ scene, annotation }: { scene: MechanismScene; annotation: MechanismAnnotation }) {
+  const bounds = getAnnotationBounds(scene, annotation);
+
+  if (!bounds) {
+    return null;
+  }
+
+  const x = bounds.x;
+  const y = Math.max(14, bounds.y - 10);
+
+  return (
+    <g className="mechanism-author-selection-label" aria-hidden="true">
+      <rect x={x - 4} y={y - 12} width={Math.max(126, annotation.id.length * 6.4)} height="17" rx="5" />
+      <text x={x} y={y}>
+        {annotation.id}
+      </text>
+      <text x={x} y={y + 12}>
+        {describeAnnotationSemantics(annotation)}
+      </text>
+    </g>
+  );
 }
 
 function DebugAnchors({ scene, showHitboxes }: { scene: MechanismScene; showHitboxes?: boolean }) {
@@ -273,7 +406,15 @@ function DebugBounds({ scene, annotations }: { scene: MechanismScene; annotation
   );
 }
 
-export function MechanismOverlay({ scene, debug }: { scene: MechanismScene; debug?: MechanismDebugOptions }) {
+export function MechanismOverlay({
+  scene,
+  debug,
+  authoring,
+}: {
+  scene: MechanismScene;
+  debug?: MechanismDebugOptions;
+  authoring?: MechanismOverlayAuthoring;
+}) {
   const annotations = [...scene.annotations].sort(
     (a, b) => (a.layout.zIndex ?? defaultZIndex(a)) - (b.layout.zIndex ?? defaultZIndex(b))
   );
@@ -281,10 +422,13 @@ export function MechanismOverlay({ scene, debug }: { scene: MechanismScene; debu
   return (
     <g className="mechanism-overlay" data-scene-id={scene.id}>
       {annotations.map(annotation => (
-        <AnnotationView key={annotation.id} scene={scene} annotation={annotation} debug={debug} />
+        <AnnotationView key={annotation.id} scene={scene} annotation={annotation} debug={debug} authoring={authoring} />
       ))}
       {debug?.showAnnotationBounds ? <DebugBounds scene={scene} annotations={annotations} /> : null}
       {debug?.showAnchors ? <DebugAnchors scene={scene} showHitboxes={debug.showHitboxes} /> : null}
+      {authoring ? (
+        <EditableHandles scene={scene} annotations={annotations} debug={debug} authoring={authoring} />
+      ) : null}
     </g>
   );
 }

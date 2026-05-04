@@ -5,6 +5,9 @@ import {
   benzeneNitrationSceneById,
   MechanismAuthorControls,
   MechanismCanvas,
+  useMechanismAuthoring,
+  type MechanismAnnotation,
+  type MechanismCanvasAuthoring,
   type MechanismDebugOptions,
 } from "./features/mechanisms";
 import type { MechanismStepId } from "./chemicalCorrectness";
@@ -45,14 +48,32 @@ function readInitialAuthorMode() {
   return params.get("mode") === "author" || params.get("debugAnchors") === "1";
 }
 
-export function MechanismSvg({ step, debugOptions }: { step: MechanismStepId; debugOptions?: MechanismDebugOptions }) {
+export function MechanismSvg({
+  step,
+  debugOptions,
+  annotations,
+  authoring,
+}: {
+  step: MechanismStepId;
+  debugOptions?: MechanismDebugOptions;
+  annotations?: MechanismAnnotation[];
+  authoring?: MechanismCanvasAuthoring;
+}) {
   const scene = benzeneNitrationSceneById[step];
 
   if (!scene) {
     throw new Error(`Missing mechanism scene for ${step}`);
   }
 
-  return <MechanismCanvas scene={scene} debug={debugOptions} titleId={`benzene-nitration-${step}-title`} />;
+  return (
+    <MechanismCanvas
+      scene={scene}
+      debug={debugOptions}
+      titleId={`benzene-nitration-${step}-title`}
+      annotations={annotations}
+      authoring={authoring}
+    />
+  );
 }
 
 export function ChemicalChecklist({ step }: { step: MechanismStepId }) {
@@ -91,6 +112,7 @@ export default function BenzeneNitrationMechanism() {
   const [debugOptions, setDebugOptions] = useState(readInitialDebugOptions);
   const current = benzeneNitrationSteps[index];
   const currentScene = benzeneNitrationSceneById[current.id];
+  const authoring = useMechanismAuthoring(currentScene, authorMode);
 
   return (
     <section className="mechanism-reference" aria-labelledby="benzene-nitration-step-title">
@@ -119,14 +141,27 @@ export default function BenzeneNitrationMechanism() {
       </header>
 
       <div className="mechanism-reference__diagram-frame" aria-live="polite">
-        <MechanismSvg step={current.id} debugOptions={authorMode ? debugOptions : undefined} />
+        <MechanismSvg
+          step={current.id}
+          debugOptions={authorMode ? debugOptions : undefined}
+          annotations={authorMode ? authoring.annotations : undefined}
+          authoring={authorMode ? authoring : undefined}
+        />
       </div>
 
       {authorMode && currentScene ? (
         <MechanismAuthorControls
           scene={currentScene}
+          annotations={authoring.annotations}
+          selectedAnnotation={authoring.selectedAnnotation}
+          selectedHandle={authoring.selectedHandle}
           debugOptions={debugOptions}
           onDebugOptionsChange={setDebugOptions}
+          onResetSceneDraft={authoring.resetSceneDraft}
+          onResetSelectedAnnotation={authoring.resetSelectedAnnotation}
+          onClearSavedDraft={authoring.clearSavedDraft}
+          copyStatus={authoring.copyStatus}
+          onCopyStatusChange={authoring.setCopyStatus}
         />
       ) : null}
 
