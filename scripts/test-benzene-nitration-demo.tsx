@@ -36,7 +36,26 @@ async function main() {
   assert.equal(fixture.id, "benzene-eas-nitration-v1");
   assert.equal(fixture.panels.length, 3);
   assert.equal(fixture.display.show3D, false);
+  assert.ok(
+    fixture.species.every(species => species.name && species.role && species.smiles && species.structureSource)
+  );
+  assert.equal(fixture.species.find(species => species.id === "nitronium")?.charge, 1);
+  assert.equal(fixture.species.find(species => species.id === "bisulfate")?.charge, -1);
   pass("fixture parsing and shape validation");
+
+  assert.ok(fixture.panels.every(panel => panel.display.layout.canvas.width > 0));
+  assert.ok(fixture.panels.every(panel => panel.display.layout.diagram));
+  assert.ok(fixture.panels.every(panel => !("diagram" in panel)));
+  pass("manual SVG coordinates are isolated under panel display layout");
+
+  const mechanismArrowAnchors = fixture.panels
+    .flatMap(panel => panel.mechanismArrows)
+    .flatMap(arrow => [`${arrow.from.speciesId}.${arrow.from.anchorId}`, `${arrow.to.speciesId}.${arrow.to.anchorId}`]);
+  assert.deepEqual(
+    [...new Set(mechanismArrowAnchors)].sort(),
+    ["benzene.pi-system", "bisulfate.O-lone-pair", "nitronium.N", "sigma-complex.C-H-bond"].sort()
+  );
+  pass("mechanism arrows reference chemistry species and conceptual anchors");
 
   assert.deepEqual(
     fixture.panels.map(panel => panel.title),

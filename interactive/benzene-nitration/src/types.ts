@@ -44,6 +44,36 @@ export interface CurlyArrow {
   control2: Point;
 }
 
+export interface ConceptualAnchor {
+  id: string;
+  label: string;
+}
+
+export interface MechanismSpecies {
+  id: string;
+  name: string;
+  role: string;
+  smiles: string;
+  molfile?: string;
+  charge: number;
+  structureSource: string;
+  anchors?: ConceptualAnchor[];
+}
+
+export interface MechanismAnchorRef {
+  speciesId: string;
+  anchorId: string;
+}
+
+export interface MechanismArrow {
+  id: string;
+  displayArrowId: string;
+  type: "curly-electron-pair";
+  from: MechanismAnchorRef;
+  to: MechanismAnchorRef;
+  description?: string;
+}
+
 export interface HighlightHalo {
   id: string;
   type: "halo";
@@ -78,15 +108,23 @@ export interface MechanismDiagram {
   productFragments?: NitroSubstituentFragment[];
 }
 
-export interface MechanismPanelData {
-  id: string;
-  title: string;
-  caption: string;
+export interface MechanismPanelLayout {
   canvas: {
     width: number;
     height: number;
   };
   diagram: MechanismDiagram;
+}
+
+export interface MechanismPanelData {
+  id: string;
+  title: string;
+  caption: string;
+  display: {
+    layout: MechanismPanelLayout;
+  };
+  visibleSpecies: string[];
+  mechanismArrows: MechanismArrow[];
   notes9701: string[];
   notesExtension?: string[];
 }
@@ -109,6 +147,7 @@ export interface MechanismFixture {
     conditions: string[];
     keyIdea: string;
   };
+  species: MechanismSpecies[];
   examChecklist: string[];
   teacherNotes?: {
     examFriendly?: string[];

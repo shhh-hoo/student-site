@@ -16,7 +16,7 @@ function getAtomMap(atoms: Atom[] = []) {
 }
 
 export function SvgMechanismRenderer({ panel }: SvgMechanismRendererProps) {
-  const diagram = panel.diagram || {};
+  const { canvas, diagram } = panel.display.layout;
   const atoms = diagram.atoms || [];
   const atomMap = getAtomMap(atoms);
   const markerId = `${panel.id}-curly-arrowhead`;
@@ -24,7 +24,7 @@ export function SvgMechanismRenderer({ panel }: SvgMechanismRendererProps) {
   return (
     <svg
       className="mechanism-svg"
-      viewBox={`0 0 ${panel.canvas.width} ${panel.canvas.height}`}
+      viewBox={`0 0 ${canvas.width} ${canvas.height}`}
       role="img"
       aria-labelledby={`${panel.id}-title`}
     >

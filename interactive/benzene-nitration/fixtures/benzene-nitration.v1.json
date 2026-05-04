@@ -1,6 +1,6 @@
 {
   "id": "benzene-eas-nitration-v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Nitration of benzene",
   "subtitle": "Electrophilic substitution",
   "levelTags": ["9701", "first-year-organic"],
@@ -40,338 +40,113 @@
       "id": "panel-1-electrophile-generation",
       "title": "Step 1. Generate the electrophile",
       "caption": "Concentrated sulfuric acid helps generate the electrophile, NO2+.",
-      "canvas": {
-        "width": 960,
-        "height": 360
-      },
-      "diagram": {
-        "texts": [
-          {
-            "id": "eq1",
-            "x": 120,
-            "y": 90,
-            "text": "HNO3  +  H2SO4",
-            "role": "equation"
-          },
-          {
-            "id": "eq1-arrow",
-            "x": 360,
-            "y": 90,
-            "text": "→",
-            "role": "arrow"
-          },
-          {
-            "id": "eq1-products",
-            "x": 430,
-            "y": 90,
-            "text": "NO2+  +  HSO4−  +  H2O",
-            "role": "equation"
-          },
-          {
-            "id": "focus-label",
-            "x": 640,
-            "y": 170,
-            "text": "Electrophile",
-            "role": "label"
-          }
-        ],
-        "atoms": [
-          {
-            "id": "n1",
-            "element": "N",
-            "x": 630,
-            "y": 225,
-            "formalCharge": "+1"
-          },
-          {
-            "id": "o1",
-            "element": "O",
-            "x": 700,
-            "y": 185,
-            "formalCharge": "0"
-          },
-          {
-            "id": "o2",
-            "element": "O",
-            "x": 700,
-            "y": 265,
-            "formalCharge": "0"
-          }
-        ],
-        "bonds": [
-          {
-            "id": "n1-o1",
-            "from": "n1",
-            "to": "o1",
-            "order": 2
-          },
-          {
-            "id": "n1-o2",
-            "from": "n1",
-            "to": "o2",
-            "order": 2
-          }
-        ],
-        "annotations": [
-          {
-            "id": "nitronium-label",
-            "x": 740,
-            "y": 225,
-            "text": "NO2+",
-            "role": "species-label"
-          }
-        ],
-        "highlights": [
-          {
-            "id": "highlight-nitronium",
-            "type": "halo",
-            "x": 665,
-            "y": 225,
-            "radius": 78
-          }
-        ]
-      },
       "notes9701": ["The electrophile is NO2+.", "Concentrated sulfuric acid is used with concentrated nitric acid."],
-      "notesExtension": ["NO2+ is the nitronium ion.", "This panel can stay formula-based in the first implementation."]
+      "notesExtension": [
+        "NO2+ is the nitronium ion.",
+        "This panel can stay formula-based in the first implementation."
+      ],
+      "display": {
+        "layout": {
+          "canvas": {
+            "width": 960,
+            "height": 360
+          },
+          "diagram": {
+            "texts": [
+              {
+                "id": "eq1",
+                "x": 120,
+                "y": 90,
+                "text": "HNO3  +  H2SO4",
+                "role": "equation"
+              },
+              {
+                "id": "eq1-arrow",
+                "x": 360,
+                "y": 90,
+                "text": "→",
+                "role": "arrow"
+              },
+              {
+                "id": "eq1-products",
+                "x": 430,
+                "y": 90,
+                "text": "NO2+  +  HSO4−  +  H2O",
+                "role": "equation"
+              },
+              {
+                "id": "focus-label",
+                "x": 640,
+                "y": 170,
+                "text": "Electrophile",
+                "role": "label"
+              }
+            ],
+            "atoms": [
+              {
+                "id": "n1",
+                "element": "N",
+                "x": 630,
+                "y": 225,
+                "formalCharge": "+1"
+              },
+              {
+                "id": "o1",
+                "element": "O",
+                "x": 700,
+                "y": 185,
+                "formalCharge": "0"
+              },
+              {
+                "id": "o2",
+                "element": "O",
+                "x": 700,
+                "y": 265,
+                "formalCharge": "0"
+              }
+            ],
+            "bonds": [
+              {
+                "id": "n1-o1",
+                "from": "n1",
+                "to": "o1",
+                "order": 2
+              },
+              {
+                "id": "n1-o2",
+                "from": "n1",
+                "to": "o2",
+                "order": 2
+              }
+            ],
+            "annotations": [
+              {
+                "id": "nitronium-label",
+                "x": 740,
+                "y": 225,
+                "text": "NO2+",
+                "role": "species-label"
+              }
+            ],
+            "highlights": [
+              {
+                "id": "highlight-nitronium",
+                "type": "halo",
+                "x": 665,
+                "y": 225,
+                "radius": 78
+              }
+            ]
+          }
+        }
+      },
+      "visibleSpecies": ["nitric-acid", "sulfuric-acid", "nitronium", "bisulfate", "water"],
+      "mechanismArrows": []
     },
     {
       "id": "panel-2-electrophilic-attack",
       "title": "Step 2. Electrophilic attack",
       "caption": "A pair of pi electrons from benzene attacks NO2+ to form the sigma complex.",
-      "canvas": {
-        "width": 960,
-        "height": 430
-      },
-      "diagram": {
-        "texts": [
-          {
-            "id": "plus-1",
-            "x": 382,
-            "y": 222,
-            "text": "+",
-            "role": "operator"
-          },
-          {
-            "id": "rxn-arrow-2",
-            "x": 470,
-            "y": 222,
-            "text": "→",
-            "role": "arrow"
-          },
-          {
-            "id": "sigma-complex-label",
-            "x": 725,
-            "y": 350,
-            "text": "sigma complex / arenium ion",
-            "role": "label"
-          }
-        ],
-        "rings": [
-          {
-            "id": "benzene-ring-reactant",
-            "type": "aromatic",
-            "cx": 245,
-            "cy": 220,
-            "radius": 62
-          }
-        ],
-        "atoms": [
-          {
-            "id": "n2",
-            "element": "N",
-            "x": 420,
-            "y": 220,
-            "formalCharge": "+1"
-          },
-          {
-            "id": "o3",
-            "element": "O",
-            "x": 486,
-            "y": 184,
-            "formalCharge": "0"
-          },
-          {
-            "id": "o4",
-            "element": "O",
-            "x": 486,
-            "y": 256,
-            "formalCharge": "0"
-          },
-          {
-            "id": "sc-c1",
-            "element": "C",
-            "x": 645,
-            "y": 150
-          },
-          {
-            "id": "sc-c2",
-            "element": "C",
-            "x": 710,
-            "y": 186,
-            "formalCharge": "+1"
-          },
-          {
-            "id": "sc-c3",
-            "element": "C",
-            "x": 710,
-            "y": 258
-          },
-          {
-            "id": "sc-c4",
-            "element": "C",
-            "x": 645,
-            "y": 294
-          },
-          {
-            "id": "sc-c5",
-            "element": "C",
-            "x": 580,
-            "y": 258
-          },
-          {
-            "id": "sc-c6",
-            "element": "C",
-            "x": 580,
-            "y": 186
-          },
-          {
-            "id": "sc-n",
-            "element": "N",
-            "x": 525,
-            "y": 150,
-            "formalCharge": "+1"
-          },
-          {
-            "id": "sc-o1",
-            "element": "O",
-            "x": 470,
-            "y": 120
-          },
-          {
-            "id": "sc-o2",
-            "element": "O",
-            "x": 470,
-            "y": 180
-          },
-          {
-            "id": "sc-h",
-            "element": "H",
-            "x": 645,
-            "y": 92
-          }
-        ],
-        "bonds": [
-          {
-            "id": "n2-o3",
-            "from": "n2",
-            "to": "o3",
-            "order": 2
-          },
-          {
-            "id": "n2-o4",
-            "from": "n2",
-            "to": "o4",
-            "order": 2
-          },
-          {
-            "id": "sc-c1-c2",
-            "from": "sc-c1",
-            "to": "sc-c2",
-            "order": 1
-          },
-          {
-            "id": "sc-c2-c3",
-            "from": "sc-c2",
-            "to": "sc-c3",
-            "order": 1
-          },
-          {
-            "id": "sc-c3-c4",
-            "from": "sc-c3",
-            "to": "sc-c4",
-            "order": 2
-          },
-          {
-            "id": "sc-c4-c5",
-            "from": "sc-c4",
-            "to": "sc-c5",
-            "order": 1
-          },
-          {
-            "id": "sc-c5-c6",
-            "from": "sc-c5",
-            "to": "sc-c6",
-            "order": 2
-          },
-          {
-            "id": "sc-c6-c1",
-            "from": "sc-c6",
-            "to": "sc-c1",
-            "order": 1
-          },
-          {
-            "id": "sc-c1-n",
-            "from": "sc-c1",
-            "to": "sc-n",
-            "order": 1
-          },
-          {
-            "id": "sc-n-o1",
-            "from": "sc-n",
-            "to": "sc-o1",
-            "order": 2
-          },
-          {
-            "id": "sc-n-o2",
-            "from": "sc-n",
-            "to": "sc-o2",
-            "order": 2
-          },
-          {
-            "id": "sc-c1-h",
-            "from": "sc-c1",
-            "to": "sc-h",
-            "order": 1
-          }
-        ],
-        "curlyArrows": [
-          {
-            "id": "attack-arrow",
-            "from": {
-              "x": 298,
-              "y": 192
-            },
-            "to": {
-              "x": 412,
-              "y": 214
-            },
-            "control1": {
-              "x": 332,
-              "y": 160
-            },
-            "control2": {
-              "x": 382,
-              "y": 170
-            }
-          }
-        ],
-        "annotations": [
-          {
-            "id": "nitronium-reactant-label",
-            "x": 420,
-            "y": 305,
-            "text": "NO2+",
-            "role": "species-label"
-          },
-          {
-            "id": "attack-note",
-            "x": 210,
-            "y": 334,
-            "text": "pi electrons attack NO2+",
-            "role": "label"
-          }
-        ]
-      },
       "notes9701": [
         "A pair of pi electrons from benzene attacks the electrophile.",
         "A sigma complex is formed.",
@@ -379,310 +154,600 @@
       ],
       "notesExtension": [
         "The positive charge is delocalised in the sigma complex, but only one resonance form is shown here."
+      ],
+      "display": {
+        "layout": {
+          "canvas": {
+            "width": 960,
+            "height": 430
+          },
+          "diagram": {
+            "texts": [
+              {
+                "id": "plus-1",
+                "x": 382,
+                "y": 222,
+                "text": "+",
+                "role": "operator"
+              },
+              {
+                "id": "rxn-arrow-2",
+                "x": 470,
+                "y": 222,
+                "text": "→",
+                "role": "arrow"
+              },
+              {
+                "id": "sigma-complex-label",
+                "x": 725,
+                "y": 350,
+                "text": "sigma complex / arenium ion",
+                "role": "label"
+              }
+            ],
+            "rings": [
+              {
+                "id": "benzene-ring-reactant",
+                "type": "aromatic",
+                "cx": 245,
+                "cy": 220,
+                "radius": 62
+              }
+            ],
+            "atoms": [
+              {
+                "id": "n2",
+                "element": "N",
+                "x": 420,
+                "y": 220,
+                "formalCharge": "+1"
+              },
+              {
+                "id": "o3",
+                "element": "O",
+                "x": 486,
+                "y": 184,
+                "formalCharge": "0"
+              },
+              {
+                "id": "o4",
+                "element": "O",
+                "x": 486,
+                "y": 256,
+                "formalCharge": "0"
+              },
+              {
+                "id": "sc-c1",
+                "element": "C",
+                "x": 645,
+                "y": 150
+              },
+              {
+                "id": "sc-c2",
+                "element": "C",
+                "x": 710,
+                "y": 186,
+                "formalCharge": "+1"
+              },
+              {
+                "id": "sc-c3",
+                "element": "C",
+                "x": 710,
+                "y": 258
+              },
+              {
+                "id": "sc-c4",
+                "element": "C",
+                "x": 645,
+                "y": 294
+              },
+              {
+                "id": "sc-c5",
+                "element": "C",
+                "x": 580,
+                "y": 258
+              },
+              {
+                "id": "sc-c6",
+                "element": "C",
+                "x": 580,
+                "y": 186
+              },
+              {
+                "id": "sc-n",
+                "element": "N",
+                "x": 525,
+                "y": 150,
+                "formalCharge": "+1"
+              },
+              {
+                "id": "sc-o1",
+                "element": "O",
+                "x": 470,
+                "y": 120
+              },
+              {
+                "id": "sc-o2",
+                "element": "O",
+                "x": 470,
+                "y": 180
+              },
+              {
+                "id": "sc-h",
+                "element": "H",
+                "x": 645,
+                "y": 92
+              }
+            ],
+            "bonds": [
+              {
+                "id": "n2-o3",
+                "from": "n2",
+                "to": "o3",
+                "order": 2
+              },
+              {
+                "id": "n2-o4",
+                "from": "n2",
+                "to": "o4",
+                "order": 2
+              },
+              {
+                "id": "sc-c1-c2",
+                "from": "sc-c1",
+                "to": "sc-c2",
+                "order": 1
+              },
+              {
+                "id": "sc-c2-c3",
+                "from": "sc-c2",
+                "to": "sc-c3",
+                "order": 1
+              },
+              {
+                "id": "sc-c3-c4",
+                "from": "sc-c3",
+                "to": "sc-c4",
+                "order": 2
+              },
+              {
+                "id": "sc-c4-c5",
+                "from": "sc-c4",
+                "to": "sc-c5",
+                "order": 1
+              },
+              {
+                "id": "sc-c5-c6",
+                "from": "sc-c5",
+                "to": "sc-c6",
+                "order": 2
+              },
+              {
+                "id": "sc-c6-c1",
+                "from": "sc-c6",
+                "to": "sc-c1",
+                "order": 1
+              },
+              {
+                "id": "sc-c1-n",
+                "from": "sc-c1",
+                "to": "sc-n",
+                "order": 1
+              },
+              {
+                "id": "sc-n-o1",
+                "from": "sc-n",
+                "to": "sc-o1",
+                "order": 2
+              },
+              {
+                "id": "sc-n-o2",
+                "from": "sc-n",
+                "to": "sc-o2",
+                "order": 2
+              },
+              {
+                "id": "sc-c1-h",
+                "from": "sc-c1",
+                "to": "sc-h",
+                "order": 1
+              }
+            ],
+            "curlyArrows": [
+              {
+                "id": "attack-arrow",
+                "from": {
+                  "x": 298,
+                  "y": 192
+                },
+                "to": {
+                  "x": 412,
+                  "y": 214
+                },
+                "control1": {
+                  "x": 332,
+                  "y": 160
+                },
+                "control2": {
+                  "x": 382,
+                  "y": 170
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "id": "nitronium-reactant-label",
+                "x": 420,
+                "y": 305,
+                "text": "NO2+",
+                "role": "species-label"
+              },
+              {
+                "id": "attack-note",
+                "x": 210,
+                "y": 334,
+                "text": "pi electrons attack NO2+",
+                "role": "label"
+              }
+            ]
+          }
+        }
+      },
+      "visibleSpecies": ["benzene", "nitronium", "sigma-complex"],
+      "mechanismArrows": [
+        {
+          "id": "attack-arrow",
+          "displayArrowId": "attack-arrow",
+          "type": "curly-electron-pair",
+          "from": {
+            "speciesId": "benzene",
+            "anchorId": "pi-system"
+          },
+          "to": {
+            "speciesId": "nitronium",
+            "anchorId": "N"
+          },
+          "description": "Benzene pi electrons attack the electrophilic nitrogen of NO2+."
+        }
       ]
     },
     {
       "id": "panel-3-deprotonation",
       "title": "Step 3. Restore aromaticity",
       "caption": "HSO4− removes H+ from the sigma complex. The pi system is restored and nitrobenzene is formed.",
-      "canvas": {
-        "width": 960,
-        "height": 440
-      },
-      "diagram": {
-        "texts": [
-          {
-            "id": "plus-2",
-            "x": 448,
-            "y": 242,
-            "text": "+",
-            "role": "operator"
-          },
-          {
-            "id": "rxn-arrow-3",
-            "x": 538,
-            "y": 242,
-            "text": "→",
-            "role": "arrow"
-          }
-        ],
-        "atoms": [
-          {
-            "id": "p3-c1",
-            "element": "C",
-            "x": 220,
-            "y": 150
-          },
-          {
-            "id": "p3-c2",
-            "element": "C",
-            "x": 285,
-            "y": 186,
-            "formalCharge": "+1"
-          },
-          {
-            "id": "p3-c3",
-            "element": "C",
-            "x": 285,
-            "y": 258
-          },
-          {
-            "id": "p3-c4",
-            "element": "C",
-            "x": 220,
-            "y": 294
-          },
-          {
-            "id": "p3-c5",
-            "element": "C",
-            "x": 155,
-            "y": 258
-          },
-          {
-            "id": "p3-c6",
-            "element": "C",
-            "x": 155,
-            "y": 186
-          },
-          {
-            "id": "p3-n",
-            "element": "N",
-            "x": 100,
-            "y": 150,
-            "formalCharge": "+1"
-          },
-          {
-            "id": "p3-o1",
-            "element": "O",
-            "x": 45,
-            "y": 120
-          },
-          {
-            "id": "p3-o2",
-            "element": "O",
-            "x": 45,
-            "y": 180
-          },
-          {
-            "id": "p3-h",
-            "element": "H",
-            "x": 220,
-            "y": 92
-          },
-          {
-            "id": "base-s",
-            "element": "S",
-            "x": 465,
-            "y": 300
-          },
-          {
-            "id": "base-o1",
-            "element": "O",
-            "x": 515,
-            "y": 255
-          },
-          {
-            "id": "base-o2",
-            "element": "O",
-            "x": 520,
-            "y": 345,
-            "formalCharge": "-1"
-          },
-          {
-            "id": "base-o3",
-            "element": "O",
-            "x": 420,
-            "y": 255
-          },
-          {
-            "id": "base-oh",
-            "element": "O",
-            "x": 410,
-            "y": 345
-          },
-          {
-            "id": "base-oh-h",
-            "element": "H",
-            "x": 386,
-            "y": 372
-          }
-        ],
-        "bonds": [
-          {
-            "id": "p3-c1-c2",
-            "from": "p3-c1",
-            "to": "p3-c2",
-            "order": 1
-          },
-          {
-            "id": "p3-c2-c3",
-            "from": "p3-c2",
-            "to": "p3-c3",
-            "order": 1
-          },
-          {
-            "id": "p3-c3-c4",
-            "from": "p3-c3",
-            "to": "p3-c4",
-            "order": 2
-          },
-          {
-            "id": "p3-c4-c5",
-            "from": "p3-c4",
-            "to": "p3-c5",
-            "order": 1
-          },
-          {
-            "id": "p3-c5-c6",
-            "from": "p3-c5",
-            "to": "p3-c6",
-            "order": 2
-          },
-          {
-            "id": "p3-c6-c1",
-            "from": "p3-c6",
-            "to": "p3-c1",
-            "order": 1
-          },
-          {
-            "id": "p3-c1-n",
-            "from": "p3-c1",
-            "to": "p3-n",
-            "order": 1
-          },
-          {
-            "id": "p3-n-o1",
-            "from": "p3-n",
-            "to": "p3-o1",
-            "order": 2
-          },
-          {
-            "id": "p3-n-o2",
-            "from": "p3-n",
-            "to": "p3-o2",
-            "order": 2
-          },
-          {
-            "id": "p3-c1-h",
-            "from": "p3-c1",
-            "to": "p3-h",
-            "order": 1
-          },
-          {
-            "id": "base-s-o1",
-            "from": "base-s",
-            "to": "base-o1",
-            "order": 2
-          },
-          {
-            "id": "base-s-o2",
-            "from": "base-s",
-            "to": "base-o2",
-            "order": 1
-          },
-          {
-            "id": "base-s-o3",
-            "from": "base-s",
-            "to": "base-o3",
-            "order": 2
-          },
-          {
-            "id": "base-s-oh",
-            "from": "base-s",
-            "to": "base-oh",
-            "order": 1
-          },
-          {
-            "id": "base-oh-h",
-            "from": "base-oh",
-            "to": "base-oh-h",
-            "order": 1
-          }
-        ],
-        "rings": [
-          {
-            "id": "product-ring",
-            "type": "aromatic",
-            "cx": 760,
-            "cy": 220,
-            "radius": 62
-          }
-        ],
-        "productFragments": [
-          {
-            "id": "product-no2",
-            "type": "nitro-substituent",
-            "attachToRingAtAngleDegrees": 180,
-            "ringCenterX": 760,
-            "ringCenterY": 220,
-            "ringRadius": 62,
-            "nX": 648,
-            "nY": 220,
-            "o1X": 592,
-            "o1Y": 190,
-            "o2X": 592,
-            "o2Y": 250
-          }
-        ],
-        "curlyArrows": [
-          {
-            "id": "base-to-h",
-            "from": {
-              "x": 520,
-              "y": 345
-            },
-            "to": {
-              "x": 228,
-              "y": 102
-            },
-            "control1": {
-              "x": 500,
-              "y": 210
-            },
-            "control2": {
-              "x": 300,
-              "y": 150
-            }
-          },
-          {
-            "id": "c-h-to-ring",
-            "from": {
-              "x": 220,
-              "y": 118
-            },
-            "to": {
-              "x": 188,
-              "y": 168
-            },
-            "control1": {
-              "x": 220,
-              "y": 140
-            },
-            "control2": {
-              "x": 198,
-              "y": 146
-            }
-          }
-        ],
-        "annotations": [
-          {
-            "id": "restore-note",
-            "x": 705,
-            "y": 350,
-            "text": "nitrobenzene",
-            "role": "species-label"
-          },
-          {
-            "id": "base-label",
-            "x": 435,
-            "y": 388,
-            "text": "HSO4−",
-            "role": "species-label"
-          }
-        ]
-      },
       "notes9701": ["HSO4− removes H+.", "The pi system is restored.", "Aromaticity is restored in the final product."],
-      "notesExtension": ["This is why benzene undergoes substitution rather than addition."]
+      "notesExtension": ["This is why benzene undergoes substitution rather than addition."],
+      "display": {
+        "layout": {
+          "canvas": {
+            "width": 960,
+            "height": 440
+          },
+          "diagram": {
+            "texts": [
+              {
+                "id": "plus-2",
+                "x": 448,
+                "y": 242,
+                "text": "+",
+                "role": "operator"
+              },
+              {
+                "id": "rxn-arrow-3",
+                "x": 538,
+                "y": 242,
+                "text": "→",
+                "role": "arrow"
+              }
+            ],
+            "atoms": [
+              {
+                "id": "p3-c1",
+                "element": "C",
+                "x": 220,
+                "y": 150
+              },
+              {
+                "id": "p3-c2",
+                "element": "C",
+                "x": 285,
+                "y": 186,
+                "formalCharge": "+1"
+              },
+              {
+                "id": "p3-c3",
+                "element": "C",
+                "x": 285,
+                "y": 258
+              },
+              {
+                "id": "p3-c4",
+                "element": "C",
+                "x": 220,
+                "y": 294
+              },
+              {
+                "id": "p3-c5",
+                "element": "C",
+                "x": 155,
+                "y": 258
+              },
+              {
+                "id": "p3-c6",
+                "element": "C",
+                "x": 155,
+                "y": 186
+              },
+              {
+                "id": "p3-n",
+                "element": "N",
+                "x": 100,
+                "y": 150,
+                "formalCharge": "+1"
+              },
+              {
+                "id": "p3-o1",
+                "element": "O",
+                "x": 45,
+                "y": 120
+              },
+              {
+                "id": "p3-o2",
+                "element": "O",
+                "x": 45,
+                "y": 180
+              },
+              {
+                "id": "p3-h",
+                "element": "H",
+                "x": 220,
+                "y": 92
+              },
+              {
+                "id": "base-s",
+                "element": "S",
+                "x": 465,
+                "y": 300
+              },
+              {
+                "id": "base-o1",
+                "element": "O",
+                "x": 515,
+                "y": 255
+              },
+              {
+                "id": "base-o2",
+                "element": "O",
+                "x": 520,
+                "y": 345,
+                "formalCharge": "-1"
+              },
+              {
+                "id": "base-o3",
+                "element": "O",
+                "x": 420,
+                "y": 255
+              },
+              {
+                "id": "base-oh",
+                "element": "O",
+                "x": 410,
+                "y": 345
+              },
+              {
+                "id": "base-oh-h",
+                "element": "H",
+                "x": 386,
+                "y": 372
+              }
+            ],
+            "bonds": [
+              {
+                "id": "p3-c1-c2",
+                "from": "p3-c1",
+                "to": "p3-c2",
+                "order": 1
+              },
+              {
+                "id": "p3-c2-c3",
+                "from": "p3-c2",
+                "to": "p3-c3",
+                "order": 1
+              },
+              {
+                "id": "p3-c3-c4",
+                "from": "p3-c3",
+                "to": "p3-c4",
+                "order": 2
+              },
+              {
+                "id": "p3-c4-c5",
+                "from": "p3-c4",
+                "to": "p3-c5",
+                "order": 1
+              },
+              {
+                "id": "p3-c5-c6",
+                "from": "p3-c5",
+                "to": "p3-c6",
+                "order": 2
+              },
+              {
+                "id": "p3-c6-c1",
+                "from": "p3-c6",
+                "to": "p3-c1",
+                "order": 1
+              },
+              {
+                "id": "p3-c1-n",
+                "from": "p3-c1",
+                "to": "p3-n",
+                "order": 1
+              },
+              {
+                "id": "p3-n-o1",
+                "from": "p3-n",
+                "to": "p3-o1",
+                "order": 2
+              },
+              {
+                "id": "p3-n-o2",
+                "from": "p3-n",
+                "to": "p3-o2",
+                "order": 2
+              },
+              {
+                "id": "p3-c1-h",
+                "from": "p3-c1",
+                "to": "p3-h",
+                "order": 1
+              },
+              {
+                "id": "base-s-o1",
+                "from": "base-s",
+                "to": "base-o1",
+                "order": 2
+              },
+              {
+                "id": "base-s-o2",
+                "from": "base-s",
+                "to": "base-o2",
+                "order": 1
+              },
+              {
+                "id": "base-s-o3",
+                "from": "base-s",
+                "to": "base-o3",
+                "order": 2
+              },
+              {
+                "id": "base-s-oh",
+                "from": "base-s",
+                "to": "base-oh",
+                "order": 1
+              },
+              {
+                "id": "base-oh-h",
+                "from": "base-oh",
+                "to": "base-oh-h",
+                "order": 1
+              }
+            ],
+            "rings": [
+              {
+                "id": "product-ring",
+                "type": "aromatic",
+                "cx": 760,
+                "cy": 220,
+                "radius": 62
+              }
+            ],
+            "productFragments": [
+              {
+                "id": "product-no2",
+                "type": "nitro-substituent",
+                "attachToRingAtAngleDegrees": 180,
+                "ringCenterX": 760,
+                "ringCenterY": 220,
+                "ringRadius": 62,
+                "nX": 648,
+                "nY": 220,
+                "o1X": 592,
+                "o1Y": 190,
+                "o2X": 592,
+                "o2Y": 250
+              }
+            ],
+            "curlyArrows": [
+              {
+                "id": "base-to-h",
+                "from": {
+                  "x": 520,
+                  "y": 345
+                },
+                "to": {
+                  "x": 228,
+                  "y": 102
+                },
+                "control1": {
+                  "x": 500,
+                  "y": 210
+                },
+                "control2": {
+                  "x": 300,
+                  "y": 150
+                }
+              },
+              {
+                "id": "c-h-to-ring",
+                "from": {
+                  "x": 220,
+                  "y": 118
+                },
+                "to": {
+                  "x": 188,
+                  "y": 168
+                },
+                "control1": {
+                  "x": 220,
+                  "y": 140
+                },
+                "control2": {
+                  "x": 198,
+                  "y": 146
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "id": "restore-note",
+                "x": 705,
+                "y": 350,
+                "text": "nitrobenzene",
+                "role": "species-label"
+              },
+              {
+                "id": "base-label",
+                "x": 435,
+                "y": 388,
+                "text": "HSO4−",
+                "role": "species-label"
+              }
+            ]
+          }
+        }
+      },
+      "visibleSpecies": ["sigma-complex", "bisulfate", "nitrobenzene"],
+      "mechanismArrows": [
+        {
+          "id": "base-to-h",
+          "displayArrowId": "base-to-h",
+          "type": "curly-electron-pair",
+          "from": {
+            "speciesId": "bisulfate",
+            "anchorId": "O-lone-pair"
+          },
+          "to": {
+            "speciesId": "sigma-complex",
+            "anchorId": "C-H-bond"
+          },
+          "description": "A lone pair on HSO4- removes the proton from the sigma complex."
+        },
+        {
+          "id": "c-h-to-ring",
+          "displayArrowId": "c-h-to-ring",
+          "type": "curly-electron-pair",
+          "from": {
+            "speciesId": "sigma-complex",
+            "anchorId": "C-H-bond"
+          },
+          "to": {
+            "speciesId": "benzene",
+            "anchorId": "pi-system"
+          },
+          "description": "The C-H bond electrons restore the aromatic pi system."
+        }
+      ]
     }
   ],
   "futureExtensions": {
@@ -694,5 +759,95 @@
       "enabled": false,
       "description": "Optional future extension: compare nitration and bromination of benzene."
     }
-  }
+  },
+  "species": [
+    {
+      "id": "benzene",
+      "name": "benzene",
+      "role": "substrate",
+      "smiles": "c1ccccc1",
+      "charge": 0,
+      "structureSource": "smiles",
+      "anchors": [
+        {
+          "id": "pi-system",
+          "label": "aromatic pi system"
+        }
+      ]
+    },
+    {
+      "id": "nitric-acid",
+      "name": "nitric acid",
+      "role": "reagent",
+      "smiles": "O[N+](=O)[O-]",
+      "charge": 0,
+      "structureSource": "smiles"
+    },
+    {
+      "id": "sulfuric-acid",
+      "name": "sulfuric acid",
+      "role": "acid-catalyst",
+      "smiles": "OS(=O)(=O)O",
+      "charge": 0,
+      "structureSource": "smiles"
+    },
+    {
+      "id": "nitronium",
+      "name": "nitronium ion",
+      "role": "electrophile",
+      "smiles": "[N+](=O)=O",
+      "charge": 1,
+      "structureSource": "smiles",
+      "anchors": [
+        {
+          "id": "N",
+          "label": "electrophilic nitrogen"
+        }
+      ]
+    },
+    {
+      "id": "bisulfate",
+      "name": "hydrogensulfate ion",
+      "role": "base",
+      "smiles": "[O-]S(=O)(=O)O",
+      "charge": -1,
+      "structureSource": "smiles",
+      "anchors": [
+        {
+          "id": "O-lone-pair",
+          "label": "basic oxygen lone pair"
+        }
+      ]
+    },
+    {
+      "id": "water",
+      "name": "water",
+      "role": "byproduct",
+      "smiles": "O",
+      "charge": 0,
+      "structureSource": "smiles"
+    },
+    {
+      "id": "sigma-complex",
+      "name": "sigma complex / arenium ion",
+      "role": "intermediate",
+      "smiles": "[O-][N+](=O)C1[CH+]C=CC=C1",
+      "charge": 1,
+      "structureSource": "smiles",
+      "anchors": [
+        {
+          "id": "C-H-bond",
+          "label": "sp3 carbon hydrogen bond"
+        }
+      ]
+    },
+    {
+      "id": "nitrobenzene",
+      "name": "nitrobenzene",
+      "role": "product",
+      "smiles": "[O-][N+](=O)c1ccccc1",
+      "charge": 0,
+      "structureSource": "smiles"
+    }
+  ]
 }

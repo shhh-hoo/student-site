@@ -7995,7 +7995,7 @@ var e = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t
 	n(), t.exports = s();
 })), l = n(), u = c(), d = {
 	id: "benzene-eas-nitration-v1",
-	version: "1.0.0",
+	version: "1.1.0",
 	title: "Nitration of benzene",
 	subtitle: "Electrophilic substitution",
 	levelTags: ["9701", "first-year-organic"],
@@ -8036,624 +8036,689 @@ var e = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t
 			id: "panel-1-electrophile-generation",
 			title: "Step 1. Generate the electrophile",
 			caption: "Concentrated sulfuric acid helps generate the electrophile, NO2+.",
-			canvas: {
-				width: 960,
-				height: 360
-			},
-			diagram: {
-				texts: [
-					{
-						id: "eq1",
-						x: 120,
-						y: 90,
-						text: "HNO3  +  H2SO4",
-						role: "equation"
-					},
-					{
-						id: "eq1-arrow",
-						x: 360,
-						y: 90,
-						text: "→",
-						role: "arrow"
-					},
-					{
-						id: "eq1-products",
-						x: 430,
-						y: 90,
-						text: "NO2+  +  HSO4−  +  H2O",
-						role: "equation"
-					},
-					{
-						id: "focus-label",
-						x: 640,
-						y: 170,
-						text: "Electrophile",
-						role: "label"
-					}
-				],
-				atoms: [
-					{
-						id: "n1",
-						element: "N",
-						x: 630,
-						y: 225,
-						formalCharge: "+1"
-					},
-					{
-						id: "o1",
-						element: "O",
-						x: 700,
-						y: 185,
-						formalCharge: "0"
-					},
-					{
-						id: "o2",
-						element: "O",
-						x: 700,
-						y: 265,
-						formalCharge: "0"
-					}
-				],
-				bonds: [{
-					id: "n1-o1",
-					from: "n1",
-					to: "o1",
-					order: 2
-				}, {
-					id: "n1-o2",
-					from: "n1",
-					to: "o2",
-					order: 2
-				}],
-				annotations: [{
-					id: "nitronium-label",
-					x: 740,
-					y: 225,
-					text: "NO2+",
-					role: "species-label"
-				}],
-				highlights: [{
-					id: "highlight-nitronium",
-					type: "halo",
-					x: 665,
-					y: 225,
-					radius: 78
-				}]
-			},
 			notes9701: ["The electrophile is NO2+.", "Concentrated sulfuric acid is used with concentrated nitric acid."],
-			notesExtension: ["NO2+ is the nitronium ion.", "This panel can stay formula-based in the first implementation."]
+			notesExtension: ["NO2+ is the nitronium ion.", "This panel can stay formula-based in the first implementation."],
+			display: { layout: {
+				canvas: {
+					width: 960,
+					height: 360
+				},
+				diagram: {
+					texts: [
+						{
+							id: "eq1",
+							x: 120,
+							y: 90,
+							text: "HNO3  +  H2SO4",
+							role: "equation"
+						},
+						{
+							id: "eq1-arrow",
+							x: 360,
+							y: 90,
+							text: "→",
+							role: "arrow"
+						},
+						{
+							id: "eq1-products",
+							x: 430,
+							y: 90,
+							text: "NO2+  +  HSO4−  +  H2O",
+							role: "equation"
+						},
+						{
+							id: "focus-label",
+							x: 640,
+							y: 170,
+							text: "Electrophile",
+							role: "label"
+						}
+					],
+					atoms: [
+						{
+							id: "n1",
+							element: "N",
+							x: 630,
+							y: 225,
+							formalCharge: "+1"
+						},
+						{
+							id: "o1",
+							element: "O",
+							x: 700,
+							y: 185,
+							formalCharge: "0"
+						},
+						{
+							id: "o2",
+							element: "O",
+							x: 700,
+							y: 265,
+							formalCharge: "0"
+						}
+					],
+					bonds: [{
+						id: "n1-o1",
+						from: "n1",
+						to: "o1",
+						order: 2
+					}, {
+						id: "n1-o2",
+						from: "n1",
+						to: "o2",
+						order: 2
+					}],
+					annotations: [{
+						id: "nitronium-label",
+						x: 740,
+						y: 225,
+						text: "NO2+",
+						role: "species-label"
+					}],
+					highlights: [{
+						id: "highlight-nitronium",
+						type: "halo",
+						x: 665,
+						y: 225,
+						radius: 78
+					}]
+				}
+			} },
+			visibleSpecies: [
+				"nitric-acid",
+				"sulfuric-acid",
+				"nitronium",
+				"bisulfate",
+				"water"
+			],
+			mechanismArrows: []
 		},
 		{
 			id: "panel-2-electrophilic-attack",
 			title: "Step 2. Electrophilic attack",
 			caption: "A pair of pi electrons from benzene attacks NO2+ to form the sigma complex.",
-			canvas: {
-				width: 960,
-				height: 430
-			},
-			diagram: {
-				texts: [
-					{
-						id: "plus-1",
-						x: 382,
-						y: 222,
-						text: "+",
-						role: "operator"
-					},
-					{
-						id: "rxn-arrow-2",
-						x: 470,
-						y: 222,
-						text: "→",
-						role: "arrow"
-					},
-					{
-						id: "sigma-complex-label",
-						x: 725,
-						y: 350,
-						text: "sigma complex / arenium ion",
-						role: "label"
-					}
-				],
-				rings: [{
-					id: "benzene-ring-reactant",
-					type: "aromatic",
-					cx: 245,
-					cy: 220,
-					radius: 62
-				}],
-				atoms: [
-					{
-						id: "n2",
-						element: "N",
-						x: 420,
-						y: 220,
-						formalCharge: "+1"
-					},
-					{
-						id: "o3",
-						element: "O",
-						x: 486,
-						y: 184,
-						formalCharge: "0"
-					},
-					{
-						id: "o4",
-						element: "O",
-						x: 486,
-						y: 256,
-						formalCharge: "0"
-					},
-					{
-						id: "sc-c1",
-						element: "C",
-						x: 645,
-						y: 150
-					},
-					{
-						id: "sc-c2",
-						element: "C",
-						x: 710,
-						y: 186,
-						formalCharge: "+1"
-					},
-					{
-						id: "sc-c3",
-						element: "C",
-						x: 710,
-						y: 258
-					},
-					{
-						id: "sc-c4",
-						element: "C",
-						x: 645,
-						y: 294
-					},
-					{
-						id: "sc-c5",
-						element: "C",
-						x: 580,
-						y: 258
-					},
-					{
-						id: "sc-c6",
-						element: "C",
-						x: 580,
-						y: 186
-					},
-					{
-						id: "sc-n",
-						element: "N",
-						x: 525,
-						y: 150,
-						formalCharge: "+1"
-					},
-					{
-						id: "sc-o1",
-						element: "O",
-						x: 470,
-						y: 120
-					},
-					{
-						id: "sc-o2",
-						element: "O",
-						x: 470,
-						y: 180
-					},
-					{
-						id: "sc-h",
-						element: "H",
-						x: 645,
-						y: 92
-					}
-				],
-				bonds: [
-					{
-						id: "n2-o3",
-						from: "n2",
-						to: "o3",
-						order: 2
-					},
-					{
-						id: "n2-o4",
-						from: "n2",
-						to: "o4",
-						order: 2
-					},
-					{
-						id: "sc-c1-c2",
-						from: "sc-c1",
-						to: "sc-c2",
-						order: 1
-					},
-					{
-						id: "sc-c2-c3",
-						from: "sc-c2",
-						to: "sc-c3",
-						order: 1
-					},
-					{
-						id: "sc-c3-c4",
-						from: "sc-c3",
-						to: "sc-c4",
-						order: 2
-					},
-					{
-						id: "sc-c4-c5",
-						from: "sc-c4",
-						to: "sc-c5",
-						order: 1
-					},
-					{
-						id: "sc-c5-c6",
-						from: "sc-c5",
-						to: "sc-c6",
-						order: 2
-					},
-					{
-						id: "sc-c6-c1",
-						from: "sc-c6",
-						to: "sc-c1",
-						order: 1
-					},
-					{
-						id: "sc-c1-n",
-						from: "sc-c1",
-						to: "sc-n",
-						order: 1
-					},
-					{
-						id: "sc-n-o1",
-						from: "sc-n",
-						to: "sc-o1",
-						order: 2
-					},
-					{
-						id: "sc-n-o2",
-						from: "sc-n",
-						to: "sc-o2",
-						order: 2
-					},
-					{
-						id: "sc-c1-h",
-						from: "sc-c1",
-						to: "sc-h",
-						order: 1
-					}
-				],
-				curlyArrows: [{
-					id: "attack-arrow",
-					from: {
-						x: 298,
-						y: 192
-					},
-					to: {
-						x: 412,
-						y: 214
-					},
-					control1: {
-						x: 332,
-						y: 160
-					},
-					control2: {
-						x: 382,
-						y: 170
-					}
-				}],
-				annotations: [{
-					id: "nitronium-reactant-label",
-					x: 420,
-					y: 305,
-					text: "NO2+",
-					role: "species-label"
-				}, {
-					id: "attack-note",
-					x: 210,
-					y: 334,
-					text: "pi electrons attack NO2+",
-					role: "label"
-				}]
-			},
 			notes9701: [
 				"A pair of pi electrons from benzene attacks the electrophile.",
 				"A sigma complex is formed.",
 				"The ring is no longer aromatic in the intermediate."
 			],
-			notesExtension: ["The positive charge is delocalised in the sigma complex, but only one resonance form is shown here."]
+			notesExtension: ["The positive charge is delocalised in the sigma complex, but only one resonance form is shown here."],
+			display: { layout: {
+				canvas: {
+					width: 960,
+					height: 430
+				},
+				diagram: {
+					texts: [
+						{
+							id: "plus-1",
+							x: 382,
+							y: 222,
+							text: "+",
+							role: "operator"
+						},
+						{
+							id: "rxn-arrow-2",
+							x: 470,
+							y: 222,
+							text: "→",
+							role: "arrow"
+						},
+						{
+							id: "sigma-complex-label",
+							x: 725,
+							y: 350,
+							text: "sigma complex / arenium ion",
+							role: "label"
+						}
+					],
+					rings: [{
+						id: "benzene-ring-reactant",
+						type: "aromatic",
+						cx: 245,
+						cy: 220,
+						radius: 62
+					}],
+					atoms: [
+						{
+							id: "n2",
+							element: "N",
+							x: 420,
+							y: 220,
+							formalCharge: "+1"
+						},
+						{
+							id: "o3",
+							element: "O",
+							x: 486,
+							y: 184,
+							formalCharge: "0"
+						},
+						{
+							id: "o4",
+							element: "O",
+							x: 486,
+							y: 256,
+							formalCharge: "0"
+						},
+						{
+							id: "sc-c1",
+							element: "C",
+							x: 645,
+							y: 150
+						},
+						{
+							id: "sc-c2",
+							element: "C",
+							x: 710,
+							y: 186,
+							formalCharge: "+1"
+						},
+						{
+							id: "sc-c3",
+							element: "C",
+							x: 710,
+							y: 258
+						},
+						{
+							id: "sc-c4",
+							element: "C",
+							x: 645,
+							y: 294
+						},
+						{
+							id: "sc-c5",
+							element: "C",
+							x: 580,
+							y: 258
+						},
+						{
+							id: "sc-c6",
+							element: "C",
+							x: 580,
+							y: 186
+						},
+						{
+							id: "sc-n",
+							element: "N",
+							x: 525,
+							y: 150,
+							formalCharge: "+1"
+						},
+						{
+							id: "sc-o1",
+							element: "O",
+							x: 470,
+							y: 120
+						},
+						{
+							id: "sc-o2",
+							element: "O",
+							x: 470,
+							y: 180
+						},
+						{
+							id: "sc-h",
+							element: "H",
+							x: 645,
+							y: 92
+						}
+					],
+					bonds: [
+						{
+							id: "n2-o3",
+							from: "n2",
+							to: "o3",
+							order: 2
+						},
+						{
+							id: "n2-o4",
+							from: "n2",
+							to: "o4",
+							order: 2
+						},
+						{
+							id: "sc-c1-c2",
+							from: "sc-c1",
+							to: "sc-c2",
+							order: 1
+						},
+						{
+							id: "sc-c2-c3",
+							from: "sc-c2",
+							to: "sc-c3",
+							order: 1
+						},
+						{
+							id: "sc-c3-c4",
+							from: "sc-c3",
+							to: "sc-c4",
+							order: 2
+						},
+						{
+							id: "sc-c4-c5",
+							from: "sc-c4",
+							to: "sc-c5",
+							order: 1
+						},
+						{
+							id: "sc-c5-c6",
+							from: "sc-c5",
+							to: "sc-c6",
+							order: 2
+						},
+						{
+							id: "sc-c6-c1",
+							from: "sc-c6",
+							to: "sc-c1",
+							order: 1
+						},
+						{
+							id: "sc-c1-n",
+							from: "sc-c1",
+							to: "sc-n",
+							order: 1
+						},
+						{
+							id: "sc-n-o1",
+							from: "sc-n",
+							to: "sc-o1",
+							order: 2
+						},
+						{
+							id: "sc-n-o2",
+							from: "sc-n",
+							to: "sc-o2",
+							order: 2
+						},
+						{
+							id: "sc-c1-h",
+							from: "sc-c1",
+							to: "sc-h",
+							order: 1
+						}
+					],
+					curlyArrows: [{
+						id: "attack-arrow",
+						from: {
+							x: 298,
+							y: 192
+						},
+						to: {
+							x: 412,
+							y: 214
+						},
+						control1: {
+							x: 332,
+							y: 160
+						},
+						control2: {
+							x: 382,
+							y: 170
+						}
+					}],
+					annotations: [{
+						id: "nitronium-reactant-label",
+						x: 420,
+						y: 305,
+						text: "NO2+",
+						role: "species-label"
+					}, {
+						id: "attack-note",
+						x: 210,
+						y: 334,
+						text: "pi electrons attack NO2+",
+						role: "label"
+					}]
+				}
+			} },
+			visibleSpecies: [
+				"benzene",
+				"nitronium",
+				"sigma-complex"
+			],
+			mechanismArrows: [{
+				id: "attack-arrow",
+				displayArrowId: "attack-arrow",
+				type: "curly-electron-pair",
+				from: {
+					speciesId: "benzene",
+					anchorId: "pi-system"
+				},
+				to: {
+					speciesId: "nitronium",
+					anchorId: "N"
+				},
+				description: "Benzene pi electrons attack the electrophilic nitrogen of NO2+."
+			}]
 		},
 		{
 			id: "panel-3-deprotonation",
 			title: "Step 3. Restore aromaticity",
 			caption: "HSO4− removes H+ from the sigma complex. The pi system is restored and nitrobenzene is formed.",
-			canvas: {
-				width: 960,
-				height: 440
-			},
-			diagram: {
-				texts: [{
-					id: "plus-2",
-					x: 448,
-					y: 242,
-					text: "+",
-					role: "operator"
-				}, {
-					id: "rxn-arrow-3",
-					x: 538,
-					y: 242,
-					text: "→",
-					role: "arrow"
-				}],
-				atoms: [
-					{
-						id: "p3-c1",
-						element: "C",
-						x: 220,
-						y: 150
-					},
-					{
-						id: "p3-c2",
-						element: "C",
-						x: 285,
-						y: 186,
-						formalCharge: "+1"
-					},
-					{
-						id: "p3-c3",
-						element: "C",
-						x: 285,
-						y: 258
-					},
-					{
-						id: "p3-c4",
-						element: "C",
-						x: 220,
-						y: 294
-					},
-					{
-						id: "p3-c5",
-						element: "C",
-						x: 155,
-						y: 258
-					},
-					{
-						id: "p3-c6",
-						element: "C",
-						x: 155,
-						y: 186
-					},
-					{
-						id: "p3-n",
-						element: "N",
-						x: 100,
-						y: 150,
-						formalCharge: "+1"
-					},
-					{
-						id: "p3-o1",
-						element: "O",
-						x: 45,
-						y: 120
-					},
-					{
-						id: "p3-o2",
-						element: "O",
-						x: 45,
-						y: 180
-					},
-					{
-						id: "p3-h",
-						element: "H",
-						x: 220,
-						y: 92
-					},
-					{
-						id: "base-s",
-						element: "S",
-						x: 465,
-						y: 300
-					},
-					{
-						id: "base-o1",
-						element: "O",
-						x: 515,
-						y: 255
-					},
-					{
-						id: "base-o2",
-						element: "O",
-						x: 520,
-						y: 345,
-						formalCharge: "-1"
-					},
-					{
-						id: "base-o3",
-						element: "O",
-						x: 420,
-						y: 255
-					},
-					{
-						id: "base-oh",
-						element: "O",
-						x: 410,
-						y: 345
-					},
-					{
-						id: "base-oh-h",
-						element: "H",
-						x: 386,
-						y: 372
-					}
-				],
-				bonds: [
-					{
-						id: "p3-c1-c2",
-						from: "p3-c1",
-						to: "p3-c2",
-						order: 1
-					},
-					{
-						id: "p3-c2-c3",
-						from: "p3-c2",
-						to: "p3-c3",
-						order: 1
-					},
-					{
-						id: "p3-c3-c4",
-						from: "p3-c3",
-						to: "p3-c4",
-						order: 2
-					},
-					{
-						id: "p3-c4-c5",
-						from: "p3-c4",
-						to: "p3-c5",
-						order: 1
-					},
-					{
-						id: "p3-c5-c6",
-						from: "p3-c5",
-						to: "p3-c6",
-						order: 2
-					},
-					{
-						id: "p3-c6-c1",
-						from: "p3-c6",
-						to: "p3-c1",
-						order: 1
-					},
-					{
-						id: "p3-c1-n",
-						from: "p3-c1",
-						to: "p3-n",
-						order: 1
-					},
-					{
-						id: "p3-n-o1",
-						from: "p3-n",
-						to: "p3-o1",
-						order: 2
-					},
-					{
-						id: "p3-n-o2",
-						from: "p3-n",
-						to: "p3-o2",
-						order: 2
-					},
-					{
-						id: "p3-c1-h",
-						from: "p3-c1",
-						to: "p3-h",
-						order: 1
-					},
-					{
-						id: "base-s-o1",
-						from: "base-s",
-						to: "base-o1",
-						order: 2
-					},
-					{
-						id: "base-s-o2",
-						from: "base-s",
-						to: "base-o2",
-						order: 1
-					},
-					{
-						id: "base-s-o3",
-						from: "base-s",
-						to: "base-o3",
-						order: 2
-					},
-					{
-						id: "base-s-oh",
-						from: "base-s",
-						to: "base-oh",
-						order: 1
-					},
-					{
-						id: "base-oh-h",
-						from: "base-oh",
-						to: "base-oh-h",
-						order: 1
-					}
-				],
-				rings: [{
-					id: "product-ring",
-					type: "aromatic",
-					cx: 760,
-					cy: 220,
-					radius: 62
-				}],
-				productFragments: [{
-					id: "product-no2",
-					type: "nitro-substituent",
-					attachToRingAtAngleDegrees: 180,
-					ringCenterX: 760,
-					ringCenterY: 220,
-					ringRadius: 62,
-					nX: 648,
-					nY: 220,
-					o1X: 592,
-					o1Y: 190,
-					o2X: 592,
-					o2Y: 250
-				}],
-				curlyArrows: [{
-					id: "base-to-h",
-					from: {
-						x: 520,
-						y: 345
-					},
-					to: {
-						x: 228,
-						y: 102
-					},
-					control1: {
-						x: 500,
-						y: 210
-					},
-					control2: {
-						x: 300,
-						y: 150
-					}
-				}, {
-					id: "c-h-to-ring",
-					from: {
-						x: 220,
-						y: 118
-					},
-					to: {
-						x: 188,
-						y: 168
-					},
-					control1: {
-						x: 220,
-						y: 140
-					},
-					control2: {
-						x: 198,
-						y: 146
-					}
-				}],
-				annotations: [{
-					id: "restore-note",
-					x: 705,
-					y: 350,
-					text: "nitrobenzene",
-					role: "species-label"
-				}, {
-					id: "base-label",
-					x: 435,
-					y: 388,
-					text: "HSO4−",
-					role: "species-label"
-				}]
-			},
 			notes9701: [
 				"HSO4− removes H+.",
 				"The pi system is restored.",
 				"Aromaticity is restored in the final product."
 			],
-			notesExtension: ["This is why benzene undergoes substitution rather than addition."]
+			notesExtension: ["This is why benzene undergoes substitution rather than addition."],
+			display: { layout: {
+				canvas: {
+					width: 960,
+					height: 440
+				},
+				diagram: {
+					texts: [{
+						id: "plus-2",
+						x: 448,
+						y: 242,
+						text: "+",
+						role: "operator"
+					}, {
+						id: "rxn-arrow-3",
+						x: 538,
+						y: 242,
+						text: "→",
+						role: "arrow"
+					}],
+					atoms: [
+						{
+							id: "p3-c1",
+							element: "C",
+							x: 220,
+							y: 150
+						},
+						{
+							id: "p3-c2",
+							element: "C",
+							x: 285,
+							y: 186,
+							formalCharge: "+1"
+						},
+						{
+							id: "p3-c3",
+							element: "C",
+							x: 285,
+							y: 258
+						},
+						{
+							id: "p3-c4",
+							element: "C",
+							x: 220,
+							y: 294
+						},
+						{
+							id: "p3-c5",
+							element: "C",
+							x: 155,
+							y: 258
+						},
+						{
+							id: "p3-c6",
+							element: "C",
+							x: 155,
+							y: 186
+						},
+						{
+							id: "p3-n",
+							element: "N",
+							x: 100,
+							y: 150,
+							formalCharge: "+1"
+						},
+						{
+							id: "p3-o1",
+							element: "O",
+							x: 45,
+							y: 120
+						},
+						{
+							id: "p3-o2",
+							element: "O",
+							x: 45,
+							y: 180
+						},
+						{
+							id: "p3-h",
+							element: "H",
+							x: 220,
+							y: 92
+						},
+						{
+							id: "base-s",
+							element: "S",
+							x: 465,
+							y: 300
+						},
+						{
+							id: "base-o1",
+							element: "O",
+							x: 515,
+							y: 255
+						},
+						{
+							id: "base-o2",
+							element: "O",
+							x: 520,
+							y: 345,
+							formalCharge: "-1"
+						},
+						{
+							id: "base-o3",
+							element: "O",
+							x: 420,
+							y: 255
+						},
+						{
+							id: "base-oh",
+							element: "O",
+							x: 410,
+							y: 345
+						},
+						{
+							id: "base-oh-h",
+							element: "H",
+							x: 386,
+							y: 372
+						}
+					],
+					bonds: [
+						{
+							id: "p3-c1-c2",
+							from: "p3-c1",
+							to: "p3-c2",
+							order: 1
+						},
+						{
+							id: "p3-c2-c3",
+							from: "p3-c2",
+							to: "p3-c3",
+							order: 1
+						},
+						{
+							id: "p3-c3-c4",
+							from: "p3-c3",
+							to: "p3-c4",
+							order: 2
+						},
+						{
+							id: "p3-c4-c5",
+							from: "p3-c4",
+							to: "p3-c5",
+							order: 1
+						},
+						{
+							id: "p3-c5-c6",
+							from: "p3-c5",
+							to: "p3-c6",
+							order: 2
+						},
+						{
+							id: "p3-c6-c1",
+							from: "p3-c6",
+							to: "p3-c1",
+							order: 1
+						},
+						{
+							id: "p3-c1-n",
+							from: "p3-c1",
+							to: "p3-n",
+							order: 1
+						},
+						{
+							id: "p3-n-o1",
+							from: "p3-n",
+							to: "p3-o1",
+							order: 2
+						},
+						{
+							id: "p3-n-o2",
+							from: "p3-n",
+							to: "p3-o2",
+							order: 2
+						},
+						{
+							id: "p3-c1-h",
+							from: "p3-c1",
+							to: "p3-h",
+							order: 1
+						},
+						{
+							id: "base-s-o1",
+							from: "base-s",
+							to: "base-o1",
+							order: 2
+						},
+						{
+							id: "base-s-o2",
+							from: "base-s",
+							to: "base-o2",
+							order: 1
+						},
+						{
+							id: "base-s-o3",
+							from: "base-s",
+							to: "base-o3",
+							order: 2
+						},
+						{
+							id: "base-s-oh",
+							from: "base-s",
+							to: "base-oh",
+							order: 1
+						},
+						{
+							id: "base-oh-h",
+							from: "base-oh",
+							to: "base-oh-h",
+							order: 1
+						}
+					],
+					rings: [{
+						id: "product-ring",
+						type: "aromatic",
+						cx: 760,
+						cy: 220,
+						radius: 62
+					}],
+					productFragments: [{
+						id: "product-no2",
+						type: "nitro-substituent",
+						attachToRingAtAngleDegrees: 180,
+						ringCenterX: 760,
+						ringCenterY: 220,
+						ringRadius: 62,
+						nX: 648,
+						nY: 220,
+						o1X: 592,
+						o1Y: 190,
+						o2X: 592,
+						o2Y: 250
+					}],
+					curlyArrows: [{
+						id: "base-to-h",
+						from: {
+							x: 520,
+							y: 345
+						},
+						to: {
+							x: 228,
+							y: 102
+						},
+						control1: {
+							x: 500,
+							y: 210
+						},
+						control2: {
+							x: 300,
+							y: 150
+						}
+					}, {
+						id: "c-h-to-ring",
+						from: {
+							x: 220,
+							y: 118
+						},
+						to: {
+							x: 188,
+							y: 168
+						},
+						control1: {
+							x: 220,
+							y: 140
+						},
+						control2: {
+							x: 198,
+							y: 146
+						}
+					}],
+					annotations: [{
+						id: "restore-note",
+						x: 705,
+						y: 350,
+						text: "nitrobenzene",
+						role: "species-label"
+					}, {
+						id: "base-label",
+						x: 435,
+						y: 388,
+						text: "HSO4−",
+						role: "species-label"
+					}]
+				}
+			} },
+			visibleSpecies: [
+				"sigma-complex",
+				"bisulfate",
+				"nitrobenzene"
+			],
+			mechanismArrows: [{
+				id: "base-to-h",
+				displayArrowId: "base-to-h",
+				type: "curly-electron-pair",
+				from: {
+					speciesId: "bisulfate",
+					anchorId: "O-lone-pair"
+				},
+				to: {
+					speciesId: "sigma-complex",
+					anchorId: "C-H-bond"
+				},
+				description: "A lone pair on HSO4- removes the proton from the sigma complex."
+			}, {
+				id: "c-h-to-ring",
+				displayArrowId: "c-h-to-ring",
+				type: "curly-electron-pair",
+				from: {
+					speciesId: "sigma-complex",
+					anchorId: "C-H-bond"
+				},
+				to: {
+					speciesId: "benzene",
+					anchorId: "pi-system"
+				},
+				description: "The C-H bond electrons restore the aromatic pi system."
+			}]
 		}
 	],
 	futureExtensions: {
@@ -8665,34 +8730,149 @@ var e = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t
 			enabled: !1,
 			description: "Optional future extension: compare nitration and bromination of benzene."
 		}
-	}
+	},
+	species: [
+		{
+			id: "benzene",
+			name: "benzene",
+			role: "substrate",
+			smiles: "c1ccccc1",
+			charge: 0,
+			structureSource: "smiles",
+			anchors: [{
+				id: "pi-system",
+				label: "aromatic pi system"
+			}]
+		},
+		{
+			id: "nitric-acid",
+			name: "nitric acid",
+			role: "reagent",
+			smiles: "O[N+](=O)[O-]",
+			charge: 0,
+			structureSource: "smiles"
+		},
+		{
+			id: "sulfuric-acid",
+			name: "sulfuric acid",
+			role: "acid-catalyst",
+			smiles: "OS(=O)(=O)O",
+			charge: 0,
+			structureSource: "smiles"
+		},
+		{
+			id: "nitronium",
+			name: "nitronium ion",
+			role: "electrophile",
+			smiles: "[N+](=O)=O",
+			charge: 1,
+			structureSource: "smiles",
+			anchors: [{
+				id: "N",
+				label: "electrophilic nitrogen"
+			}]
+		},
+		{
+			id: "bisulfate",
+			name: "hydrogensulfate ion",
+			role: "base",
+			smiles: "[O-]S(=O)(=O)O",
+			charge: -1,
+			structureSource: "smiles",
+			anchors: [{
+				id: "O-lone-pair",
+				label: "basic oxygen lone pair"
+			}]
+		},
+		{
+			id: "water",
+			name: "water",
+			role: "byproduct",
+			smiles: "O",
+			charge: 0,
+			structureSource: "smiles"
+		},
+		{
+			id: "sigma-complex",
+			name: "sigma complex / arenium ion",
+			role: "intermediate",
+			smiles: "[O-][N+](=O)C1[CH+]C=CC=C1",
+			charge: 1,
+			structureSource: "smiles",
+			anchors: [{
+				id: "C-H-bond",
+				label: "sp3 carbon hydrogen bond"
+			}]
+		},
+		{
+			id: "nitrobenzene",
+			name: "nitrobenzene",
+			role: "product",
+			smiles: "[O-][N+](=O)c1ccccc1",
+			charge: 0,
+			structureSource: "smiles"
+		}
+	]
 }, f = [
 	"panel-1-electrophile-generation",
 	"panel-2-electrophilic-attack",
 	"panel-3-deprotonation"
-];
-function p(e, t) {
+], p = new Set([
+	"benzene.pi-system",
+	"nitronium.N",
+	"sigma-complex.C-H-bond",
+	"bisulfate.O-lone-pair"
+]);
+function m(e, t) {
 	if (!e) throw Error(t);
 }
-function m(e) {
-	let t = e.diagram || {};
-	return [...t.texts || [], ...t.annotations || []].map((e) => String(e?.text || "")).join(" ");
-}
-function h(e, t) {
-	return (e.diagram.atoms || []).some((e) => e.formalCharge === t);
+function h(e) {
+	return e.display.layout.diagram;
 }
 function g(e) {
+	let t = h(e);
+	return [...t.texts || [], ...t.annotations || []].map((e) => String(e?.text || "")).join(" ");
+}
+function _(e, t) {
+	return (h(e).atoms || []).some((e) => e.formalCharge === t);
+}
+function v(e) {
+	return `${e.speciesId}.${e.anchorId}`;
+}
+function y(e) {
+	return new Map(e.map((e) => [e.id, e]));
+}
+function b(e) {
+	m(Array.isArray(e), "Mechanism species must be an array."), m(e.length >= 8, "Mechanism species catalogue is incomplete.");
+	let t = /* @__PURE__ */ new Set();
+	e.forEach((e) => {
+		m(typeof e.id == "string" && e.id.length > 0, "Each species needs an id."), m(!t.has(e.id), `Duplicate species id: ${e.id}.`), t.add(e.id), m(typeof e.name == "string" && e.name.length > 0, `Species ${e.id} needs a name.`), m(typeof e.role == "string" && e.role.length > 0, `Species ${e.id} needs a role.`), m(typeof e.smiles == "string" && e.smiles.length > 0, `Species ${e.id} needs a SMILES.`), m(Number.isFinite(e.charge), `Species ${e.id} needs a numeric charge.`), m(typeof e.structureSource == "string" && e.structureSource.length > 0, `Species ${e.id} needs a structure source.`), m(e.molfile === void 0 || typeof e.molfile == "string", `Species ${e.id} molfile must be a string when provided.`);
+	});
+}
+function x(e, t, n) {
+	let r = e.get(t.speciesId), i = v(t);
+	m(r, `Mechanism arrow ${n} references unknown species ${t.speciesId}.`), m(p.has(i), `Mechanism arrow ${n} uses unknown anchor ${i}.`), m((r.anchors || []).some((e) => e.id === t.anchorId), `Mechanism arrow ${n} references anchor ${i}, but it is not declared on that species.`);
+}
+function ee(e, t) {
+	let n = new Set((h(e).curlyArrows || []).map((e) => e.id));
+	e.mechanismArrows.forEach((e) => {
+		m(typeof e.id == "string" && e.id.length > 0, "Mechanism arrows need ids."), m(e.type === "curly-electron-pair", `Mechanism arrow ${e.id} has an unsupported type.`), m(n.has(e.displayArrowId), `Mechanism arrow ${e.id} must map to a display curly arrow.`), x(t, e.from, e.id), x(t, e.to, e.id);
+	});
+}
+function S(e) {
 	let t = e;
-	p(t && typeof t == "object", "Mechanism fixture must be an object."), p(t.id === "benzene-eas-nitration-v1", "Unexpected mechanism fixture id."), p(typeof t.title == "string" && t.title.length > 0, "Mechanism title is required."), p(typeof t.subtitle == "string" && t.subtitle.length > 0, "Mechanism subtitle is required."), p(t.display?.show3D === !1, "This preview must stay 2D."), p(Array.isArray(t.panels), "Mechanism panels must be an array."), p(t.panels.length === 3, "Benzene nitration preview must contain exactly three panels."), f.forEach((e, n) => {
-		let r = t.panels?.[n];
-		p(r?.id === e, `Panel ${n + 1} has the wrong id.`), p(typeof r.title == "string" && r.title.length > 0, `Panel ${n + 1} needs a title.`), p(typeof r.caption == "string" && r.caption.length > 0, `Panel ${n + 1} needs a caption.`), p(Number.isFinite(r.canvas?.width), `Panel ${n + 1} needs a canvas width.`), p(Number.isFinite(r.canvas?.height), `Panel ${n + 1} needs a canvas height.`);
-	}), p(t.reaction?.overallEquation === "C6H6 + HNO3 -> C6H5NO2 + H2O", "Overall reaction equation is missing or changed."), p(Array.isArray(t.reaction?.conditions), "Reaction conditions must be an array."), p(t.reaction.conditions.length >= 3, "Reaction conditions are incomplete."), p(Array.isArray(t.examChecklist), "Exam checklist must be an array."), p(t.examChecklist.length >= 5, "Exam checklist is incomplete.");
-	let [n, r, i] = t.panels;
-	return p(m(n).includes("NO2+"), "Panel 1 must label NO2+."), p(m(r).includes("NO2+"), "Panel 2 must label the electrophile NO2+."), p((r.diagram.curlyArrows || []).some((e) => e.id === "attack-arrow"), "Panel 2 must include the benzene attack curly arrow."), p(h(r, "+1"), "Panel 2 must show a positive charge in the sigma complex."), p(m(i).includes("HSO4−"), "Panel 3 must label HSO4−."), p((i.diagram.curlyArrows || []).length >= 2, "Panel 3 must include deprotonation curly arrows."), p((i.diagram.productFragments || []).some((e) => e.type === "nitro-substituent"), "Panel 3 must include the nitrobenzene product fragment."), t;
+	m(t && typeof t == "object", "Mechanism fixture must be an object."), m(t.id === "benzene-eas-nitration-v1", "Unexpected mechanism fixture id."), m(typeof t.title == "string" && t.title.length > 0, "Mechanism title is required."), m(typeof t.subtitle == "string" && t.subtitle.length > 0, "Mechanism subtitle is required."), m(t.display?.show3D === !1, "This preview must stay 2D."), m(Array.isArray(t.panels), "Mechanism panels must be an array."), m(t.panels.length === 3, "Benzene nitration preview must contain exactly three panels."), b(t.species || []);
+	let n = y(t.species || []);
+	f.forEach((e, r) => {
+		let i = t.panels?.[r];
+		m(i?.id === e, `Panel ${r + 1} has the wrong id.`), m(typeof i.title == "string" && i.title.length > 0, `Panel ${r + 1} needs a title.`), m(typeof i.caption == "string" && i.caption.length > 0, `Panel ${r + 1} needs a caption.`), m(Number.isFinite(i.display?.layout?.canvas?.width), `Panel ${r + 1} needs a canvas width.`), m(Number.isFinite(i.display?.layout?.canvas?.height), `Panel ${r + 1} needs a canvas height.`), m(i.display?.layout?.diagram, `Panel ${r + 1} needs a display diagram.`), m(Array.isArray(i.visibleSpecies), `Panel ${r + 1} needs visible species ids.`), i.visibleSpecies.forEach((e) => m(n.has(e), `Panel ${r + 1} references unknown species ${e}.`)), m(Array.isArray(i.mechanismArrows), `Panel ${r + 1} needs mechanism arrows.`), ee(i, n);
+	}), m(t.reaction?.overallEquation === "C6H6 + HNO3 -> C6H5NO2 + H2O", "Overall reaction equation is missing or changed."), m(Array.isArray(t.reaction?.conditions), "Reaction conditions must be an array."), m(t.reaction.conditions.length >= 3, "Reaction conditions are incomplete."), m(Array.isArray(t.examChecklist), "Exam checklist must be an array."), m(t.examChecklist.length >= 5, "Exam checklist is incomplete.");
+	let [r, i, a] = t.panels;
+	return m(g(r).includes("NO2+"), "Panel 1 must label NO2+."), m(g(i).includes("NO2+"), "Panel 2 must label the electrophile NO2+."), m((h(i).curlyArrows || []).some((e) => e.id === "attack-arrow"), "Panel 2 must include the benzene attack curly arrow."), m(i.mechanismArrows.some((e) => e.id === "attack-arrow" && v(e.from) === "benzene.pi-system" && v(e.to) === "nitronium.N"), "Panel 2 mechanism arrow must connect benzene.pi-system to nitronium.N."), m(_(i, "+1"), "Panel 2 must show a positive charge in the sigma complex."), m(g(a).includes("HSO4−"), "Panel 3 must label HSO4−."), m((h(a).curlyArrows || []).length >= 2, "Panel 3 must include deprotonation curly arrows."), m(a.mechanismArrows.some((e) => e.id === "base-to-h" && v(e.from) === "bisulfate.O-lone-pair" && v(e.to) === "sigma-complex.C-H-bond"), "Panel 3 must show bisulfate.O-lone-pair deprotonating sigma-complex.C-H-bond."), m(a.mechanismArrows.some((e) => e.id === "c-h-to-ring" && v(e.from) === "sigma-complex.C-H-bond" && v(e.to) === "benzene.pi-system"), "Panel 3 must show C-H electrons restoring benzene.pi-system."), m((h(a).productFragments || []).some((e) => e.type === "nitro-substituent"), "Panel 3 must include the nitrobenzene product fragment."), t;
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/chemistryText.ts
-var _ = new Map([
+var C = new Map([
 	["C6H5NO2", "C₆H₅NO₂"],
 	["C6H6", "C₆H₆"],
 	["H2SO4", "H₂SO₄"],
@@ -8702,18 +8882,18 @@ var _ = new Map([
 	["NO2+", "NO₂⁺"],
 	["H2O", "H₂O"]
 ]);
-function v(e) {
+function te(e) {
 	let t = String(e || "").replaceAll("->", "→");
-	return _.forEach((e, n) => {
+	return C.forEach((e, n) => {
 		t = t.replaceAll(n, e);
 	}), t;
 }
-function y(e) {
+function ne(e) {
 	return e === "+1" ? "+" : e === "-1" ? "−" : String(e || "");
 }
 //#endregion
 //#region node_modules/react/cjs/react-jsx-runtime.production.js
-var b = /* @__PURE__ */ e(((e) => {
+var re = /* @__PURE__ */ e(((e) => {
 	var t = Symbol.for("react.transitional.element"), n = Symbol.for("react.fragment");
 	function r(e, n, r) {
 		var i = null;
@@ -8728,30 +8908,30 @@ var b = /* @__PURE__ */ e(((e) => {
 		};
 	}
 	e.Fragment = n, e.jsx = r, e.jsxs = r;
-})), x = (/* @__PURE__ */ e(((e, t) => {
-	t.exports = b();
+})), w = (/* @__PURE__ */ e(((e, t) => {
+	t.exports = re();
 })))();
-function ee({ atom: e }) {
-	return /* @__PURE__ */ (0, x.jsxs)("g", {
+function ie({ atom: e }) {
+	return /* @__PURE__ */ (0, w.jsxs)("g", {
 		className: "mechanism-svg__atom-group",
 		"data-atom-id": e.id,
-		children: [/* @__PURE__ */ (0, x.jsx)("text", {
+		children: [/* @__PURE__ */ (0, w.jsx)("text", {
 			className: "mechanism-svg__atom",
 			x: e.x,
 			y: e.y,
 			children: e.element
-		}), e.formalCharge && e.formalCharge !== "0" ? /* @__PURE__ */ (0, x.jsx)("text", {
+		}), e.formalCharge && e.formalCharge !== "0" ? /* @__PURE__ */ (0, w.jsx)("text", {
 			className: "mechanism-svg__charge",
 			x: e.x + 16,
 			y: e.y - 15,
-			children: y(e.formalCharge)
+			children: ne(e.formalCharge)
 		}) : null]
 	});
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/primitives/Bond.tsx
-function S({ from: e, to: t, order: n = 1 }) {
-	if (n !== 2) return /* @__PURE__ */ (0, x.jsx)("line", {
+function ae({ from: e, to: t, order: n = 1 }) {
+	if (n !== 2) return /* @__PURE__ */ (0, w.jsx)("line", {
 		className: "mechanism-svg__bond",
 		x1: e.x,
 		y1: e.y,
@@ -8759,13 +8939,13 @@ function S({ from: e, to: t, order: n = 1 }) {
 		y2: t.y
 	});
 	let r = t.x - e.x, i = t.y - e.y, a = Math.hypot(r, i) || 1, o = 4.2, s = Number((-i / a * o).toFixed(2)), c = Number((r / a * o).toFixed(2));
-	return /* @__PURE__ */ (0, x.jsxs)(x.Fragment, { children: [/* @__PURE__ */ (0, x.jsx)("line", {
+	return /* @__PURE__ */ (0, w.jsxs)(w.Fragment, { children: [/* @__PURE__ */ (0, w.jsx)("line", {
 		className: "mechanism-svg__bond mechanism-svg__bond--double",
 		x1: Number((e.x + s).toFixed(2)),
 		y1: Number((e.y + c).toFixed(2)),
 		x2: Number((t.x + s).toFixed(2)),
 		y2: Number((t.y + c).toFixed(2))
-	}), /* @__PURE__ */ (0, x.jsx)("line", {
+	}), /* @__PURE__ */ (0, w.jsx)("line", {
 		className: "mechanism-svg__bond mechanism-svg__bond--double",
 		x1: Number((e.x - s).toFixed(2)),
 		y1: Number((e.y - c).toFixed(2)),
@@ -8775,8 +8955,8 @@ function S({ from: e, to: t, order: n = 1 }) {
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/primitives/CurlyArrow.tsx
-function C({ arrow: e, markerId: t }) {
-	return /* @__PURE__ */ (0, x.jsx)("path", {
+function oe({ arrow: e, markerId: t }) {
+	return /* @__PURE__ */ (0, w.jsx)("path", {
 		className: "mechanism-svg__curly-arrow",
 		d: `M ${e.from.x} ${e.from.y} C ${e.control1.x} ${e.control1.y}, ${e.control2.x} ${e.control2.y}, ${e.to.x} ${e.to.y}`,
 		markerEnd: `url(#${t})`
@@ -8784,8 +8964,8 @@ function C({ arrow: e, markerId: t }) {
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/primitives/HighlightHalo.tsx
-function te({ highlight: e }) {
-	return /* @__PURE__ */ (0, x.jsx)("circle", {
+function se({ highlight: e }) {
+	return /* @__PURE__ */ (0, w.jsx)("circle", {
 		className: "mechanism-svg__halo",
 		cx: e.x,
 		cy: e.y,
@@ -8794,7 +8974,7 @@ function te({ highlight: e }) {
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/geometry.ts
-function ne(e) {
+function ce(e) {
 	return Array.from({ length: 6 }, (t, n) => {
 		let r = (-90 + n * 60) * (Math.PI / 180);
 		return {
@@ -8803,7 +8983,7 @@ function ne(e) {
 		};
 	});
 }
-function re(e, t, n, r) {
+function le(e, t, n, r) {
 	let i = Math.PI / 180 * r;
 	return {
 		x: e + n * Math.cos(i),
@@ -8812,8 +8992,8 @@ function re(e, t, n, r) {
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/primitives/ProductFragment.tsx
-function w({ fragment: e }) {
-	let t = re(e.ringCenterX, e.ringCenterY, e.ringRadius, e.attachToRingAtAngleDegrees), n = {
+function ue({ fragment: e }) {
+	let t = le(e.ringCenterX, e.ringCenterY, e.ringRadius, e.attachToRingAtAngleDegrees), n = {
 		x: e.nX,
 		y: e.nY
 	}, r = {
@@ -8823,38 +9003,38 @@ function w({ fragment: e }) {
 		x: e.o2X,
 		y: e.o2Y
 	};
-	return /* @__PURE__ */ (0, x.jsxs)("g", {
+	return /* @__PURE__ */ (0, w.jsxs)("g", {
 		className: "mechanism-svg__product-fragment",
 		"data-fragment-id": e.id,
 		children: [
-			/* @__PURE__ */ (0, x.jsx)(S, {
+			/* @__PURE__ */ (0, w.jsx)(ae, {
 				from: t,
 				to: n,
 				order: 1
 			}),
-			/* @__PURE__ */ (0, x.jsx)(S, {
+			/* @__PURE__ */ (0, w.jsx)(ae, {
 				from: n,
 				to: r,
 				order: 2
 			}),
-			/* @__PURE__ */ (0, x.jsx)(S, {
+			/* @__PURE__ */ (0, w.jsx)(ae, {
 				from: n,
 				to: i,
 				order: 2
 			}),
-			/* @__PURE__ */ (0, x.jsx)("text", {
+			/* @__PURE__ */ (0, w.jsx)("text", {
 				className: "mechanism-svg__atom",
 				x: e.nX,
 				y: e.nY,
 				children: "N"
 			}),
-			/* @__PURE__ */ (0, x.jsx)("text", {
+			/* @__PURE__ */ (0, w.jsx)("text", {
 				className: "mechanism-svg__atom",
 				x: e.o1X,
 				y: e.o1Y,
 				children: "O"
 			}),
-			/* @__PURE__ */ (0, x.jsx)("text", {
+			/* @__PURE__ */ (0, w.jsx)("text", {
 				className: "mechanism-svg__atom",
 				x: e.o2X,
 				y: e.o2Y,
@@ -8865,12 +9045,12 @@ function w({ fragment: e }) {
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/primitives/Ring.tsx
-function ie({ ring: e }) {
-	let t = ne(e).map((e) => `${e.x},${e.y}`).join(" ");
-	return /* @__PURE__ */ (0, x.jsxs)("g", {
+function T({ ring: e }) {
+	let t = ce(e).map((e) => `${e.x},${e.y}`).join(" ");
+	return /* @__PURE__ */ (0, w.jsxs)("g", {
 		className: "mechanism-svg__ring",
 		"data-ring-id": e.id,
-		children: [/* @__PURE__ */ (0, x.jsx)("polygon", { points: t }), e.type === "aromatic" ? /* @__PURE__ */ (0, x.jsx)("circle", {
+		children: [/* @__PURE__ */ (0, w.jsx)("polygon", { points: t }), e.type === "aromatic" ? /* @__PURE__ */ (0, w.jsx)("circle", {
 			className: "mechanism-svg__aromatic-core",
 			cx: e.cx,
 			cy: e.cy,
@@ -8880,76 +9060,76 @@ function ie({ ring: e }) {
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/primitives/TextLabel.tsx
-function ae({ item: e }) {
-	return /* @__PURE__ */ (0, x.jsx)("text", {
+function E({ item: e }) {
+	return /* @__PURE__ */ (0, w.jsx)("text", {
 		className: `mechanism-svg__text mechanism-svg__text--${e.role}`,
 		x: e.x,
 		y: e.y,
-		children: v(e.text)
+		children: te(e.text)
 	});
 }
 //#endregion
 //#region interactive/benzene-nitration/src/renderers/SvgMechanismRenderer.tsx
-function oe(e = []) {
+function de(e = []) {
 	return new Map(e.map((e) => [e.id, e]));
 }
-function se({ panel: e }) {
-	let t = e.diagram || {}, n = t.atoms || [], r = oe(n), i = `${e.id}-curly-arrowhead`;
-	return /* @__PURE__ */ (0, x.jsxs)("svg", {
+function fe({ panel: e }) {
+	let { canvas: t, diagram: n } = e.display.layout, r = n.atoms || [], i = de(r), a = `${e.id}-curly-arrowhead`;
+	return /* @__PURE__ */ (0, w.jsxs)("svg", {
 		className: "mechanism-svg",
-		viewBox: `0 0 ${e.canvas.width} ${e.canvas.height}`,
+		viewBox: `0 0 ${t.width} ${t.height}`,
 		role: "img",
 		"aria-labelledby": `${e.id}-title`,
 		children: [
-			/* @__PURE__ */ (0, x.jsx)("title", {
+			/* @__PURE__ */ (0, w.jsx)("title", {
 				id: `${e.id}-title`,
 				children: e.title
 			}),
-			/* @__PURE__ */ (0, x.jsx)("defs", { children: /* @__PURE__ */ (0, x.jsx)("marker", {
-				id: i,
+			/* @__PURE__ */ (0, w.jsx)("defs", { children: /* @__PURE__ */ (0, w.jsx)("marker", {
+				id: a,
 				markerWidth: "12",
 				markerHeight: "12",
 				refX: "9",
 				refY: "6",
 				orient: "auto",
 				markerUnits: "strokeWidth",
-				children: /* @__PURE__ */ (0, x.jsx)("path", {
+				children: /* @__PURE__ */ (0, w.jsx)("path", {
 					d: "M 0 1 L 10 6 L 0 11 z",
 					className: "mechanism-svg__arrowhead"
 				})
 			}) }),
-			(t.highlights || []).map((e) => /* @__PURE__ */ (0, x.jsx)(te, { highlight: e }, e.id)),
-			(t.rings || []).map((e) => /* @__PURE__ */ (0, x.jsx)(ie, { ring: e }, e.id)),
-			(t.bonds || []).map((e) => {
-				let t = r.get(e.from), n = r.get(e.to);
-				return t && n ? /* @__PURE__ */ (0, x.jsx)(S, {
+			(n.highlights || []).map((e) => /* @__PURE__ */ (0, w.jsx)(se, { highlight: e }, e.id)),
+			(n.rings || []).map((e) => /* @__PURE__ */ (0, w.jsx)(T, { ring: e }, e.id)),
+			(n.bonds || []).map((e) => {
+				let t = i.get(e.from), n = i.get(e.to);
+				return t && n ? /* @__PURE__ */ (0, w.jsx)(ae, {
 					from: t,
 					to: n,
 					order: e.order
 				}, e.id) : null;
 			}),
-			(t.productFragments || []).map((e) => /* @__PURE__ */ (0, x.jsx)(w, { fragment: e }, e.id)),
-			(t.curlyArrows || []).map((e) => /* @__PURE__ */ (0, x.jsx)(C, {
+			(n.productFragments || []).map((e) => /* @__PURE__ */ (0, w.jsx)(ue, { fragment: e }, e.id)),
+			(n.curlyArrows || []).map((e) => /* @__PURE__ */ (0, w.jsx)(oe, {
 				arrow: e,
-				markerId: i
+				markerId: a
 			}, e.id)),
-			n.map((e) => /* @__PURE__ */ (0, x.jsx)(ee, { atom: e }, e.id)),
-			[...t.texts || [], ...t.annotations || []].map((e) => /* @__PURE__ */ (0, x.jsx)(ae, { item: e }, e.id))
+			r.map((e) => /* @__PURE__ */ (0, w.jsx)(ie, { atom: e }, e.id)),
+			[...n.texts || [], ...n.annotations || []].map((e) => /* @__PURE__ */ (0, w.jsx)(E, { item: e }, e.id))
 		]
 	});
 }
 //#endregion
 //#region interactive/benzene-nitration/src/MechanismPanel.tsx
-function ce({ fixture: e, panel: t, activePanelIndex: n, onPrevious: r, onNext: i, onSelectPanel: a }) {
+function pe({ fixture: e, panel: t, activePanelIndex: n, onPrevious: r, onNext: i, onSelectPanel: a }) {
 	let o = n === 0, s = n === e.panels.length - 1;
-	return /* @__PURE__ */ (0, x.jsxs)("section", {
+	return /* @__PURE__ */ (0, w.jsxs)("section", {
 		className: "interactive-panel mechanism-workspace",
 		"aria-labelledby": "mechanism-panel-title",
 		children: [
-			/* @__PURE__ */ (0, x.jsxs)("div", {
+			/* @__PURE__ */ (0, w.jsxs)("div", {
 				className: "mechanism-workspace__header",
-				children: [/* @__PURE__ */ (0, x.jsxs)("div", { children: [
-					/* @__PURE__ */ (0, x.jsxs)("p", {
+				children: [/* @__PURE__ */ (0, w.jsxs)("div", { children: [
+					/* @__PURE__ */ (0, w.jsxs)("p", {
 						id: "mechanism-step-indicator",
 						className: "mechanism-step-indicator",
 						children: [
@@ -8959,19 +9139,19 @@ function ce({ fixture: e, panel: t, activePanelIndex: n, onPrevious: r, onNext: 
 							e.panels.length
 						]
 					}),
-					/* @__PURE__ */ (0, x.jsx)("h2", {
+					/* @__PURE__ */ (0, w.jsx)("h2", {
 						id: "mechanism-panel-title",
 						children: t.title
 					}),
-					/* @__PURE__ */ (0, x.jsx)("p", {
+					/* @__PURE__ */ (0, w.jsx)("p", {
 						id: "mechanism-panel-caption",
-						children: v(t.caption)
+						children: te(t.caption)
 					})
-				] }), /* @__PURE__ */ (0, x.jsxs)("div", {
+				] }), /* @__PURE__ */ (0, w.jsxs)("div", {
 					className: "mechanism-stepper",
 					"aria-label": "Mechanism stepper",
 					children: [
-						/* @__PURE__ */ (0, x.jsx)("button", {
+						/* @__PURE__ */ (0, w.jsx)("button", {
 							className: "mechanism-stepper__button",
 							type: "button",
 							"aria-label": "Previous mechanism step",
@@ -8979,10 +9159,10 @@ function ce({ fixture: e, panel: t, activePanelIndex: n, onPrevious: r, onNext: 
 							onClick: r,
 							children: "Previous"
 						}),
-						/* @__PURE__ */ (0, x.jsx)("div", {
+						/* @__PURE__ */ (0, w.jsx)("div", {
 							className: "mechanism-step-dots",
 							"aria-label": "Step indicator",
-							children: e.panels.map((e, t) => /* @__PURE__ */ (0, x.jsx)("button", {
+							children: e.panels.map((e, t) => /* @__PURE__ */ (0, w.jsx)("button", {
 								className: "mechanism-step-dot",
 								type: "button",
 								"aria-label": `Open ${e.title}`,
@@ -8991,7 +9171,7 @@ function ce({ fixture: e, panel: t, activePanelIndex: n, onPrevious: r, onNext: 
 								children: t + 1
 							}, e.id))
 						}),
-						/* @__PURE__ */ (0, x.jsx)("button", {
+						/* @__PURE__ */ (0, w.jsx)("button", {
 							className: "mechanism-stepper__button",
 							type: "button",
 							"aria-label": "Next mechanism step",
@@ -9002,19 +9182,19 @@ function ce({ fixture: e, panel: t, activePanelIndex: n, onPrevious: r, onNext: 
 					]
 				})]
 			}),
-			/* @__PURE__ */ (0, x.jsx)("div", {
+			/* @__PURE__ */ (0, w.jsx)("div", {
 				className: "mechanism-diagram",
 				"aria-live": "polite",
-				children: /* @__PURE__ */ (0, x.jsx)(se, { panel: t })
+				children: /* @__PURE__ */ (0, w.jsx)(fe, { panel: t })
 			}),
-			/* @__PURE__ */ (0, x.jsxs)("div", {
+			/* @__PURE__ */ (0, w.jsxs)("div", {
 				className: "interactive-subtle-panel mechanism-step-summary",
-				children: [/* @__PURE__ */ (0, x.jsx)("p", {
+				children: [/* @__PURE__ */ (0, w.jsx)("p", {
 					className: "mechanism-block-label",
 					children: "Current 9701 points"
-				}), /* @__PURE__ */ (0, x.jsx)("ul", {
+				}), /* @__PURE__ */ (0, w.jsx)("ul", {
 					className: "mechanism-mini-list",
-					children: t.notes9701.map((e) => /* @__PURE__ */ (0, x.jsx)("li", { children: v(e) }, e))
+					children: t.notes9701.map((e) => /* @__PURE__ */ (0, w.jsx)("li", { children: te(e) }, e))
 				})]
 			})
 		]
@@ -9022,135 +9202,135 @@ function ce({ fixture: e, panel: t, activePanelIndex: n, onPrevious: r, onNext: 
 }
 //#endregion
 //#region interactive/benzene-nitration/src/state.ts
-function le(e, t = 0) {
+function me(e, t = 0) {
 	let n = e.panels.length;
 	return {
 		fixture: e,
 		activePanelIndex: Math.min(Math.max(t, 0), n - 1)
 	};
 }
-function ue(e) {
+function D(e) {
 	return e.fixture.panels[e.activePanelIndex];
 }
-function T(e, t) {
-	return le(e.fixture, e.activePanelIndex + t);
+function O(e, t) {
+	return me(e.fixture, e.activePanelIndex + t);
 }
-function E(e, t) {
-	return le(e.fixture, t);
+function he(e, t) {
+	return me(e.fixture, t);
 }
 //#endregion
 //#region interactive/benzene-nitration/src/MechanismDemoPage.tsx
-function de() {
-	let e = (0, l.useMemo)(() => g(d), []), [t, n] = (0, l.useState)(() => le(e)), r = ue(t);
+function ge() {
+	let e = (0, l.useMemo)(() => S(d), []), [t, n] = (0, l.useState)(() => me(e)), r = D(t);
 	return (0, l.useEffect)(() => {
 		let e = (e) => {
-			e.altKey || e.ctrlKey || e.metaKey || (e.key === "ArrowLeft" && n((e) => T(e, -1)), e.key === "ArrowRight" && n((e) => T(e, 1)));
+			e.altKey || e.ctrlKey || e.metaKey || (e.key === "ArrowLeft" && n((e) => O(e, -1)), e.key === "ArrowRight" && n((e) => O(e, 1)));
 		};
 		return document.addEventListener("keydown", e), () => document.removeEventListener("keydown", e);
-	}, []), /* @__PURE__ */ (0, x.jsxs)(x.Fragment, { children: [/* @__PURE__ */ (0, x.jsxs)("header", {
+	}, []), /* @__PURE__ */ (0, w.jsxs)(w.Fragment, { children: [/* @__PURE__ */ (0, w.jsxs)("header", {
 		className: "interactive-hero mechanism-demo-hero",
 		children: [
-			/* @__PURE__ */ (0, x.jsx)("a", {
+			/* @__PURE__ */ (0, w.jsx)("a", {
 				className: "interactive-return",
 				href: "../index.html",
 				"data-preserve-theme": !0,
 				children: "Back to Interactive"
 			}),
-			/* @__PURE__ */ (0, x.jsx)("p", {
+			/* @__PURE__ */ (0, w.jsx)("p", {
 				className: "interactive-kicker",
 				children: "Student Site · Interactive Chemistry"
 			}),
-			/* @__PURE__ */ (0, x.jsxs)("div", {
+			/* @__PURE__ */ (0, w.jsxs)("div", {
 				className: "interactive-hero-grid mechanism-demo-hero__grid",
-				children: [/* @__PURE__ */ (0, x.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, w.jsxs)("div", {
 					className: "interactive-title-block",
 					children: [
-						/* @__PURE__ */ (0, x.jsxs)("div", {
+						/* @__PURE__ */ (0, w.jsxs)("div", {
 							className: "interactive-meta-row",
 							children: [
-								/* @__PURE__ */ (0, x.jsx)("span", {
+								/* @__PURE__ */ (0, w.jsx)("span", {
 									className: "interactive-meta-chip",
 									children: "CAIE 9701"
 								}),
-								/* @__PURE__ */ (0, x.jsx)("span", {
+								/* @__PURE__ */ (0, w.jsx)("span", {
 									className: "interactive-meta-chip",
 									children: "Exam mode"
 								}),
-								/* @__PURE__ */ (0, x.jsx)("span", {
+								/* @__PURE__ */ (0, w.jsx)("span", {
 									className: "interactive-meta-chip",
 									children: "2D mechanism"
 								})
 							]
 						}),
-						/* @__PURE__ */ (0, x.jsx)("h1", { children: e.title }),
-						/* @__PURE__ */ (0, x.jsx)("p", {
+						/* @__PURE__ */ (0, w.jsx)("h1", { children: e.title }),
+						/* @__PURE__ */ (0, w.jsx)("p", {
 							className: "interactive-summary",
 							children: e.subtitle
 						})
 					]
-				}), /* @__PURE__ */ (0, x.jsxs)("div", {
+				}), /* @__PURE__ */ (0, w.jsxs)("div", {
 					className: "interactive-meta-group",
-					children: [/* @__PURE__ */ (0, x.jsxs)("article", {
+					children: [/* @__PURE__ */ (0, w.jsxs)("article", {
 						className: "interactive-meta-card",
-						children: [/* @__PURE__ */ (0, x.jsx)("span", { children: "Focus" }), /* @__PURE__ */ (0, x.jsx)("strong", { children: "NO2+ attack, sigma complex, and restored aromaticity." })]
-					}), /* @__PURE__ */ (0, x.jsxs)("article", {
+						children: [/* @__PURE__ */ (0, w.jsx)("span", { children: "Focus" }), /* @__PURE__ */ (0, w.jsx)("strong", { children: "NO2+ attack, sigma complex, and restored aromaticity." })]
+					}), /* @__PURE__ */ (0, w.jsxs)("article", {
 						className: "interactive-meta-card",
-						children: [/* @__PURE__ */ (0, x.jsx)("span", { children: "Scope" }), /* @__PURE__ */ (0, x.jsx)("strong", { children: "Three panels only. No resonance toggle or 3D view." })]
+						children: [/* @__PURE__ */ (0, w.jsx)("span", { children: "Scope" }), /* @__PURE__ */ (0, w.jsx)("strong", { children: "Three panels only. No resonance toggle or 3D view." })]
 					})]
 				})]
 			})
 		]
-	}), /* @__PURE__ */ (0, x.jsxs)("main", {
+	}), /* @__PURE__ */ (0, w.jsxs)("main", {
 		className: "interactive-app-shell mechanism-demo-layout",
-		children: [/* @__PURE__ */ (0, x.jsx)(ce, {
+		children: [/* @__PURE__ */ (0, w.jsx)(pe, {
 			fixture: e,
 			panel: r,
 			activePanelIndex: t.activePanelIndex,
-			onPrevious: () => n((e) => T(e, -1)),
-			onNext: () => n((e) => T(e, 1)),
-			onSelectPanel: (e) => n((t) => E(t, e))
-		}), /* @__PURE__ */ (0, x.jsxs)("aside", {
+			onPrevious: () => n((e) => O(e, -1)),
+			onNext: () => n((e) => O(e, 1)),
+			onSelectPanel: (e) => n((t) => he(t, e))
+		}), /* @__PURE__ */ (0, w.jsxs)("aside", {
 			className: "mechanism-side",
 			"aria-label": "Reaction summary",
 			children: [
-				/* @__PURE__ */ (0, x.jsxs)("section", {
+				/* @__PURE__ */ (0, w.jsxs)("section", {
 					className: "interactive-subtle-panel mechanism-info-card",
 					children: [
-						/* @__PURE__ */ (0, x.jsx)("p", {
+						/* @__PURE__ */ (0, w.jsx)("p", {
 							className: "mechanism-block-label",
 							children: "Overall reaction"
 						}),
-						/* @__PURE__ */ (0, x.jsx)("p", {
+						/* @__PURE__ */ (0, w.jsx)("p", {
 							className: "mechanism-equation",
-							children: v(e.reaction.overallEquation)
+							children: te(e.reaction.overallEquation)
 						}),
-						/* @__PURE__ */ (0, x.jsx)("p", {
+						/* @__PURE__ */ (0, w.jsx)("p", {
 							className: "mechanism-key-idea",
 							children: e.reaction.keyIdea
 						})
 					]
 				}),
-				/* @__PURE__ */ (0, x.jsxs)("section", {
+				/* @__PURE__ */ (0, w.jsxs)("section", {
 					className: "interactive-subtle-panel mechanism-info-card",
-					children: [/* @__PURE__ */ (0, x.jsx)("p", {
+					children: [/* @__PURE__ */ (0, w.jsx)("p", {
 						className: "mechanism-block-label",
 						children: "Conditions"
-					}), /* @__PURE__ */ (0, x.jsx)("div", {
+					}), /* @__PURE__ */ (0, w.jsx)("div", {
 						className: "mechanism-chip-list",
-						children: e.reaction.conditions.map((e) => /* @__PURE__ */ (0, x.jsx)("span", {
+						children: e.reaction.conditions.map((e) => /* @__PURE__ */ (0, w.jsx)("span", {
 							className: "mechanism-info-chip",
-							children: v(e)
+							children: te(e)
 						}, e))
 					})]
 				}),
-				/* @__PURE__ */ (0, x.jsxs)("section", {
+				/* @__PURE__ */ (0, w.jsxs)("section", {
 					className: "interactive-accent-panel mechanism-info-card",
-					children: [/* @__PURE__ */ (0, x.jsx)("p", {
+					children: [/* @__PURE__ */ (0, w.jsx)("p", {
 						className: "mechanism-block-label",
 						children: "Exam checklist"
-					}), /* @__PURE__ */ (0, x.jsx)("ul", {
+					}), /* @__PURE__ */ (0, w.jsx)("ul", {
 						className: "mechanism-checklist",
-						children: e.examChecklist.map((e) => /* @__PURE__ */ (0, x.jsx)("li", { children: v(e) }, e))
+						children: e.examChecklist.map((e) => /* @__PURE__ */ (0, w.jsx)("li", { children: te(e) }, e))
 					})]
 				})
 			]
@@ -9159,7 +9339,7 @@ function de() {
 }
 //#endregion
 //#region interactive/benzene-nitration/src/main.tsx
-var fe = document.getElementById("benzene-nitration-root");
-if (!fe) throw Error("Benzene nitration route root was not found.");
-(0, u.createRoot)(fe).render(/* @__PURE__ */ (0, x.jsx)(l.StrictMode, { children: /* @__PURE__ */ (0, x.jsx)(de, {}) })), window.StudentSiteTheme?.preserveThemeOnAnchors?.();
+var _e = document.getElementById("benzene-nitration-root");
+if (!_e) throw Error("Benzene nitration route root was not found.");
+(0, u.createRoot)(_e).render(/* @__PURE__ */ (0, w.jsx)(l.StrictMode, { children: /* @__PURE__ */ (0, w.jsx)(ge, {}) })), window.StudentSiteTheme?.preserveThemeOnAnchors?.();
 //#endregion
