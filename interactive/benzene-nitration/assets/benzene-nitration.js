@@ -11285,14 +11285,14 @@ function ee() {
   return /* @__PURE__ */ (0, x.jsx)("defs", {
     children: /* @__PURE__ */ (0, x.jsx)("marker", {
       id: "curly-arrow-head",
-      markerWidth: "9",
-      markerHeight: "7",
-      refX: "8",
-      refY: "3.5",
+      markerWidth: "10",
+      markerHeight: "8",
+      refX: "9",
+      refY: "4",
       orient: "auto",
       children: /* @__PURE__ */ (0, x.jsx)("path", {
         className: "mechanism-svg__arrowhead",
-        d: "M 0 0 L 9 3.5 L 0 7 Q 2.4 3.5 0 0",
+        d: "M 0 0 L 9.6 4 L 0 8 C 2.8 5.2 2.8 2.8 0 0",
       }),
     }),
   });
@@ -11412,19 +11412,21 @@ function ie(e = re) {
   return [e.c1, e.c2, e.c3, e.c4, e.c5, e.c6].map(([e, t]) => `${e},${t}`).join(" ");
 }
 function ae({ cx: e = 240, cy: t = 190, r: n = 60 }) {
+  let r = w(e, t, n),
+    i = n * 0.525;
   return /* @__PURE__ */ (0, x.jsxs)("g", {
     className: "mechanism-svg__ring",
     "aria-label": "benzene ring",
     children: [
       /* @__PURE__ */ (0, x.jsx)("polygon", {
-        points: ie(w(e, t, n)),
+        points: ie(r),
         fill: "none",
       }),
       /* @__PURE__ */ (0, x.jsx)("circle", {
         className: "mechanism-svg__aromatic-core",
         cx: e,
         cy: t,
-        r: n * 0.57,
+        r: i,
         fill: "none",
       }),
     ],
@@ -11432,8 +11434,11 @@ function ae({ cx: e = 240, cy: t = 190, r: n = 60 }) {
 }
 function oe({ cx: e = 240, cy: t = 190, r: n = 60 }) {
   let r = w(e, t, n),
-    i = t - n * 0.28,
-    a = t + n * 0.9;
+    i = [e - n * 0.48, t - n * 0.08],
+    a = [e + n * 0.48, t - n * 0.08],
+    o = [e - n * 0.18, t + n * 0.78],
+    s = [e + n * 0.18, t + n * 0.78],
+    c = t + n * 0.86;
   return /* @__PURE__ */ (0, x.jsxs)("g", {
     "aria-label": "Wheland intermediate ring with broken delocalisation horseshoe",
     children: [
@@ -11445,7 +11450,7 @@ function oe({ cx: e = 240, cy: t = 190, r: n = 60 }) {
       /* @__PURE__ */ (0, x.jsx)("path", {
         "aria-label": "broken delocalisation horseshoe, not aromatic circle",
         className: "mechanism-svg__horseshoe",
-        d: `M ${e - n * 0.52} ${i} C ${e - n * 0.85} ${t + n * 0.25}, ${e - n * 0.4} ${a}, ${e} ${a} C ${e + n * 0.4} ${a}, ${e + n * 0.85} ${t + n * 0.25}, ${e + n * 0.52} ${i}`,
+        d: `M ${i[0]} ${i[1]} C ${e - n * 0.74} ${t + n * 0.26}, ${e - n * 0.56} ${t + n * 0.68}, ${o[0]} ${o[1]} C ${e - n * 0.08} ${c}, ${e + n * 0.08} ${c}, ${s[0]} ${s[1]} C ${e + n * 0.56} ${t + n * 0.68}, ${e + n * 0.74} ${t + n * 0.26}, ${a[0]} ${a[1]}`,
         fill: "none",
       }),
       /* @__PURE__ */ (0, x.jsxs)("g", {
@@ -11454,12 +11459,12 @@ function oe({ cx: e = 240, cy: t = 190, r: n = 60 }) {
           /* @__PURE__ */ (0, x.jsx)("circle", {
             className: "mechanism-svg__charge-backing",
             cx: e,
-            cy: t + n * 0.26,
-            r: "14",
+            cy: t + n * 0.34,
+            r: "13.5",
           }),
           /* @__PURE__ */ (0, x.jsx)(te, {
             x: e,
-            y: t + n * 0.26,
+            y: t + n * 0.34,
             charge: "+",
           }),
         ],
@@ -11473,59 +11478,59 @@ function se({ x: e = 300, y: t = 66 }) {
     children: [
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__atom",
-        x: e - 48,
+        x: e - 46,
         y: t,
         children: "O",
       }),
       /* @__PURE__ */ (0, x.jsx)("line", {
         className: "mechanism-svg__bond mechanism-svg__bond--thin",
-        x1: e - 35,
-        y1: t - 3,
-        x2: e - 14,
-        y2: t - 3,
+        x1: e - 33,
+        y1: t - 4,
+        x2: e - 13,
+        y2: t - 4,
       }),
       /* @__PURE__ */ (0, x.jsx)("line", {
         className: "mechanism-svg__bond mechanism-svg__bond--thin",
-        x1: e - 35,
-        y1: t + 5,
-        x2: e - 14,
-        y2: t + 5,
+        x1: e - 33,
+        y1: t + 4,
+        x2: e - 13,
+        y2: t + 4,
       }),
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__atom",
         x: e,
-        y: t + 3,
+        y: t,
         children: "N",
       }),
       /* @__PURE__ */ (0, x.jsx)(te, {
-        x: e + 15,
-        y: t - 17,
+        x: e,
+        y: t - 24,
         charge: "+",
       }),
       /* @__PURE__ */ (0, x.jsx)("line", {
         className: "mechanism-svg__bond mechanism-svg__bond--thin",
-        x1: e + 14,
-        y1: t - 3,
-        x2: e + 35,
-        y2: t - 3,
+        x1: e + 13,
+        y1: t - 4,
+        x2: e + 33,
+        y2: t - 4,
       }),
       /* @__PURE__ */ (0, x.jsx)("line", {
         className: "mechanism-svg__bond mechanism-svg__bond--thin",
-        x1: e + 14,
-        y1: t + 5,
-        x2: e + 35,
-        y2: t + 5,
+        x1: e + 13,
+        y1: t + 4,
+        x2: e + 33,
+        y2: t + 4,
       }),
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__atom",
-        x: e + 50,
+        x: e + 46,
         y: t,
         children: "O",
       }),
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__small-label",
         x: e,
-        y: t + 34,
+        y: t + 32,
         textAnchor: "middle",
         children: "NO₂⁺",
       }),
@@ -11564,19 +11569,19 @@ function le({ x: e = 78, y: t = 54 }) {
         charge: "−",
       }),
       /* @__PURE__ */ (0, x.jsx)(C, {
-        x: e + 22,
-        y: t - 2,
+        x: e + 27,
+        y: t - 8,
         label: "oxygen lone pair on hydrogensulfate",
       }),
       /* @__PURE__ */ (0, x.jsx)(ne, {
-        from: [e + 24, t],
+        from: [e + 25, t],
         to: [e + 58, t],
         order: 1,
         label: "O-S bond in hydrogensulfate",
       }),
       /* @__PURE__ */ (0, x.jsxs)("text", {
         className: "mechanism-svg__species-text",
-        x: e + 98,
+        x: e + 96,
         y: t,
         textAnchor: "middle",
         dominantBaseline: "middle",
@@ -11593,7 +11598,7 @@ function le({ x: e = 78, y: t = 54 }) {
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__small-label",
         x: e + 52,
-        y: t + 30,
+        y: t + 32,
         textAnchor: "middle",
         children: "HSO₄⁻ base",
       }),
@@ -11829,18 +11834,18 @@ function fe() {
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__equation",
         x: "240",
-        y: "92",
+        y: "94",
         textAnchor: "middle",
         children: "HNO₃ + 2H₂SO₄ ⇌ NO₂⁺ + 2HSO₄⁻ + H₃O⁺",
       }),
       /* @__PURE__ */ (0, x.jsx)(se, {
         x: 240,
-        y: 178,
+        y: 176,
       }),
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__annotation",
         x: "240",
-        y: "268",
+        y: "262",
         textAnchor: "middle",
         children: "Electrophile: nitronium ion, NO₂⁺",
       }),
@@ -11852,62 +11857,49 @@ function pe() {
     "aria-label": "electrophilic attack step",
     children: [
       /* @__PURE__ */ (0, x.jsx)(ae, {
-        cx: 185,
-        cy: 198,
+        cx: 178,
+        cy: 206,
+        r: 58,
       }),
       /* @__PURE__ */ (0, x.jsx)(se, {
-        x: 355,
-        y: 82,
+        x: 352,
+        y: 104,
       }),
       /* @__PURE__ */ (0, x.jsx)(S, {
-        label: "curly arrow from benzene pi system to nitrogen of nitronium ion",
-        d: "M 211 170 C 230 112, 292 82, 338 82",
-      }),
-      /* @__PURE__ */ (0, x.jsx)("text", {
-        className: "mechanism-svg__small-label",
-        x: "185",
-        y: "286",
-        textAnchor: "middle",
-        children: "arrow source: aromatic π system",
-      }),
-      /* @__PURE__ */ (0, x.jsx)("text", {
-        className: "mechanism-svg__small-label",
-        x: "355",
-        y: "136",
-        textAnchor: "middle",
-        children: "target: N in NO₂⁺",
+        label: "curly arrow from benzene aromatic π system to nitrogen of nitronium ion",
+        d: "M 204 180 C 226 130, 286 104, 342 104",
       }),
     ],
   });
 }
-function me({ cx: e = 240, cy: t = 202 }) {
-  let { c1: n } = w(e, t),
-    r = [e - 58, t - 126],
-    i = [e + 72, t - 124];
+function me({ cx: e = 240, cy: t = 202, r: n = 58 }) {
+  let { c1: r } = w(e, t, n),
+    i = [e - 34, t - 120],
+    a = [e + 42, t - 116];
   return /* @__PURE__ */ (0, x.jsxs)("g", {
     "aria-label": "substituents on attacked carbon",
     children: [
       /* @__PURE__ */ (0, x.jsx)(ne, {
-        from: n,
-        to: [r[0] + 16, r[1] + 14],
+        from: r,
+        to: [i[0] + 10, i[1] + 14],
         order: 1,
         label: "C-H bond retained on attacked carbon",
       }),
       /* @__PURE__ */ (0, x.jsx)(ne, {
-        from: n,
-        to: [i[0] - 20, i[1] + 15],
+        from: r,
+        to: [a[0] - 13, a[1] + 14],
         order: 1,
         label: "new C-N bond to nitro group",
       }),
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__atom",
-        x: r[0],
-        y: r[1],
+        x: i[0],
+        y: i[1],
         children: "H",
       }),
       /* @__PURE__ */ (0, x.jsx)(ce, {
-        x: i[0],
-        y: i[1],
+        x: a[0],
+        y: a[1],
       }),
     ],
   });
@@ -11918,18 +11910,19 @@ function D() {
     children: [
       /* @__PURE__ */ (0, x.jsx)(oe, {
         cx: 240,
-        cy: 202,
+        cy: 204,
+        r: 58,
       }),
       /* @__PURE__ */ (0, x.jsx)(me, {
         cx: 240,
-        cy: 202,
+        cy: 204,
       }),
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__annotation",
         x: "240",
-        y: "312",
+        y: "304",
         textAnchor: "middle",
-        children: "sigma complex: no full aromatic circle, no alternating double bonds",
+        children: "sigma complex; aromaticity temporarily lost",
       }),
     ],
   });
@@ -11939,53 +11932,55 @@ function O() {
     "aria-label": "deprotonation step",
     children: [
       /* @__PURE__ */ (0, x.jsx)(oe, {
-        cx: 298,
-        cy: 202,
+        cx: 306,
+        cy: 208,
+        r: 58,
       }),
       /* @__PURE__ */ (0, x.jsx)(me, {
-        cx: 298,
-        cy: 202,
+        cx: 306,
+        cy: 208,
       }),
       /* @__PURE__ */ (0, x.jsx)(le, {
-        x: 54,
-        y: 83,
+        x: 76,
+        y: 102,
       }),
       /* @__PURE__ */ (0, x.jsx)(S, {
         label: "curly arrow from oxygen lone pair on hydrogensulfate to hydrogen",
-        d: "M 76 80 C 118 30, 195 25, 238 68",
+        d: "M 102 94 C 144 56, 210 58, 257 88",
       }),
       /* @__PURE__ */ (0, x.jsx)(S, {
         label: "curly arrow from C-H bond midpoint to broken delocalisation region of ring",
-        d: "M 277 116 C 289 132, 297 154, 298 184",
+        d: "M 295 126 C 318 141, 323 166, 309 190",
       }),
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__annotation",
-        x: "298",
-        y: "312",
+        x: "306",
+        y: "306",
         textAnchor: "middle",
-        children: "C–H bond electrons return to delocalisation",
+        children: "C–H bond electrons restore aromaticity",
       }),
     ],
   });
 }
 function he() {
-  let e = w(240, 204);
+  let e = w(240, 210, 58);
   return /* @__PURE__ */ (0, x.jsxs)("g", {
     "aria-label": "nitrobenzene product",
     children: [
       /* @__PURE__ */ (0, x.jsx)(ae, {
         cx: 240,
-        cy: 204,
+        cy: 210,
+        r: 58,
       }),
       /* @__PURE__ */ (0, x.jsx)(ne, {
         from: e.c1,
-        to: [240, 88],
+        to: [240, 92],
         order: 1,
         label: "C-N bond to nitro group in nitrobenzene",
       }),
       /* @__PURE__ */ (0, x.jsx)(ce, {
         x: 240,
-        y: 62,
+        y: 76,
       }),
       /* @__PURE__ */ (0, x.jsx)("text", {
         className: "mechanism-svg__annotation",

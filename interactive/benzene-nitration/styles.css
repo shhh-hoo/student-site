@@ -128,12 +128,12 @@
 .mechanism-reference__diagram-frame {
   display: grid;
   place-items: center;
-  min-height: clamp(22rem, 52vw, 34rem);
+  min-height: clamp(21rem, 48vw, 31rem);
   padding: clamp(0.7rem, 3vw, 1.4rem);
   background:
-    linear-gradient(rgba(63, 48, 43, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(63, 48, 43, 0.035) 1px, transparent 1px), var(--locked-flat-surface-bright);
-  background-size: 30px 30px;
+    linear-gradient(rgba(63, 48, 43, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63, 48, 43, 0.018) 1px, transparent 1px), var(--locked-flat-surface-bright);
+  background-size: 32px 32px;
 }
 
 .mechanism-reference__svg {
@@ -146,18 +146,19 @@
 .mechanism-svg__ring polygon {
   stroke: currentColor;
   stroke-linejoin: round;
-  stroke-width: 3.4;
+  stroke-width: 3.1;
 }
 
 .mechanism-svg__aromatic-core {
   stroke: rgba(63, 48, 43, 0.72);
-  stroke-width: 3.2;
+  stroke-width: 2.9;
 }
 
 .mechanism-svg__bond {
   stroke: currentColor;
   stroke-linecap: round;
-  stroke-width: 3.2;
+  stroke-linejoin: round;
+  stroke-width: 3.1;
 }
 
 .mechanism-svg__bond--double {
@@ -165,18 +166,18 @@
 }
 
 .mechanism-svg__bond--thin {
-  stroke-width: 2.2;
+  stroke-width: 2.35;
 }
 
 .mechanism-svg__curly-arrow {
   color: var(--accent-warm-strong);
   stroke: currentColor;
-  stroke-width: 2.6;
+  stroke-width: 2.8;
 }
 
 .mechanism-svg__curly-arrow-underlay {
   stroke: var(--locked-flat-surface-bright);
-  stroke-width: 6.5;
+  stroke-width: 7;
 }
 
 .mechanism-svg__arrowhead {
@@ -187,13 +188,14 @@
 .mechanism-svg__sigma-ring-outline {
   stroke: currentColor;
   stroke-linejoin: round;
-  stroke-width: 3.4;
+  stroke-width: 3.1;
 }
 
 .mechanism-svg__horseshoe {
   stroke: currentColor;
   stroke-linecap: round;
-  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-width: 2.9;
 }
 
 .mechanism-svg__charge-backing {
@@ -232,8 +234,8 @@
 }
 
 .mechanism-svg__equation {
-  font-size: 17px;
-  font-weight: 760;
+  font-size: 16px;
+  font-weight: 720;
 }
 
 .mechanism-svg__species-text {
@@ -358,8 +360,8 @@ html[data-theme="dark"] .mechanism-correctness__summary {
 
 html[data-theme="dark"] .mechanism-reference__diagram-frame {
   background:
-    linear-gradient(rgba(230, 219, 202, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(230, 219, 202, 0.04) 1px, transparent 1px), rgba(30, 27, 24, 0.98);
+    linear-gradient(rgba(230, 219, 202, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(230, 219, 202, 0.024) 1px, transparent 1px), rgba(30, 27, 24, 0.98);
 }
 
 html[data-theme="dark"] .mechanism-reference__svg,

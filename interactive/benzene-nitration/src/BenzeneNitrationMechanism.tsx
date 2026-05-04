@@ -17,11 +17,11 @@ import type { MechanismStepId } from "./chemicalCorrectness";
 function ElectrophileGenerationPanel() {
   return (
     <g aria-label="generation of the electrophile">
-      <text className="mechanism-svg__equation" x="240" y="92" textAnchor="middle">
+      <text className="mechanism-svg__equation" x="240" y="94" textAnchor="middle">
         HNO₃ + 2H₂SO₄ ⇌ NO₂⁺ + 2HSO₄⁻ + H₃O⁺
       </text>
-      <NitroniumIon x={240} y={178} />
-      <text className="mechanism-svg__annotation" x="240" y="268" textAnchor="middle">
+      <NitroniumIon x={240} y={176} />
+      <text className="mechanism-svg__annotation" x="240" y="262" textAnchor="middle">
         Electrophile: nitronium ion, NO₂⁺
       </text>
     </g>
@@ -31,33 +31,26 @@ function ElectrophileGenerationPanel() {
 function ElectrophilicAttackPanel() {
   return (
     <g aria-label="electrophilic attack step">
-      <BenzeneRing cx={185} cy={198} />
-      <NitroniumIon x={355} y={82} />
+      <BenzeneRing cx={178} cy={206} r={58} />
+      <NitroniumIon x={352} y={104} />
 
       <CurlyArrow
-        label="curly arrow from benzene pi system to nitrogen of nitronium ion"
-        d="M 211 170 C 230 112, 292 82, 338 82"
+        label="curly arrow from benzene aromatic π system to nitrogen of nitronium ion"
+        d="M 204 180 C 226 130, 286 104, 342 104"
       />
-
-      <text className="mechanism-svg__small-label" x="185" y="286" textAnchor="middle">
-        arrow source: aromatic π system
-      </text>
-      <text className="mechanism-svg__small-label" x="355" y="136" textAnchor="middle">
-        target: N in NO₂⁺
-      </text>
     </g>
   );
 }
 
-function WhelandSubstituents({ cx = 240, cy = 202 }: { cx?: number; cy?: number }) {
-  const { c1 } = getRingPoints(cx, cy);
-  const hPoint: [number, number] = [cx - 58, cy - 126];
-  const no2Point: [number, number] = [cx + 72, cy - 124];
+function WhelandSubstituents({ cx = 240, cy = 202, r = 58 }: { cx?: number; cy?: number; r?: number }) {
+  const { c1 } = getRingPoints(cx, cy, r);
+  const hPoint: [number, number] = [cx - 34, cy - 120];
+  const no2Point: [number, number] = [cx + 42, cy - 116];
 
   return (
     <g aria-label="substituents on attacked carbon">
-      <Bond from={c1} to={[hPoint[0] + 16, hPoint[1] + 14]} order={1} label="C-H bond retained on attacked carbon" />
-      <Bond from={c1} to={[no2Point[0] - 20, no2Point[1] + 15]} order={1} label="new C-N bond to nitro group" />
+      <Bond from={c1} to={[hPoint[0] + 10, hPoint[1] + 14]} order={1} label="C-H bond retained on attacked carbon" />
+      <Bond from={c1} to={[no2Point[0] - 13, no2Point[1] + 14]} order={1} label="new C-N bond to nitro group" />
 
       <text className="mechanism-svg__atom" x={hPoint[0]} y={hPoint[1]}>
         H
@@ -70,11 +63,11 @@ function WhelandSubstituents({ cx = 240, cy = 202 }: { cx?: number; cy?: number 
 function WhelandIntermediatePanel() {
   return (
     <g aria-label="Wheland intermediate, sigma complex">
-      <BrokenDelocalisationRing cx={240} cy={202} />
-      <WhelandSubstituents cx={240} cy={202} />
+      <BrokenDelocalisationRing cx={240} cy={204} r={58} />
+      <WhelandSubstituents cx={240} cy={204} />
 
-      <text className="mechanism-svg__annotation" x="240" y="312" textAnchor="middle">
-        sigma complex: no full aromatic circle, no alternating double bonds
+      <text className="mechanism-svg__annotation" x="240" y="304" textAnchor="middle">
+        sigma complex; aromaticity temporarily lost
       </text>
     </g>
   );
@@ -83,34 +76,34 @@ function WhelandIntermediatePanel() {
 function DeprotonationPanel() {
   return (
     <g aria-label="deprotonation step">
-      <BrokenDelocalisationRing cx={298} cy={202} />
-      <WhelandSubstituents cx={298} cy={202} />
-      <HydrogensulfateBase x={54} y={83} />
+      <BrokenDelocalisationRing cx={306} cy={208} r={58} />
+      <WhelandSubstituents cx={306} cy={208} />
+      <HydrogensulfateBase x={76} y={102} />
 
       <CurlyArrow
         label="curly arrow from oxygen lone pair on hydrogensulfate to hydrogen"
-        d="M 76 80 C 118 30, 195 25, 238 68"
+        d="M 102 94 C 144 56, 210 58, 257 88"
       />
       <CurlyArrow
         label="curly arrow from C-H bond midpoint to broken delocalisation region of ring"
-        d="M 277 116 C 289 132, 297 154, 298 184"
+        d="M 295 126 C 318 141, 323 166, 309 190"
       />
 
-      <text className="mechanism-svg__annotation" x="298" y="312" textAnchor="middle">
-        C–H bond electrons return to delocalisation
+      <text className="mechanism-svg__annotation" x="306" y="306" textAnchor="middle">
+        C–H bond electrons restore aromaticity
       </text>
     </g>
   );
 }
 
 function ProductPanel() {
-  const productRing = getRingPoints(240, 204);
+  const productRing = getRingPoints(240, 210, 58);
 
   return (
     <g aria-label="nitrobenzene product">
-      <BenzeneRing cx={240} cy={204} />
-      <Bond from={productRing.c1} to={[240, 88]} order={1} label="C-N bond to nitro group in nitrobenzene" />
-      <NitroGroup x={240} y={62} />
+      <BenzeneRing cx={240} cy={210} r={58} />
+      <Bond from={productRing.c1} to={[240, 92]} order={1} label="C-N bond to nitro group in nitrobenzene" />
+      <NitroGroup x={240} y={76} />
       <text className="mechanism-svg__annotation" x="240" y="300" textAnchor="middle">
         nitrobenzene; aromaticity restored
       </text>
