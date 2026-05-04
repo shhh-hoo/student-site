@@ -1,15 +1,14 @@
 import React, { useMemo, useState } from "react";
 import {
   BenzeneRing,
+  BrokenDelocalisationRing,
   CurlyArrow,
-  ExplicitSigmaComplexRing,
   HydrogensulfateBase,
   NitroniumIon,
   NitroGroup,
-  ReactionConditionLabel,
   SvgDefs,
   Bond,
-  ringPoints,
+  getRingPoints,
 } from "./svgPrimitives";
 import { benzeneNitrationSteps } from "./benzeneNitrationData";
 import { benzeneNitrationCorrectnessChecks } from "./chemicalCorrectness";
@@ -18,11 +17,11 @@ import type { MechanismStepId } from "./chemicalCorrectness";
 function ElectrophileGenerationPanel() {
   return (
     <g aria-label="generation of the electrophile">
-      <text className="mechanism-svg__equation" x="200" y="84" textAnchor="middle">
+      <text className="mechanism-svg__equation" x="240" y="92" textAnchor="middle">
         HNO₃ + 2H₂SO₄ ⇌ NO₂⁺ + 2HSO₄⁻ + H₃O⁺
       </text>
-      <NitroniumIon x={200} y={168} />
-      <text className="mechanism-svg__annotation" x="200" y="232" textAnchor="middle">
+      <NitroniumIon x={240} y={178} />
+      <text className="mechanism-svg__annotation" x="240" y="268" textAnchor="middle">
         Electrophile: nitronium ion, NO₂⁺
       </text>
     </g>
@@ -32,88 +31,91 @@ function ElectrophileGenerationPanel() {
 function ElectrophilicAttackPanel() {
   return (
     <g aria-label="electrophilic attack step">
-      <BenzeneRing />
-      <NitroniumIon x={306} y={62} />
+      <BenzeneRing cx={185} cy={198} />
+      <NitroniumIon x={355} y={82} />
 
       <CurlyArrow
         label="curly arrow from benzene pi system to nitrogen of nitronium ion"
-        d="M 200 126 C 204 78, 242 60, 292 66"
+        d="M 211 170 C 230 112, 292 82, 338 82"
       />
 
-      <text className="mechanism-svg__small-label" x="84" y="245">
+      <text className="mechanism-svg__small-label" x="185" y="286" textAnchor="middle">
         arrow source: aromatic π system
       </text>
-      <text className="mechanism-svg__small-label" x="255" y="104">
+      <text className="mechanism-svg__small-label" x="355" y="136" textAnchor="middle">
         target: N in NO₂⁺
       </text>
     </g>
   );
 }
 
-function WhelandIntermediatePanel() {
-  const hPoint: [number, number] = [162, 54];
-  const no2Nitrogen: [number, number] = [260, 62];
+function WhelandSubstituents({ cx = 240, cy = 202 }: { cx?: number; cy?: number }) {
+  const { c1 } = getRingPoints(cx, cy);
+  const hPoint: [number, number] = [cx - 58, cy - 126];
+  const no2Point: [number, number] = [cx + 72, cy - 124];
 
   return (
-    <g aria-label="Wheland intermediate, sigma complex">
-      <ExplicitSigmaComplexRing />
+    <g aria-label="substituents on attacked carbon">
+      <Bond from={c1} to={[hPoint[0] + 16, hPoint[1] + 14]} order={1} label="C-H bond retained on attacked carbon" />
+      <Bond from={c1} to={[no2Point[0] - 20, no2Point[1] + 15]} order={1} label="new C-N bond to nitro group" />
 
-      <Bond from={ringPoints.c1} to={hPoint} order={1} label="C-H bond retained on attacked carbon" />
-      <Bond from={ringPoints.c1} to={no2Nitrogen} order={1} label="new C-N bond to nitro group" />
-
-      <text className="mechanism-svg__atom" x={hPoint[0] - 10} y={hPoint[1] - 10}>
+      <text className="mechanism-svg__atom" x={hPoint[0]} y={hPoint[1]}>
         H
       </text>
-      <NitroGroup x={no2Nitrogen[0]} y={no2Nitrogen[1]} />
-      <text className="mechanism-svg__small-label" x="200" y="270" textAnchor="middle">
-        attacked carbon is locally sp³; aromaticity is temporarily lost
+      <NitroGroup x={no2Point[0]} y={no2Point[1]} />
+    </g>
+  );
+}
+
+function WhelandIntermediatePanel() {
+  return (
+    <g aria-label="Wheland intermediate, sigma complex">
+      <BrokenDelocalisationRing cx={240} cy={202} />
+      <WhelandSubstituents cx={240} cy={202} />
+
+      <text className="mechanism-svg__annotation" x="240" y="312" textAnchor="middle">
+        sigma complex: no full aromatic circle, no alternating double bonds
       </text>
     </g>
   );
 }
 
 function DeprotonationPanel() {
-  const hPoint: [number, number] = [162, 54];
-  const no2Nitrogen: [number, number] = [260, 62];
-
   return (
     <g aria-label="deprotonation step">
-      <ExplicitSigmaComplexRing />
-      <Bond from={ringPoints.c1} to={hPoint} order={1} label="C-H bond whose electrons restore the pi system" />
-      <Bond from={ringPoints.c1} to={no2Nitrogen} order={1} label="C-N bond to nitro group" />
-
-      <text className="mechanism-svg__atom" x={hPoint[0] - 10} y={hPoint[1] - 10}>
-        H
-      </text>
-      <NitroGroup x={no2Nitrogen[0]} y={no2Nitrogen[1]} />
-      <HydrogensulfateBase x={78} y={54} />
+      <BrokenDelocalisationRing cx={298} cy={202} />
+      <WhelandSubstituents cx={298} cy={202} />
+      <HydrogensulfateBase x={54} y={83} />
 
       <CurlyArrow
         label="curly arrow from oxygen lone pair on hydrogensulfate to hydrogen"
-        d="M 106 36 C 122 14, 145 18, 155 39"
+        d="M 76 80 C 118 30, 195 25, 238 68"
       />
       <CurlyArrow
-        label="curly arrow from C-H bond midpoint to C1-C2 bond of ring"
-        d="M 184 74 C 200 76, 212 91, 224 111"
+        label="curly arrow from C-H bond midpoint to broken delocalisation region of ring"
+        d="M 277 116 C 289 132, 297 154, 298 184"
       />
 
-      <text className="mechanism-svg__small-label" x="204" y="86">
-        C–H bond electrons return to ring
+      <text className="mechanism-svg__annotation" x="298" y="312" textAnchor="middle">
+        C–H bond electrons return to delocalisation
       </text>
     </g>
   );
 }
 
 function ProductPanel() {
-  const productNitroNitrogen: [number, number] = [200, 62];
+  const productRing = getRingPoints(240, 204);
 
   return (
     <g aria-label="nitrobenzene product">
-      <BenzeneRing />
-      <Bond from={ringPoints.c1} to={productNitroNitrogen} order={1} label="C-N bond to nitro group in nitrobenzene" />
-      <NitroGroup x={productNitroNitrogen[0]} y={productNitroNitrogen[1]} />
-      <text className="mechanism-svg__annotation" x="200" y="250" textAnchor="middle">
-        nitrobenzene + regenerated H₂SO₄
+      <BenzeneRing cx={240} cy={204} />
+      <Bond from={productRing.c1} to={[240, 88]} order={1} label="C-N bond to nitro group in nitrobenzene" />
+      <NitroGroup x={240} y={62} />
+      <text className="mechanism-svg__annotation" x="240" y="300" textAnchor="middle">
+        nitrobenzene; aromaticity restored
+      </text>
+      <text className="mechanism-svg__small-label" x="240" y="324" textAnchor="middle">
+        H₂SO₄ is regenerated
       </text>
     </g>
   );
@@ -122,7 +124,7 @@ function ProductPanel() {
 export function MechanismSvg({ step }: { step: MechanismStepId }) {
   return (
     <svg
-      viewBox="0 0 400 280"
+      viewBox="0 0 480 340"
       className="mechanism-svg mechanism-reference__svg"
       role="img"
       aria-labelledby={`benzene-nitration-${step}-title`}
@@ -135,13 +137,12 @@ export function MechanismSvg({ step }: { step: MechanismStepId }) {
         {step === "wheland-intermediate" && <WhelandIntermediatePanel />}
         {step === "deprotonation" && <DeprotonationPanel />}
         {step === "product" && <ProductPanel />}
-        <ReactionConditionLabel />
       </g>
     </svg>
   );
 }
 
-function CorrectnessPanel({ step }: { step: MechanismStepId }) {
+export function ChemicalChecklist({ step }: { step: MechanismStepId }) {
   const checks = useMemo(() => benzeneNitrationCorrectnessChecks.filter(check => check.step === step), [step]);
 
   return (
@@ -161,6 +162,14 @@ function CorrectnessPanel({ step }: { step: MechanismStepId }) {
       </ul>
     </details>
   );
+}
+
+export function getPreviousStepIndex(index: number) {
+  return Math.max(0, index - 1);
+}
+
+export function getNextStepIndex(index: number) {
+  return Math.min(benzeneNitrationSteps.length - 1, index + 1);
 }
 
 export default function BenzeneNitrationMechanism() {
@@ -199,12 +208,12 @@ export default function BenzeneNitrationMechanism() {
 
       <div className="mechanism-reference__body">
         <p className="mechanism-reference__note">{current.longNote}</p>
-        <CorrectnessPanel step={current.id} />
+        <ChemicalChecklist step={current.id} />
 
         <div className="mechanism-reference__controls">
           <button
             type="button"
-            onClick={() => setIndex(value => Math.max(0, value - 1))}
+            onClick={() => setIndex(getPreviousStepIndex)}
             disabled={index === 0}
             className="mechanism-stepper__button"
           >
@@ -212,7 +221,7 @@ export default function BenzeneNitrationMechanism() {
           </button>
           <button
             type="button"
-            onClick={() => setIndex(value => Math.min(benzeneNitrationSteps.length - 1, value + 1))}
+            onClick={() => setIndex(getNextStepIndex)}
             disabled={index === benzeneNitrationSteps.length - 1}
             className="mechanism-stepper__button mechanism-stepper__button--primary"
           >

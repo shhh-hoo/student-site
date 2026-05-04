@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import BenzeneNitrationMechanism from "./BenzeneNitrationMechanism";
-import { benzeneNitrationSpecies, benzeneNitrationSteps } from "./benzeneNitrationData";
+import { benzeneNitrationOverview, benzeneNitrationSpecies, benzeneNitrationSteps } from "./benzeneNitrationData";
 import { benzeneNitrationCorrectnessChecks } from "./chemicalCorrectness";
 
 export function MechanismDemoPage() {
@@ -22,14 +22,18 @@ export function MechanismDemoPage() {
             <div className="interactive-meta-row">
               <span className="interactive-meta-chip">CAIE 9701</span>
               <span className="interactive-meta-chip">Golden reference</span>
-              <span className="interactive-meta-chip">React + SVG</span>
+              <span className="interactive-meta-chip">{benzeneNitrationOverview.topic}</span>
             </div>
-            <h1>Nitration of benzene</h1>
+            <h1>{benzeneNitrationOverview.title}</h1>
             <p className="interactive-summary">
               A chemically constrained five-step mechanism for electrophilic aromatic substitution.
             </p>
           </div>
           <div className="interactive-meta-group">
+            <article className="interactive-meta-card">
+              <span>Conditions</span>
+              <strong>{benzeneNitrationOverview.conditions}</strong>
+            </article>
             <article className="interactive-meta-card">
               <span>Electrophile</span>
               <strong>{benzeneNitrationSpecies.nitronium.displayFormula}</strong>

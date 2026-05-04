@@ -68,10 +68,10 @@ export const benzeneNitrationAnchors: MechanismAnchor[] = [
     sourceKind: "bond",
   },
   {
-    id: "wheland.C1-C2-bond-forming-pi-system",
+    id: "wheland.broken-delocalisation-region",
     step: "deprotonation",
-    label: "ring π system restored by forming the C1=C2 π bond",
-    targetKind: "bond",
+    label: "broken delocalisation region of the sigma complex",
+    targetKind: "pi-system",
   },
 ];
 
@@ -97,10 +97,10 @@ export const benzeneNitrationArrows: MechanismArrowSpec[] = [
     id: "arrow-C-H-bond-to-ring-pi-system",
     step: "deprotonation",
     sourceAnchor: "wheland.C-H-bond",
-    targetAnchor: "wheland.C1-C2-bond-forming-pi-system",
+    targetAnchor: "wheland.broken-delocalisation-region",
     electronPairMovement: true,
     notes:
-      "Second arrow starts from the C–H bond midpoint and returns those electrons into the ring to restore aromaticity.",
+      "Second arrow starts from the C–H bond midpoint and returns those electrons into the broken delocalisation region of the ring.",
   },
 ];
 
@@ -163,6 +163,20 @@ export const benzeneNitrationCorrectnessChecks: CorrectnessCheck[] = [
     severity: "required",
   },
   {
+    id: "sigma-complex-no-alternating-double-bonds",
+    step: "wheland-intermediate",
+    label: "No alternating double bonds",
+    requirement: "The sigma complex must not be drawn with alternating double bonds.",
+    severity: "required",
+  },
+  {
+    id: "sigma-complex-broken-delocalisation",
+    step: "wheland-intermediate",
+    label: "Broken delocalisation",
+    requirement: "The sigma complex must use an outer hexagon with a broken delocalisation horseshoe.",
+    severity: "required",
+  },
+  {
     id: "sigma-complex-positive-charge",
     step: "wheland-intermediate",
     label: "Positive charge",
@@ -195,7 +209,14 @@ export const benzeneNitrationCorrectnessChecks: CorrectnessCheck[] = [
     id: "c-h-arrow-target",
     step: "deprotonation",
     label: "C–H arrow target",
-    requirement: "The C–H bond electrons must be shown returning to the ring π system to restore aromaticity.",
+    requirement: "The C–H bond electrons must be shown returning to the broken delocalisation region of the ring.",
+    severity: "required",
+  },
+  {
+    id: "deprotonation-uses-broken-delocalisation",
+    step: "deprotonation",
+    label: "Intermediate drawing retained",
+    requirement: "The deprotonation step must still use the broken delocalisation form, not a full aromatic circle.",
     severity: "required",
   },
   {
@@ -230,11 +251,14 @@ export const benzeneNitrationRequiredCorrectnessCheckIds = [
   "sigma-complex-c-n-bond",
   "sigma-complex-c-h-bond-retained",
   "sigma-complex-not-aromatic",
+  "sigma-complex-no-alternating-double-bonds",
+  "sigma-complex-broken-delocalisation",
   "sigma-complex-positive-charge",
   "hso4-base-lone-pair",
   "base-arrow-source",
   "c-h-arrow-source",
   "c-h-arrow-target",
+  "deprotonation-uses-broken-delocalisation",
   "product-is-nitrobenzene",
   "product-aromaticity-restored",
 ] as const;

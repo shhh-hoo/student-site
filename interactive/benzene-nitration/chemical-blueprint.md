@@ -1,4 +1,4 @@
-# Benzene Nitration Chemical Correctness Blueprint v1
+# Benzene Nitration Chemical Correctness Blueprint v1.1
 
 This blueprint defines the chemical correctness standard for the benzene nitration mechanism page. The page is meant to be a golden reference for future 9701 and first-year organic mechanism diagrams.
 
@@ -34,7 +34,7 @@ Allowed targets in this mechanism:
 
 - nitrogen atom of NO2+
 - H attached to the sp3 carbon of the sigma complex
-- ring bond / pi system that is restored during deprotonation
+- broken delocalisation region / ring pi system that is restored during deprotonation
 
 Formal charge and partial charge must be separate concepts.
 
@@ -42,6 +42,7 @@ Formal charge and partial charge must be separate concepts.
 - Wheland intermediate uses formal positive charge.
 - HSO4- uses formal negative charge.
 - Partial charge notation is available as a primitive, but is not required for benzene nitration because the active electrophile is a formal cation.
+- Wheland and deprotonation views use an outer hexagon with a broken delocalisation horseshoe, not a full aromatic circle and not alternating double bonds.
 
 ## Step 1: Electrophile generation
 
@@ -79,18 +80,11 @@ Required:
 - new C-N bond to NO2 shown
 - attacked carbon still bonded to H
 - ring is not shown as fully aromatic
+- ring is not shown with alternating double bonds
+- outer hexagon and broken delocalisation horseshoe are shown
 - positive charge shown on the sigma complex
-- if an explicit resonance form is used, bond orders must be internally consistent
 
-The supplied TSX file uses one explicit resonance form:
-
-- C1-C2 single
-- C2-C3 single
-- C3=C4 double
-- C4-C5 single
-- C5=C6 double
-- C6-C1 single
-- positive charge at C2
+The supplied TSX file intentionally uses a broken delocalisation drawing for the arenium ion, not one localised resonance form.
 
 ## Step 4: Deprotonation
 
@@ -100,7 +94,8 @@ Required:
 - oxygen lone pair on HSO4- is shown
 - first curly arrow starts from oxygen lone pair and points to H
 - second curly arrow starts from the C-H bond midpoint
-- C-H bond electrons are shown returning to the ring to restore aromaticity
+- C-H bond electrons are shown returning to the broken delocalisation region of the ring
+- the sigma complex is still shown with the broken delocalisation form during deprotonation
 
 Common errors to reject:
 

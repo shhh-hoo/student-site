@@ -14,16 +14,25 @@ export function SvgDefs() {
 
 export function CurlyArrow({ d, label }: { d: string; label?: string }) {
   return (
-    <path
-      aria-label={label ?? "curly arrow"}
-      d={d}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.6"
-      strokeLinecap="round"
-      markerEnd="url(#curly-arrow-head)"
-      className="mechanism-svg__curly-arrow"
-    />
+    <g aria-label={label ?? "curly arrow"}>
+      <path
+        d={d}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="mechanism-svg__curly-arrow-underlay"
+      />
+      <path
+        d={d}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        markerEnd="url(#curly-arrow-head)"
+        className="mechanism-svg__curly-arrow"
+      />
+    </g>
   );
 }
 
@@ -38,7 +47,14 @@ export function LonePair({ x, y, label }: { x: number; y: number; label?: string
 
 export function FormalCharge({ x, y, charge }: { x: number; y: number; charge: "+" | "−" }) {
   return (
-    <text className="mechanism-svg__formal-charge" x={x} y={y} textAnchor="middle" dominantBaseline="middle">
+    <text
+      aria-label={`formal charge ${charge}`}
+      className="mechanism-svg__formal-charge"
+      x={x}
+      y={y}
+      textAnchor="middle"
+      dominantBaseline="middle"
+    >
       {charge}
     </text>
   );
@@ -46,7 +62,14 @@ export function FormalCharge({ x, y, charge }: { x: number; y: number; charge: "
 
 export function PartialCharge({ x, y, charge }: { x: number; y: number; charge: "δ+" | "δ−" }) {
   return (
-    <text className="mechanism-svg__partial-charge" x={x} y={y} textAnchor="middle" dominantBaseline="middle">
+    <text
+      aria-label={`partial charge ${charge}`}
+      className="mechanism-svg__partial-charge"
+      x={x}
+      y={y}
+      textAnchor="middle"
+      dominantBaseline="middle"
+    >
       {charge}
     </text>
   );
@@ -87,58 +110,64 @@ export function Bond({ from, to, order = 1, label }: { from: Point; to: Point; o
 }
 
 export const ringPoints = {
-  c1: [200, 96] as Point,
-  c2: [250, 128] as Point,
-  c3: [250, 192] as Point,
-  c4: [200, 224] as Point,
-  c5: [150, 192] as Point,
-  c6: [150, 128] as Point,
+  c1: [240, 130] as Point,
+  c2: [292, 160] as Point,
+  c3: [292, 220] as Point,
+  c4: [240, 250] as Point,
+  c5: [188, 220] as Point,
+  c6: [188, 160] as Point,
 };
+
+export function getRingPoints(cx = 240, cy = 190, r = 60) {
+  const horizontal = r * 0.866;
+
+  return {
+    c1: [cx, cy - r] as Point,
+    c2: [cx + horizontal, cy - r / 2] as Point,
+    c3: [cx + horizontal, cy + r / 2] as Point,
+    c4: [cx, cy + r] as Point,
+    c5: [cx - horizontal, cy + r / 2] as Point,
+    c6: [cx - horizontal, cy - r / 2] as Point,
+  };
+}
 
 function hexagonPoints(points = ringPoints) {
   return [points.c1, points.c2, points.c3, points.c4, points.c5, points.c6].map(([x, y]) => `${x},${y}`).join(" ");
 }
 
-export function BenzeneRing() {
+export function BenzeneRing({ cx = 240, cy = 190, r = 60 }: { cx?: number; cy?: number; r?: number }) {
+  const points = getRingPoints(cx, cy, r);
+
   return (
     <g className="mechanism-svg__ring" aria-label="benzene ring">
-      <polygon points={hexagonPoints()} fill="none" />
-      <circle className="mechanism-svg__aromatic-core" cx="200" cy="160" r="34" fill="none" />
+      <polygon points={hexagonPoints(points)} fill="none" />
+      <circle className="mechanism-svg__aromatic-core" cx={cx} cy={cy} r={r * 0.57} fill="none" />
     </g>
   );
 }
 
-export function ExplicitSigmaComplexRing() {
-  // One valid resonance form is shown: positive charge localised at C2.
-  // C1 is the attacked sp3 carbon. C1-H and C1-NO2 are external substituent bonds.
-  return (
-    <g aria-label="Wheland intermediate ring with explicit bond orders">
-      <Bond from={ringPoints.c1} to={ringPoints.c2} order={1} label="C1-C2 single bond" />
-      <Bond from={ringPoints.c2} to={ringPoints.c3} order={1} label="C2-C3 single bond" />
-      <Bond from={ringPoints.c3} to={ringPoints.c4} order={2} label="C3-C4 double bond" />
-      <Bond from={ringPoints.c4} to={ringPoints.c5} order={1} label="C4-C5 single bond" />
-      <Bond from={ringPoints.c5} to={ringPoints.c6} order={2} label="C5-C6 double bond" />
-      <Bond from={ringPoints.c6} to={ringPoints.c1} order={1} label="C6-C1 single bond" />
-      <FormalCharge x={266} y={122} charge="+" />
-      <text className="mechanism-svg__small-label" x="200" y="252" textAnchor="middle">
-        one resonance form of the arenium ion is shown
-      </text>
-    </g>
-  );
-}
+export function BrokenDelocalisationRing({ cx = 240, cy = 190, r = 60 }: { cx?: number; cy?: number; r?: number }) {
+  const points = getRingPoints(cx, cy, r);
+  const horseshoeTopY = cy - r * 0.28;
+  const horseshoeBottomY = cy + r * 0.9;
 
-export function ExamStyleBrokenAreniumRing() {
   return (
-    <g aria-label="exam-style Wheland intermediate ring">
-      <polygon points={hexagonPoints()} fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinejoin="round" />
+    <g aria-label="Wheland intermediate ring with broken delocalisation horseshoe">
+      <polygon className="mechanism-svg__sigma-ring-outline" points={hexagonPoints(points)} fill="none" />
       <path
-        d="M 171 136 A 38 38 0 1 0 229 136"
+        aria-label="broken delocalisation horseshoe, not aromatic circle"
+        className="mechanism-svg__horseshoe"
+        d={`M ${cx - r * 0.52} ${horseshoeTopY} C ${cx - r * 0.85} ${cy + r * 0.25}, ${
+          cx - r * 0.4
+        } ${horseshoeBottomY}, ${cx} ${horseshoeBottomY} C ${cx + r * 0.4} ${horseshoeBottomY}, ${
+          cx + r * 0.85
+        } ${cy + r * 0.25}, ${cx + r * 0.52} ${horseshoeTopY}`}
         fill="none"
-        stroke="currentColor"
-        strokeWidth="3.2"
-        strokeLinecap="round"
       />
-      <FormalCharge x={200} y={160} charge="+" />
+      <g aria-label="positive charge on sigma complex">
+        <circle className="mechanism-svg__charge-backing" cx={cx} cy={cy + r * 0.26} r="14" />
+        <FormalCharge x={cx} y={cy + r * 0.26} charge="+" />
+      </g>
     </g>
   );
 }
@@ -169,43 +198,33 @@ export function NitroniumIon({ x = 300, y = 66 }: { x?: number; y?: number }) {
 
 export function NitroGroup({ x = 245, y = 42 }: { x?: number; y?: number }) {
   return (
-    <g aria-label="nitro group bonded through nitrogen">
-      <text className="mechanism-svg__atom" x={x} y={y}>
-        N
-      </text>
-      <FormalCharge x={x + 15} y={y - 16} charge="+" />
-      <line className="mechanism-svg__bond mechanism-svg__bond--thin" x1={x - 12} y1={y - 8} x2={x - 34} y2={y - 27} />
-      <line className="mechanism-svg__bond mechanism-svg__bond--thin" x1={x - 8} y1={y - 13} x2={x - 30} y2={y - 32} />
-      <text className="mechanism-svg__atom" x={x - 48} y={y - 39}>
-        O
-      </text>
-      <line className="mechanism-svg__bond mechanism-svg__bond--thin" x1={x + 12} y1={y - 8} x2={x + 34} y2={y - 27} />
-      <text className="mechanism-svg__atom" x={x + 48} y={y - 39}>
-        O
-      </text>
-      <FormalCharge x={x + 64} y={y - 51} charge="−" />
-      <text className="mechanism-svg__small-label" x={x} y={y + 30} textAnchor="middle">
-        NO₂
-      </text>
-    </g>
+    <text className="mechanism-svg__atom" x={x} y={y} aria-label="nitro group">
+      NO
+      <tspan baselineShift="sub" fontSize="13">
+        2
+      </tspan>
+    </text>
   );
 }
 
 export function HydrogensulfateBase({ x = 78, y = 54 }: { x?: number; y?: number }) {
   return (
     <g aria-label="hydrogensulfate ion with explicit oxygen lone pair">
-      <text className="mechanism-svg__species-text" x={x} y={y} textAnchor="middle" dominantBaseline="middle">
-        HSO
-        <tspan baselineShift="sub" fontSize="12">
-          4
-        </tspan>
-        <tspan baselineShift="super" fontSize="12">
-          −
-        </tspan>
+      <text className="mechanism-svg__atom" x={x} y={y}>
+        O
       </text>
-      <LonePair x={x + 28} y={y - 18} label="oxygen lone pair on hydrogensulfate" />
-      <text className="mechanism-svg__small-label" x={x} y={y + 26} textAnchor="middle">
-        base
+      <FormalCharge x={x + 14} y={y - 17} charge="−" />
+      <LonePair x={x + 22} y={y - 2} label="oxygen lone pair on hydrogensulfate" />
+      <Bond from={[x + 24, y]} to={[x + 58, y]} order={1} label="O-S bond in hydrogensulfate" />
+      <text className="mechanism-svg__species-text" x={x + 98} y={y} textAnchor="middle" dominantBaseline="middle">
+        SO
+        <tspan baselineShift="sub" fontSize="12">
+          3
+        </tspan>
+        H
+      </text>
+      <text className="mechanism-svg__small-label" x={x + 52} y={y + 30} textAnchor="middle">
+        HSO₄⁻ base
       </text>
     </g>
   );
@@ -213,8 +232,8 @@ export function HydrogensulfateBase({ x = 78, y = 54 }: { x?: number; y?: number
 
 export function ReactionConditionLabel() {
   return (
-    <text className="mechanism-svg__small-label" x="200" y="268" textAnchor="middle">
-      conc. HNO₃ / conc. H₂SO₄, 50–55 °C
+    <text className="mechanism-svg__small-label" x="240" y="328" textAnchor="middle">
+      conc. HNO₃, conc. H₂SO₄, 50–55 °C
     </text>
   );
 }

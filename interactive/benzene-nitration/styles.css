@@ -174,8 +174,31 @@
   stroke-width: 2.6;
 }
 
+.mechanism-svg__curly-arrow-underlay {
+  stroke: var(--locked-flat-surface-bright);
+  stroke-width: 6.5;
+}
+
 .mechanism-svg__arrowhead {
+  color: var(--accent-warm-strong);
   fill: currentColor;
+}
+
+.mechanism-svg__sigma-ring-outline {
+  stroke: currentColor;
+  stroke-linejoin: round;
+  stroke-width: 3.4;
+}
+
+.mechanism-svg__horseshoe {
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.mechanism-svg__charge-backing {
+  fill: var(--locked-flat-surface-bright);
+  opacity: 0.96;
 }
 
 .mechanism-svg__atom,
@@ -346,6 +369,12 @@ html[data-theme="dark"] .mechanism-svg__lone-pair {
 
 html[data-theme="dark"] .mechanism-svg__aromatic-core {
   stroke: rgba(247, 240, 228, 0.62);
+}
+
+html[data-theme="dark"] .mechanism-svg__curly-arrow-underlay,
+html[data-theme="dark"] .mechanism-svg__charge-backing {
+  stroke: rgba(30, 27, 24, 0.98);
+  fill: rgba(30, 27, 24, 0.98);
 }
 
 html[data-theme="dark"] .mechanism-step-dot,

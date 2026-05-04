@@ -9,6 +9,12 @@ export type BenzeneNitrationStep = {
   partialChargeReason: string;
 };
 
+export const benzeneNitrationOverview = {
+  title: "Nitration of benzene",
+  topic: "Electrophilic substitution",
+  conditions: "conc. HNO₃, conc. H₂SO₄, 50–55 °C",
+} as const;
+
 export const benzeneNitrationSteps: BenzeneNitrationStep[] = [
   {
     id: "electrophile-generation",
@@ -32,7 +38,7 @@ export const benzeneNitrationSteps: BenzeneNitrationStep[] = [
     title: "3. Wheland intermediate",
     caption: "A sigma complex forms and aromaticity is temporarily lost.",
     longNote:
-      "The attacked carbon is locally sp³ hybridised and is bonded to both H and NO₂. The ring must not be shown as fully aromatic.",
+      "The attacked carbon is locally sp³ hybridised and is bonded to both H and NO₂. The ring is shown as an outer hexagon with a broken delocalisation horseshoe, not a full aromatic circle or alternating double bonds.",
     partialChargeRequired: false,
     partialChargeReason: "The important charge is the formal positive charge on the arenium ion.",
   },
@@ -41,7 +47,7 @@ export const benzeneNitrationSteps: BenzeneNitrationStep[] = [
     title: "4. Deprotonation",
     caption: "HSO₄⁻ removes H⁺; the C–H bond electrons return to the ring.",
     longNote:
-      "Show a lone pair on the oxygen of HSO₄⁻. One arrow goes from the O lone pair to H; the other starts from the C–H bond midpoint and returns to the ring.",
+      "Use the same broken-delocalisation sigma-complex drawing. One arrow goes from the O lone pair on HSO₄⁻ to H; the other starts from the C–H bond midpoint and returns to the broken delocalisation region.",
     partialChargeRequired: false,
     partialChargeReason: "The deprotonation is shown by lone pair and bond-electron movement.",
   },
@@ -69,7 +75,7 @@ export const benzeneNitrationSpecies = {
     formalCharge: "+",
     charge: 1,
     smiles: "[O-][N+]#O",
-    displayFormula: "O=N⁺=O",
+    displayFormula: "NO₂⁺",
   },
   hydrogensulfate: {
     name: "hydrogensulfate ion",
