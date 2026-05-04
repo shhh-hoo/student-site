@@ -1,0 +1,17 @@
+{
+  "id": "benzene-nitration",
+  "title": "Benzene Nitration Mechanism",
+  "type": "code",
+  "subject": "Chemistry",
+  "topic": "arenes-electrophilic-substitution",
+  "tags": ["9701", "chemistry", "arenes", "benzene", "nitration", "mechanism"],
+  "description": "Focused 2D CAIE 9701 demo for benzene nitration, showing NO2+ electrophile generation, electrophilic attack, sigma complex formation, and deprotonation to nitrobenzene.",
+  "source_kind": "teacher-made",
+  "status": "ready",
+  "stage": "A2",
+  "stage_detail": "A2 organic chemistry, arenes",
+  "part": "Organic mechanisms",
+  "syllabus_refs": ["30.1"],
+  "content_format": "html",
+  "entry_file": "index.html"
+}

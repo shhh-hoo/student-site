@@ -2,10 +2,24 @@
   "name": "student-site",
   "private": true,
   "scripts": {
+    "build": "npm run typecheck && npm run test:mechanisms && npm run build:mechanisms",
+    "build:mechanisms": "vite build --config interactive/benzene-nitration/vite.config.ts",
+    "compile:mechanism-tests": "tsc -p tsconfig.test.json",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "npm run test:mechanisms",
+    "test:mechanisms": "npm run compile:mechanism-tests && node .tmp/benzene-nitration-tests/scripts/test-benzene-nitration-demo.js",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "prettier": "^3.3.3"
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "prettier": "^3.3.3",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10"
   }
 }

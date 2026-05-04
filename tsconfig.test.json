@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": false,
+    "outDir": ".tmp/benzene-nitration-tests",
+    "types": ["node", "react", "react-dom"],
+    "declaration": false,
+    "sourceMap": false
+  },
+  "include": ["interactive/benzene-nitration/src", "scripts/test-benzene-nitration-demo.tsx"]
+}

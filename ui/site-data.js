@@ -12,6 +12,11 @@ import {
 
 const fallbackInteractiveEntries = [
   {
+    asset_id: "benzene-nitration",
+    href: "interactive/benzene-nitration/",
+    metaPath: "interactive/benzene-nitration/meta.json",
+  },
+  {
     asset_id: "ir-past-paper-trainer",
     href: "interactive/ir-past-paper-trainer/",
     metaPath: "interactive/ir-past-paper-trainer/meta.json",
