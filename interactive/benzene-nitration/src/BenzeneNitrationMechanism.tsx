@@ -1,138 +1,58 @@
 import React, { useMemo, useState } from "react";
-import {
-  BenzeneRing,
-  BrokenDelocalisationRing,
-  CurlyArrow,
-  HydrogensulfateBase,
-  NitroniumIon,
-  NitroGroup,
-  SvgDefs,
-  Bond,
-  getRingPoints,
-} from "./svgPrimitives";
 import { benzeneNitrationSteps } from "./benzeneNitrationData";
 import { benzeneNitrationCorrectnessChecks } from "./chemicalCorrectness";
+import {
+  benzeneNitrationSceneById,
+  MechanismAuthorControls,
+  MechanismCanvas,
+  type MechanismDebugOptions,
+} from "./features/mechanisms";
 import type { MechanismStepId } from "./chemicalCorrectness";
 
-function ElectrophileGenerationPanel() {
-  return (
-    <g aria-label="generation of the electrophile">
-      <text className="mechanism-svg__equation" x="240" y="94" textAnchor="middle">
-        HNO₃ + 2H₂SO₄ ⇌ NO₂⁺ + 2HSO₄⁻ + H₃O⁺
-      </text>
-      <NitroniumIon x={240} y={176} />
-      <text className="mechanism-svg__annotation" x="240" y="262" textAnchor="middle">
-        Electrophile: nitronium ion, NO₂⁺
-      </text>
-    </g>
-  );
+const defaultDebugOptions: MechanismDebugOptions = {
+  showAnchors: false,
+  showHitboxes: false,
+  showAnnotationBounds: false,
+  showControlPoints: false,
+  showJson: false,
+};
+
+function readInitialDebugOptions(): MechanismDebugOptions {
+  if (typeof window === "undefined") {
+    return defaultDebugOptions;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const authorMode = params.get("mode") === "author";
+  const debugAnchors = params.get("debugAnchors") === "1";
+
+  return {
+    showAnchors: authorMode || debugAnchors,
+    showHitboxes: params.get("debugHitboxes") === "1",
+    showAnnotationBounds: params.get("debugBounds") === "1",
+    showControlPoints: authorMode || params.get("debugControls") === "1",
+    showJson: params.get("debugJson") === "1",
+  };
 }
 
-function ElectrophilicAttackPanel() {
-  return (
-    <g aria-label="electrophilic attack step">
-      <BenzeneRing cx={178} cy={206} r={58} />
-      <NitroniumIon x={352} y={104} />
+function readInitialAuthorMode() {
+  if (typeof window === "undefined") {
+    return false;
+  }
 
-      <CurlyArrow
-        label="curly arrow from benzene aromatic π system to nitrogen of nitronium ion"
-        d="M 204 180 C 226 130, 286 104, 342 104"
-      />
-    </g>
-  );
+  const params = new URLSearchParams(window.location.search);
+
+  return params.get("mode") === "author" || params.get("debugAnchors") === "1";
 }
 
-function WhelandSubstituents({ cx = 240, cy = 202, r = 58 }: { cx?: number; cy?: number; r?: number }) {
-  const { c1 } = getRingPoints(cx, cy, r);
-  const hPoint: [number, number] = [cx - 34, cy - 120];
-  const no2Point: [number, number] = [cx + 42, cy - 116];
+export function MechanismSvg({ step, debugOptions }: { step: MechanismStepId; debugOptions?: MechanismDebugOptions }) {
+  const scene = benzeneNitrationSceneById[step];
 
-  return (
-    <g aria-label="substituents on attacked carbon">
-      <Bond from={c1} to={[hPoint[0] + 10, hPoint[1] + 14]} order={1} label="C-H bond retained on attacked carbon" />
-      <Bond from={c1} to={[no2Point[0] - 13, no2Point[1] + 14]} order={1} label="new C-N bond to nitro group" />
+  if (!scene) {
+    throw new Error(`Missing mechanism scene for ${step}`);
+  }
 
-      <text className="mechanism-svg__atom" x={hPoint[0]} y={hPoint[1]}>
-        H
-      </text>
-      <NitroGroup x={no2Point[0]} y={no2Point[1]} />
-    </g>
-  );
-}
-
-function WhelandIntermediatePanel() {
-  return (
-    <g aria-label="Wheland intermediate, sigma complex">
-      <BrokenDelocalisationRing cx={240} cy={204} r={58} />
-      <WhelandSubstituents cx={240} cy={204} />
-
-      <text className="mechanism-svg__annotation" x="240" y="304" textAnchor="middle">
-        sigma complex; aromaticity temporarily lost
-      </text>
-    </g>
-  );
-}
-
-function DeprotonationPanel() {
-  return (
-    <g aria-label="deprotonation step">
-      <BrokenDelocalisationRing cx={306} cy={208} r={58} />
-      <WhelandSubstituents cx={306} cy={208} />
-      <HydrogensulfateBase x={76} y={102} />
-
-      <CurlyArrow
-        label="curly arrow from oxygen lone pair on hydrogensulfate to hydrogen"
-        d="M 102 94 C 144 56, 210 58, 257 88"
-      />
-      <CurlyArrow
-        label="curly arrow from C-H bond midpoint to broken delocalisation region of ring"
-        d="M 295 126 C 318 141, 323 166, 309 190"
-      />
-
-      <text className="mechanism-svg__annotation" x="306" y="306" textAnchor="middle">
-        C–H bond electrons restore aromaticity
-      </text>
-    </g>
-  );
-}
-
-function ProductPanel() {
-  const productRing = getRingPoints(240, 210, 58);
-
-  return (
-    <g aria-label="nitrobenzene product">
-      <BenzeneRing cx={240} cy={210} r={58} />
-      <Bond from={productRing.c1} to={[240, 92]} order={1} label="C-N bond to nitro group in nitrobenzene" />
-      <NitroGroup x={240} y={76} />
-      <text className="mechanism-svg__annotation" x="240" y="300" textAnchor="middle">
-        nitrobenzene; aromaticity restored
-      </text>
-      <text className="mechanism-svg__small-label" x="240" y="324" textAnchor="middle">
-        H₂SO₄ is regenerated
-      </text>
-    </g>
-  );
-}
-
-export function MechanismSvg({ step }: { step: MechanismStepId }) {
-  return (
-    <svg
-      viewBox="0 0 480 340"
-      className="mechanism-svg mechanism-reference__svg"
-      role="img"
-      aria-labelledby={`benzene-nitration-${step}-title`}
-    >
-      <title id={`benzene-nitration-${step}-title`}>Nitration of benzene mechanism diagram</title>
-      <SvgDefs />
-      <g>
-        {step === "electrophile-generation" && <ElectrophileGenerationPanel />}
-        {step === "electrophilic-attack" && <ElectrophilicAttackPanel />}
-        {step === "wheland-intermediate" && <WhelandIntermediatePanel />}
-        {step === "deprotonation" && <DeprotonationPanel />}
-        {step === "product" && <ProductPanel />}
-      </g>
-    </svg>
-  );
+  return <MechanismCanvas scene={scene} debug={debugOptions} titleId={`benzene-nitration-${step}-title`} />;
 }
 
 export function ChemicalChecklist({ step }: { step: MechanismStepId }) {
@@ -167,7 +87,10 @@ export function getNextStepIndex(index: number) {
 
 export default function BenzeneNitrationMechanism() {
   const [index, setIndex] = useState(0);
+  const [authorMode] = useState(readInitialAuthorMode);
+  const [debugOptions, setDebugOptions] = useState(readInitialDebugOptions);
   const current = benzeneNitrationSteps[index];
+  const currentScene = benzeneNitrationSceneById[current.id];
 
   return (
     <section className="mechanism-reference" aria-labelledby="benzene-nitration-step-title">
@@ -196,8 +119,16 @@ export default function BenzeneNitrationMechanism() {
       </header>
 
       <div className="mechanism-reference__diagram-frame" aria-live="polite">
-        <MechanismSvg step={current.id} />
+        <MechanismSvg step={current.id} debugOptions={authorMode ? debugOptions : undefined} />
       </div>
+
+      {authorMode && currentScene ? (
+        <MechanismAuthorControls
+          scene={currentScene}
+          debugOptions={debugOptions}
+          onDebugOptionsChange={setDebugOptions}
+        />
+      ) : null}
 
       <div className="mechanism-reference__body">
         <p className="mechanism-reference__note">{current.longNote}</p>

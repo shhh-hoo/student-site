@@ -143,6 +143,14 @@
   color: var(--locked-ink);
 }
 
+.mechanism-canvas {
+  overflow: visible;
+}
+
+.mechanism-annotation {
+  pointer-events: auto;
+}
+
 .mechanism-svg__ring polygon {
   stroke: currentColor;
   stroke-linejoin: round;
@@ -175,6 +183,10 @@
   stroke-width: 2.8;
 }
 
+.mechanism-svg__curly-arrow[data-electron-flow="single"] {
+  stroke-dasharray: 4 5;
+}
+
 .mechanism-svg__curly-arrow-underlay {
   stroke: var(--locked-flat-surface-bright);
   stroke-width: 7;
@@ -196,6 +208,14 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2.9;
+}
+
+.mechanism-svg__bond-change,
+.mechanism-svg__dipole {
+  stroke: var(--accent-strong);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
 }
 
 .mechanism-svg__charge-backing {
@@ -257,6 +277,120 @@
 
 .mechanism-svg__lone-pair {
   color: var(--locked-ink);
+}
+
+.mechanism-author {
+  padding: 0.85rem clamp(1rem, 2.5vw, 1.35rem);
+  border-top: 1px solid var(--locked-line-hair);
+  border-bottom: 1px solid var(--locked-line-hair);
+  background: var(--locked-flat-surface-strong);
+}
+
+.mechanism-author__bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.mechanism-author__summary {
+  margin: 0;
+  color: var(--locked-ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.mechanism-author__toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  justify-content: flex-end;
+}
+
+.mechanism-author__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.36rem;
+  min-height: 2rem;
+  padding: 0 0.65rem;
+  border: 1.15px solid var(--locked-line-semi);
+  border-radius: 999px;
+  background: var(--locked-flat-chip-bg);
+  color: var(--locked-ink);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.mechanism-author__toggle input {
+  width: 0.85rem;
+  height: 0.85rem;
+  margin: 0;
+  accent-color: var(--accent-strong);
+}
+
+.mechanism-author__json {
+  max-height: 17rem;
+  margin: 0.85rem 0 0;
+  padding: 0.75rem;
+  overflow: auto;
+  border: 1px solid var(--locked-line-semi);
+  border-radius: 12px;
+  background: var(--locked-flat-surface-bright);
+  color: var(--locked-ink);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.mechanism-debug__anchor-dot,
+.mechanism-debug__endpoint {
+  fill: var(--accent-strong);
+  stroke: var(--locked-flat-surface-bright);
+  stroke-width: 1.5;
+}
+
+.mechanism-debug__hitbox {
+  fill: rgba(159, 202, 210, 0.18);
+  stroke: rgba(74, 130, 142, 0.58);
+  stroke-dasharray: 3 3;
+}
+
+.mechanism-debug__anchor-label {
+  opacity: 0;
+  fill: var(--accent-strong);
+  font-size: 8px;
+  font-weight: 800;
+  paint-order: stroke;
+  pointer-events: none;
+  stroke: var(--locked-flat-surface-bright);
+  stroke-width: 3px;
+}
+
+.mechanism-debug__anchor:hover .mechanism-debug__anchor-label,
+.mechanism-debug__anchor:focus .mechanism-debug__anchor-label {
+  opacity: 1;
+}
+
+.mechanism-debug__bounds-rect {
+  fill: none;
+  stroke: rgba(204, 100, 75, 0.75);
+  stroke-dasharray: 5 4;
+  stroke-width: 1.1;
+}
+
+.mechanism-debug__control-line {
+  stroke: rgba(74, 130, 142, 0.72);
+  stroke-dasharray: 4 4;
+  stroke-width: 1;
+}
+
+.mechanism-debug__control-point {
+  fill: var(--locked-flat-surface-bright);
+  stroke: var(--accent-strong);
+  stroke-width: 1.6;
 }
 
 .mechanism-reference__body {
@@ -346,6 +480,7 @@ html[data-theme="dark"] .mechanism-reference {
 html[data-theme="dark"] .mechanism-step-indicator,
 html[data-theme="dark"] .mechanism-reference__header p:not(.mechanism-step-indicator),
 html[data-theme="dark"] .mechanism-reference__note,
+html[data-theme="dark"] .mechanism-author__summary,
 html[data-theme="dark"] .mechanism-correctness__list li,
 html[data-theme="dark"] .mechanism-svg__annotation,
 html[data-theme="dark"] .mechanism-svg__small-label {
@@ -381,6 +516,9 @@ html[data-theme="dark"] .mechanism-svg__charge-backing {
 
 html[data-theme="dark"] .mechanism-step-dot,
 html[data-theme="dark"] .mechanism-stepper__button,
+html[data-theme="dark"] .mechanism-author,
+html[data-theme="dark"] .mechanism-author__toggle,
+html[data-theme="dark"] .mechanism-author__json,
 html[data-theme="dark"] .mechanism-correctness,
 html[data-theme="dark"] .mechanism-correctness__summary::after {
   border-color: rgba(230, 219, 202, 0.16);
@@ -400,6 +538,16 @@ html[data-theme="dark"] .mechanism-svg__partial-charge {
   fill: rgba(159, 202, 210, 0.96);
 }
 
+html[data-theme="dark"] .mechanism-debug__anchor-dot,
+html[data-theme="dark"] .mechanism-debug__endpoint,
+html[data-theme="dark"] .mechanism-debug__control-point {
+  stroke: rgba(30, 27, 24, 0.98);
+}
+
+html[data-theme="dark"] .mechanism-debug__anchor-label {
+  stroke: rgba(30, 27, 24, 0.98);
+}
+
 @media (max-width: 980px) {
   .mechanism-demo-hero__grid,
   .mechanism-reference__header {
@@ -417,8 +565,17 @@ html[data-theme="dark"] .mechanism-svg__partial-charge {
   }
 
   .mechanism-reference__header,
-  .mechanism-reference__body {
+  .mechanism-reference__body,
+  .mechanism-author {
     padding: 0.95rem;
+  }
+
+  .mechanism-author__bar {
+    grid-template-columns: 1fr;
+  }
+
+  .mechanism-author__toggles {
+    justify-content: flex-start;
   }
 
   .mechanism-reference__diagram-frame {

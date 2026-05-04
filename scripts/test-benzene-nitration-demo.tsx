@@ -21,6 +21,10 @@ import {
   benzeneNitrationRequiredCorrectnessCheckIds,
   validateBenzeneNitrationArrowAnchors,
 } from "../interactive/benzene-nitration/src/chemicalCorrectness";
+import {
+  benzeneNitrationScenes,
+  validateMechanismScenes,
+} from "../interactive/benzene-nitration/src/features/mechanisms";
 import { MechanismDemoPage } from "../interactive/benzene-nitration/src/MechanismDemoPage";
 import { PartialCharge } from "../interactive/benzene-nitration/src/svgPrimitives";
 
@@ -74,12 +78,53 @@ async function main() {
   assert.deepEqual(
     benzeneNitrationArrows.map(arrow => [arrow.sourceAnchor, arrow.targetAnchor]),
     [
-      ["benzene.pi-system", "nitronium.N"],
-      ["hydrogensulfate.O-lone-pair", "wheland.H"],
-      ["wheland.C-H-bond", "wheland.broken-delocalisation-region"],
+      ["benzene.piSystem", "nitronium.N"],
+      ["hso4.reactiveO.lonePair", "sigmaComplex.attachedH"],
+      ["sigmaComplex.CHBondMidpoint", "sigmaComplex.delocalisationRegion"],
     ]
   );
   pass("all arrow anchors are valid and chemically constrained");
+
+  assert.deepEqual(validateMechanismScenes(benzeneNitrationScenes), []);
+  assert.deepEqual(
+    benzeneNitrationScenes.map(scene => scene.id),
+    requiredStepIds
+  );
+  assert.ok(benzeneNitrationScenes.every(scene => scene.scaffold.kind === "manualSvg"));
+  assert.equal(benzeneNitrationScenes[1].anchors["benzene.piSystem"].kind, "piSystem");
+  assert.equal(benzeneNitrationScenes[3].anchors["sigmaComplex.CHBondMidpoint"].kind, "bondMidpoint");
+  pass("mechanism scenes are typed, scaffold-backed, and validate deterministically");
+
+  const attackArrow = benzeneNitrationScenes[1].annotations.find(annotation => annotation.id === "attack-arrow");
+  assert.equal(attackArrow?.kind, "curlyArrow");
+  if (attackArrow?.kind === "curlyArrow") {
+    assert.deepEqual(attackArrow.layout.startOffset, { x: 26, y: -26 });
+    assert.deepEqual(attackArrow.layout.endOffset, { x: -2, y: 0 });
+    assert.ok(attackArrow.layout.control1);
+    assert.ok(attackArrow.layout.control2);
+    assert.equal(attackArrow.layout.arrowheadOffset, 12);
+  }
+  const deprotonationArrows = benzeneNitrationScenes[3].annotations.filter(
+    annotation => annotation.kind === "curlyArrow"
+  );
+  assert.equal(deprotonationArrows.length, 2);
+  deprotonationArrows.forEach(annotation => {
+    if (annotation.kind === "curlyArrow") {
+      assert.ok(annotation.layout.control1);
+      assert.ok(annotation.layout.control2);
+      assert.ok(annotation.layout.startOffset);
+      assert.ok(annotation.layout.endOffset);
+    }
+  });
+  const baseLonePair = benzeneNitrationScenes[3].annotations.find(
+    annotation => annotation.id === "hso4-reactive-oxygen-lone-pair"
+  );
+  assert.equal(baseLonePair?.kind, "lonePair");
+  if (baseLonePair?.kind === "lonePair") {
+    assert.equal(baseLonePair.electronCount, 2);
+    assert.equal(baseLonePair.layout.rotation, -20);
+  }
+  pass("manual layout controls exist for arrows, charges, and lone pairs");
 
   const checkIds = new Set(benzeneNitrationCorrectnessChecks.map(check => check.id));
   benzeneNitrationRequiredCorrectnessCheckIds.forEach(checkId =>
@@ -91,21 +136,39 @@ async function main() {
   const renderedStepSvgs = benzeneNitrationSteps.map(step => renderToStaticMarkup(<MechanismSvg step={step.id} />));
   assert.ok(renderedStepSvgs[0].includes("NO₂⁺"));
   assert.ok(renderedStepSvgs[1].includes("aromatic π system"));
-  assert.ok(renderedStepSvgs[1].includes("nitrogen of nitronium ion"));
-  assert.ok(renderedStepSvgs[1].includes("nitronium ion, NO2+"));
+  assert.ok(renderedStepSvgs[1].includes("nitrogen atom of nitronium ion"));
+  assert.ok(renderedStepSvgs[1].includes("nitronium ion"));
   assert.ok(renderedStepSvgs[1].includes("formal charge +"));
   assert.ok(renderedStepSvgs[2].includes("new C-N bond to nitro group"));
   assert.ok(renderedStepSvgs[2].includes("C-H bond retained on attacked carbon"));
   assert.ok(renderedStepSvgs[2].includes("broken delocalisation horseshoe"));
-  assert.ok(renderedStepSvgs[2].includes("positive charge on sigma complex"));
+  assert.ok(renderedStepSvgs[2].includes("wheland-positive-charge"));
   assert.ok(!renderedStepSvgs[2].includes("mechanism-svg__aromatic-core"));
   assert.ok(!renderedStepSvgs[2].includes("mechanism-svg__bond--double"));
   assert.ok(renderedStepSvgs[3].includes("oxygen lone pair on hydrogensulfate"));
   assert.ok(renderedStepSvgs[3].includes("C-H bond midpoint"));
   assert.ok(renderedStepSvgs[3].includes("broken delocalisation region"));
   assert.ok(!renderedStepSvgs[3].includes("mechanism-svg__aromatic-core"));
-  assert.ok(renderedStepSvgs[4].includes("nitrobenzene product"));
+  assert.ok(renderedStepSvgs[4].includes("nitrobenzene; aromaticity restored"));
   pass("step SVGs render the required mechanism features");
+
+  const debugMarkup = renderToStaticMarkup(
+    <MechanismSvg
+      step="deprotonation"
+      debugOptions={{
+        showAnchors: true,
+        showHitboxes: true,
+        showAnnotationBounds: true,
+        showControlPoints: true,
+        showJson: false,
+      }}
+    />
+  );
+  assert.ok(debugMarkup.includes("mechanism-debug__anchor-dot"));
+  assert.ok(debugMarkup.includes("mechanism-debug__bounds-rect"));
+  assert.ok(debugMarkup.includes("mechanism-debug__control-point"));
+  assert.ok(debugMarkup.includes("sigmaComplex.CHBondMidpoint"));
+  pass("author debug SVG mode exposes anchors, bounds, hitboxes, and control points");
 
   const primitiveMarkup = renderToStaticMarkup(<PartialCharge x={10} y={10} charge="δ+" />);
   assert.ok(primitiveMarkup.includes("δ+"));

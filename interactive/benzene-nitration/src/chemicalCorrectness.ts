@@ -1,3 +1,6 @@
+import { benzeneNitrationScenes, validateMechanismScenes } from "./features/mechanisms";
+import type { AnchorDefinition, ExpectedMechanismAction } from "./features/mechanisms";
+
 export type MechanismStepId =
   | "electrophile-generation"
   | "electrophilic-attack"
@@ -36,73 +39,65 @@ export type CorrectnessCheck = {
   severity: "required" | "recommended";
 };
 
-export const benzeneNitrationAnchors: MechanismAnchor[] = [
-  {
-    id: "benzene.pi-system",
-    step: "electrophilic-attack",
-    label: "benzene aromatic π system",
-    sourceKind: "pi-system",
-  },
-  {
-    id: "nitronium.N",
-    step: "electrophilic-attack",
-    label: "nitrogen atom of NO₂⁺",
-    targetKind: "atom",
-  },
-  {
-    id: "hydrogensulfate.O-lone-pair",
-    step: "deprotonation",
-    label: "lone pair on oxygen of HSO₄⁻",
-    sourceKind: "lone-pair",
-  },
-  {
-    id: "wheland.H",
-    step: "deprotonation",
-    label: "hydrogen attached to the sp³ carbon of the sigma complex",
-    targetKind: "proton",
-  },
-  {
-    id: "wheland.C-H-bond",
-    step: "deprotonation",
-    label: "C–H bond on the sp³ carbon",
-    sourceKind: "bond",
-  },
-  {
-    id: "wheland.broken-delocalisation-region",
-    step: "deprotonation",
-    label: "broken delocalisation region of the sigma complex",
-    targetKind: "pi-system",
-  },
-];
+function anchorSourceKind(anchor: AnchorDefinition): ElectronSourceKind | undefined {
+  if (anchor.kind === "piSystem" || anchor.kind === "aromaticCircle") {
+    return "pi-system";
+  }
+  if (anchor.kind === "lonePair") {
+    return "lone-pair";
+  }
+  if (anchor.kind === "bondMidpoint") {
+    return "bond";
+  }
 
-export const benzeneNitrationArrows: MechanismArrowSpec[] = [
-  {
-    id: "arrow-benzene-pi-to-nitronium-N",
-    step: "electrophilic-attack",
-    sourceAnchor: "benzene.pi-system",
-    targetAnchor: "nitronium.N",
+  return undefined;
+}
+
+function anchorTargetKind(anchor: AnchorDefinition): ElectronTargetKind | undefined {
+  if (anchor.kind === "atom") {
+    return anchor.role?.toLowerCase().includes("hydrogen") ? "proton" : "atom";
+  }
+  if (anchor.kind === "delocalisationRegion" || anchor.kind === "piSystem" || anchor.kind === "aromaticCircle") {
+    return "pi-system";
+  }
+  if (anchor.kind === "bondMidpoint") {
+    return "bond";
+  }
+
+  return undefined;
+}
+
+export const benzeneNitrationAnchors: MechanismAnchor[] = benzeneNitrationScenes.flatMap(scene =>
+  Object.values(scene.anchors).map(anchor => ({
+    id: anchor.id,
+    step: scene.id as MechanismStepId,
+    label: anchor.role ?? anchor.id,
+    sourceKind: anchorSourceKind(anchor),
+    targetKind: anchorTargetKind(anchor),
+  }))
+);
+
+function isExpectedCurlyArrow(
+  action: ExpectedMechanismAction
+): action is Extract<ExpectedMechanismAction, { kind: "curlyArrow" }> {
+  return action.kind === "curlyArrow";
+}
+
+export const benzeneNitrationArrows: MechanismArrowSpec[] = benzeneNitrationScenes.flatMap(scene =>
+  (scene.expectedActions ?? []).filter(isExpectedCurlyArrow).map(action => ({
+    id: action.id,
+    step: scene.id as MechanismStepId,
+    sourceAnchor: action.fromAnchorId,
+    targetAnchor: action.toAnchorId,
     electronPairMovement: true,
     notes:
-      "Curly arrow starts from the aromatic π system and points to the positively charged nitrogen, not to oxygen.",
-  },
-  {
-    id: "arrow-hydrogensulfate-lone-pair-to-H",
-    step: "deprotonation",
-    sourceAnchor: "hydrogensulfate.O-lone-pair",
-    targetAnchor: "wheland.H",
-    electronPairMovement: true,
-    notes: "Base arrow starts from an explicit oxygen lone pair on hydrogensulfate and points to the proton.",
-  },
-  {
-    id: "arrow-C-H-bond-to-ring-pi-system",
-    step: "deprotonation",
-    sourceAnchor: "wheland.C-H-bond",
-    targetAnchor: "wheland.broken-delocalisation-region",
-    electronPairMovement: true,
-    notes:
-      "Second arrow starts from the C–H bond midpoint and returns those electrons into the broken delocalisation region of the ring.",
-  },
-];
+      action.id === "attack-arrow"
+        ? "Curly arrow starts from the aromatic pi system and points to the positively charged nitrogen, not to oxygen."
+        : action.id === "deprotonation-base-arrow"
+          ? "Base arrow starts from an explicit oxygen lone pair on hydrogensulfate and points to the proton."
+          : "C-H bond electrons return into the broken delocalisation region of the ring.",
+  }))
+);
 
 export const benzeneNitrationCorrectnessChecks: CorrectnessCheck[] = [
   {
@@ -265,7 +260,7 @@ export const benzeneNitrationRequiredCorrectnessCheckIds = [
 
 export function validateBenzeneNitrationArrowAnchors() {
   const anchors = new Map(benzeneNitrationAnchors.map(anchor => [anchor.id, anchor]));
-  const errors: string[] = [];
+  const errors: string[] = validateMechanismScenes(benzeneNitrationScenes);
 
   for (const arrow of benzeneNitrationArrows) {
     const source = anchors.get(arrow.sourceAnchor);
