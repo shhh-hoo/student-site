@@ -3,6 +3,11 @@
   "summary": "Use short drills and trainers without mixing them into the document browse flow.",
   "resources": [
     {
+      "asset_id": "benzene-nitration",
+      "href": "interactive/benzene-nitration/",
+      "meta_path": "interactive/benzene-nitration/meta.json"
+    },
+    {
       "asset_id": "ir-past-paper-trainer",
       "href": "interactive/ir-past-paper-trainer/",
       "meta_path": "interactive/ir-past-paper-trainer/meta.json"
