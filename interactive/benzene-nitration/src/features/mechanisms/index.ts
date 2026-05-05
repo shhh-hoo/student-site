@@ -5,7 +5,6 @@ export {
   cloneMechanismAnnotations,
   createFullAnnotationsExport,
   createLayoutOverridesExport,
-  createSelectedAnnotationExport,
   describeAnnotationSemantics,
   getAnnotationHandlePoint,
   getDefaultHandleForAnnotation,

@@ -92,6 +92,10 @@ function getSceneAnnotation(scene: MechanismScene, annotationId: string) {
   return scene.annotations.find(annotation => annotation.id === annotationId);
 }
 
+function layoutsMatch(a: MechanismAnnotation["layout"], b: MechanismAnnotation["layout"]) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 function getAnchor(scene: MechanismScene, anchorId: string) {
   return scene.anchors[anchorId];
 }
@@ -377,6 +381,7 @@ export function updateAnnotationLayoutFromHandle(
     return annotations;
   }
 
+  // Handles resolve positions through semantic anchors, but every write below is confined to visual layout fields.
   return updateAnnotation(annotations, handle.annotationId, current => {
     switch (handle.kind) {
       case "curlyArrow": {
@@ -525,12 +530,22 @@ export function createLayoutOverridesExport(
   return {
     sceneId: scene.id,
     annotations: Object.fromEntries(
-      annotations.map(annotation => [
-        annotation.id,
-        {
-          layout: annotation.layout,
-        },
-      ])
+      annotations.flatMap(annotation => {
+        const sceneAnnotation = getSceneAnnotation(scene, annotation.id);
+
+        if (sceneAnnotation && layoutsMatch(sceneAnnotation.layout, annotation.layout)) {
+          return [];
+        }
+
+        return [
+          [
+            annotation.id,
+            {
+              layout: annotation.layout,
+            },
+          ],
+        ];
+      })
     ),
   };
 }
@@ -543,10 +558,6 @@ export function createFullAnnotationsExport(
     sceneId: scene.id,
     annotations,
   };
-}
-
-export function createSelectedAnnotationExport(annotations: MechanismAnnotation[], annotationId?: string | null) {
-  return annotationId ? (getAnnotation(annotations, annotationId) ?? null) : null;
 }
 
 export function applyLayoutOverrides(

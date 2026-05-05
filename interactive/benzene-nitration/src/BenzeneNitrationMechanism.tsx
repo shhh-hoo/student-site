@@ -45,7 +45,7 @@ function readInitialAuthorMode() {
 
   const params = new URLSearchParams(window.location.search);
 
-  return params.get("mode") === "author" || params.get("debugAnchors") === "1";
+  return params.get("mode") === "author";
 }
 
 export function MechanismSvg({

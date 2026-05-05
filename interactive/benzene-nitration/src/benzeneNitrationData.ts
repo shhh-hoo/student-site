@@ -74,7 +74,6 @@ export const benzeneNitrationSpecies = {
     electrophile: true,
     formalCharge: "+",
     charge: 1,
-    smiles: "[O-][N+]#O",
     displayFormula: "NO₂⁺",
   },
   hydrogensulfate: {

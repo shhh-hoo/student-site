@@ -161,11 +161,11 @@
   outline-offset: 3px;
 }
 
-.mechanism-annotation-shell {
+.mechanism-canvas[data-author-mode="true"] .mechanism-annotation-shell {
   cursor: pointer;
 }
 
-.mechanism-annotation-shell--locked {
+.mechanism-canvas[data-author-mode="true"] .mechanism-annotation-shell--locked {
   cursor: default;
 }
 

@@ -3,9 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   applyLayoutOverrides,
   cloneMechanismAnnotations,
-  createFullAnnotationsExport,
   createLayoutOverridesExport,
-  createSelectedAnnotationExport,
   getDefaultHandleForAnnotation,
   nudgeAnnotationHandle,
   resetAnnotationToSceneLayout,
@@ -100,10 +98,6 @@ export function useMechanismAuthoring(scene: MechanismScene | undefined, enabled
     [draftAnnotations]
   );
 
-  const selectHandle = useCallback((handle: EditableMechanismHandle) => {
-    setSelectedHandle(handle);
-  }, []);
-
   const beginDrag = useCallback((handle: EditableMechanismHandle) => {
     activeDragHandleRef.current = handle;
     setSelectedHandle(handle);
@@ -153,6 +147,7 @@ export function useMechanismAuthoring(scene: MechanismScene | undefined, enabled
     removeStoredDraft(scene.id);
     setDraftAnnotations(cloneMechanismAnnotations(scene.annotations));
     setSelectedHandle(null);
+    setIsDragging(false);
     activeDragHandleRef.current = null;
     setCopyStatus("Scene draft reset");
   }, [scene]);
@@ -175,22 +170,6 @@ export function useMechanismAuthoring(scene: MechanismScene | undefined, enabled
     setCopyStatus("Saved draft cleared");
   }, [scene]);
 
-  const exportData = useMemo(() => {
-    if (!scene) {
-      return {
-        layoutOverrides: null,
-        fullAnnotations: null,
-        selectedAnnotation: null,
-      };
-    }
-
-    return {
-      layoutOverrides: createLayoutOverridesExport(scene, draftAnnotations),
-      fullAnnotations: createFullAnnotationsExport(scene, draftAnnotations),
-      selectedAnnotation: createSelectedAnnotationExport(draftAnnotations, selectedAnnotationId),
-    };
-  }, [draftAnnotations, scene, selectedAnnotationId]);
-
   return {
     annotations: enabled ? draftAnnotations : (scene?.annotations ?? []),
     draftAnnotations,
@@ -201,7 +180,6 @@ export function useMechanismAuthoring(scene: MechanismScene | undefined, enabled
     copyStatus,
     setCopyStatus,
     selectAnnotation,
-    selectHandle,
     beginDrag,
     dragSelectedHandleTo,
     endDrag,
@@ -210,6 +188,5 @@ export function useMechanismAuthoring(scene: MechanismScene | undefined, enabled
     resetSceneDraft,
     resetSelectedAnnotation,
     clearSavedDraft,
-    exportData,
   };
 }

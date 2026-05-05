@@ -432,14 +432,3 @@ export function MechanismOverlay({
     </g>
   );
 }
-
-export function extractSerializableAnnotationLayout(scene: MechanismScene) {
-  return {
-    sceneId: scene.id,
-    annotations: scene.annotations.map(annotation => ({
-      id: annotation.id,
-      kind: annotation.kind,
-      layout: annotation.layout,
-    })),
-  };
-}

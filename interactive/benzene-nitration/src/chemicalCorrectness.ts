@@ -241,6 +241,7 @@ export const benzeneNitrationCorrectnessChecks: CorrectnessCheck[] = [
 export const benzeneNitrationRequiredCorrectnessCheckIds = [
   "electrophile-is-no2-plus",
   "nitronium-formal-charge",
+  "do-not-label-hno3-as-simple-base",
   "attack-arrow-source",
   "attack-arrow-target",
   "sigma-complex-c-n-bond",

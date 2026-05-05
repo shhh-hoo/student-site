@@ -31,11 +31,12 @@ import {
   updateAnnotationLayoutFromHandle,
   validateMechanismSceneActions,
   validateMechanismScenes,
+  type AnchorDefinition,
   type EditableMechanismHandle,
   type MechanismAnnotation,
 } from "../interactive/benzene-nitration/src/features/mechanisms";
+import { PartialCharge } from "../interactive/benzene-nitration/src/features/mechanisms/primitives/PartialCharge";
 import { MechanismDemoPage } from "../interactive/benzene-nitration/src/MechanismDemoPage";
-import { PartialCharge } from "../interactive/benzene-nitration/src/svgPrimitives";
 
 const requiredStepIds = [
   "electrophile-generation",
@@ -110,6 +111,8 @@ async function main() {
   assert.equal(benzeneNitrationSpecies.nitronium.electrophile, true);
   assert.equal(benzeneNitrationSpecies.nitronium.formalCharge, "+");
   assert.equal(benzeneNitrationSpecies.nitronium.charge, 1);
+  assert.equal(benzeneNitrationSpecies.nitronium.displayFormula, "NO₂⁺");
+  assert.ok(!("smiles" in benzeneNitrationSpecies.nitronium));
   pass("nitronium is present as positively charged electrophile metadata");
 
   assert.deepEqual(validateBenzeneNitrationArrowAnchors(), []);
@@ -160,15 +163,39 @@ async function main() {
   assert.equal(baseLonePair?.kind, "lonePair");
   if (baseLonePair?.kind === "lonePair") {
     assert.equal(baseLonePair.electronCount, 2);
+    assert.deepEqual(baseLonePair.layout.offset, { x: -14.17, y: 5.33 });
     assert.equal(baseLonePair.layout.rotation, 90.7);
+  }
+  const hso4NegativeCharge = benzeneNitrationScenes[3].annotations.find(
+    annotation => annotation.id === "hso4-negative-charge"
+  );
+  assert.equal(hso4NegativeCharge?.kind, "formalCharge");
+  if (hso4NegativeCharge?.kind === "formalCharge") {
+    assert.deepEqual(hso4NegativeCharge.layout.offset, { x: 11, y: -16.5 });
+  }
+  const hso4BaseLabel = benzeneNitrationScenes[3].annotations.find(annotation => annotation.id === "hso4-base-label");
+  assert.equal(hso4BaseLabel?.kind, "label");
+  if (hso4BaseLabel?.kind === "label") {
+    assert.deepEqual(hso4BaseLabel.layout.offset, { x: -6.57, y: 8.63 });
   }
   const whelandHorseshoe = benzeneNitrationScenes[2].annotations.find(
     annotation => annotation.id === "wheland-delocalisation-horseshoe"
   );
   assert.equal(whelandHorseshoe?.kind, "areniumHorseshoe");
   if (whelandHorseshoe?.kind === "areniumHorseshoe") {
+    assert.deepEqual(whelandHorseshoe.layout.start, { x: 208.57, y: 194.03 });
     assert.equal(whelandHorseshoe.layout.segments.length, 1);
+    assert.deepEqual(whelandHorseshoe.layout.segments[0]?.control1, { x: 190.3, y: 253.77 });
+    assert.deepEqual(whelandHorseshoe.layout.segments[0]?.control2, { x: 289.7, y: 260.03 });
+    assert.deepEqual(whelandHorseshoe.layout.segments[0]?.end, { x: 272.74, y: 193.24 });
     assert.deepEqual(whelandHorseshoe.excludedAnchorIds, ["sigmaComplex.sp3Carbon"]);
+  }
+  const whelandCharge = benzeneNitrationScenes[2].annotations.find(
+    annotation => annotation.id === "wheland-positive-charge"
+  );
+  assert.equal(whelandCharge?.kind, "formalCharge");
+  if (whelandCharge?.kind === "formalCharge") {
+    assert.deepEqual(whelandCharge.layout.offset, { x: 0.13, y: -13.8 });
   }
   const deprotonationHorseshoe = benzeneNitrationScenes[3].annotations.find(
     annotation => annotation.id === "deprotonation-delocalisation-horseshoe"
@@ -177,6 +204,13 @@ async function main() {
   if (deprotonationHorseshoe?.kind === "areniumHorseshoe") {
     assert.equal(deprotonationHorseshoe.layout.segments.length, 1);
     assert.deepEqual(deprotonationHorseshoe.excludedAnchorIds, ["sigmaComplex.sp3Carbon"]);
+  }
+  const deprotonationCharge = benzeneNitrationScenes[3].annotations.find(
+    annotation => annotation.id === "deprotonation-positive-charge"
+  );
+  assert.equal(deprotonationCharge?.kind, "formalCharge");
+  if (deprotonationCharge?.kind === "formalCharge") {
+    assert.deepEqual(deprotonationCharge.layout.offset, { x: -0.39, y: -7.89 });
   }
   pass("manual layout controls exist for arrows, charges, and lone pairs");
 
@@ -363,6 +397,10 @@ async function main() {
   assert.equal(getDefaultHandleForAnnotation(nudgedArrow)?.annotationId, "attack-arrow");
   pass("selected handles can be nudged with keyboard-compatible deltas");
 
+  assert.deepEqual(createLayoutOverridesExport(attackScene, cloneMechanismAnnotations(attackScene.annotations)), {
+    sceneId: "electrophilic-attack",
+    annotations: {},
+  });
   assert.deepEqual(validateMechanismSceneActions({ ...attackScene, annotations: nudgedDraft }), []);
   const layoutExport = createLayoutOverridesExport(attackScene, nudgedDraft);
   assert.equal(layoutExport.sceneId, "electrophilic-attack");
@@ -380,9 +418,14 @@ async function main() {
   pass("layout export reflects draft layout while validation remains anchor-based");
 
   const checkIds = new Set(benzeneNitrationCorrectnessChecks.map(check => check.id));
+  const requiredCheckIdsFromChecks = benzeneNitrationCorrectnessChecks
+    .filter(check => check.severity === "required")
+    .map(check => check.id)
+    .sort();
   benzeneNitrationRequiredCorrectnessCheckIds.forEach(checkId =>
     assert.ok(checkIds.has(checkId), `Missing required correctness check ${checkId}`)
   );
+  assert.deepEqual([...benzeneNitrationRequiredCorrectnessCheckIds].sort(), requiredCheckIdsFromChecks);
   assert.ok(checkIds.has("partial-charge-policy"));
   pass("all required correctness checks and partial-charge policy exist");
 
@@ -403,8 +446,9 @@ async function main() {
   assert.ok(renderedStepSvgs[3].includes("broken delocalisation region"));
   assert.ok(!renderedStepSvgs[3].includes("mechanism-svg__aromatic-core"));
   assert.ok(renderedStepSvgs[4].includes("nitrobenzene; aromaticity restored"));
-  assert.ok(renderedStepSvgs[4].includes("C-N bond to nitro nitrogen in nitrobenzene"));
-  assert.ok(renderedStepSvgs[4].includes("nitro nitrogen directly bonded to the aromatic ring"));
+  assert.ok(renderedStepSvgs[4].includes("C-N bond to NO2 group in nitrobenzene"));
+  assert.ok(renderedStepSvgs[4].includes("nitro group"));
+  assert.ok(!renderedStepSvgs[4].includes("nitro nitrogen directly bonded to the aromatic ring"));
   pass("step SVGs render the required mechanism features");
 
   const debugMarkup = renderToStaticMarkup(
@@ -456,7 +500,24 @@ async function main() {
   assert.ok(!renderedStepSvgs[1].includes("mechanism-author-handle"));
   pass("author SVG renders drag handles while learner SVG remains clean");
 
-  const primitiveMarkup = renderToStaticMarkup(<PartialCharge x={10} y={10} charge="δ+" />);
+  const partialChargeAnchor: AnchorDefinition = {
+    id: "test.partialChargeAnchor",
+    kind: "manualPoint",
+    x: 10,
+    y: 10,
+  };
+  const primitiveMarkup = renderToStaticMarkup(
+    <PartialCharge
+      anchor={partialChargeAnchor}
+      annotation={{
+        id: "test-partial-charge-primitive",
+        kind: "partialCharge",
+        value: "δ+",
+        anchorId: partialChargeAnchor.id,
+        layout: {},
+      }}
+    />
+  );
   assert.ok(primitiveMarkup.includes("δ+"));
   pass("PartialCharge exists as an SVG primitive");
 
@@ -477,7 +538,13 @@ async function main() {
   assert.ok(componentMarkup.includes("Go to 5. Product"));
   assert.ok(componentMarkup.includes("Chemical correctness checks"));
   assert.ok(!componentMarkup.includes("mechanism-author"));
+  assert.ok(!componentMarkup.includes("mechanism-debug__anchor-dot"));
 
+  withWindowSearch("?debugAnchors=1", () => {
+    const debugOnlyMarkup = renderToStaticMarkup(<BenzeneNitrationMechanism />);
+    assert.ok(!debugOnlyMarkup.includes("mechanism-author"));
+    assert.ok(!debugOnlyMarkup.includes("mechanism-debug__anchor-dot"));
+  });
   withWindowSearch("?mode=author&debugBounds=1&debugJson=1", () => {
     const authorComponentMarkup = renderToStaticMarkup(<BenzeneNitrationMechanism />);
     assert.ok(authorComponentMarkup.includes("mechanism-author"));
