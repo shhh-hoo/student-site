@@ -192,18 +192,8 @@ function horseshoeAnnotation(
       start: p(cx - r * 0.48, cy - r * 0.08),
       segments: [
         {
-          control1: p(cx - r * 0.74, cy + r * 0.26),
-          control2: p(cx - r * 0.56, cy + r * 0.68),
-          end: p(cx - r * 0.18, cy + r * 0.78),
-        },
-        {
-          control1: p(cx - r * 0.08, cy + r * 0.86),
-          control2: p(cx + r * 0.08, cy + r * 0.86),
-          end: p(cx + r * 0.18, cy + r * 0.78),
-        },
-        {
-          control1: p(cx + r * 0.56, cy + r * 0.68),
-          control2: p(cx + r * 0.74, cy + r * 0.26),
+          control1: p(cx - r * 0.86, cy + r * 0.92),
+          control2: p(cx + r * 0.86, cy + r * 0.92),
           end: p(cx + r * 0.48, cy - r * 0.08),
         },
       ],

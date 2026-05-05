@@ -162,6 +162,22 @@ async function main() {
     assert.equal(baseLonePair.electronCount, 2);
     assert.equal(baseLonePair.layout.rotation, -20);
   }
+  const whelandHorseshoe = benzeneNitrationScenes[2].annotations.find(
+    annotation => annotation.id === "wheland-delocalisation-horseshoe"
+  );
+  assert.equal(whelandHorseshoe?.kind, "areniumHorseshoe");
+  if (whelandHorseshoe?.kind === "areniumHorseshoe") {
+    assert.equal(whelandHorseshoe.layout.segments.length, 1);
+    assert.deepEqual(whelandHorseshoe.excludedAnchorIds, ["sigmaComplex.sp3Carbon"]);
+  }
+  const deprotonationHorseshoe = benzeneNitrationScenes[3].annotations.find(
+    annotation => annotation.id === "deprotonation-delocalisation-horseshoe"
+  );
+  assert.equal(deprotonationHorseshoe?.kind, "areniumHorseshoe");
+  if (deprotonationHorseshoe?.kind === "areniumHorseshoe") {
+    assert.equal(deprotonationHorseshoe.layout.segments.length, 1);
+    assert.deepEqual(deprotonationHorseshoe.excludedAnchorIds, ["sigmaComplex.sp3Carbon"]);
+  }
   pass("manual layout controls exist for arrows, charges, and lone pairs");
 
   const attackScene = benzeneNitrationScenes[1];

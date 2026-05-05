@@ -13173,18 +13173,8 @@ function bt(e, t, n, r, i, a) {
       start: k(r - a * 0.48, i - a * 0.08),
       segments: [
         {
-          control1: k(r - a * 0.74, i + a * 0.26),
-          control2: k(r - a * 0.56, i + a * 0.68),
-          end: k(r - a * 0.18, i + a * 0.78),
-        },
-        {
-          control1: k(r - a * 0.08, i + a * 0.86),
-          control2: k(r + a * 0.08, i + a * 0.86),
-          end: k(r + a * 0.18, i + a * 0.78),
-        },
-        {
-          control1: k(r + a * 0.56, i + a * 0.68),
-          control2: k(r + a * 0.74, i + a * 0.26),
+          control1: k(r - a * 0.86, i + a * 0.92),
+          control2: k(r + a * 0.86, i + a * 0.92),
           end: k(r + a * 0.48, i - a * 0.08),
         },
       ],
