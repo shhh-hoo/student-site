@@ -167,7 +167,11 @@ function anchor(
   };
 }
 
-function commonNitroniumAnnotations(nAnchorId: string, formulaAnchorId: string): MechanismAnnotation[] {
+function commonNitroniumAnnotations(
+  nAnchorId: string,
+  formulaAnchorId: string,
+  formulaLabelOffset: MechanismPoint = p(0, 0)
+): MechanismAnnotation[] {
   return [
     {
       id: `${nAnchorId}.formal-positive-charge`,
@@ -187,7 +191,7 @@ function commonNitroniumAnnotations(nAnchorId: string, formulaAnchorId: string):
       anchorId: formulaAnchorId,
       chemicallyLinked: false,
       layout: {
-        offset: p(0, 0),
+        offset: formulaLabelOffset,
         className: "mechanism-svg__small-label",
         zIndex: 60,
       },
@@ -315,7 +319,7 @@ export const benzeneNitrationScenes: MechanismScene[] = [
       }),
     },
     annotations: [
-      ...commonNitroniumAnnotations("nitronium.N", "nitronium.formulaLabel"),
+      ...commonNitroniumAnnotations("nitronium.N", "nitronium.formulaLabel", p(0.3, 0.11)),
       {
         id: "attack-arrow",
         kind: "curlyArrow",
@@ -323,10 +327,10 @@ export const benzeneNitrationScenes: MechanismScene[] = [
         toAnchorId: "nitronium.N",
         electronFlow: "pair",
         layout: {
-          startOffset: p(30, -30),
-          endOffset: p(-6, 0),
-          control1: p(224, 126),
-          control2: p(294, 96),
+          startOffset: p(2.91, -34.41),
+          endOffset: p(1.61, -2.58),
+          control1: p(191.87, 124.63),
+          control2: p(241.7, 48.98),
           arrowheadOffset: 14,
           strokeWidth: 2.8,
           zIndex: 12,
@@ -386,21 +390,32 @@ export const benzeneNitrationScenes: MechanismScene[] = [
       ),
     },
     annotations: [
-      horseshoeAnnotation(
-        "wheland-delocalisation-horseshoe",
-        "sigmaComplex.delocalisationRegion",
-        "sigmaComplex.sp3Carbon",
-        240,
-        204,
-        58
-      ),
+      {
+        id: "wheland-delocalisation-horseshoe",
+        kind: "areniumHorseshoe",
+        anchorId: "sigmaComplex.delocalisationRegion",
+        excludedAnchorIds: ["sigmaComplex.sp3Carbon"],
+        layout: {
+          start: p(208.57, 194.03),
+          segments: [
+            {
+              control1: p(190.3, 253.77),
+              control2: p(289.7, 260.03),
+              end: p(272.74, 193.24),
+            },
+          ],
+          strokeWidth: 2.9,
+          zIndex: 22,
+          locked: false,
+        },
+      },
       {
         id: "wheland-positive-charge",
         kind: "formalCharge",
         value: "+",
         anchorId: "sigmaComplex.positiveRegion",
         layout: {
-          offset: p(0, 0),
+          offset: p(0.13, -13.8),
           zIndex: 56,
         },
       },
@@ -496,7 +511,7 @@ export const benzeneNitrationScenes: MechanismScene[] = [
         value: "-",
         anchorId: "hso4.reactiveO",
         layout: {
-          offset: p(14, -17),
+          offset: p(11, -16.5),
           zIndex: 56,
         },
       },
@@ -506,8 +521,8 @@ export const benzeneNitrationScenes: MechanismScene[] = [
         anchorId: "hso4.reactiveO.lonePair",
         electronCount: 2,
         layout: {
-          offset: p(0, 0),
-          rotation: -20,
+          offset: p(-14.17, 5.33),
+          rotation: 90.7,
           dotSpacing: 8,
           zIndex: 48,
         },
@@ -518,6 +533,7 @@ export const benzeneNitrationScenes: MechanismScene[] = [
         text: "HSO₄⁻ base",
         anchorId: "hso4.label",
         layout: {
+          offset: p(-6.57, 8.63),
           className: "mechanism-svg__small-label",
           zIndex: 60,
         },
@@ -536,7 +552,7 @@ export const benzeneNitrationScenes: MechanismScene[] = [
         value: "+",
         anchorId: "sigmaComplex.positiveRegion",
         layout: {
-          offset: p(0, 0),
+          offset: p(-0.39, -7.89),
           zIndex: 56,
         },
       },
@@ -547,8 +563,8 @@ export const benzeneNitrationScenes: MechanismScene[] = [
         toAnchorId: "sigmaComplex.attachedH",
         electronFlow: "pair",
         layout: {
-          startOffset: p(4, -4),
-          endOffset: p(-9, 4),
+          startOffset: p(-8.43, 5.85),
+          endOffset: p(-4.48, -0.41),
           control1: p(142, 56),
           control2: p(218, 54),
           arrowheadOffset: 10,
@@ -563,10 +579,10 @@ export const benzeneNitrationScenes: MechanismScene[] = [
         toAnchorId: "sigmaComplex.delocalisationRegion",
         electronFlow: "pair",
         layout: {
-          startOffset: p(1, -4),
-          endOffset: p(-3, -36),
-          control1: p(314, 136),
-          control2: p(326, 165),
+          startOffset: p(7.48, -0.41),
+          endOffset: p(2.74, -28.58),
+          control1: p(323.61, 137.68),
+          control2: p(311.61, 174.46),
           arrowheadOffset: 6,
           strokeWidth: 2.8,
           zIndex: 12,

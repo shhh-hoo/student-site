@@ -13191,7 +13191,7 @@ function A(e, t, n, r, i = {}) {
     ...i,
   };
 }
-function Ct(e, t) {
+function Ct(e, t, n = k(0, 0)) {
   return [
     {
       id: `${e}.formal-positive-charge`,
@@ -13211,7 +13211,7 @@ function Ct(e, t) {
       anchorId: t,
       chemicallyLinked: !1,
       layout: {
-        offset: k(0, 0),
+        offset: n,
         className: "mechanism-svg__small-label",
         zIndex: 60,
       },
@@ -13328,7 +13328,7 @@ var Tt = [
         }),
       },
       annotations: [
-        ...Ct("nitronium.N", "nitronium.formulaLabel"),
+        ...Ct("nitronium.N", "nitronium.formulaLabel", k(0.3, 0.11)),
         {
           id: "attack-arrow",
           kind: "curlyArrow",
@@ -13336,10 +13336,10 @@ var Tt = [
           toAnchorId: "nitronium.N",
           electronFlow: "pair",
           layout: {
-            startOffset: k(30, -30),
-            endOffset: k(-6, 0),
-            control1: k(224, 126),
-            control2: k(294, 96),
+            startOffset: k(2.91, -34.41),
+            endOffset: k(1.61, -2.58),
+            control1: k(191.87, 124.63),
+            control2: k(241.7, 48.98),
             arrowheadOffset: 14,
             strokeWidth: 2.8,
             zIndex: 12,
@@ -13393,21 +13393,32 @@ var Tt = [
         }),
       },
       annotations: [
-        wt(
-          "wheland-delocalisation-horseshoe",
-          "sigmaComplex.delocalisationRegion",
-          "sigmaComplex.sp3Carbon",
-          240,
-          204,
-          58
-        ),
+        {
+          id: "wheland-delocalisation-horseshoe",
+          kind: "areniumHorseshoe",
+          anchorId: "sigmaComplex.delocalisationRegion",
+          excludedAnchorIds: ["sigmaComplex.sp3Carbon"],
+          layout: {
+            start: k(208.57, 194.03),
+            segments: [
+              {
+                control1: k(190.3, 253.77),
+                control2: k(289.7, 260.03),
+                end: k(272.74, 193.24),
+              },
+            ],
+            strokeWidth: 2.9,
+            zIndex: 22,
+            locked: !1,
+          },
+        },
         {
           id: "wheland-positive-charge",
           kind: "formalCharge",
           value: "+",
           anchorId: "sigmaComplex.positiveRegion",
           layout: {
-            offset: k(0, 0),
+            offset: k(0.13, -13.8),
             zIndex: 56,
           },
         },
@@ -13497,7 +13508,7 @@ var Tt = [
           value: "-",
           anchorId: "hso4.reactiveO",
           layout: {
-            offset: k(14, -17),
+            offset: k(11, -16.5),
             zIndex: 56,
           },
         },
@@ -13507,8 +13518,8 @@ var Tt = [
           anchorId: "hso4.reactiveO.lonePair",
           electronCount: 2,
           layout: {
-            offset: k(0, 0),
-            rotation: -20,
+            offset: k(-14.17, 5.33),
+            rotation: 90.7,
             dotSpacing: 8,
             zIndex: 48,
           },
@@ -13519,6 +13530,7 @@ var Tt = [
           text: "HSO₄⁻ base",
           anchorId: "hso4.label",
           layout: {
+            offset: k(-6.57, 8.63),
             className: "mechanism-svg__small-label",
             zIndex: 60,
           },
@@ -13537,7 +13549,7 @@ var Tt = [
           value: "+",
           anchorId: "sigmaComplex.positiveRegion",
           layout: {
-            offset: k(0, 0),
+            offset: k(-0.39, -7.89),
             zIndex: 56,
           },
         },
@@ -13548,8 +13560,8 @@ var Tt = [
           toAnchorId: "sigmaComplex.attachedH",
           electronFlow: "pair",
           layout: {
-            startOffset: k(4, -4),
-            endOffset: k(-9, 4),
+            startOffset: k(-8.43, 5.85),
+            endOffset: k(-4.48, -0.41),
             control1: k(142, 56),
             control2: k(218, 54),
             arrowheadOffset: 10,
@@ -13564,10 +13576,10 @@ var Tt = [
           toAnchorId: "sigmaComplex.delocalisationRegion",
           electronFlow: "pair",
           layout: {
-            startOffset: k(1, -4),
-            endOffset: k(-3, -36),
-            control1: k(314, 136),
-            control2: k(326, 165),
+            startOffset: k(7.48, -0.41),
+            endOffset: k(2.74, -28.58),
+            control1: k(323.61, 137.68),
+            control2: k(311.61, 174.46),
             arrowheadOffset: 6,
             strokeWidth: 2.8,
             zIndex: 12,

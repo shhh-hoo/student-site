@@ -136,10 +136,10 @@ async function main() {
   const attackArrow = benzeneNitrationScenes[1].annotations.find(annotation => annotation.id === "attack-arrow");
   assert.equal(attackArrow?.kind, "curlyArrow");
   if (attackArrow?.kind === "curlyArrow") {
-    assert.deepEqual(attackArrow.layout.startOffset, { x: 30, y: -30 });
-    assert.deepEqual(attackArrow.layout.endOffset, { x: -6, y: 0 });
-    assert.ok(attackArrow.layout.control1);
-    assert.ok(attackArrow.layout.control2);
+    assert.deepEqual(attackArrow.layout.startOffset, { x: 2.91, y: -34.41 });
+    assert.deepEqual(attackArrow.layout.endOffset, { x: 1.61, y: -2.58 });
+    assert.deepEqual(attackArrow.layout.control1, { x: 191.87, y: 124.63 });
+    assert.deepEqual(attackArrow.layout.control2, { x: 241.7, y: 48.98 });
     assert.equal(attackArrow.layout.arrowheadOffset, 14);
   }
   const deprotonationArrows = benzeneNitrationScenes[3].annotations.filter(
@@ -160,7 +160,7 @@ async function main() {
   assert.equal(baseLonePair?.kind, "lonePair");
   if (baseLonePair?.kind === "lonePair") {
     assert.equal(baseLonePair.electronCount, 2);
-    assert.equal(baseLonePair.layout.rotation, -20);
+    assert.equal(baseLonePair.layout.rotation, 90.7);
   }
   const whelandHorseshoe = benzeneNitrationScenes[2].annotations.find(
     annotation => annotation.id === "wheland-delocalisation-horseshoe"
@@ -192,7 +192,7 @@ async function main() {
   assert.equal(control1Arrow.kind, "curlyArrow");
   if (control1Arrow.kind === "curlyArrow") {
     assert.deepEqual(control1Arrow.layout.control1, { x: 232, y: 126 });
-    assert.deepEqual(control1Arrow.layout.control2, { x: 294, y: 96 });
+    assert.deepEqual(control1Arrow.layout.control2, { x: 241.7, y: 48.98 });
     assert.equal(control1Arrow.fromAnchorId, "benzene.piSystem");
     assert.equal(control1Arrow.toAnchorId, "nitronium.N");
   }
