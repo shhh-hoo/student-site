@@ -310,7 +310,32 @@ async function main() {
     assert.deepEqual(lonePairAfterMove.layout.offset, { x: 5, y: -4 });
     assert.equal(lonePairAfterMove.anchorId, "hso4.reactiveO.lonePair");
   }
-  pass("dragging charge, partial charge, and lone pair handles updates only offsets");
+  const lonePairRotated = updateAnnotationLayoutFromHandle(
+    deprotonationScene,
+    lonePairMoved,
+    {
+      annotationId: "hso4-reactive-oxygen-lone-pair",
+      kind: "lonePairRotation",
+      field: "rotation",
+    },
+    { x: 108, y: 108 }
+  );
+  const lonePairAfterRotation = getAnnotationById(lonePairRotated, "hso4-reactive-oxygen-lone-pair");
+  assert.equal(lonePairAfterRotation.kind, "lonePair");
+  if (lonePairAfterRotation.kind === "lonePair") {
+    assert.deepEqual(lonePairAfterRotation.layout.offset, { x: 5, y: -4 });
+    assert.equal(lonePairAfterRotation.layout.rotation, 90);
+    assert.equal(lonePairAfterRotation.anchorId, "hso4.reactiveO.lonePair");
+  }
+  assert.deepEqual(
+    getAnnotationHandlePoint(deprotonationScene, lonePairRotated, {
+      annotationId: "hso4-reactive-oxygen-lone-pair",
+      kind: "lonePairRotation",
+      field: "rotation",
+    }),
+    { x: 108, y: 108 }
+  );
+  pass("dragging charge, partial charge, and lone pair handles updates only offsets and rotation");
 
   const generationScene = benzeneNitrationScenes[0];
   const lockedDraft = cloneMechanismAnnotations(generationScene.annotations);

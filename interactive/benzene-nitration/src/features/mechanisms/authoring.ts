@@ -21,6 +21,11 @@ export type EditableMechanismHandle =
     }
   | {
       annotationId: string;
+      kind: "lonePairRotation";
+      field: "rotation";
+    }
+  | {
+      annotationId: string;
       kind: "labelPosition";
       field: "offset" | "position";
     }
@@ -58,6 +63,8 @@ type LayoutOverrideInput = {
   annotations?: Record<string, { layout?: MechanismAnnotation["layout"] }>;
 };
 
+const LONE_PAIR_ROTATION_HANDLE_RADIUS = 18;
+
 function point(x: number, y: number): MechanismPoint {
   return { x, y };
 }
@@ -67,6 +74,14 @@ function deltaFromAnchor(anchor: MechanismPoint, svgPoint: MechanismPoint): Mech
     x: svgPoint.x - anchor.x,
     y: svgPoint.y - anchor.y,
   };
+}
+
+function degreesToRadians(degrees: number) {
+  return (degrees * Math.PI) / 180;
+}
+
+function angleFromCenter(center: MechanismPoint, pointToMeasure: MechanismPoint) {
+  return Number(((Math.atan2(pointToMeasure.y - center.y, pointToMeasure.x - center.x) * 180) / Math.PI).toFixed(1));
 }
 
 function getAnnotation(annotations: MechanismAnnotation[], annotationId: string) {
@@ -223,6 +238,25 @@ export function getAnnotationHandlePoint(
 
       return anchor ? anchorPoint(anchor, annotation.layout.offset) : null;
     }
+    case "lonePairRotation": {
+      if (annotation.kind !== "lonePair") {
+        return null;
+      }
+
+      const anchor = getAnchor(scene, annotation.anchorId);
+
+      if (!anchor) {
+        return null;
+      }
+
+      const center = anchorPoint(anchor, annotation.layout.offset);
+      const radians = degreesToRadians(annotation.layout.rotation ?? 0);
+
+      return {
+        x: Number((center.x + Math.cos(radians) * LONE_PAIR_ROTATION_HANDLE_RADIUS).toFixed(2)),
+        y: Number((center.y + Math.sin(radians) * LONE_PAIR_ROTATION_HANDLE_RADIUS).toFixed(2)),
+      };
+    }
     case "labelPosition": {
       if (annotation.kind !== "label") {
         return null;
@@ -279,12 +313,24 @@ export function getEditableHandlesForAnnotation(
       ].filter((handle): handle is EditableHandleView => Boolean(handle));
     case "formalCharge":
     case "partialCharge":
+      return [
+        makeHandle("offset", {
+          annotationId: annotation.id,
+          kind: "anchoredOffset",
+          field: "offset",
+        }),
+      ].filter((handle): handle is EditableHandleView => Boolean(handle));
     case "lonePair":
       return [
         makeHandle("offset", {
           annotationId: annotation.id,
           kind: "anchoredOffset",
           field: "offset",
+        }),
+        makeHandle("rotation", {
+          annotationId: annotation.id,
+          kind: "lonePairRotation",
+          field: "rotation",
         }),
       ].filter((handle): handle is EditableHandleView => Boolean(handle));
     case "label":
@@ -366,6 +412,23 @@ export function updateAnnotationLayoutFromHandle(
               layout: {
                 ...current.layout,
                 offset: deltaFromAnchor(anchor, svgPoint),
+              },
+            }
+          : current;
+      }
+      case "lonePairRotation": {
+        if (current.kind !== "lonePair") {
+          return current;
+        }
+
+        const anchor = getAnchor(scene, current.anchorId);
+
+        return anchor
+          ? {
+              ...current,
+              layout: {
+                ...current.layout,
+                rotation: angleFromCenter(anchorPoint(anchor, current.layout.offset), svgPoint),
               },
             }
           : current;
