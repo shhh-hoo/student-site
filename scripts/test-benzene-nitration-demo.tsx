@@ -403,6 +403,8 @@ async function main() {
   assert.ok(renderedStepSvgs[3].includes("broken delocalisation region"));
   assert.ok(!renderedStepSvgs[3].includes("mechanism-svg__aromatic-core"));
   assert.ok(renderedStepSvgs[4].includes("nitrobenzene; aromaticity restored"));
+  assert.ok(renderedStepSvgs[4].includes("C-N bond to nitro nitrogen in nitrobenzene"));
+  assert.ok(renderedStepSvgs[4].includes("nitro nitrogen directly bonded to the aromatic ring"));
   pass("step SVGs render the required mechanism features");
 
   const debugMarkup = renderToStaticMarkup(

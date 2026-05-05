@@ -85,6 +85,26 @@ function nitroGroupScaffold(idPrefix: string, x: number, y: number): ScaffoldEle
   ];
 }
 
+function productNitroGroupScaffold(idPrefix: string, x: number, y: number): ScaffoldElement[] {
+  const n = p(x, y);
+  const leftO = p(x - 34, y - 30);
+  const rightO = p(x + 34, y - 30);
+
+  return [
+    atomLabel(`${idPrefix}.N`, n.x, n.y, "N", "nitro nitrogen directly bonded to the aromatic ring"),
+    bond(`${idPrefix}.leftNO`, p(n.x - 10, n.y - 9), p(leftO.x + 12, leftO.y + 10), "left N-O bond in nitro group", 2),
+    atomLabel(`${idPrefix}.leftO`, leftO.x, leftO.y, "O", "left oxygen of nitro group"),
+    bond(
+      `${idPrefix}.rightNO`,
+      p(n.x + 10, n.y - 9),
+      p(rightO.x - 12, rightO.y + 10),
+      "right N-O bond in nitro group",
+      2
+    ),
+    atomLabel(`${idPrefix}.rightO`, rightO.x, rightO.y, "O", "right oxygen of nitro group"),
+  ];
+}
+
 function hydrogensulfateScaffold(idPrefix: string, x: number, y: number): ScaffoldElement[] {
   return [
     atomLabel(`${idPrefix}.reactiveO`, x, y, "O", "reactive oxygen atom of hydrogensulfate"),
@@ -595,8 +615,8 @@ export const benzeneNitrationScenes: MechanismScene[] = [
       viewBox: "0 0 480 340",
       elements: [
         aromaticRing("nitrobenzene.ring", 240, 210, 58),
-        bond("nitrobenzene.CN", p(240, 152), p(240, 92), "C-N bond to nitro group in nitrobenzene"),
-        ...nitroGroupScaffold("nitrobenzene.nitro", 240, 76),
+        bond("nitrobenzene.CN", p(240, 152), p(240, 110), "C-N bond to nitro nitrogen in nitrobenzene"),
+        ...productNitroGroupScaffold("nitrobenzene.nitro", 240, 92),
       ],
     },
     anchors: {
@@ -604,7 +624,12 @@ export const benzeneNitrationScenes: MechanismScene[] = [
         structureId: "nitrobenzene",
         role: "restored aromatic circle",
       }),
-      "nitrobenzene.nitroGroup": anchor("nitrobenzene.nitroGroup", "atom", 240, 76, {
+      "nitrobenzene.nitroN": anchor("nitrobenzene.nitroN", "atom", 240, 92, {
+        atomId: "nitrobenzene.nitro.N",
+        structureId: "nitrobenzene",
+        role: "nitro nitrogen directly bonded to the aromatic ring",
+      }),
+      "nitrobenzene.nitroGroup": anchor("nitrobenzene.nitroGroup", "manualPoint", 240, 74, {
         structureId: "nitrobenzene",
         role: "nitro group on aromatic ring",
       }),
