@@ -1,0 +1,17 @@
+{
+  "id": "9701-as-organic-paths",
+  "title": "9701 AS Organic Pathways",
+  "type": "code",
+  "subject": "Chemistry",
+  "topic": "as-organic-reaction-pathways",
+  "tags": ["9701", "chemistry", "AS", "organic", "reaction-pathways", "reagents-conditions"],
+  "description": "Clickable AS organic reaction pathway map with diagram and graph views plus quick reagent recall.",
+  "source_kind": "teacher-made",
+  "status": "ready",
+  "stage": "AS",
+  "stage_detail": "AS organic chemistry",
+  "part": "Organic chemistry",
+  "syllabus_refs": ["14", "15", "16", "17", "18", "19", "20", "21"],
+  "content_format": "html",
+  "entry_file": "index.html"
+}
