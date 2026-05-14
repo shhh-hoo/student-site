@@ -22,6 +22,11 @@ const fallbackInteractiveEntries = [
     metaPath: "interactive/ir-past-paper-trainer/meta.json",
   },
   {
+    asset_id: "9701-as-organic-paths",
+    href: "interactive/9701-as-organic-paths/",
+    metaPath: "interactive/9701-as-organic-paths/meta.json",
+  },
+  {
     asset_id: "9701-memorisation-bank",
     href: "interactive/9701-memorisation-bank/",
     metaPath: "interactive/9701-memorisation-bank/meta.json",

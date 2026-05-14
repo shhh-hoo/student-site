@@ -1,0 +1,529 @@
+.organic-paths-page .organic-paths-site-shell {
+  width: min(1280px, calc(100% - 1.6rem));
+}
+
+.organic-paths-page .organic-paths-hero .interactive-title-block h1 {
+  max-width: 13ch;
+}
+
+.organic-paths-page .interactive-title-block,
+.organic-paths-page .interactive-meta-group,
+.organic-paths-page .interactive-meta-card,
+.organic-paths-app .card,
+.organic-paths-app .side > *,
+.organic-paths-toolbar > *,
+.organic-paths-app .routeRow > div {
+  min-width: 0;
+}
+
+.organic-paths-app button,
+.organic-paths-app textarea {
+  font: inherit;
+}
+
+.organic-paths-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: clamp(1rem, 2.5vw, 1.3rem);
+  border: var(--home-border-strong) solid rgba(42, 34, 27, 0.16);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(244, 250, 247, 0.92));
+}
+
+.organic-paths-toolbar__kicker {
+  margin: 0 0 0.35rem;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.organic-paths-toolbar h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.7vw, 1.85rem);
+  line-height: 1.08;
+}
+
+.organic-paths-toolbar p {
+  margin: 0.55rem 0 0;
+  max-width: 48rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.organic-paths-app .toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.organic-paths-app .toggle button,
+.organic-paths-app .primary,
+.organic-paths-app .secondary {
+  min-height: 2.75rem;
+  border-radius: 18px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.organic-paths-app .toggle button,
+.organic-paths-app .secondary {
+  border: var(--home-border-thin) solid rgba(42, 34, 27, 0.18);
+  background: rgba(255, 249, 240, 0.92);
+  color: var(--home-ink-strong);
+}
+
+.organic-paths-app .toggle button {
+  padding: 0 1rem;
+}
+
+.organic-paths-app .toggle button.active,
+.organic-paths-app .primary {
+  border: var(--home-border-thin) solid rgba(63, 48, 43, 0.12);
+  background: var(--locked-interactive-button);
+  color: #fffaf3;
+}
+
+.organic-paths-app .layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.organic-paths-app .card {
+  border: var(--home-border-strong) solid rgba(42, 34, 27, 0.16);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.97), rgba(244, 250, 247, 0.94));
+}
+
+.organic-paths-app .main {
+  min-width: 0;
+  align-self: start;
+  padding: clamp(0.85rem, 2vw, 1.1rem);
+}
+
+.organic-paths-app .badges,
+.organic-paths-app .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.organic-paths-app .badges {
+  margin-bottom: 0.85rem;
+}
+
+.organic-paths-app .badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.28rem 0.7rem;
+  border: var(--home-border-thin) solid rgba(42, 34, 27, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 249, 240, 0.9);
+  color: var(--home-ink-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.organic-paths-app .diagramShell {
+  overflow: hidden;
+  border: var(--home-border-thin) solid rgba(42, 34, 27, 0.14);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255, 252, 246, 0.98), rgba(239, 249, 250, 0.92));
+}
+
+.organic-paths-app .diagramScroll {
+  overflow: auto;
+}
+
+.organic-paths-app .diagramInner {
+  min-width: 980px;
+}
+
+.organic-paths-app .diagramSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.organic-paths-app .graphView {
+  display: none;
+}
+
+.organic-paths-app .graphGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.organic-paths-app .groupCard,
+.organic-paths-app .routeBox,
+.organic-paths-app .conversion,
+.organic-paths-app .quiz,
+.organic-paths-app .feedback {
+  border: var(--home-border-thin) solid rgba(42, 34, 27, 0.14);
+  border-radius: 20px;
+  background: rgba(255, 249, 240, 0.88);
+}
+
+.organic-paths-app .groupCard,
+.organic-paths-app .routeBox {
+  padding: 0.95rem;
+}
+
+.organic-paths-app .groupCard h3,
+.organic-paths-app .routeBox h3 {
+  margin: 0 0 0.75rem;
+  color: var(--home-ink-muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.organic-paths-app .chip {
+  border: var(--home-border-thin) solid var(--stroke);
+  border-radius: 14px;
+  background: var(--fill);
+  color: var(--text);
+  padding: 0.5rem 0.68rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.organic-paths-app .chip.active {
+  border-color: var(--home-outline-strong);
+  background: var(--locked-interactive-button);
+  color: #fffaf3;
+}
+
+.organic-paths-app .routesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.organic-paths-app .routeList {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.organic-paths-app .routeRow,
+.organic-paths-app .routeButton {
+  width: 100%;
+  border: var(--home-border-thin) solid rgba(42, 34, 27, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 252, 247, 0.92);
+  color: var(--home-ink-strong);
+  text-align: left;
+  cursor: pointer;
+}
+
+.organic-paths-app .routeRow {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.7rem 0.75rem;
+}
+
+.organic-paths-app .routeRow.active,
+.organic-paths-app .routeButton.active {
+  border-color: rgba(63, 48, 43, 0.12);
+  background: var(--locked-interactive-button);
+  color: #fffaf3;
+}
+
+.organic-paths-app .routeRow .arrow {
+  margin-top: 0.05rem;
+  color: var(--home-ink-muted);
+  font-weight: 800;
+}
+
+.organic-paths-app .routeRow.active .arrow,
+.organic-paths-app .routeRow.active .meta,
+.organic-paths-app .routeButton.active .reag,
+.organic-paths-app .routeButton.active .direction {
+  color: rgba(255, 250, 243, 0.78);
+}
+
+.organic-paths-app .routeRow .title,
+.organic-paths-app .routeButton .name {
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.organic-paths-app .routeRow .meta,
+.organic-paths-app .routeButton .reag,
+.organic-paths-app .routeButton .direction {
+  margin-top: 0.25rem;
+  color: var(--home-ink-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.organic-paths-app .empty {
+  border: var(--home-border-thin) dashed rgba(42, 34, 27, 0.2);
+  border-radius: 16px;
+  padding: 0.9rem;
+  background: rgba(255, 252, 247, 0.82);
+  color: var(--home-ink-muted);
+  font-size: 0.9rem;
+}
+
+.organic-paths-app .side {
+  align-self: start;
+  display: grid;
+  grid-template-columns: minmax(210px, 0.8fr) minmax(300px, 1.15fr) minmax(260px, 1fr) minmax(260px, 1fr);
+  gap: 1rem;
+  padding: clamp(0.95rem, 2vw, 1.1rem);
+}
+
+.organic-paths-app .panel {
+  margin-top: 0;
+}
+
+.organic-paths-app .labelSmall {
+  margin: 0 0 0.65rem;
+  color: var(--home-ink-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.organic-paths-app .nodePill {
+  display: inline-flex;
+  border: var(--home-border-thin) solid var(--stroke);
+  border-radius: 999px;
+  background: var(--fill);
+  color: var(--text);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.organic-paths-app .note,
+.organic-paths-app .fieldText,
+.organic-paths-app .quiz p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+.organic-paths-app .note {
+  margin: 0.75rem 0 0;
+}
+
+.organic-paths-app .routeButton {
+  padding: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.organic-paths-app .conversion,
+.organic-paths-app .quiz {
+  padding: 0.95rem;
+}
+
+.organic-paths-app .conversion h3,
+.organic-paths-app .quiz h3 {
+  margin: 0;
+  color: var(--home-ink-muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.organic-paths-app .conversion .title {
+  margin: 0.45rem 0 0;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.organic-paths-app .fieldLabel {
+  margin: 0.75rem 0 0.25rem;
+  color: var(--home-ink-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.organic-paths-app .fieldText,
+.organic-paths-app .quiz p {
+  margin: 0;
+}
+
+.organic-paths-app .quiz textarea {
+  width: 100%;
+  min-height: 7.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border: var(--home-border-thin) solid rgba(42, 34, 27, 0.18);
+  border-radius: 16px;
+  background: rgba(255, 252, 247, 0.94);
+  color: var(--home-ink-strong);
+  line-height: 1.55;
+  outline: none;
+}
+
+.organic-paths-app .quiz textarea:focus-visible {
+  border-color: var(--accent-strong);
+}
+
+.organic-paths-app .actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.organic-paths-app .primary,
+.organic-paths-app .secondary {
+  padding: 0 0.9rem;
+}
+
+.organic-paths-app .feedback {
+  display: none;
+  margin-top: 0.65rem;
+  padding: 0.7rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.organic-paths-app .feedback.show {
+  display: block;
+}
+
+.organic-paths-app .nodeGroup,
+.organic-paths-app .pathBase,
+.organic-paths-app .pathHit,
+.organic-paths-app .arrowHead {
+  cursor: pointer;
+}
+
+.organic-paths-app .nodeLabel {
+  pointer-events: none;
+  user-select: none;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.organic-paths-app .pathBase {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.organic-paths-app .pathHit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 24;
+}
+
+.organic-paths-app .arrowHead {
+  stroke: none;
+}
+
+html[data-theme="dark"] .organic-paths-toolbar,
+html[data-theme="dark"] .organic-paths-app .card {
+  border-color: rgba(230, 219, 202, 0.16);
+  background: linear-gradient(180deg, rgba(28, 25, 22, 0.98), rgba(23, 20, 18, 0.94));
+}
+
+html[data-theme="dark"] .organic-paths-app .diagramShell,
+html[data-theme="dark"] .organic-paths-app .groupCard,
+html[data-theme="dark"] .organic-paths-app .routeBox,
+html[data-theme="dark"] .organic-paths-app .conversion,
+html[data-theme="dark"] .organic-paths-app .quiz,
+html[data-theme="dark"] .organic-paths-app .feedback,
+html[data-theme="dark"] .organic-paths-app .routeRow,
+html[data-theme="dark"] .organic-paths-app .routeButton,
+html[data-theme="dark"] .organic-paths-app .empty,
+html[data-theme="dark"] .organic-paths-app .quiz textarea,
+html[data-theme="dark"] .organic-paths-app .toggle button,
+html[data-theme="dark"] .organic-paths-app .secondary,
+html[data-theme="dark"] .organic-paths-app .badge {
+  border-color: rgba(230, 219, 202, 0.14);
+  background: rgba(42, 38, 34, 0.92);
+  color: rgba(247, 240, 228, 0.94);
+}
+
+html[data-theme="dark"] .organic-paths-app .diagramShell {
+  background: linear-gradient(135deg, rgba(29, 27, 24, 0.98), rgba(24, 37, 37, 0.9));
+}
+
+html[data-theme="dark"] .organic-paths-app .routeRow .meta,
+html[data-theme="dark"] .organic-paths-app .routeRow .arrow,
+html[data-theme="dark"] .organic-paths-app .routeButton .reag,
+html[data-theme="dark"] .organic-paths-app .routeButton .direction,
+html[data-theme="dark"] .organic-paths-app .note,
+html[data-theme="dark"] .organic-paths-app .fieldText,
+html[data-theme="dark"] .organic-paths-app .quiz p,
+html[data-theme="dark"] .organic-paths-toolbar p,
+html[data-theme="dark"] .organic-paths-app .feedback,
+html[data-theme="dark"] .organic-paths-app .labelSmall,
+html[data-theme="dark"] .organic-paths-app .fieldLabel,
+html[data-theme="dark"] .organic-paths-app .groupCard h3,
+html[data-theme="dark"] .organic-paths-app .routeBox h3,
+html[data-theme="dark"] .organic-paths-app .conversion h3,
+html[data-theme="dark"] .organic-paths-app .quiz h3 {
+  color: rgba(230, 219, 202, 0.74);
+}
+
+@media (max-width: 1100px) {
+  .organic-paths-app .side {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .organic-paths-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .organic-paths-app .graphGrid,
+  .organic-paths-app .routesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .organic-paths-page .organic-paths-site-shell {
+    width: min(100% - 1rem, 1280px);
+  }
+
+  .organic-paths-toolbar,
+  .organic-paths-app .card {
+    border-radius: 22px;
+  }
+
+  .organic-paths-app .main,
+  .organic-paths-app .side {
+    padding: 0.75rem;
+  }
+
+  .organic-paths-app .diagramInner {
+    min-width: 0;
+  }
+
+  .organic-paths-app .toggle {
+    width: 100%;
+  }
+
+  .organic-paths-app .toggle button {
+    flex: 1;
+  }
+
+  .organic-paths-app .side {
+    grid-template-columns: 1fr;
+  }
+}
